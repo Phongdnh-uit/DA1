@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TestDatatableRouteImport } from './routes/test-datatable'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminDashboardIndexRouteImport } from './routes/admin/dashboard/index'
 
+const TestDatatableRoute = TestDatatableRouteImport.update({
+  id: '/test-datatable',
+  path: '/test-datatable',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -32,34 +38,45 @@ const AdminDashboardIndexRoute = AdminDashboardIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/test-datatable': typeof TestDatatableRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/test-datatable': typeof TestDatatableRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/test-datatable': typeof TestDatatableRoute
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/admin/dashboard'
+  fullPaths: '/' | '/admin' | '/test-datatable' | '/admin/dashboard'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/admin/dashboard'
-  id: '__root__' | '/' | '/admin' | '/admin/dashboard/'
+  to: '/' | '/admin' | '/test-datatable' | '/admin/dashboard'
+  id: '__root__' | '/' | '/admin' | '/test-datatable' | '/admin/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  TestDatatableRoute: typeof TestDatatableRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/test-datatable': {
+      id: '/test-datatable'
+      path: '/test-datatable'
+      fullPath: '/test-datatable'
+      preLoaderRoute: typeof TestDatatableRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -97,6 +114,7 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  TestDatatableRoute: TestDatatableRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

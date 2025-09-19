@@ -71,7 +71,7 @@ export function AdminSidebar(props: AdminSidebarProps) {
                                 className="absolute left-0 w-full bg-zinc-200/80 rounded-lg"
                                 style={{ height: 40 }}
                                 animate={tabPosition}
-                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                transition={{ type: "spring", stiffness: 500, damping: 30 }}
                             />
 
                             {links.map((link, idx) => (
