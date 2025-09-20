@@ -9,9 +9,15 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+/**
+ * @param E entity type
+ * @param ID entity id type
+ * @param I input dto type
+ * @param O output dto type
+ */
 @RequiredArgsConstructor
 @Scope("prototype")
-public abstract class GenericService<E, ID, I, O> implements CrudService<E, ID, I, O> {
+public class GenericService<E, ID, I, O> implements CrudService<E, ID, I, O> {
 
   private final SimpleRepository<E, ID> repository;
   private final GenericMapper<E, I, O> mapper;

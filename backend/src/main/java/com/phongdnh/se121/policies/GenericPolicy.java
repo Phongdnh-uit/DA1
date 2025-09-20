@@ -9,26 +9,26 @@ package com.phongdnh.se121.policies;
  */
 public interface GenericPolicy<E, ID, I> {
   // ============================ CREATE ============================
-  void validateCreate(I input);
+  default void validateCreate(I input) {}
 
-  void enrichCreate(I input, E entity);
+  default void enrichCreate(I input, E entity) {}
 
-  void afterCreate(E entity);
+  default void afterCreate(E entity) {}
 
   // ============================ UPDATE ============================
 
-  void validateUpdate(ID id, I input, E existingEntity);
+  default void validateUpdate(ID id, I input, E existingEntity) {}
 
-  void enrichUpdate(I input, E entity);
+  default void enrichUpdate(I input, E entity) {}
 
-  void afterUpdate(E entity);
+  default void afterUpdate(E entity) {}
 
   // ============================ DELETE ============================
-  void validateDelete(ID id);
+  default void validateDelete(ID id) {}
 
-  void afterDelete(ID id);
+  default void afterDelete(ID id) {}
 
-  void validateBulkDelete(Iterable<ID> ids);
+  default void validateBulkDelete(Iterable<ID> ids) {}
 
-  void afterBulkDelete(Iterable<ID> ids);
+  default void afterBulkDelete(Iterable<ID> ids) {}
 }

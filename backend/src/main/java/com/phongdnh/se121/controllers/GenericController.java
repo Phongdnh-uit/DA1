@@ -6,6 +6,7 @@ import com.turkraft.springfilter.boot.Filter;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.groups.Default;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.context.annotation.Scope;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RequiredArgsConstructor
 @Scope("prototype")
@@ -54,7 +56,7 @@ public abstract class GenericController<E, ID, I, O> {
   }
 
   @DeleteMapping("/bulk")
-  public void deleteAll(@RequestBody Iterable<ID> ids) {
+  public void deleteAll(@RequestParam("ids") List<ID> ids) {
     service.deleteAll(ids);
   }
 }
