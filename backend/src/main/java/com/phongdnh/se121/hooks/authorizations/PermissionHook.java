@@ -30,6 +30,7 @@ public class PermissionHook
   }
 
   private void validatePermission(PermissionRequestDTO request, Long id) {
+    request.setResource(request.getResource().toUpperCase());
     Specification<Permission> validateSpec =
         (root, _, builder) ->
             builder.and(

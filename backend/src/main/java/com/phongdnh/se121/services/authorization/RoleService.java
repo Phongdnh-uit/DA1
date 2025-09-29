@@ -51,6 +51,7 @@ public class RoleService implements IRoleSerivce {
 
   @Override
   public RoleResponseDTO create(RoleRequestDTO input) {
+    input.setName(input.getName().toUpperCase());
     validateUniqueName(input.getName(), null);
     Role entity = roleMapper.requestToEntity(input);
     roleRepository.save(entity);
@@ -66,6 +67,7 @@ public class RoleService implements IRoleSerivce {
         roleRepository
             .findById(id)
             .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND));
+    input.setName(input.getName().toUpperCase());
     validateUniqueName(input.getName(), id);
     roleMapper.partialUpdate(input, existing);
     roleRepository.save(existing);
