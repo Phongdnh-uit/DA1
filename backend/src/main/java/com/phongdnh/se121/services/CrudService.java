@@ -3,9 +3,11 @@ package com.phongdnh.se121.services;
 import com.phongdnh.se121.dtos.PageResponse;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
+import com.phongdnh.se121.hooks.GenericHook;
 import com.phongdnh.se121.mappers.GenericMapper;
-import com.phongdnh.se121.policies.GenericPolicy;
 import com.phongdnh.se121.repositories.SimpleRepository;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -43,13 +45,23 @@ public interface CrudService<E, ID, I, O> {
       I input,
       GenericMapper<E, I, O> mapper,
       SimpleRepository<E, ID> repository,
-      GenericPolicy<E, ID, I> policy) {
-    policy.validateCreate(input);
+      GenericHook<E, ID, I, O> hook) {
+    Map<String, Object> context = new HashMap<>();
+    hook.validateCreate(input, context);
     E entity = mapper.requestToEntity(input);
-    policy.enrichCreate(input, entity);
+    hook.enrichCreate(input, entity, context);
     E savedEntity = repository.save(entity);
-    policy.afterCreate(entity);
-    return mapper.entityToResponse(savedEntity);
+    O response = mapper.entityToResponse(savedEntity);
+    hook.afterCreate(entity, response, context);
+    return response;
+  }
+
+  default O defaultCreate(
+      I input, GenericMapper<E, I, O> mapper, SimpleRepository<E, ID> repository) {
+    E entity = mapper.requestToEntity(input);
+    E savedEntity = repository.save(entity);
+    O response = mapper.entityToResponse(savedEntity);
+    return response;
   }
 
   default O defaultUpdate(
@@ -57,28 +69,48 @@ public interface CrudService<E, ID, I, O> {
       I input,
       GenericMapper<E, I, O> mapper,
       SimpleRepository<E, ID> repository,
-      GenericPolicy<E, ID, I> policy) {
+      GenericHook<E, ID, I, O> hook) {
     E entity =
         repository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND));
-    policy.validateUpdate(id, input, entity);
+    Map<String, Object> context = new HashMap<>();
+    hook.validateUpdate(id, input, entity, context);
     mapper.partialUpdate(input, entity);
-    policy.enrichUpdate(input, entity);
+    hook.enrichUpdate(input, entity, context);
     entity = repository.save(entity);
-    policy.afterUpdate(entity);
-    return mapper.entityToResponse(entity);
+    O response = mapper.entityToResponse(entity);
+    hook.afterUpdate(entity, response, context);
+    return response;
+  }
+
+  default O defaultUpdate(
+      ID id, I input, GenericMapper<E, I, O> mapper, SimpleRepository<E, ID> repository) {
+    E entity =
+        repository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND));
+    mapper.partialUpdate(input, entity);
+    entity = repository.save(entity);
+    O response = mapper.entityToResponse(entity);
+    return response;
   }
 
   default void defaultDelete(
-      ID id, SimpleRepository<E, ID> repository, GenericPolicy<E, ID, I> policy) {
-    policy.validateDelete(id);
+      ID id, SimpleRepository<E, ID> repository, GenericHook<E, ID, I, O> hook) {
+    hook.validateDelete(id);
     repository.deleteById(id);
-    policy.afterDelete(id);
+    hook.afterDelete(id);
+  }
+
+  default void defaultDelete(ID id, SimpleRepository<E, ID> repository) {
+    repository.deleteById(id);
   }
 
   default void defaultDeleteAll(
-      Iterable<ID> ids, SimpleRepository<E, ID> repository, GenericPolicy<E, ID, I> policy) {
+      Iterable<ID> ids, SimpleRepository<E, ID> repository, GenericHook<E, ID, I, O> policy) {
     policy.validateBulkDelete(ids);
     repository.deleteAllByIdInBatch(ids);
     policy.afterBulkDelete(ids);
+  }
+
+  default void defaultDeleteAll(Iterable<ID> ids, SimpleRepository<E, ID> repository) {
+    repository.deleteAllByIdInBatch(ids);
   }
 }

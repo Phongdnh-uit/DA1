@@ -5,9 +5,11 @@ import com.phongdnh.se121.dtos.authorization.RoleRequestDTO;
 import com.phongdnh.se121.dtos.authorization.RoleResponseDTO;
 import com.phongdnh.se121.entities.authorization.Role;
 import com.phongdnh.se121.services.CrudService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Role")
 @RequestMapping("/roles")
 @RestController
 public class RoleController extends GenericController<Role, Long, RoleRequestDTO, RoleResponseDTO> {

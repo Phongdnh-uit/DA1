@@ -1,8 +1,8 @@
 package com.phongdnh.se121.services;
 
 import com.phongdnh.se121.dtos.PageResponse;
+import com.phongdnh.se121.hooks.GenericHook;
 import com.phongdnh.se121.mappers.GenericMapper;
-import com.phongdnh.se121.policies.GenericPolicy;
 import com.phongdnh.se121.repositories.SimpleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Scope;
@@ -21,7 +21,7 @@ public class GenericService<E, ID, I, O> implements CrudService<E, ID, I, O> {
 
   private final SimpleRepository<E, ID> repository;
   private final GenericMapper<E, I, O> mapper;
-  private final GenericPolicy<E, ID, I> policy;
+  private final GenericHook<E, ID, I, O> policy;
 
   @Override
   public PageResponse<O> findAll(Pageable pageable, Specification<E> specification) {

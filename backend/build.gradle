@@ -38,7 +38,7 @@ dependencies {
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     implementation 'org.mapstruct:mapstruct:1.6.3'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
-    implementation 'com.turkraft.springfilter:jpa:3.2.0'
+    implementation 'io.github.perplexhub:rsql-jpa-spring-boot-starter:6.0.32'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
