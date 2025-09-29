@@ -1,5 +1,7 @@
 package com.phongdnh.se121.controllers;
 
+import com.phongdnh.se121.dtos.Action.Create;
+import com.phongdnh.se121.dtos.Action.Update;
 import com.phongdnh.se121.dtos.PageResponse;
 import com.phongdnh.se121.services.CrudService;
 import io.github.perplexhub.rsql.RSQLJPASupport;
@@ -42,13 +44,14 @@ public abstract class GenericController<E, ID, I, O> {
 
   @Operation(operationId = "create{Resource}")
   @PostMapping()
-  public O create(@Validated({Default.class}) @RequestBody I input) {
+  public O create(@Validated({Default.class, Create.class}) @RequestBody I input) {
     return service.create(input);
   }
 
   @Operation(operationId = "update{Resource}")
   @PutMapping("/{id}")
-  public O update(@PathVariable("id") ID id, @Validated({Default.class}) @RequestBody I input) {
+  public O update(
+      @PathVariable("id") ID id, @Validated({Default.class, Update.class}) @RequestBody I input) {
     return service.update(id, input);
   }
 
