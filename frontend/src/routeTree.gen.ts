@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TestDatatableRouteImport } from './routes/test-datatable'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminPermissionIndexRouteImport } from './routes/admin/permission/index'
 import { Route as AdminDashboardIndexRouteImport } from './routes/admin/dashboard/index'
 
 const TestDatatableRoute = TestDatatableRouteImport.update({
@@ -29,6 +30,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPermissionIndexRoute = AdminPermissionIndexRouteImport.update({
+  id: '/permission/',
+  path: '/permission/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminDashboardIndexRoute = AdminDashboardIndexRouteImport.update({
   id: '/dashboard/',
   path: '/dashboard/',
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/test-datatable': typeof TestDatatableRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
+  '/admin/permission': typeof AdminPermissionIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/test-datatable': typeof TestDatatableRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
+  '/admin/permission': typeof AdminPermissionIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,30 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/test-datatable': typeof TestDatatableRoute
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
+  '/admin/permission/': typeof AdminPermissionIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/test-datatable' | '/admin/dashboard'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/test-datatable'
+    | '/admin/dashboard'
+    | '/admin/permission'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/test-datatable' | '/admin/dashboard'
-  id: '__root__' | '/' | '/admin' | '/test-datatable' | '/admin/dashboard/'
+  to:
+    | '/'
+    | '/admin'
+    | '/test-datatable'
+    | '/admin/dashboard'
+    | '/admin/permission'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/test-datatable'
+    | '/admin/dashboard/'
+    | '/admin/permission/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -91,6 +116,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/permission/': {
+      id: '/admin/permission/'
+      path: '/permission'
+      fullPath: '/admin/permission'
+      preLoaderRoute: typeof AdminPermissionIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/dashboard/': {
       id: '/admin/dashboard/'
       path: '/dashboard'
@@ -103,10 +135,12 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminDashboardIndexRoute: typeof AdminDashboardIndexRoute
+  AdminPermissionIndexRoute: typeof AdminPermissionIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminDashboardIndexRoute: AdminDashboardIndexRoute,
+  AdminPermissionIndexRoute: AdminPermissionIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)

@@ -9,9 +9,11 @@ export const Route = createFileRoute("/admin")({
 function RouteComponent() {
     return (
         <AdminSidebar>
-            <div className="flex flex-col size-full gap-4 pr-4 py-4">
-                <AdminHeader />
-                <Outlet />
+            <div className="bg-zinc-50 dark:bg-zinc-800 flex flex-col size-full gap-4 pr-4 py-4">
+                <AdminHeader className="sticky top-0 z-50" />
+                <div className="flex-1 overflow-auto">
+                    <Outlet />
+                </div>
             </div>
         </AdminSidebar>
     );

@@ -9,6 +9,8 @@ import {
 } from "@tabler/icons-react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "@tanstack/react-router";
+import logo from "@/assets/logo.svg";
 
 interface AdminSidebarProps {
     children: React.ReactNode;
@@ -20,28 +22,44 @@ export function AdminSidebar(props: AdminSidebarProps) {
             label: "Overview",
             href: "/admin/dashboard",
             icon: (
-                <IconChartPie2 className="h-6 w-6 shrink-0 text-neutral-700 dark:text-neutral-200" />
+                <IconChartPie2
+                    className={cn(
+                        "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
+                    )}
+                />
             ),
         },
         {
-            label: "Profile",
-            href: "#",
+            label: "Permission",
+            href: "/admin/permission",
             icon: (
-                <IconUserBolt className="h-6 w-6 shrink-0 text-neutral-700 dark:text-neutral-200" />
+                <IconUserBolt
+                    className={cn(
+                        "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
+                    )}
+                />
             ),
         },
         {
-            label: "Settings",
-            href: "#",
+            label: "Role",
+            href: "/admin/role",
             icon: (
-                <IconSettings className="h-6 w-6 shrink-0 text-neutral-700 dark:text-neutral-200" />
+                <IconSettings
+                    className={cn(
+                        "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
+                    )}
+                />
             ),
         },
         {
-            label: "Logout",
-            href: "#",
+            label: "User",
+            href: "/admin/user",
             icon: (
-                <IconArrowLeft className="h-6 w-6 shrink-0 text-neutral-700 dark:text-neutral-200" />
+                <IconArrowLeft
+                    className={cn(
+                        "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
+                    )}
+                />
             ),
         },
     ];
@@ -50,6 +68,7 @@ export function AdminSidebar(props: AdminSidebarProps) {
         top: number;
         opacity: number;
     }>({ top: 0, opacity: 0 });
+    const navigate = useNavigate();
     return (
         <div
             className={cn(
@@ -62,14 +81,14 @@ export function AdminSidebar(props: AdminSidebarProps) {
                     <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
                         {open ? <Logo /> : <LogoIcon />}
                         <div
-                            className="relative mt-8 flex flex-col gap-2"
+                            className="relative mt-4 flex flex-col gap-2"
                             onMouseLeave={() =>
                                 setTabPosition({ ...tabPosition, opacity: 0 })
                             }
                         >
                             <motion.div
-                                className="absolute left-0 w-full bg-zinc-200/80 rounded-lg"
-                                style={{ height: 40 }}
+                                className="absolute left-0 w-full bg-blue-100 rounded-2xl dark:bg-blue-700"
+                                style={{ height: 48 }}
                                 animate={tabPosition}
                                 transition={{ type: "spring", stiffness: 500, damping: 30 }}
                             />
@@ -81,9 +100,13 @@ export function AdminSidebar(props: AdminSidebarProps) {
                                         const target = e.currentTarget;
                                         setTabPosition({ top: target.offsetTop, opacity: 1 });
                                     }}
-                                    className={cn("relative h-[40px] flex items-center group/custom", open && "px-2")}
+                                    onClick={() => navigate({ to: link.href })}
+                                    className={cn(
+                                        "relative h-[48px] flex items-center group/custom hover:cursor-pointer",
+                                        open && "px-4",
+                                    )}
                                 >
-                                    <SidebarLink link={link} />
+                                    <SidebarLink link={link} className="text-blue-500" />
                                 </div>
                             ))}
                         </div>
@@ -115,16 +138,9 @@ export const Logo = () => {
     return (
         <a
             href="#"
-            className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black"
+            className="relative z-20 flex items-center text-sm font-normal text-black py-1 space-x-2"
         >
-            <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
-            <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="font-medium whitespace-pre text-black dark:text-white"
-            >
-                Acet Labs
-            </motion.span>
+            <img src={logo} className="h-20 w-30" />
         </a>
     );
 };
@@ -134,7 +150,7 @@ export const LogoIcon = () => {
             href="#"
             className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black"
         >
-            <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
+            <img src={logo} className="h-7 w-7" />
         </a>
     );
 };
