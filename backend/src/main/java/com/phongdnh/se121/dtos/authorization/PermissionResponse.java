@@ -1,14 +1,14 @@
 package com.phongdnh.se121.dtos.authorization;
 
 import com.phongdnh.se121.entities.BaseEntity;
-import java.util.List;
+import com.phongdnh.se121.enums.authorization.Action;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class RoleResponseDTO extends BaseEntity {
+public class PermissionResponse extends BaseEntity {
   private String name;
-  private String description;
-  private List<Long> permissionIds;
+  private String resource;
+  private Action action;
 }

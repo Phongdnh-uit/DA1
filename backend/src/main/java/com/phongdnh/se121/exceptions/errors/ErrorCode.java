@@ -12,6 +12,7 @@ public enum ErrorCode {
   FORBIDDEN(2004, HttpStatus.FORBIDDEN, "Forbidden"),
   TOKEN_EXPIRED(2005, HttpStatus.UNAUTHORIZED, "Token Expired"),
   TOKEN_INVALID(2006, HttpStatus.UNAUTHORIZED, "Token Invalid"),
+  INVALID_CREDENTIALS(2007, HttpStatus.UNAUTHORIZED, "Invalid Credentials"),
   INTERNAL_SERVER_ERROR(2099, HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error"),
   OTP_EXPIRED(2100, HttpStatus.BAD_REQUEST, "OTP Expired"),
   OTP_INVALID(2101, HttpStatus.BAD_REQUEST, "OTP Invalid"),

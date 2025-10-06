@@ -1,4 +1,4 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id              BIGINT AUTO_INCREMENT PRIMARY KEY,
     full_name       VARCHAR(255),
     email           VARCHAR(255) NOT NULL UNIQUE,
@@ -15,4 +15,17 @@ CREATE TABLE users (
     created_by BIGINT,
     updated_by BIGINT,
     FOREIGN KEY (role_id) REFERENCES roles(id)
+);
+
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+    id              BIGINT AUTO_INCREMENT PRIMARY KEY,
+    token           VARCHAR(500) NOT NULL UNIQUE,
+    user_id         BIGINT NOT NULL,
+    expires_at      TIMESTAMP NOT NULL,
+    version BIGINT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by BIGINT,
+    updated_by BIGINT,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );

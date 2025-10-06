@@ -1,8 +1,8 @@
 package com.phongdnh.se121.services.authorization;
 
 import com.phongdnh.se121.dtos.PageResponse;
-import com.phongdnh.se121.dtos.authorization.RoleRequestDTO;
-import com.phongdnh.se121.dtos.authorization.RoleResponseDTO;
+import com.phongdnh.se121.dtos.authorization.RoleRequest;
+import com.phongdnh.se121.dtos.authorization.RoleResponse;
 import com.phongdnh.se121.entities.authorization.Permission;
 import com.phongdnh.se121.entities.authorization.Role;
 import com.phongdnh.se121.entities.authorization.RolePermission;
@@ -29,18 +29,18 @@ public class RoleService implements IRoleSerivce {
   private final PermissionRepository permissionRepository;
 
   @Override
-  public PageResponse<RoleResponseDTO> findAll(
+  public PageResponse<RoleResponse> findAll(
       Pageable pageable, Specification<Role> specification) {
     return defaultFindAll(pageable, specification, roleMapper, roleRepository);
   }
 
   @Override
-  public RoleResponseDTO findById(Long id) {
+  public RoleResponse findById(Long id) {
     Role entity =
         roleRepository
             .findById(id)
             .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND));
-    RoleResponseDTO dto = roleMapper.entityToResponse(entity);
+    RoleResponse dto = roleMapper.entityToResponse(entity);
     List<RolePermission> rolePermissions =
         rolePermissionRepository.findAll(
             (root, _, criteriaBuilder) ->
@@ -50,19 +50,19 @@ public class RoleService implements IRoleSerivce {
   }
 
   @Override
-  public RoleResponseDTO create(RoleRequestDTO input) {
+  public RoleResponse create(RoleRequest input) {
     input.setName(input.getName().toUpperCase());
     validateUniqueName(input.getName(), null);
     Role entity = roleMapper.requestToEntity(input);
     roleRepository.save(entity);
     List<RolePermission> rolePermissions = enrichPermissions(input, entity);
-    RoleResponseDTO dto = roleMapper.entityToResponse(entity);
+    RoleResponse dto = roleMapper.entityToResponse(entity);
     dto.setPermissionIds(rolePermissions.stream().map(RolePermission::getPermissionId).toList());
     return dto;
   }
 
   @Override
-  public RoleResponseDTO update(Long id, RoleRequestDTO input) {
+  public RoleResponse update(Long id, RoleRequest input) {
     Role existing =
         roleRepository
             .findById(id)
@@ -72,7 +72,7 @@ public class RoleService implements IRoleSerivce {
     roleMapper.partialUpdate(input, existing);
     roleRepository.save(existing);
     List<RolePermission> rolePermissions = enrichPermissions(input, existing);
-    RoleResponseDTO dto = roleMapper.entityToResponse(existing);
+    RoleResponse dto = roleMapper.entityToResponse(existing);
     dto.setPermissionIds(rolePermissions.stream().map(RolePermission::getPermissionId).toList());
     return dto;
   }
@@ -102,7 +102,7 @@ public class RoleService implements IRoleSerivce {
   }
 
   @Transactional
-  private List<RolePermission> enrichPermissions(RoleRequestDTO input, Role entity) {
+  private List<RolePermission> enrichPermissions(RoleRequest input, Role entity) {
     rolePermissionRepository.delete(
         (root, _, criteriaBuilder) -> criteriaBuilder.equal(root.get("roleId"), entity.getId()));
     List<Permission> permissions = permissionRepository.findAllById(input.getPermissionIds());

@@ -1,6 +1,7 @@
 package com.phongdnh.se121.dtos.authentication;
 
 import com.phongdnh.se121.annotations.ValidPhone;
+import com.phongdnh.se121.dtos.Action.Create;
 import com.phongdnh.se121.enums.authentication.UserStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -10,14 +11,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserRequestDTO {
+public class UserRequest {
   private String fullName;
 
   @NotBlank @Email private String email;
 
   @NotBlank @ValidPhone private String phone;
 
-  @NotBlank private String password;
+  @NotBlank(groups = {Create.class})
+  private String password;
 
   private boolean emailVerified = false;
 

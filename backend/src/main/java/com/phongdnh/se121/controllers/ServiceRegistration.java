@@ -1,9 +1,9 @@
 package com.phongdnh.se121.controllers;
 
-import com.phongdnh.se121.dtos.authentication.UserRequestDTO;
-import com.phongdnh.se121.dtos.authentication.UserResponseDTO;
-import com.phongdnh.se121.dtos.authorization.PermissionRequestDTO;
-import com.phongdnh.se121.dtos.authorization.PermissionResponseDTO;
+import com.phongdnh.se121.dtos.authentication.UserRequest;
+import com.phongdnh.se121.dtos.authentication.UserResponse;
+import com.phongdnh.se121.dtos.authorization.PermissionRequest;
+import com.phongdnh.se121.dtos.authorization.PermissionResponse;
 import com.phongdnh.se121.entities.authentication.User;
 import com.phongdnh.se121.entities.authorization.Permission;
 import com.phongdnh.se121.hooks.authentication.UserHook;
@@ -25,16 +25,16 @@ public class ServiceRegistration {
   private final ApplicationContext context;
 
   @Bean
-  CrudService<Permission, Long, PermissionRequestDTO, PermissionResponseDTO> permissionService() {
-    return new GenericService<Permission, Long, PermissionRequestDTO, PermissionResponseDTO>(
+  CrudService<Permission, Long, PermissionRequest, PermissionResponse> permissionService() {
+    return new GenericService<Permission, Long, PermissionRequest, PermissionResponse>(
         context.getBean(PermissionRepository.class),
         context.getBean(PermissionMapper.class),
         context.getBean(PermissionHook.class));
   }
 
   @Bean
-  CrudService<User, Long, UserRequestDTO, UserResponseDTO> userService() {
-    return new GenericService<User, Long, UserRequestDTO, UserResponseDTO>(
+  CrudService<User, Long, UserRequest, UserResponse> userService() {
+    return new GenericService<User, Long, UserRequest, UserResponse>(
         context.getBean(UserRepository.class),
         context.getBean(UserMapper.class),
         context.getBean(UserHook.class));

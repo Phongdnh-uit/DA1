@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PermissionRequestDTO {
+public class PermissionRequest {
   @NotBlank private String name;
   @NotBlank private String resource;
   @NotNull private Action action;

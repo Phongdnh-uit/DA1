@@ -14,7 +14,7 @@ public class ApiResponse<T> {
   private Map<String, String> errors;
   private Instant timestamp = Instant.now();
 
-  public static <T> ApiResponse<T> of(T data) {
+  public static <T> ApiResponse<T> ok(T data) {
     ApiResponse<T> response = new ApiResponse<>();
     response.setCode(1000);
     response.setMessage("success");
@@ -22,7 +22,7 @@ public class ApiResponse<T> {
     return response;
   }
 
-  public static <T> ApiResponse<T> of(String customMessage, T data) {
+  public static <T> ApiResponse<T> ok(String customMessage, T data) {
     ApiResponse<T> response = new ApiResponse<>();
     response.setCode(1000);
     response.setMessage(customMessage);

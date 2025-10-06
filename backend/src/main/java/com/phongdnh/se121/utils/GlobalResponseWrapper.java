@@ -16,6 +16,10 @@ public class GlobalResponseWrapper implements ResponseBodyAdvice<Object> {
   @Override
   public boolean supports(
       MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
+    String className = returnType.getDeclaringClass().getName();
+    if (className.startsWith("org.springdoc") || className.startsWith("springfox")) {
+      return false;
+    }
     return true;
   }
 
@@ -31,9 +35,9 @@ public class GlobalResponseWrapper implements ResponseBodyAdvice<Object> {
       return body;
     }
     if (body == null) {
-      return ApiResponse.of(null);
+      return ApiResponse.ok(null);
     }
 
-    return ApiResponse.of(body);
+    return ApiResponse.ok(body);
   }
 }

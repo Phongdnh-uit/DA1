@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserResponseDTO extends BaseEntity {
+public class UserResponse extends BaseEntity {
   private String fullName;
 
   private String email;

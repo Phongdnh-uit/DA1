@@ -1,4 +1,4 @@
-CREATE TABLE permissions (
+CREATE TABLE IF NOT EXISTS permissions (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     resource VARCHAR(255) NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE permissions (
     
 );
 
-CREATE TABLE roles (
+CREATE TABLE IF NOT EXISTS roles (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     description TEXT,
@@ -24,7 +24,7 @@ CREATE TABLE roles (
     UNIQUE KEY uq_role_name (name)
 );
 
-CREATE TABLE role_permissions (
+CREATE TABLE IF NOT EXISTS role_permissions (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     role_id BIGINT NOT NULL,
     permission_id BIGINT NOT NULL,
