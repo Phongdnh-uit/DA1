@@ -4,12 +4,12 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import type { PermissionRequestDTOAction } from './permissionRequestDTOAction';
+import type { PermissionRequestAction } from './permissionRequestAction';
 
-export interface PermissionRequestDTO {
+export interface PermissionRequest {
   /** @minLength 1 */
   name: string;
   /** @minLength 1 */
   resource: string;
-  action: PermissionRequestDTOAction;
+  action: PermissionRequestAction;
 }

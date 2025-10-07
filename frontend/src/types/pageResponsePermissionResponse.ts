@@ -4,13 +4,13 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import type { PermissionResponseDTO } from './permissionResponseDTO';
+import type { PermissionResponse } from './permissionResponse';
 
-export interface PageResponsePermissionResponseDTO {
+export interface PageResponsePermissionResponse {
   page?: number;
   size?: number;
   totalElements?: number;
   totalPages?: number;
   numberOfElements?: number;
-  content?: PermissionResponseDTO[];
+  content?: PermissionResponse[];
 }

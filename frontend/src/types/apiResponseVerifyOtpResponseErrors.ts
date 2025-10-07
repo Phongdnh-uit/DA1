@@ -5,8 +5,4 @@
  * OpenAPI spec version: v0
  */
 
-export interface RoleRequestDTO {
-  /** @minLength 1 */
-  name: string;
-  description?: string;
-}
+export type ApiResponseVerifyOtpResponseErrors = {[key: string]: string};

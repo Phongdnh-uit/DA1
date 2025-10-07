@@ -19,7 +19,8 @@ export const updateRoleParams = zod.object({
 
 export const updateRoleBody = zod.object({
   "name": zod.string().min(1),
-  "description": zod.string().optional()
+  "description": zod.string().optional(),
+  "permissionIds": zod.array(zod.number()).optional()
 })
 
 export const deleteRoleByIdParams = zod.object({
@@ -28,7 +29,8 @@ export const deleteRoleByIdParams = zod.object({
 
 export const createRoleBody = zod.object({
   "name": zod.string().min(1),
-  "description": zod.string().optional()
+  "description": zod.string().optional(),
+  "permissionIds": zod.array(zod.number()).optional()
 })
 
 export const findAllRoleQueryPageDefault = 0;
@@ -39,7 +41,7 @@ export const findAllRoleQueryParams = zod.object({
   "page": zod.number().min(findAllRoleQueryPageMin).optional().describe('Zero-based page index (0..N)'),
   "size": zod.number().min(1).default(findAllRoleQuerySizeDefault).describe('The size of the page to be returned'),
   "sort": zod.array(zod.string()).optional().describe('Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.'),
-  "filter": zod.string()
+  "filter": zod.string().optional()
 })
 
 export const deleteBulkRoleQueryParams = zod.object({

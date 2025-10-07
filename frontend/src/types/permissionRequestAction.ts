@@ -5,11 +5,11 @@
  * OpenAPI spec version: v0
  */
 
-export type PermissionResponseDTOAction = typeof PermissionResponseDTOAction[keyof typeof PermissionResponseDTOAction];
+export type PermissionRequestAction = typeof PermissionRequestAction[keyof typeof PermissionRequestAction];
 
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const PermissionResponseDTOAction = {
+export const PermissionRequestAction = {
   CREATE: 'CREATE',
   READ: 'READ',
   UPDATE: 'UPDATE',

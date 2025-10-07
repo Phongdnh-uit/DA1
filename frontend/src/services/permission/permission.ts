@@ -24,11 +24,12 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ApiResponsePageResponsePermissionResponse,
+  ApiResponsePermissionResponse,
+  ApiResponseVoid,
   DeleteBulkPermissionParams,
   FindAllPermissionParams,
-  PageResponsePermissionResponseDTO,
-  PermissionRequestDTO,
-  PermissionResponseDTO
+  PermissionRequest
 } from '../../types';
 
 import { axiosInstanceFn } from '../../lib/axiosConfig';
@@ -45,7 +46,7 @@ export const findPermissionById = (
 ) => {
       
       
-      return axiosInstanceFn<PermissionResponseDTO>(
+      return axiosInstanceFn<ApiResponsePermissionResponse>(
       {url: `/permissions/${id}`, method: 'GET', signal
     },
       options);
@@ -122,14 +123,14 @@ export function useFindPermissionById<TData = Awaited<ReturnType<typeof findPerm
 
 export const updatePermission = (
     id: number,
-    permissionRequestDTO: BodyType<PermissionRequestDTO>,
+    permissionRequest: BodyType<PermissionRequest>,
  options?: SecondParameter<typeof axiosInstanceFn>,) => {
       
       
-      return axiosInstanceFn<PermissionResponseDTO>(
+      return axiosInstanceFn<ApiResponsePermissionResponse>(
       {url: `/permissions/${id}`, method: 'PUT',
       headers: {'Content-Type': 'application/json', },
-      data: permissionRequestDTO
+      data: permissionRequest
     },
       options);
     }
@@ -137,8 +138,8 @@ export const updatePermission = (
 
 
 export const getUpdatePermissionMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePermission>>, TError,{id: number;data: BodyType<PermissionRequestDTO>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
-): UseMutationOptions<Awaited<ReturnType<typeof updatePermission>>, TError,{id: number;data: BodyType<PermissionRequestDTO>}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePermission>>, TError,{id: number;data: BodyType<PermissionRequest>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
+): UseMutationOptions<Awaited<ReturnType<typeof updatePermission>>, TError,{id: number;data: BodyType<PermissionRequest>}, TContext> => {
 
 const mutationKey = ['updatePermission'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -150,7 +151,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updatePermission>>, {id: number;data: BodyType<PermissionRequestDTO>}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updatePermission>>, {id: number;data: BodyType<PermissionRequest>}> = (props) => {
           const {id,data} = props ?? {};
 
           return  updatePermission(id,data,requestOptions)
@@ -162,15 +163,15 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type UpdatePermissionMutationResult = NonNullable<Awaited<ReturnType<typeof updatePermission>>>
-    export type UpdatePermissionMutationBody = BodyType<PermissionRequestDTO>
+    export type UpdatePermissionMutationBody = BodyType<PermissionRequest>
     export type UpdatePermissionMutationError = ErrorType<unknown>
 
     export const useUpdatePermission = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePermission>>, TError,{id: number;data: BodyType<PermissionRequestDTO>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePermission>>, TError,{id: number;data: BodyType<PermissionRequest>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updatePermission>>,
         TError,
-        {id: number;data: BodyType<PermissionRequestDTO>},
+        {id: number;data: BodyType<PermissionRequest>},
         TContext
       > => {
 
@@ -183,7 +184,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  options?: SecondParameter<typeof axiosInstanceFn>,) => {
       
       
-      return axiosInstanceFn<null>(
+      return axiosInstanceFn<ApiResponseVoid>(
       {url: `/permissions/${id}`, method: 'DELETE'
     },
       options);
@@ -234,15 +235,15 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       return useMutation(mutationOptions , queryClient);
     }
     export const createPermission = (
-    permissionRequestDTO: BodyType<PermissionRequestDTO>,
+    permissionRequest: BodyType<PermissionRequest>,
  options?: SecondParameter<typeof axiosInstanceFn>,signal?: AbortSignal
 ) => {
       
       
-      return axiosInstanceFn<PermissionResponseDTO>(
+      return axiosInstanceFn<ApiResponsePermissionResponse>(
       {url: `/permissions`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
-      data: permissionRequestDTO, signal
+      data: permissionRequest, signal
     },
       options);
     }
@@ -250,8 +251,8 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 export const getCreatePermissionMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createPermission>>, TError,{data: BodyType<PermissionRequestDTO>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
-): UseMutationOptions<Awaited<ReturnType<typeof createPermission>>, TError,{data: BodyType<PermissionRequestDTO>}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createPermission>>, TError,{data: BodyType<PermissionRequest>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
+): UseMutationOptions<Awaited<ReturnType<typeof createPermission>>, TError,{data: BodyType<PermissionRequest>}, TContext> => {
 
 const mutationKey = ['createPermission'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -263,7 +264,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createPermission>>, {data: BodyType<PermissionRequestDTO>}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createPermission>>, {data: BodyType<PermissionRequest>}> = (props) => {
           const {data} = props ?? {};
 
           return  createPermission(data,requestOptions)
@@ -275,15 +276,15 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type CreatePermissionMutationResult = NonNullable<Awaited<ReturnType<typeof createPermission>>>
-    export type CreatePermissionMutationBody = BodyType<PermissionRequestDTO>
+    export type CreatePermissionMutationBody = BodyType<PermissionRequest>
     export type CreatePermissionMutationError = ErrorType<unknown>
 
     export const useCreatePermission = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createPermission>>, TError,{data: BodyType<PermissionRequestDTO>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createPermission>>, TError,{data: BodyType<PermissionRequest>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createPermission>>,
         TError,
-        {data: BodyType<PermissionRequestDTO>},
+        {data: BodyType<PermissionRequest>},
         TContext
       > => {
 
@@ -292,12 +293,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       return useMutation(mutationOptions , queryClient);
     }
     export const findAllPermission = (
-    params: FindAllPermissionParams,
+    params?: FindAllPermissionParams,
  options?: SecondParameter<typeof axiosInstanceFn>,signal?: AbortSignal
 ) => {
       
       
-      return axiosInstanceFn<PageResponsePermissionResponseDTO>(
+      return axiosInstanceFn<ApiResponsePageResponsePermissionResponse>(
       {url: `/permissions/all`, method: 'GET',
         params, signal
     },
@@ -310,7 +311,7 @@ export const getFindAllPermissionQueryKey = (params?: FindAllPermissionParams,) 
     }
 
     
-export const getFindAllPermissionQueryOptions = <TData = Awaited<ReturnType<typeof findAllPermission>>, TError = ErrorType<unknown>>(params: FindAllPermissionParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof findAllPermission>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+export const getFindAllPermissionQueryOptions = <TData = Awaited<ReturnType<typeof findAllPermission>>, TError = ErrorType<unknown>>(params?: FindAllPermissionParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof findAllPermission>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -333,7 +334,7 @@ export type FindAllPermissionQueryError = ErrorType<unknown>
 
 
 export function useFindAllPermission<TData = Awaited<ReturnType<typeof findAllPermission>>, TError = ErrorType<unknown>>(
- params: FindAllPermissionParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof findAllPermission>>, TError, TData>> & Pick<
+ params: undefined |  FindAllPermissionParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof findAllPermission>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof findAllPermission>>,
           TError,
@@ -343,7 +344,7 @@ export function useFindAllPermission<TData = Awaited<ReturnType<typeof findAllPe
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useFindAllPermission<TData = Awaited<ReturnType<typeof findAllPermission>>, TError = ErrorType<unknown>>(
- params: FindAllPermissionParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof findAllPermission>>, TError, TData>> & Pick<
+ params?: FindAllPermissionParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof findAllPermission>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof findAllPermission>>,
           TError,
@@ -353,12 +354,12 @@ export function useFindAllPermission<TData = Awaited<ReturnType<typeof findAllPe
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useFindAllPermission<TData = Awaited<ReturnType<typeof findAllPermission>>, TError = ErrorType<unknown>>(
- params: FindAllPermissionParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof findAllPermission>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+ params?: FindAllPermissionParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof findAllPermission>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
 export function useFindAllPermission<TData = Awaited<ReturnType<typeof findAllPermission>>, TError = ErrorType<unknown>>(
- params: FindAllPermissionParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof findAllPermission>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+ params?: FindAllPermissionParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof findAllPermission>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -378,7 +379,7 @@ export const deleteBulkPermission = (
  options?: SecondParameter<typeof axiosInstanceFn>,) => {
       
       
-      return axiosInstanceFn<null>(
+      return axiosInstanceFn<ApiResponseVoid>(
       {url: `/permissions/bulk`, method: 'DELETE',
         params
     },

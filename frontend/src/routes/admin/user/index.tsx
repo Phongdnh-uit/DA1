@@ -1,0 +1,10 @@
+import { UserManage } from "@/pages/admin/user/UserManage";
+import { createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/admin/user/")({
+    component: RouteComponent,
+});
+
+function RouteComponent() {
+    return <UserManage />;
+}

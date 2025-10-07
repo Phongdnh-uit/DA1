@@ -4,13 +4,13 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import type { RoleResponseDTO } from './roleResponseDTO';
+import type { RoleResponse } from './roleResponse';
 
-export interface PageResponseRoleResponseDTO {
+export interface PageResponseRoleResponse {
   page?: number;
   size?: number;
   totalElements?: number;
   totalPages?: number;
   numberOfElements?: number;
-  content?: RoleResponseDTO[];
+  content?: RoleResponse[];
 }

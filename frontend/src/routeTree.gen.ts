@@ -10,14 +10,31 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TestDatatableRouteImport } from './routes/test-datatable'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthVerifyEmailRouteImport } from './routes/auth/verify-email'
+import { Route as AuthSignUpAdditionRouteImport } from './routes/auth/sign-up-addition'
+import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
+import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
+import { Route as AuthOtpVerificationRouteImport } from './routes/auth/otp-verification'
+import { Route as AuthLoginRouteImport } from './routes/auth/login'
+import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
+import { Route as AdminUserIndexRouteImport } from './routes/admin/user/index'
+import { Route as AdminRoleIndexRouteImport } from './routes/admin/role/index'
 import { Route as AdminPermissionIndexRouteImport } from './routes/admin/permission/index'
 import { Route as AdminDashboardIndexRouteImport } from './routes/admin/dashboard/index'
+import { Route as AdminUserCreateRouteImport } from './routes/admin/user/create'
+import { Route as AdminUserUpdateIdRouteImport } from './routes/admin/user/update.$id'
 
 const TestDatatableRoute = TestDatatableRouteImport.update({
   id: '/test-datatable',
   path: '/test-datatable',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -30,6 +47,51 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthVerifyEmailRoute = AuthVerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthSignUpAdditionRoute = AuthSignUpAdditionRouteImport.update({
+  id: '/sign-up-addition',
+  path: '/sign-up-addition',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthSignUpRoute = AuthSignUpRouteImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthOtpVerificationRoute = AuthOtpVerificationRouteImport.update({
+  id: '/otp-verification',
+  path: '/otp-verification',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AdminUserIndexRoute = AdminUserIndexRouteImport.update({
+  id: '/user/',
+  path: '/user/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRoleIndexRoute = AdminRoleIndexRouteImport.update({
+  id: '/role/',
+  path: '/role/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPermissionIndexRoute = AdminPermissionIndexRouteImport.update({
   id: '/permission/',
   path: '/permission/',
@@ -40,56 +102,139 @@ const AdminDashboardIndexRoute = AdminDashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminUserCreateRoute = AdminUserCreateRouteImport.update({
+  id: '/user/create',
+  path: '/user/create',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUserUpdateIdRoute = AdminUserUpdateIdRouteImport.update({
+  id: '/user/update/$id',
+  path: '/user/update/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRouteWithChildren
   '/test-datatable': typeof TestDatatableRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/otp-verification': typeof AuthOtpVerificationRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
+  '/auth/sign-up-addition': typeof AuthSignUpAdditionRoute
+  '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/admin/user/create': typeof AdminUserCreateRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
   '/admin/permission': typeof AdminPermissionIndexRoute
+  '/admin/role': typeof AdminRoleIndexRoute
+  '/admin/user': typeof AdminUserIndexRoute
+  '/admin/user/update/$id': typeof AdminUserUpdateIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRouteWithChildren
   '/test-datatable': typeof TestDatatableRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/otp-verification': typeof AuthOtpVerificationRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
+  '/auth/sign-up-addition': typeof AuthSignUpAdditionRoute
+  '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/admin/user/create': typeof AdminUserCreateRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
   '/admin/permission': typeof AdminPermissionIndexRoute
+  '/admin/role': typeof AdminRoleIndexRoute
+  '/admin/user': typeof AdminUserIndexRoute
+  '/admin/user/update/$id': typeof AdminUserUpdateIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRouteWithChildren
   '/test-datatable': typeof TestDatatableRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/otp-verification': typeof AuthOtpVerificationRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
+  '/auth/sign-up-addition': typeof AuthSignUpAdditionRoute
+  '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/admin/user/create': typeof AdminUserCreateRoute
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
   '/admin/permission/': typeof AdminPermissionIndexRoute
+  '/admin/role/': typeof AdminRoleIndexRoute
+  '/admin/user/': typeof AdminUserIndexRoute
+  '/admin/user/update/$id': typeof AdminUserUpdateIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/admin'
+    | '/auth'
     | '/test-datatable'
+    | '/auth/forgot-password'
+    | '/auth/login'
+    | '/auth/otp-verification'
+    | '/auth/reset-password'
+    | '/auth/sign-up'
+    | '/auth/sign-up-addition'
+    | '/auth/verify-email'
+    | '/admin/user/create'
     | '/admin/dashboard'
     | '/admin/permission'
+    | '/admin/role'
+    | '/admin/user'
+    | '/admin/user/update/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/admin'
+    | '/auth'
     | '/test-datatable'
+    | '/auth/forgot-password'
+    | '/auth/login'
+    | '/auth/otp-verification'
+    | '/auth/reset-password'
+    | '/auth/sign-up'
+    | '/auth/sign-up-addition'
+    | '/auth/verify-email'
+    | '/admin/user/create'
     | '/admin/dashboard'
     | '/admin/permission'
+    | '/admin/role'
+    | '/admin/user'
+    | '/admin/user/update/$id'
   id:
     | '__root__'
     | '/'
     | '/admin'
+    | '/auth'
     | '/test-datatable'
+    | '/auth/forgot-password'
+    | '/auth/login'
+    | '/auth/otp-verification'
+    | '/auth/reset-password'
+    | '/auth/sign-up'
+    | '/auth/sign-up-addition'
+    | '/auth/verify-email'
+    | '/admin/user/create'
     | '/admin/dashboard/'
     | '/admin/permission/'
+    | '/admin/role/'
+    | '/admin/user/'
+    | '/admin/user/update/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  AuthRoute: typeof AuthRouteWithChildren
   TestDatatableRoute: typeof TestDatatableRoute
 }
 
@@ -100,6 +245,13 @@ declare module '@tanstack/react-router' {
       path: '/test-datatable'
       fullPath: '/test-datatable'
       preLoaderRoute: typeof TestDatatableRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -116,6 +268,69 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/verify-email': {
+      id: '/auth/verify-email'
+      path: '/verify-email'
+      fullPath: '/auth/verify-email'
+      preLoaderRoute: typeof AuthVerifyEmailRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/sign-up-addition': {
+      id: '/auth/sign-up-addition'
+      path: '/sign-up-addition'
+      fullPath: '/auth/sign-up-addition'
+      preLoaderRoute: typeof AuthSignUpAdditionRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/sign-up': {
+      id: '/auth/sign-up'
+      path: '/sign-up'
+      fullPath: '/auth/sign-up'
+      preLoaderRoute: typeof AuthSignUpRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/reset-password': {
+      id: '/auth/reset-password'
+      path: '/reset-password'
+      fullPath: '/auth/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/otp-verification': {
+      id: '/auth/otp-verification'
+      path: '/otp-verification'
+      fullPath: '/auth/otp-verification'
+      preLoaderRoute: typeof AuthOtpVerificationRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/login': {
+      id: '/auth/login'
+      path: '/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/forgot-password': {
+      id: '/auth/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/auth/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/admin/user/': {
+      id: '/admin/user/'
+      path: '/user'
+      fullPath: '/admin/user'
+      preLoaderRoute: typeof AdminUserIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/role/': {
+      id: '/admin/role/'
+      path: '/role'
+      fullPath: '/admin/role'
+      preLoaderRoute: typeof AdminRoleIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/permission/': {
       id: '/admin/permission/'
       path: '/permission'
@@ -130,24 +345,69 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/user/create': {
+      id: '/admin/user/create'
+      path: '/user/create'
+      fullPath: '/admin/user/create'
+      preLoaderRoute: typeof AdminUserCreateRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/user/update/$id': {
+      id: '/admin/user/update/$id'
+      path: '/user/update/$id'
+      fullPath: '/admin/user/update/$id'
+      preLoaderRoute: typeof AdminUserUpdateIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminUserCreateRoute: typeof AdminUserCreateRoute
   AdminDashboardIndexRoute: typeof AdminDashboardIndexRoute
   AdminPermissionIndexRoute: typeof AdminPermissionIndexRoute
+  AdminRoleIndexRoute: typeof AdminRoleIndexRoute
+  AdminUserIndexRoute: typeof AdminUserIndexRoute
+  AdminUserUpdateIdRoute: typeof AdminUserUpdateIdRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminUserCreateRoute: AdminUserCreateRoute,
   AdminDashboardIndexRoute: AdminDashboardIndexRoute,
   AdminPermissionIndexRoute: AdminPermissionIndexRoute,
+  AdminRoleIndexRoute: AdminRoleIndexRoute,
+  AdminUserIndexRoute: AdminUserIndexRoute,
+  AdminUserUpdateIdRoute: AdminUserUpdateIdRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface AuthRouteChildren {
+  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthOtpVerificationRoute: typeof AuthOtpVerificationRoute
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
+  AuthSignUpRoute: typeof AuthSignUpRoute
+  AuthSignUpAdditionRoute: typeof AuthSignUpAdditionRoute
+  AuthVerifyEmailRoute: typeof AuthVerifyEmailRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
+  AuthLoginRoute: AuthLoginRoute,
+  AuthOtpVerificationRoute: AuthOtpVerificationRoute,
+  AuthResetPasswordRoute: AuthResetPasswordRoute,
+  AuthSignUpRoute: AuthSignUpRoute,
+  AuthSignUpAdditionRoute: AuthSignUpAdditionRoute,
+  AuthVerifyEmailRoute: AuthVerifyEmailRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  AuthRoute: AuthRouteWithChildren,
   TestDatatableRoute: TestDatatableRoute,
 }
 export const routeTree = rootRouteImport

@@ -4,15 +4,16 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import type { PermissionResponseDTOAction } from './permissionResponseDTOAction';
+import type { PermissionResponseAction } from './permissionResponseAction';
 
-export interface PermissionResponseDTO {
+export interface PermissionResponse {
   id?: number;
+  version?: number;
   createdBy?: number;
   updatedBy?: number;
   createdAt?: string;
   updatedAt?: string;
   name?: string;
   resource?: string;
-  action?: PermissionResponseDTOAction;
+  action?: PermissionResponseAction;
 }

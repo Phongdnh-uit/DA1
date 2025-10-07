@@ -118,3 +118,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .error-display {
+    @apply aria-invalid:border-rose-500;
+  }
+}

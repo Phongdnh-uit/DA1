@@ -5,12 +5,14 @@
  * OpenAPI spec version: v0
  */
 
-export interface RoleResponseDTO {
+export interface RoleResponse {
   id?: number;
+  version?: number;
   createdBy?: number;
   updatedBy?: number;
   createdAt?: string;
   updatedAt?: string;
   name?: string;
   description?: string;
+  permissionIds?: number[];
 }
