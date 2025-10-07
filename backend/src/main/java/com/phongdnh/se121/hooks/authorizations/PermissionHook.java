@@ -1,7 +1,7 @@
 package com.phongdnh.se121.hooks.authorizations;
 
-import com.phongdnh.se121.dtos.authorization.PermissionRequestDTO;
-import com.phongdnh.se121.dtos.authorization.PermissionResponseDTO;
+import com.phongdnh.se121.dtos.authorization.PermissionRequest;
+import com.phongdnh.se121.dtos.authorization.PermissionResponse;
 import com.phongdnh.se121.entities.authorization.Permission;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
@@ -15,21 +15,21 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 public class PermissionHook
-    extends DefaultHook<Permission, Long, PermissionRequestDTO, PermissionResponseDTO> {
+    extends DefaultHook<Permission, Long, PermissionRequest, PermissionResponse> {
   private final PermissionRepository permissionRepository;
 
   @Override
-  public void validateCreate(PermissionRequestDTO input, Map<String, Object> context) {
+  public void validateCreate(PermissionRequest input, Map<String, Object> context) {
     validatePermission(input, null);
   }
 
   @Override
   public void validateUpdate(
-      Long id, PermissionRequestDTO input, Permission existingEntity, Map<String, Object> context) {
+      Long id, PermissionRequest input, Permission existingEntity, Map<String, Object> context) {
     validatePermission(input, id);
   }
 
-  private void validatePermission(PermissionRequestDTO request, Long id) {
+  private void validatePermission(PermissionRequest request, Long id) {
     request.setResource(request.getResource().toUpperCase());
     Specification<Permission> validateSpec =
         (root, _, builder) ->

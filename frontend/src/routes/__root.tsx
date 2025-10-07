@@ -2,14 +2,13 @@ import * as React from "react";
 import { Outlet, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { ToastContainer } from "react-toastify";
+import { queryClient } from "@/lib/queryClient";
 
 export const Route = createRootRoute({
     component: RootComponent,
 });
-
-const queryClient = new QueryClient();
 
 function RootComponent() {
     return (

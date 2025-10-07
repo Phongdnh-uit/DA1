@@ -1,0 +1,37 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:mysql://localhost:3306/mydatabase
+    username: myuser
+    password: secret
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: none
+
+  flyway:
+    enabled: true
+    clean-disabled: false
+
+  docker:
+    compose:
+      enabled: true
+      file: docker/dev/compose.yaml
+  redis:
+    host: localhost
+    port: 6379
+
+# logging:
+#   level:
+#     root: DEBUG
+#     org.springframework: DEBUG
+
+jwt:
+  secret: xin_chao_ban!_day_la_du_an_uit_land_cho_do_an_1_cua_minh!_xin_cam_on_ban_da_doc_du_an_nay
+  refresh-token:
+    expiration: 86400
+  access-token:
+    expiration: 3600

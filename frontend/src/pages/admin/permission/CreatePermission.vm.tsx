@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { PermissionRequestDTO } from "@/types/permissionRequestDTO";
+import type { PermissionRequest } from "@/types/permissionRequest";
 import { createPermissionBody } from "@/services/permission/permission.zod";
 import { useCreatePermission } from "@/services/permission/permission";
 import { toast } from "react-toastify";
@@ -8,7 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 export function useCreatePermissionVM() {
     const queryClient = useQueryClient();
-    const form = useForm<PermissionRequestDTO>({
+    const form = useForm<PermissionRequest>({
         defaultValues: {
             name: "",
             resource: "",
@@ -34,7 +34,7 @@ export function useCreatePermissionVM() {
             },
         },
     });
-    const onSubmit = (data: PermissionRequestDTO) => {
+    const onSubmit = (data: PermissionRequest) => {
         mutation.mutate({ data });
     };
     return { form, onSubmit };

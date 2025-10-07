@@ -1,9 +1,42 @@
 package com.phongdnh.se121.exceptions;
 
+import com.phongdnh.se121.dtos.ApiResponse;
+import com.phongdnh.se121.exceptions.errors.ApiException;
+import com.phongdnh.se121.exceptions.errors.ErrorCode;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    
+  @ExceptionHandler(ApiException.class)
+  public ResponseEntity<ApiResponse<Void>> handleApiException(ApiException ex) {
+    ApiResponse<Void> response = new ApiResponse<>();
+    response.setCode(ex.getErrorCode().getCode());
+    response.setMessage(ex.getMessage() != null ? ex.getMessage() : ex.getErrorCode().getMessage());
+    response.setErrors(ex.getFieldErrors());
+    return ResponseEntity.status(ex.getErrorCode().getHttpCode()).body(response);
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<ApiResponse<Void>> handleValidationException(
+      MethodArgumentNotValidException ex) {
+    ApiResponse<Void> response = new ApiResponse<>();
+    Map<String, String> fieldErrors =
+        ex.getBindingResult().getFieldErrors().stream()
+            .collect(
+                Collectors.toMap(
+                    FieldError::getField,
+                    org.springframework.validation.FieldError::getDefaultMessage,
+                    (existing, _) -> existing));
+    response.setCode(ErrorCode.VALIDATION_ERROR.getCode());
+    response.setMessage(ErrorCode.VALIDATION_ERROR.getMessage());
+    response.setErrors(fieldErrors);
+    return ResponseEntity.status(ErrorCode.VALIDATION_ERROR.getHttpCode()).body(response);
+  }
 }

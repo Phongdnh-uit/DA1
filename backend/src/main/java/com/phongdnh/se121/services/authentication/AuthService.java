@@ -1,0 +1,26 @@
+package com.phongdnh.se121.services.authentication;
+
+import com.phongdnh.se121.dtos.authentication.LoginRequest;
+import com.phongdnh.se121.dtos.authentication.LoginResponse;
+import com.phongdnh.se121.dtos.authentication.RegisterRequest;
+import com.phongdnh.se121.dtos.authentication.ResetPasswordRequest;
+import com.phongdnh.se121.dtos.authentication.SendOtpRequest;
+import com.phongdnh.se121.dtos.authentication.SendOtpResponse;
+import com.phongdnh.se121.dtos.authentication.UserResponse;
+import com.phongdnh.se121.dtos.authentication.VerifyEmailRequest;
+import com.phongdnh.se121.dtos.authentication.VerifyOtpRequest;
+import com.phongdnh.se121.dtos.authentication.VerifyOtpResponse;
+
+public interface AuthService {
+  LoginResponse login(LoginRequest request);
+
+  SendOtpResponse sendOtp(SendOtpRequest request);
+
+  VerifyOtpResponse verifyOtp(VerifyOtpRequest request);
+
+  UserResponse register(RegisterRequest request);
+
+  void verifyEmail(VerifyEmailRequest request);
+
+  void resetPassword(ResetPasswordRequest request);
+}
