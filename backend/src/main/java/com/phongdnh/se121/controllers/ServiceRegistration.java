@@ -4,14 +4,26 @@ import com.phongdnh.se121.dtos.authentication.UserRequest;
 import com.phongdnh.se121.dtos.authentication.UserResponse;
 import com.phongdnh.se121.dtos.authorization.PermissionRequest;
 import com.phongdnh.se121.dtos.authorization.PermissionResponse;
+import com.phongdnh.se121.dtos.property.DistrictRequest;
+import com.phongdnh.se121.dtos.property.DistrictResponse;
+import com.phongdnh.se121.dtos.property.ProvinceRequest;
+import com.phongdnh.se121.dtos.property.ProvinceResponse;
 import com.phongdnh.se121.entities.authentication.User;
 import com.phongdnh.se121.entities.authorization.Permission;
+import com.phongdnh.se121.entities.property.District;
+import com.phongdnh.se121.entities.property.Province;
 import com.phongdnh.se121.hooks.authentication.UserHook;
 import com.phongdnh.se121.hooks.authorizations.PermissionHook;
+import com.phongdnh.se121.hooks.property.DistrictHook;
+import com.phongdnh.se121.hooks.property.ProvinceHook;
 import com.phongdnh.se121.mappers.authentication.UserMapper;
 import com.phongdnh.se121.mappers.authorization.PermissionMapper;
+import com.phongdnh.se121.mappers.property.DistrictMapper;
+import com.phongdnh.se121.mappers.property.ProvinceMapper;
 import com.phongdnh.se121.repositories.authentication.UserRepository;
 import com.phongdnh.se121.repositories.authorization.PermissionRepository;
+import com.phongdnh.se121.repositories.property.DistrictRepository;
+import com.phongdnh.se121.repositories.property.ProvinceRepository;
 import com.phongdnh.se121.services.CrudService;
 import com.phongdnh.se121.services.GenericService;
 import lombok.RequiredArgsConstructor;
@@ -38,5 +50,21 @@ public class ServiceRegistration {
         context.getBean(UserRepository.class),
         context.getBean(UserMapper.class),
         context.getBean(UserHook.class));
+  }
+
+  @Bean
+  CrudService<Province, Long, ProvinceRequest, ProvinceResponse> provinceService() {
+    return new GenericService<Province, Long, ProvinceRequest, ProvinceResponse>(
+        context.getBean(ProvinceRepository.class),
+        context.getBean(ProvinceMapper.class),
+        context.getBean(ProvinceHook.class));
+  }
+
+  @Bean
+  CrudService<District, Long, DistrictRequest, DistrictResponse> districtService() {
+    return new GenericService<District, Long, DistrictRequest, DistrictResponse>(
+        context.getBean(DistrictRepository.class),
+        context.getBean(DistrictMapper.class),
+        context.getBean(DistrictHook.class));
   }
 }
