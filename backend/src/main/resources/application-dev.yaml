@@ -24,10 +24,10 @@ spring:
     host: localhost
     port: 6379
 
-logging:
-  level:
-    root: DEBUG
-    org.springframework: DEBUG
+# logging:
+#   level:
+#     root: DEBUG
+#     org.springframework: DEBUG
 
 jwt:
   secret: xin_chao_ban!_day_la_du_an_uit_land_cho_do_an_1_cua_minh!_xin_cam_on_ban_da_doc_du_an_nay

@@ -27,5 +27,20 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     created_by BIGINT,
     updated_by BIGINT,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE IF NOT EXISTS verifications (
+    id              BIGINT AUTO_INCREMENT PRIMARY KEY,
+    code            VARCHAR(500) NOT NULL UNIQUE,
+    user_id         BIGINT,
+    type            VARCHAR(100) NOT NULL,
+    expires_at      TIMESTAMP NOT NULL,
+    version BIGINT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by BIGINT,
+    updated_by BIGINT,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

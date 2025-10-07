@@ -37,3 +37,6 @@ out/
 .vscode/
 
 .env
+application-imp.yaml
+application-imp.yml
+application-imp.properties
