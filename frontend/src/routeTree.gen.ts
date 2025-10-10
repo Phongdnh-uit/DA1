@@ -20,8 +20,11 @@ import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-passw
 import { Route as AuthOtpVerificationRouteImport } from './routes/auth/otp-verification'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
+import { Route as AdminWardIndexRouteImport } from './routes/admin/ward/index'
 import { Route as AdminUserIndexRouteImport } from './routes/admin/user/index'
 import { Route as AdminRoleIndexRouteImport } from './routes/admin/role/index'
+import { Route as AdminProvinceIndexRouteImport } from './routes/admin/province/index'
+import { Route as AdminPropertyTypeIndexRouteImport } from './routes/admin/property-type/index'
 import { Route as AdminPermissionIndexRouteImport } from './routes/admin/permission/index'
 import { Route as AdminDashboardIndexRouteImport } from './routes/admin/dashboard/index'
 import { Route as AdminUserCreateRouteImport } from './routes/admin/user/create'
@@ -82,6 +85,11 @@ const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => AuthRoute,
 } as any)
+const AdminWardIndexRoute = AdminWardIndexRouteImport.update({
+  id: '/ward/',
+  path: '/ward/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminUserIndexRoute = AdminUserIndexRouteImport.update({
   id: '/user/',
   path: '/user/',
@@ -90,6 +98,16 @@ const AdminUserIndexRoute = AdminUserIndexRouteImport.update({
 const AdminRoleIndexRoute = AdminRoleIndexRouteImport.update({
   id: '/role/',
   path: '/role/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProvinceIndexRoute = AdminProvinceIndexRouteImport.update({
+  id: '/province/',
+  path: '/province/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPropertyTypeIndexRoute = AdminPropertyTypeIndexRouteImport.update({
+  id: '/property-type/',
+  path: '/property-type/',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminPermissionIndexRoute = AdminPermissionIndexRouteImport.update({
@@ -128,8 +146,11 @@ export interface FileRoutesByFullPath {
   '/admin/user/create': typeof AdminUserCreateRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
   '/admin/permission': typeof AdminPermissionIndexRoute
+  '/admin/property-type': typeof AdminPropertyTypeIndexRoute
+  '/admin/province': typeof AdminProvinceIndexRoute
   '/admin/role': typeof AdminRoleIndexRoute
   '/admin/user': typeof AdminUserIndexRoute
+  '/admin/ward': typeof AdminWardIndexRoute
   '/admin/user/update/$id': typeof AdminUserUpdateIdRoute
 }
 export interface FileRoutesByTo {
@@ -147,8 +168,11 @@ export interface FileRoutesByTo {
   '/admin/user/create': typeof AdminUserCreateRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
   '/admin/permission': typeof AdminPermissionIndexRoute
+  '/admin/property-type': typeof AdminPropertyTypeIndexRoute
+  '/admin/province': typeof AdminProvinceIndexRoute
   '/admin/role': typeof AdminRoleIndexRoute
   '/admin/user': typeof AdminUserIndexRoute
+  '/admin/ward': typeof AdminWardIndexRoute
   '/admin/user/update/$id': typeof AdminUserUpdateIdRoute
 }
 export interface FileRoutesById {
@@ -167,8 +191,11 @@ export interface FileRoutesById {
   '/admin/user/create': typeof AdminUserCreateRoute
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
   '/admin/permission/': typeof AdminPermissionIndexRoute
+  '/admin/property-type/': typeof AdminPropertyTypeIndexRoute
+  '/admin/province/': typeof AdminProvinceIndexRoute
   '/admin/role/': typeof AdminRoleIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
+  '/admin/ward/': typeof AdminWardIndexRoute
   '/admin/user/update/$id': typeof AdminUserUpdateIdRoute
 }
 export interface FileRouteTypes {
@@ -188,8 +215,11 @@ export interface FileRouteTypes {
     | '/admin/user/create'
     | '/admin/dashboard'
     | '/admin/permission'
+    | '/admin/property-type'
+    | '/admin/province'
     | '/admin/role'
     | '/admin/user'
+    | '/admin/ward'
     | '/admin/user/update/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -207,8 +237,11 @@ export interface FileRouteTypes {
     | '/admin/user/create'
     | '/admin/dashboard'
     | '/admin/permission'
+    | '/admin/property-type'
+    | '/admin/province'
     | '/admin/role'
     | '/admin/user'
+    | '/admin/ward'
     | '/admin/user/update/$id'
   id:
     | '__root__'
@@ -226,8 +259,11 @@ export interface FileRouteTypes {
     | '/admin/user/create'
     | '/admin/dashboard/'
     | '/admin/permission/'
+    | '/admin/property-type/'
+    | '/admin/province/'
     | '/admin/role/'
     | '/admin/user/'
+    | '/admin/ward/'
     | '/admin/user/update/$id'
   fileRoutesById: FileRoutesById
 }
@@ -317,6 +353,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthForgotPasswordRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/admin/ward/': {
+      id: '/admin/ward/'
+      path: '/ward'
+      fullPath: '/admin/ward'
+      preLoaderRoute: typeof AdminWardIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/user/': {
       id: '/admin/user/'
       path: '/user'
@@ -329,6 +372,20 @@ declare module '@tanstack/react-router' {
       path: '/role'
       fullPath: '/admin/role'
       preLoaderRoute: typeof AdminRoleIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/province/': {
+      id: '/admin/province/'
+      path: '/province'
+      fullPath: '/admin/province'
+      preLoaderRoute: typeof AdminProvinceIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/property-type/': {
+      id: '/admin/property-type/'
+      path: '/property-type'
+      fullPath: '/admin/property-type'
+      preLoaderRoute: typeof AdminPropertyTypeIndexRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/permission/': {
@@ -366,8 +423,11 @@ interface AdminRouteChildren {
   AdminUserCreateRoute: typeof AdminUserCreateRoute
   AdminDashboardIndexRoute: typeof AdminDashboardIndexRoute
   AdminPermissionIndexRoute: typeof AdminPermissionIndexRoute
+  AdminPropertyTypeIndexRoute: typeof AdminPropertyTypeIndexRoute
+  AdminProvinceIndexRoute: typeof AdminProvinceIndexRoute
   AdminRoleIndexRoute: typeof AdminRoleIndexRoute
   AdminUserIndexRoute: typeof AdminUserIndexRoute
+  AdminWardIndexRoute: typeof AdminWardIndexRoute
   AdminUserUpdateIdRoute: typeof AdminUserUpdateIdRoute
 }
 
@@ -375,8 +435,11 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminUserCreateRoute: AdminUserCreateRoute,
   AdminDashboardIndexRoute: AdminDashboardIndexRoute,
   AdminPermissionIndexRoute: AdminPermissionIndexRoute,
+  AdminPropertyTypeIndexRoute: AdminPropertyTypeIndexRoute,
+  AdminProvinceIndexRoute: AdminProvinceIndexRoute,
   AdminRoleIndexRoute: AdminRoleIndexRoute,
   AdminUserIndexRoute: AdminUserIndexRoute,
+  AdminWardIndexRoute: AdminWardIndexRoute,
   AdminUserUpdateIdRoute: AdminUserUpdateIdRoute,
 }
 

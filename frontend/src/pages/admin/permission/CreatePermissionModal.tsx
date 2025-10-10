@@ -6,22 +6,11 @@ import {
 } from "@/components/ui/dialog";
 import {
     Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
 } from "@/components/ui/form";
 import { useCreatePermissionVM } from "./CreatePermission.vm";
-import { Input } from "@/components/ui/input";
-import { Select } from "@radix-ui/react-select";
-import {
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { RippleButton } from "@/components/ui/shadcn-io/ripple-button";
+import { FormInput, FormSelect } from "@/utils/formUtil";
+import type { PermissionRequest } from "@/types";
 
 interface CreatePermissionModalProps {
     open: boolean;
@@ -38,54 +27,25 @@ export default function CreatePermissionModal({
             <DialogContent className="sm:!max-w-lg">
                 <DialogHeader>Tạo quyền mới</DialogHeader>
                 <Form {...form}>
-                    <FormField
-                        control={form.control}
+                    <FormInput<PermissionRequest>
                         name="name"
-                        render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                                <FormLabel>Tên quyền</FormLabel>
-                                <FormControl className="col-span-3">
-                                    <Input placeholder="Nhập tên quyền" {...field} />
-                                </FormControl>
-                                <FormDescription className="col-span-4" />
-                            </FormItem>
-                        )}
+                        placeholder="Nhập tên quyền"
+                        title="Tên quyền"
                     />
-                    <FormField
-                        control={form.control}
+                    <FormInput<PermissionRequest>
                         name="resource"
-                        render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                                <FormLabel>Tên tài nguyên</FormLabel>
-                                <FormControl className="col-span-3">
-                                    <Input placeholder="Nhập tài nguyên" {...field} />
-                                </FormControl>
-                                <FormDescription className="col-span-4" />
-                            </FormItem>
-                        )}
+                        placeholder="Nhập tên tài nguyên"
+                        title="Tên tài nguyên"
                     />
-                    <FormField
-                        control={form.control}
+                    <FormSelect<PermissionRequest>
                         name="action"
-                        render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                                <FormLabel>Tên tài nguyên</FormLabel>
-                                <FormControl className="col-span-3">
-                                    <Select value={field.value} onValueChange={field.onChange}>
-                                        <SelectTrigger className="w-[180px]">
-                                            <SelectValue placeholder="Chọn hoạt động" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="READ">Xem</SelectItem>
-                                            <SelectItem value="CREATE">Thêm</SelectItem>
-                                            <SelectItem value="UPDATE">Cập nhật</SelectItem>
-                                            <SelectItem value="DELETE">Xóa</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </FormControl>
-                                <FormDescription className="col-span-4" />
-                            </FormItem>
-                        )}
+                        title="Hành động"
+                        options={[
+                            {key: 'READ', render: 'Xem'},
+                            {key: 'CREATE', render: 'Thêm'},
+                            {key: 'UPDATE', render: 'Cập nhật'},
+                            {key: 'DELETE', render: 'Xóa'},
+                        ]}
                     />
                 </Form>
                 <DialogFooter>

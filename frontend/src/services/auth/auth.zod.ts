@@ -4,60 +4,40 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { z as zod } from "zod";
+import {
+  z as zod
+} from 'zod';
+
 
 export const verifyOtpBody = zod.object({
-    destination: zod.string().min(1),
-    otp: zod.string().min(1),
-    purpose: zod
-        .enum([
-            "REGISTRATION",
-            "PASSWORD_RESET",
-            "EMAIL_VERIFICATION",
-            "PHONE_VERIFICATION",
-        ])
-        .optional(),
-});
+  "destination": zod.string().min(1),
+  "otp": zod.string().min(1),
+  "purpose": zod.enum(['REGISTRATION', 'PASSWORD_RESET', 'EMAIL_VERIFICATION', 'PHONE_VERIFICATION']).optional()
+})
 
 export const verifyEmailBody = zod.object({
-    code: zod.string().min(1),
-});
+  "code": zod.string().min(1)
+})
 
 export const sendOtpBody = zod.object({
-    destination: zod.string().min(1),
-    purpose: zod.enum([
-        "REGISTRATION",
-        "PASSWORD_RESET",
-        "EMAIL_VERIFICATION",
-        "PHONE_VERIFICATION",
-    ]),
-});
+  "destination": zod.string().min(1),
+  "purpose": zod.enum(['REGISTRATION', 'PASSWORD_RESET', 'EMAIL_VERIFICATION', 'PHONE_VERIFICATION'])
+})
 
-export const resetPasswordBody = zod
-    .object({
-        verificationCode: zod.string().min(1),
-        newPassword: zod.string().min(1),
-        confirmPassword: zod.string().min(1),
-    })
-    .refine((data) => data.newPassword === data.confirmPassword, {
-        message: "Mật khẩu xác nhận không khớp",
-        path: ["confirmPassword"],
-    });
+export const resetPasswordBody = zod.object({
+  "verificationCode": zod.string().min(1),
+  "newPassword": zod.string().min(1)
+})
 
-export const registerBody = zod
-    .object({
-        verificationToken: zod.string().min(1),
-        email: zod.string().optional(),
-        fullName: zod.string().min(1),
-        password: zod.string().min(1),
-        confirmPassword: zod.string().min(1),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-        message: "Mật khẩu xác nhận không khớp",
-        path: ["confirmPassword"],
-    });
+export const registerBody = zod.object({
+  "verificationToken": zod.string().min(1),
+  "email": zod.string().optional(),
+  "fullName": zod.string().min(1),
+  "password": zod.string().min(1)
+})
 
 export const loginBody = zod.object({
-    credential: zod.string().min(1),
-    password: zod.string().min(1),
-});
+  "credential": zod.string().min(1),
+  "password": zod.string().min(1)
+})
+

@@ -22,3 +22,8 @@ export const fadeInUp = {
         },
     } as Variants,
 };
+
+export const drawLineVariants = {
+    rest: { width: 0 },
+    hover: { width: "100%" },
+} as Variants;

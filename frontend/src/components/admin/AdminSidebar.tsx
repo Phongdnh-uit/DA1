@@ -1,16 +1,19 @@
 "use client";
 import { useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "../ui/sidebar";
-import {
-    IconArrowLeft,
-    IconChartPie2,
-    IconSettings,
-    IconUserBolt,
-} from "@tabler/icons-react";
+import { IconChartPie2 } from "@tabler/icons-react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "@tanstack/react-router";
 import logo from "@/assets/logo.svg";
+import {
+    CircleStarIcon,
+    HouseIcon,
+    MapIcon,
+    MapPinnedIcon,
+    ShieldUserIcon,
+    UsersRoundIcon,
+} from "lucide-react";
 
 interface AdminSidebarProps {
     children: React.ReactNode;
@@ -19,7 +22,7 @@ interface AdminSidebarProps {
 export function AdminSidebar(props: AdminSidebarProps) {
     const links = [
         {
-            label: "Overview",
+            label: "Dashboard",
             href: "/admin/dashboard",
             icon: (
                 <IconChartPie2
@@ -30,10 +33,10 @@ export function AdminSidebar(props: AdminSidebarProps) {
             ),
         },
         {
-            label: "Permission",
+            label: "Quyền hạn",
             href: "/admin/permission",
             icon: (
-                <IconUserBolt
+                <ShieldUserIcon
                     className={cn(
                         "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
                     )}
@@ -41,10 +44,10 @@ export function AdminSidebar(props: AdminSidebarProps) {
             ),
         },
         {
-            label: "Role",
+            label: "Vai trò",
             href: "/admin/role",
             icon: (
-                <IconSettings
+                <CircleStarIcon
                     className={cn(
                         "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
                     )}
@@ -52,10 +55,43 @@ export function AdminSidebar(props: AdminSidebarProps) {
             ),
         },
         {
-            label: "User",
+            label: "Người dùng",
             href: "/admin/user",
             icon: (
-                <IconArrowLeft
+                <UsersRoundIcon
+                    className={cn(
+                        "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
+                    )}
+                />
+            ),
+        },
+        {
+            label: "Tỉnh thành",
+            href: "/admin/province",
+            icon: (
+                <MapIcon
+                    className={cn(
+                        "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
+                    )}
+                />
+            ),
+        },
+        {
+            label: "Xã phường",
+            href: "/admin/ward",
+            icon: (
+                <MapPinnedIcon
+                    className={cn(
+                        "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
+                    )}
+                />
+            ),
+        },
+        {
+            label: "Loại bất động sản",
+            href: "/admin/property-type",
+            icon: (
+                <HouseIcon
                     className={cn(
                         "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
                     )}

@@ -6,7 +6,8 @@ import FilterInline, {
     type FilterAttribute,
     type FilterRule,
 } from "./FilterInline";
-import { FilterIcon } from "lucide-react";
+import { FilterIcon, Navigation } from "lucide-react";
+import { motion } from "motion/react";
 
 interface FilterProps {
     onApply: (sort: string[], filter: string) => void;
@@ -49,21 +50,28 @@ export default function Filter({
         onApply(sort, filter);
     };
     return (
-        <div className="bg-white dark:bg-zinc-900 w-full rounded-2xl px-4">
-            <div className="w-full h-26 flex items-center justify-between">
+        <div className="bg-white dark:bg-zinc-900 w-full rounded-2xl px-4 shadow">
+            <div className="w-full h-20 flex items-center justify-between">
                 <div className="flex items-center gap-4 justify-start">
                     <div className="w-fit sm:w-md">
                         <SearchBar className="h-10" onSearch={() => { }} />
                     </div>
                     <Button
-                        className="sm:flex-none min-w-[80px] h-[40px] bg-transparent border border-blue-300 text-blue-500 hover:bg-blue-50"
+                        className="sm:flex-none min-w-[80px] h-[40px] bg-transparent border border-blue-300 text-blue-500 hover:bg-blue-50 rounded-xl"
                         onClick={() => setShowFilter(!showFilter)}
                     >
                         <FilterIcon className="size-5 mr-1" />
                         <span className="hidden sm:inline">Filter</span>
                     </Button>
                 </div>
-                <Button onClick={() => onHandleApply()}>Apply</Button>
+                <motion.div whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.02 }}>
+                    <Button
+                        onClick={onHandleApply}
+                        className="bg-violet-500 text-white font-semibold px-4 py-2 rounded-xl h-[40px] hover:bg-violet-700"
+                    >
+                        <Navigation /> Áp dụng
+                    </Button>
+                </motion.div>
             </div>
             <div
                 className={

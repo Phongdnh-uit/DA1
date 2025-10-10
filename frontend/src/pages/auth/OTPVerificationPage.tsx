@@ -11,6 +11,9 @@ import { toast } from "react-toastify";
 import { useState } from "react";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { Route } from "@/routes/auth/otp-verification";
+import { motion } from "motion/react";
+import { fadeInUp } from "@/lib/animation";
+import { ArrowLeftIcon } from "lucide-react";
 
 export default function OTPVerificationPage() {
     const { purpose } = Route.useSearch();
@@ -49,11 +52,34 @@ export default function OTPVerificationPage() {
     };
     return (
         <div className="flex">
+            <div className="hidden sm:block w-4/7 h-screen">
+                <img
+                    src={BannerImage}
+                    alt="Banner"
+                    className="w-full h-full object-cover"
+                />
+            </div>
             <div className="w-full sm:w-3/7 flex flex-col items-center justify-between h-screen px-20">
-                <div className="w-full mt-20">
-                    <h2 className="text-xl font-bold mb-4">Xin chào bạn</h2>
-                    <h1 className="text-3xl font-bold mb-4">Xác minh danh tính</h1>
-                    <div className="w-full pr-10 mt-8">
+                <motion.div
+                    variants={fadeInUp.container}
+                    initial="hidden"
+                    animate="show"
+                    className="w-full mt-20"
+                >
+                    <motion.h2
+                        variants={fadeInUp.item}
+                        className="text-xl font-bold mb-4 flex items-center cursor-pointer w-fit"
+                        onClick={() => navigate({ to: "/auth/login" })}
+                    >
+                        <ArrowLeftIcon /> Quay lại
+                    </motion.h2>
+                    <motion.h1
+                        variants={fadeInUp.item}
+                        className="text-3xl font-bold mb-4"
+                    >
+                        Xác minh danh tính
+                    </motion.h1>
+                    <motion.div variants={fadeInUp.item} className="w-full pr-10 mt-8">
                         <div className="flex justify-center items-center">
                             <InputOTP maxLength={6} value={value} onChange={setValue}>
                                 <InputOTPGroup className="space-x-2">
@@ -84,28 +110,20 @@ export default function OTPVerificationPage() {
                                 </InputOTPGroup>
                             </InputOTP>
                         </div>
-                        <Button
-                            onClick={() => handleVerifyOtp()}
-                            className="w-full mt-8 h-16 rounded-[24px] bg-blue-500 hover:bg-blue-600 text-lg"
+                        <motion.div
+                            variants={fadeInUp.item}
+                            whileTap={{ scale: 0.95 }}
+                            whileHover={{ scale: 1.02 }}
                         >
-                            Tiếp tục
-                        </Button>
-                        <p className="w-full text-center text-sm mt-4 px-6">
-                            Bằng việc tiếp tục, bạn đồng ý với{" "}
-                            <span className="text-blue-500">Điều khoản sử dụng</span>,{" "}
-                            <span className="text-blue-500">Chính sách bảo mật</span>,{" "}
-                            <span className="text-blue-500">Quy chế</span> và{" "}
-                            <span className="text-blue-500">Chính sách</span> của chúng tôi.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div className="hidden sm:block w-4/7 h-screen">
-                <img
-                    src={BannerImage}
-                    alt="Banner"
-                    className="w-full h-full object-cover"
-                />
+                            <Button
+                                onClick={() => handleVerifyOtp()}
+                                className="w-full mt-8 h-16 rounded-[24px] bg-blue-500 hover:bg-blue-600 text-lg"
+                            >
+                                Tiếp tục
+                            </Button>
+                        </motion.div>
+                    </motion.div>
+                </motion.div>
             </div>
         </div>
     );

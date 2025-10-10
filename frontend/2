@@ -38,11 +38,9 @@ export function createColumn<TData, TValue = unknown>(
             ((info) => {
                 const value = info.getValue();
                 if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value)) {
-                    return formatDate(new Date(value), true);
+                    return formatDate(new Date(value));
                 }
-                if (value === '' || value === null || value === undefined) {
-                    return 'N/A';
-                }
+
                 return String(value ?? "");
             }),
         ...opts,
