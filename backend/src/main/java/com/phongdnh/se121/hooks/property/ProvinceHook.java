@@ -7,6 +7,7 @@ import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
 import com.phongdnh.se121.hooks.DefaultHook;
 import com.phongdnh.se121.repositories.property.ProvinceRepository;
+import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -29,14 +30,31 @@ public class ProvinceHook extends DefaultHook<Province, Long, ProvinceRequest, P
   }
 
   private void validate(ProvinceRequest request, Long id) {
+    Map<String, String> errors = new HashMap<>();
     Specification<Province> codeSpec =
-        (root, _, criteriaBuilder) -> criteriaBuilder.equal(root.get("code"), request.getCode());
+        (root, _, criteriaBuilder) ->
+            criteriaBuilder.equal(root.get("phoneCode"), request.getPhoneCode());
     if (id != null) {
       codeSpec =
           codeSpec.and((root, _, criteriaBuilder) -> criteriaBuilder.notEqual(root.get("id"), id));
     }
     if (provinceRepository.exists(codeSpec)) {
-      throw new ApiException(ErrorCode.RESOURCE_EXISTS, Map.of("code", "Code already exists"));
+      errors.put("phoneCode", "Phone code already exists");
+    }
+
+    Specification<Province> codeNameSpec =
+        (root, _, criteriaBuilder) ->
+            criteriaBuilder.equal(root.get("codeName"), request.getCodeName());
+    if (id != null) {
+      codeNameSpec =
+          codeNameSpec.and(
+              (root, _, criteriaBuilder) -> criteriaBuilder.notEqual(root.get("id"), id));
+    }
+    if (provinceRepository.exists(codeNameSpec)) {
+      errors.put("codeName", "Code name already exists");
+    }
+    if (!errors.isEmpty()) {
+      throw new ApiException(ErrorCode.RESOURCE_EXISTS, errors);
     }
   }
 }

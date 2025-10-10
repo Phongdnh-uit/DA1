@@ -8,5 +8,7 @@ import lombok.Setter;
 @Setter
 public class ProvinceRequest {
   @NotBlank private String name;
-  @NotBlank private String code;
+  @NotBlank private String phoneCode;
+  @NotBlank private String codeName;
+  @NotBlank private String divisionType;
 }

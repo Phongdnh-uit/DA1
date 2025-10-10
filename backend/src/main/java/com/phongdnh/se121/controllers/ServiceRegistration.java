@@ -4,25 +4,31 @@ import com.phongdnh.se121.dtos.authentication.UserRequest;
 import com.phongdnh.se121.dtos.authentication.UserResponse;
 import com.phongdnh.se121.dtos.authorization.PermissionRequest;
 import com.phongdnh.se121.dtos.authorization.PermissionResponse;
-import com.phongdnh.se121.dtos.property.DistrictRequest;
-import com.phongdnh.se121.dtos.property.DistrictResponse;
+import com.phongdnh.se121.dtos.property.WardRequest;
+import com.phongdnh.se121.dtos.property.WardResponse;
+import com.phongdnh.se121.dtos.property.PropertyTypeRequest;
+import com.phongdnh.se121.dtos.property.PropertyTypeResponse;
 import com.phongdnh.se121.dtos.property.ProvinceRequest;
 import com.phongdnh.se121.dtos.property.ProvinceResponse;
 import com.phongdnh.se121.entities.authentication.User;
 import com.phongdnh.se121.entities.authorization.Permission;
-import com.phongdnh.se121.entities.property.District;
+import com.phongdnh.se121.entities.property.Ward;
+import com.phongdnh.se121.entities.property.PropertyType;
 import com.phongdnh.se121.entities.property.Province;
 import com.phongdnh.se121.hooks.authentication.UserHook;
 import com.phongdnh.se121.hooks.authorizations.PermissionHook;
-import com.phongdnh.se121.hooks.property.DistrictHook;
+import com.phongdnh.se121.hooks.property.WardHook;
+import com.phongdnh.se121.hooks.property.PropertyTypeHook;
 import com.phongdnh.se121.hooks.property.ProvinceHook;
 import com.phongdnh.se121.mappers.authentication.UserMapper;
 import com.phongdnh.se121.mappers.authorization.PermissionMapper;
-import com.phongdnh.se121.mappers.property.DistrictMapper;
+import com.phongdnh.se121.mappers.property.WardMapper;
+import com.phongdnh.se121.mappers.property.PropertyTypeMapper;
 import com.phongdnh.se121.mappers.property.ProvinceMapper;
 import com.phongdnh.se121.repositories.authentication.UserRepository;
 import com.phongdnh.se121.repositories.authorization.PermissionRepository;
-import com.phongdnh.se121.repositories.property.DistrictRepository;
+import com.phongdnh.se121.repositories.property.WardRepository;
+import com.phongdnh.se121.repositories.property.PropertyTypeRepository;
 import com.phongdnh.se121.repositories.property.ProvinceRepository;
 import com.phongdnh.se121.services.CrudService;
 import com.phongdnh.se121.services.GenericService;
@@ -61,10 +67,18 @@ public class ServiceRegistration {
   }
 
   @Bean
-  CrudService<District, Long, DistrictRequest, DistrictResponse> districtService() {
-    return new GenericService<District, Long, DistrictRequest, DistrictResponse>(
-        context.getBean(DistrictRepository.class),
-        context.getBean(DistrictMapper.class),
-        context.getBean(DistrictHook.class));
+  CrudService<Ward, Long, WardRequest, WardResponse> districtService() {
+    return new GenericService<Ward, Long, WardRequest, WardResponse>(
+        context.getBean(WardRepository.class),
+        context.getBean(WardMapper.class),
+        context.getBean(WardHook.class));
+  }
+
+  @Bean
+  CrudService<PropertyType, Long, PropertyTypeRequest, PropertyTypeResponse> propertyTypeService() {
+    return new GenericService<PropertyType, Long, PropertyTypeRequest, PropertyTypeResponse>(
+        context.getBean(PropertyTypeRepository.class),
+        context.getBean(PropertyTypeMapper.class),
+        context.getBean(PropertyTypeHook.class));
   }
 }

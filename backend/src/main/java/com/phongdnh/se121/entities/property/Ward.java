@@ -10,11 +10,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "districts")
-public class District extends BaseEntity {
+@Table(name = "wards")
+public class Ward extends BaseEntity {
   @Column(nullable = false)
   private String name;
 
   @Column(nullable = false, unique = true)
-  private String code;
+  private String codeName;
+
+  @Column(nullable = false)
+  private Long provinceId;
 }

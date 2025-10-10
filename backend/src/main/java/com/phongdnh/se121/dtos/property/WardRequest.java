@@ -7,8 +7,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DistrictRequest {
+public class WardRequest {
   @NotBlank private String name;
-  @NotBlank private String code;
+  @NotBlank private String codeName;
   @NotNull private Long provinceId;
 }
