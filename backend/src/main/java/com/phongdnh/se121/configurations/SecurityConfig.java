@@ -1,5 +1,7 @@
 package com.phongdnh.se121.configurations;
 
+import com.phongdnh.se121.securities.CustomAuthenticationEntryPoint;
+import com.phongdnh.se121.securities.jwt.CustomJwtAuthenticationConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,11 +21,20 @@ public class SecurityConfig implements WebMvcConfigurer {
   }
 
   @Bean
-  SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  SecurityFilterChain filterChain(
+      HttpSecurity http,
+      CustomJwtAuthenticationConverter jwtConverter,
+      CustomAuthenticationEntryPoint entryPoint)
+      throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .formLogin(AbstractHttpConfigurer::disable);
+        .formLogin(AbstractHttpConfigurer::disable)
+        .oauth2ResourceServer(
+            oauth2 ->
+                oauth2
+                    .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter))
+                    .authenticationEntryPoint(entryPoint));
     return http.build();
   }
 }
