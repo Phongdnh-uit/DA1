@@ -34,6 +34,26 @@ INSERT IGNORE INTO `provinces` (`name`, `id`, `code_name`, `phone_code`, `divisi
 ('Thành phố Cần Thơ', 92, 'can_tho', 292,'thành phố trung ương'),
 ('Cà Mau', 96, 'ca_mau', 290,'tỉnh');
 
+INSERT INTO property_types (id, name) VALUES
+(1,'nhà, biệt thự'),
+(2,'căn hộ'),
+(3,'đất'),
+(4,'văn phòng, office-tel'),
+(5,'shophouse, cửa hàng'),
+(6,'mặt bằng'),
+(7,'nhà hàng, khách sạn'),
+(8,'phòng trọ, nhà trọ'),
+(9,'trang trại, khu nghỉ dưỡng'),
+(10,'kho, nhà xưởng'),
+(11,'Căn hộ chung cư'),
+(12,'Chung cư mini, căn hộ dịch vụ'),
+(13,'Nhà riêng'),
+(14,'Nhà biệt thự, liền kề'),
+(15,'Nhà mặt phố'),
+(16,'Shophouse, nhà phố thương mại'),
+(17,'Đất nền dự án'),
+(18,'Condotel'),
+(19,'khác');
 
 INSERT IGNORE INTO `wards` (`id`, `name`, `code_name`, `province_id`) VALUES
 (1, 'Phường Ba Đình', 'phuong_ba_dinh', 1),

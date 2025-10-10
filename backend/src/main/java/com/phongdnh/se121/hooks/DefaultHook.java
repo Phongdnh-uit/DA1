@@ -2,9 +2,6 @@ package com.phongdnh.se121.hooks;
 
 import java.util.Map;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class DefaultHook<E, ID, I, O> implements GenericHook<E, ID, I, O> {
 
   @Override
