@@ -3,6 +3,7 @@ package com.phongdnh.se121.controllers.authentication;
 import com.phongdnh.se121.dtos.ApiResponse;
 import com.phongdnh.se121.dtos.authentication.LoginRequest;
 import com.phongdnh.se121.dtos.authentication.LoginResponse;
+import com.phongdnh.se121.dtos.authentication.RefreshTokenRequest;
 import com.phongdnh.se121.dtos.authentication.RegisterRequest;
 import com.phongdnh.se121.dtos.authentication.ResetPasswordRequest;
 import com.phongdnh.se121.dtos.authentication.SendOtpRequest;
@@ -32,6 +33,19 @@ public class AuthController {
   public ResponseEntity<ApiResponse<LoginResponse>> login(
       @Valid @RequestBody LoginRequest request) {
     return ResponseEntity.ok(ApiResponse.ok(authService.login(request)));
+  }
+
+  @PostMapping("/refresh")
+  public ResponseEntity<ApiResponse<LoginResponse>> refreshToken(
+      @Valid @RequestBody RefreshTokenRequest request) {
+    return ResponseEntity.ok(ApiResponse.ok(authService.refreshToken(request)));
+  }
+
+  @PostMapping("/logout")
+  public ResponseEntity<ApiResponse<LoginResponse>> logout(
+      @Valid @RequestBody RefreshTokenRequest request) {
+    authService.logout(request);
+    return ResponseEntity.ok(ApiResponse.ok(null));
   }
 
   @PostMapping("/send-otp")

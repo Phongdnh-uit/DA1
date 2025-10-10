@@ -2,6 +2,7 @@ package com.phongdnh.se121.services.authentication;
 
 import com.phongdnh.se121.dtos.authentication.LoginRequest;
 import com.phongdnh.se121.dtos.authentication.LoginResponse;
+import com.phongdnh.se121.dtos.authentication.RefreshTokenRequest;
 import com.phongdnh.se121.dtos.authentication.RegisterRequest;
 import com.phongdnh.se121.dtos.authentication.ResetPasswordRequest;
 import com.phongdnh.se121.dtos.authentication.SendOtpRequest;
@@ -10,6 +11,7 @@ import com.phongdnh.se121.dtos.authentication.UserResponse;
 import com.phongdnh.se121.dtos.authentication.VerifyEmailRequest;
 import com.phongdnh.se121.dtos.authentication.VerifyOtpRequest;
 import com.phongdnh.se121.dtos.authentication.VerifyOtpResponse;
+import com.phongdnh.se121.entities.authentication.RefreshToken;
 import com.phongdnh.se121.entities.authentication.User;
 import com.phongdnh.se121.entities.authentication.Verification;
 import com.phongdnh.se121.enums.authentication.OtpChannel;
@@ -251,5 +253,28 @@ public class AuthServiceImpl implements AuthService {
     // 2. ---- Update password ----
     user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
     userRepository.save(user);
+  }
+
+  // ============================ REFRESH TOKEN ============================
+
+  @Override
+  public LoginResponse refreshToken(RefreshTokenRequest request) {
+    RefreshToken refreshToken = refreshTokenService.findByToken(request.getRefreshToken());
+    refreshTokenService.verify(refreshToken);
+    Long userId = refreshToken.getUserId();
+    String jwt = tokenProvider.generateAccessToken(userId);
+    String newRefreshToken = refreshTokenService.createRefreshToken(userId).getToken();
+    refreshTokenService.delete(refreshToken);
+    LoginResponse response = new LoginResponse();
+    response.setAccessToken(jwt);
+    response.setRefreshToken(newRefreshToken);
+    return response;
+  }
+
+  // ============================ LOGOUT ============================
+  @Override
+  public void logout(RefreshTokenRequest request) {
+    RefreshToken refreshToken = refreshTokenService.findByToken(request.getRefreshToken());
+    refreshTokenService.delete(refreshToken);
   }
 }
