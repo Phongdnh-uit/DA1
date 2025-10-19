@@ -7,6 +7,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import lombok.Getter;
@@ -25,8 +28,9 @@ public class Property extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private PropertyPurpose purpose;
 
-  @Column(nullable = false)
-  private Long typeId;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "type_Id")
+  private PropertyType type;
 
   @Column(nullable = false, precision = 15, scale = 2)
   private BigDecimal price;
@@ -34,8 +38,9 @@ public class Property extends BaseEntity {
   @Column(nullable = false)
   private String lineAddress;
 
-  @Column(nullable = false)
-  private Long wardId;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "ward_Id")
+  private Ward ward;
 
   @Column(precision = 10, scale = 2)
   private BigDecimal landArea;

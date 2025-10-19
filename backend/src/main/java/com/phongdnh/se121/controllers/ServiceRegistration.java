@@ -21,6 +21,7 @@ import com.phongdnh.se121.entities.property.Ward;
 import com.phongdnh.se121.hooks.GeneralHook;
 import com.phongdnh.se121.hooks.authentication.UserHook;
 import com.phongdnh.se121.hooks.authorizations.PermissionHook;
+import com.phongdnh.se121.hooks.property.PropertyHook;
 import com.phongdnh.se121.hooks.property.PropertyTypeHook;
 import com.phongdnh.se121.hooks.property.ProvinceHook;
 import com.phongdnh.se121.hooks.property.WardHook;
@@ -93,6 +94,6 @@ public class ServiceRegistration {
     return new GenericService<Property, Long, PropertyRequest, PropertyResponse>(
         context.getBean(PropertyRepository.class),
         context.getBean(PropertyMapper.class),
-        context.getBean(GeneralHook.class));
+        context.getBean(PropertyHook.class));
   }
 }

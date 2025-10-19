@@ -30,6 +30,16 @@ public class WardHook extends DefaultHook<Ward, Long, WardRequest, WardResponse>
     validate(input, id);
   }
 
+  @Override
+  public void enrichCreate(WardRequest input, Ward entity, Map<String, Object> context) {
+    enrich(input, entity);
+  }
+
+  @Override
+  public void enrichUpdate(WardRequest input, Ward entity, Map<String, Object> context) {
+    enrich(input, entity);
+  }
+
   private void validate(WardRequest input, Long id) {
     if (!provinceRepository.existsById(input.getProvinceId())) {
       throw new ApiException(ErrorCode.RESOURCE_NOT_FOUND);
@@ -43,5 +53,9 @@ public class WardHook extends DefaultHook<Ward, Long, WardRequest, WardResponse>
       throw new ApiException(
           ErrorCode.RESOURCE_EXISTS, Map.of("codeName", "Code name already exists"));
     }
+  }
+
+  private void enrich(WardRequest input, Ward entity) {
+    entity.setProvince(provinceRepository.getReferenceById(input.getProvinceId()));
   }
 }

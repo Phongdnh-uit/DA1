@@ -15,6 +15,8 @@ public enum ErrorCode {
   INVALID_CREDENTIALS(2007, HttpStatus.UNAUTHORIZED, "Invalid Credentials"),
   VERIFICATION_CODE_INVALID(2008, HttpStatus.BAD_REQUEST, "Verification Code Invalid"),
   VERIFICATION_CODE_EXPIRED(2009, HttpStatus.BAD_REQUEST, "Verification Code Expired"),
+  UPLOAD_FAILED(2010, HttpStatus.BAD_REQUEST, "Upload Failed"),
+  SIGNATURE_INVALID(2011, HttpStatus.BAD_REQUEST, "Signature Invalid"),
   INTERNAL_SERVER_ERROR(2099, HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error"),
   OTP_EXPIRED(2100, HttpStatus.BAD_REQUEST, "OTP Expired"),
   OTP_INVALID(2101, HttpStatus.BAD_REQUEST, "OTP Invalid"),

@@ -1,10 +1,13 @@
 package com.phongdnh.se121.dtos.property;
 
+import com.phongdnh.se121.dtos.general.UploadConfirmRequest;
 import com.phongdnh.se121.enums.property.PropertyPurpose;
 import com.phongdnh.se121.enums.property.PropertyStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +23,8 @@ public class PropertyRequest {
   @NotNull private BigDecimal price;
 
   @NotBlank private String lineAddress;
+
+  @NotNull private Long provinceId;
 
   @NotNull private Long wardId;
 
@@ -46,4 +51,6 @@ public class PropertyRequest {
   private Boolean hasElevator = false;
 
   @NotNull private PropertyStatus status;
+
+  private List<UploadConfirmRequest> medias;
 }

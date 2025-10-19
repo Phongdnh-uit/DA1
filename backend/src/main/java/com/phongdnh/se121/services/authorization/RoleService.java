@@ -8,6 +8,7 @@ import com.phongdnh.se121.entities.authorization.Role;
 import com.phongdnh.se121.entities.authorization.RolePermission;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
+import com.phongdnh.se121.hooks.GeneralHook;
 import com.phongdnh.se121.mappers.authorization.RoleMapper;
 import com.phongdnh.se121.repositories.authorization.PermissionRepository;
 import com.phongdnh.se121.repositories.authorization.RolePermissionRepository;
@@ -27,11 +28,11 @@ public class RoleService implements IRoleSerivce {
   private final RoleMapper roleMapper;
   private final RolePermissionRepository rolePermissionRepository;
   private final PermissionRepository permissionRepository;
+  private final GeneralHook generalHook;
 
   @Override
-  public PageResponse<RoleResponse> findAll(
-      Pageable pageable, Specification<Role> specification) {
-    return defaultFindAll(pageable, specification, roleMapper, roleRepository);
+  public PageResponse<RoleResponse> findAll(Pageable pageable, Specification<Role> specification) {
+    return defaultFindAll(pageable, specification, roleMapper, roleRepository, generalHook);
   }
 
   @Override

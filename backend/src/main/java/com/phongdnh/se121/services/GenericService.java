@@ -21,35 +21,35 @@ public class GenericService<E, ID, I, O> implements CrudService<E, ID, I, O> {
 
   private final SimpleRepository<E, ID> repository;
   private final GenericMapper<E, I, O> mapper;
-  private final GenericHook<E, ID, I, O> policy;
+  private final GenericHook<E, ID, I, O> hook;
 
   @Override
   public PageResponse<O> findAll(Pageable pageable, Specification<E> specification) {
-    return defaultFindAll(pageable, specification, mapper, repository);
+    return defaultFindAll(pageable, specification, mapper, repository, hook);
   }
 
   @Override
   public O findById(ID id) {
-    return defaultFindById(id, mapper, repository);
+    return defaultFindById(id, mapper, repository, hook);
   }
 
   @Override
   public O create(I input) {
-    return defaultCreate(input, mapper, repository, policy);
+    return defaultCreate(input, mapper, repository, hook);
   }
 
   @Override
   public O update(ID id, I input) {
-    return defaultUpdate(id, input, mapper, repository, policy);
+    return defaultUpdate(id, input, mapper, repository, hook);
   }
 
   @Override
   public void delete(ID id) {
-    defaultDelete(id, repository, policy);
+    defaultDelete(id, repository, hook);
   }
 
   @Override
   public void deleteAll(Iterable<ID> ids) {
-    defaultDeleteAll(ids, repository, policy);
+    defaultDeleteAll(ids, repository, hook);
   }
 }

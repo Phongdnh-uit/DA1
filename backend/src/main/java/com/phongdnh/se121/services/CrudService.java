@@ -29,16 +29,25 @@ public interface CrudService<E, ID, I, O> {
       Pageable pageable,
       Specification<E> specification,
       GenericMapper<E, I, O> mapper,
-      SimpleRepository<E, ID> repository) {
-    return PageResponse.fromPage(
-        repository.findAll(specification, pageable).map(mapper::entityToResponse));
+      SimpleRepository<E, ID> repository,
+      GenericHook<E, ID, I, O> hook) {
+    PageResponse<O> response =
+        PageResponse.fromPage(
+            repository.findAll(specification, pageable).map(mapper::entityToResponse));
+    hook.enrichFindAll(response);
+    return response;
   }
 
   default O defaultFindById(
-      ID id, GenericMapper<E, I, O> mapper, SimpleRepository<E, ID> repository) {
+      ID id,
+      GenericMapper<E, I, O> mapper,
+      SimpleRepository<E, ID> repository,
+      GenericHook<E, ID, I, O> hook) {
     E entity =
         repository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND));
-    return mapper.entityToResponse(entity);
+    O response = mapper.entityToResponse(entity);
+    hook.enrichFindById(response);
+    return response;
   }
 
   default O defaultCreate(

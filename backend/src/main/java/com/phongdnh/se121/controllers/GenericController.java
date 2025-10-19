@@ -33,8 +33,12 @@ public abstract class GenericController<E, ID, I, O> {
   @GetMapping("/all")
   public ResponseEntity<ApiResponse<PageResponse<O>>> findAll(
       @ParameterObject Pageable pageable,
-      @RequestParam(value = "filter", required = false) @Nullable String filter) {
+      @RequestParam(value = "filter", required = false) @Nullable String filter,
+      @RequestParam(value = "all", defaultValue = "false") boolean all) {
     Specification<E> specification = RSQLJPASupport.toSpecification(filter);
+    if (all) {
+      pageable = Pageable.unpaged();
+    }
     return ResponseEntity.ok(ApiResponse.ok(service.findAll(pageable, specification)));
   }
 

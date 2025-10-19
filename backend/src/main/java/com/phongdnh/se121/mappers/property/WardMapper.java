@@ -7,6 +7,8 @@ import com.phongdnh.se121.mappers.GenericMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface WardMapper
-    extends GenericMapper<Ward, WardRequest, WardResponse> {}
+@Mapper(
+    componentModel = "spring",
+    unmappedTargetPolicy = ReportingPolicy.IGNORE,
+    uses = {ProvinceMapper.class})
+public interface WardMapper extends GenericMapper<Ward, WardRequest, WardResponse> {}
