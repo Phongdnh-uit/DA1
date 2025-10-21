@@ -7,8 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ProvinceResponse extends BaseEntity {
-  private String phoneCode;
   private String name;
-  private String codeName;
-  private String divisionType;
+  private String code;
+  private String type;
 }

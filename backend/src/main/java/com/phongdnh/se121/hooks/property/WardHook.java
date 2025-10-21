@@ -45,13 +45,13 @@ public class WardHook extends DefaultHook<Ward, Long, WardRequest, WardResponse>
       throw new ApiException(ErrorCode.RESOURCE_NOT_FOUND);
     }
     Specification<Ward> codeNameSpec =
-        (root, _, builder) -> builder.equal(root.get("codeName"), input.getCodeName());
+        (root, _, builder) -> builder.equal(root.get("code"), input.getCode());
     if (id != null) {
       codeNameSpec = codeNameSpec.and((root, _, builder) -> builder.notEqual(root.get("id"), id));
     }
     if (wardRepository.exists(codeNameSpec)) {
       throw new ApiException(
-          ErrorCode.RESOURCE_EXISTS, Map.of("codeName", "Code name already exists"));
+          ErrorCode.RESOURCE_EXISTS, Map.of("code", "Code already exists"));
     }
   }
 

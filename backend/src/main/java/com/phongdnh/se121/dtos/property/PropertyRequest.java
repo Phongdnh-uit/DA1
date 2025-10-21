@@ -1,13 +1,13 @@
 package com.phongdnh.se121.dtos.property;
 
 import com.phongdnh.se121.dtos.general.UploadConfirmRequest;
+import com.phongdnh.se121.enums.property.Direction;
 import com.phongdnh.se121.enums.property.PropertyPurpose;
 import com.phongdnh.se121.enums.property.PropertyStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -40,15 +40,21 @@ public class PropertyRequest {
 
   private Integer bathrooms;
 
-  private String direction;
+  private Direction direction;
 
   private String description;
+
+  private Double entranceRoadWidth;
+
+  private Direction balconyDirection;
 
   private Boolean hasMezzanine = false;
 
   private Boolean hasBasement = false;
 
   private Boolean hasElevator = false;
+    
+  private String interior;
 
   @NotNull private PropertyStatus status;
 

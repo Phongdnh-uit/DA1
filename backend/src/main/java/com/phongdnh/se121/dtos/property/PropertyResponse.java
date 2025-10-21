@@ -2,6 +2,7 @@ package com.phongdnh.se121.dtos.property;
 
 import com.phongdnh.se121.dtos.general.MediaResponse;
 import com.phongdnh.se121.entities.BaseEntity;
+import com.phongdnh.se121.enums.property.Direction;
 import com.phongdnh.se121.enums.property.PropertyPurpose;
 import com.phongdnh.se121.enums.property.PropertyStatus;
 import java.math.BigDecimal;
@@ -36,9 +37,13 @@ public class PropertyResponse extends BaseEntity {
 
   private Integer bathrooms;
 
-  private String direction;
+  private Direction direction;
 
   private String description;
+
+  private Double entranceRoadWidth;
+
+  private Direction balconyDirection;
 
   private Boolean hasMezzanine = false;
 
@@ -47,6 +52,8 @@ public class PropertyResponse extends BaseEntity {
   private Boolean hasElevator = false;
 
   private PropertyStatus status;
+
+  private String interior;
 
   private List<MediaResponse> medias;
 }

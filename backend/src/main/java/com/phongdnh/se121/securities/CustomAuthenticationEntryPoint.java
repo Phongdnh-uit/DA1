@@ -27,7 +27,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
       throws IOException, ServletException {
     ApiResponse<Void> apiResponse = new ApiResponse<>();
     Throwable cause = authException.getCause();
-    if (cause instanceof BadJwtException jwtValidationException) {
+    if (cause != null && cause instanceof BadJwtException jwtValidationException) {
       boolean isExpired = jwtValidationException.getMessage().contains("expired");
       if (isExpired) {
         apiResponse.setCode(ErrorCode.TOKEN_EXPIRED.getCode());
@@ -38,7 +38,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
       }
     } else {
       apiResponse.setCode(ErrorCode.AUTHENTICATION_REQUIRED.getCode());
-      apiResponse.setMessage(cause.getMessage());
+      apiResponse.setMessage(authException.getMessage());
     }
 
     response.setStatus(HttpStatus.UNAUTHORIZED.value());

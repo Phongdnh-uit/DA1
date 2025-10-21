@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 public class WardRequest {
   @NotBlank private String name;
-  @NotBlank private String codeName;
+  @NotBlank private String code;
+  @NotBlank private String type;
   @NotNull private Long provinceId;
 }

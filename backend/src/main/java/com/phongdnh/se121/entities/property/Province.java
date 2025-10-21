@@ -16,11 +16,8 @@ public class Province extends BaseEntity {
   private String name;
 
   @Column(nullable = false, unique = true)
-  private String phoneCode;
-
-  @Column(nullable = false, unique = true)
-  private String codeName;
+  private String code;
 
   @Column(nullable = false)
-  private String divisionType;
+  private String type;
 }

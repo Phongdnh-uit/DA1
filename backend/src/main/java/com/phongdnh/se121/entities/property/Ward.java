@@ -19,7 +19,10 @@ public class Ward extends BaseEntity {
   private String name;
 
   @Column(nullable = false, unique = true)
-  private String codeName;
+  private String code;
+
+  @Column(nullable = false, unique = true)
+  private String type;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "province_id")

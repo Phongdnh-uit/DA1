@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class WardResponse extends BaseEntity {
   private String name;
-  private String codeName;
+  private String code;
+  private String type;
   private ProvinceResponse province;
 }

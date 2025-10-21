@@ -33,26 +33,15 @@ public class ProvinceHook extends DefaultHook<Province, Long, ProvinceRequest, P
     Map<String, String> errors = new HashMap<>();
     Specification<Province> codeSpec =
         (root, _, criteriaBuilder) ->
-            criteriaBuilder.equal(root.get("phoneCode"), request.getPhoneCode());
+            criteriaBuilder.equal(root.get("code"), request.getCode());
     if (id != null) {
       codeSpec =
           codeSpec.and((root, _, criteriaBuilder) -> criteriaBuilder.notEqual(root.get("id"), id));
     }
     if (provinceRepository.exists(codeSpec)) {
-      errors.put("phoneCode", "Phone code already exists");
+      errors.put("code", "Code already exists");
     }
 
-    Specification<Province> codeNameSpec =
-        (root, _, criteriaBuilder) ->
-            criteriaBuilder.equal(root.get("codeName"), request.getCodeName());
-    if (id != null) {
-      codeNameSpec =
-          codeNameSpec.and(
-              (root, _, criteriaBuilder) -> criteriaBuilder.notEqual(root.get("id"), id));
-    }
-    if (provinceRepository.exists(codeNameSpec)) {
-      errors.put("codeName", "Code name already exists");
-    }
     if (!errors.isEmpty()) {
       throw new ApiException(ErrorCode.RESOURCE_EXISTS, errors);
     }

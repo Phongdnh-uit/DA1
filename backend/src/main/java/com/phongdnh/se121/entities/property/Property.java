@@ -1,6 +1,7 @@
 package com.phongdnh.se121.entities.property;
 
 import com.phongdnh.se121.entities.BaseEntity;
+import com.phongdnh.se121.enums.property.Direction;
 import com.phongdnh.se121.enums.property.PropertyPurpose;
 import com.phongdnh.se121.enums.property.PropertyStatus;
 import jakarta.persistence.Column;
@@ -56,8 +57,15 @@ public class Property extends BaseEntity {
 
   private Integer bathrooms;
 
-  @Column(length = 100)
-  private String direction;
+  private Double entranceRoadWidth;
+
+  @Enumerated(EnumType.STRING)
+  private Direction balconyDirection;
+
+  @Enumerated(EnumType.STRING)
+  private Direction direction;
+
+  private String interior;
 
   @Column(columnDefinition = "TEXT")
   private String description;
