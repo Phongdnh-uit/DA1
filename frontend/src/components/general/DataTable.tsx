@@ -106,17 +106,15 @@ export function DataTable<TData>({
                         <ColumnVisibilitySelect table={table} />
                     </div>
                 </div>
-                <CardContent className="px-0 my-4">
+                <CardContent className="px-0 my-2">
                     <div
                         className={
-                            "w-full [&>div]:h-full border rounded overflow-y-auto " +
+                            "w-full [&>div]:h-full border-b rounded overflow-y-auto " +
                             className
                         }
                     >
                         <Table
                             className={cn({
-                                "border-b": table.getRowModel().rows?.length > 0,
-
                                 "[&_td]:py-2 [&_th]:py-2": densityState === "compact",
                                 "[&_td]:py-3 [&_th]:py-3": densityState === "normal",
                                 "[&_td]:py-4 [&_th]:py-4": densityState === "flexible",
@@ -126,12 +124,12 @@ export function DataTable<TData>({
                                 {table.getHeaderGroups().map((headerGroup) => (
                                     <TableRow
                                         key={headerGroup.id}
-                                        className="hover:bg-inherit h-[50px] *:whitespace-nowrap sticky top-0 after:inset-x-0 after:absolute after:bottom-0"
+                                        className="hover:bg-inherit h-[50px] *:whitespace-nowrap sticky top-0 after:inset-x-0 after:absolute after:bottom-0 !border-0 select-none"
                                     >
                                         {headerGroup.headers.map((header) => (
                                             <TableHead
                                                 key={header.id}
-                                                className="text-zinc-500 text-base font-bold"
+                                                className="text-zinc-800 text-base font-bold first:rounded-l-lg last:rounded-r-lg dark:text-zinc-200"
                                             >
                                                 {header.isPlaceholder
                                                     ? null
@@ -150,10 +148,21 @@ export function DataTable<TData>({
                                         <TableRow
                                             key={row.id}
                                             data-state={row.getIsSelected() && "selected"}
-                                            className="h-[50px] hover:bg-zinc-50 data-[state=selected]:bg-zinc-50 text-zinc-600 font-medium text-base dark:text-zinc-400 dark:data-[state=selected]:bg-zinc-800 dark:hover:bg-zinc-800"
+                                            className="h-[50px] hover:bg-zinc-50 data-[state=selected]:bg-zinc-50 text-zinc-600 font-medium text-base dark:text-zinc-300 dark:data-[state=selected]:bg-zinc-800 dark:hover:bg-zinc-800"
                                         >
-                                            {row.getVisibleCells().map((cell) => (
-                                                <TableCell key={cell.id}>
+                                            {row.getVisibleCells().map((cell, id) => (
+                                                <TableCell
+                                                    key={cell.id}
+                                                    className={cn(
+                                                        row.getIsSelected()
+                                                            ? "bg-tremor-background-muted dark:bg-dark-tremor-background-muted"
+                                                            : "",
+                                                        "relative",
+                                                    )}
+                                                >
+                                                    {id === 0 && row.getIsSelected() && (
+                                                        <div className="absolute inset-y-0 left-0 w-0.5 bg-blue-600 dark:bg-blue-500" />
+                                                    )}
                                                     {flexRender(
                                                         cell.column.columnDef.cell,
                                                         cell.getContext(),
@@ -180,7 +189,7 @@ export function DataTable<TData>({
                             </TableBody>
                         </Table>
                     </div>
-                    <div className="flex items-center justify-between space-x-2 py-4">
+                    <div className="flex items-center justify-between space-x-2 py-2">
                         <div className="text-muted-foreground flex-1 text-md ml-4">
                             {table.getFilteredSelectedRowModel().rows.length > 0 ? (
                                 <span>

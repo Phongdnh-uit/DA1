@@ -27,3 +27,21 @@ export const drawLineVariants = {
     rest: { width: 0 },
     hover: { width: "100%" },
 } as Variants;
+
+export const imageVariants: Variants = {
+    hidden: (direction: number) => ({
+        x: direction > 0 ? 300 : -300,
+        opacity: 0,
+        transition: { type: "tween", duration: 0.3 },
+    }),
+    visible: {
+        x: 0,
+        opacity: 1,
+        transition: { type: "tween", duration: 0.3 },
+    },
+    exit: (direction: number) => ({
+        x: direction < 0 ? 300 : -300,
+        opacity: 0,
+        transition: { type: "tween", duration: 0.3 },
+    }),
+};

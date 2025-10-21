@@ -47,12 +47,19 @@ export const UserManage = () => {
         filter: string;
         sort: string[];
     }>({ filter: "", sort: [] });
-    const list = useFindAllUser({
-        page: pagination.page,
-        size: pagination.size,
-        sort: filterParam.sort,
-        filter: filterParam.filter,
-    });
+    const list = useFindAllUser(
+        {
+            page: pagination.page,
+            size: pagination.size,
+            sort: filterParam.sort,
+            filter: filterParam.filter,
+        },
+        {
+            query: {
+                staleTime: 0,
+            },
+        },
+    );
     const { table } = useDatatable<UserResponse>({
         columns,
         data: list.data?.data?.content || [],

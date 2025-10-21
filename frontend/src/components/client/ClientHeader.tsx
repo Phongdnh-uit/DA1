@@ -1,6 +1,7 @@
 import { drawLineVariants } from "@/lib/animation";
 import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
+import Logo from "@/assets/logo.svg";
 
 export default function ClientHeader() {
     return (
@@ -8,7 +9,7 @@ export default function ClientHeader() {
             <div className="w-full h-full mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
                 <Link to="/" className="flex items-center space-x-2">
                     <img
-                        src="https://staticfile.batdongsan.com.vn/images/logo/standard/red/logo.svg"
+                        src={Logo}
                         alt="Logo"
                         className="h-12 w-auto"
                     />
@@ -27,11 +28,7 @@ export default function ClientHeader() {
                             initial="rest"
                             whileHover="hover"
                         >
-                            <Link
-                                to="/"
-                                key={item}
-                                className="text-gray-700 font-medium"
-                            >
+                            <Link to="/" key={item} className="text-gray-700 font-medium">
                                 {item}
                             </Link>
                             <motion.div
@@ -44,18 +41,30 @@ export default function ClientHeader() {
                 </nav>
 
                 <div className="flex items-center space-x-3">
-                    <Link
-                        to="/auth/login"
-                        className="hidden sm:inline-block border border-gray-300 text-gray-700 px-3 py-1.5 rounded-md text-sm hover:bg-gray-100"
+                    <motion.div
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ type: "spring", stiffness: 400 }}
                     >
-                        Đăng nhập
-                    </Link>
-                    <Link
-                        to="/auth/sign-up"
-                        className="hidden sm:inline-block bg-blue-500 text-white px-3 py-1.5 rounded-md text-sm hover:bg-blue-700"
+                        <Link
+                            to="/auth/login"
+                            className="hidden sm:inline-block border border-gray-300 text-gray-700 px-3 py-1.5 rounded-md text-sm hover:bg-gray-100"
+                        >
+                            Đăng nhập
+                        </Link>
+                    </motion.div>
+                    <motion.div
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ type: "spring", stiffness: 400 }}
                     >
-                        Đăng ký
-                    </Link>
+                        <Link
+                            to="/auth/sign-up"
+                            className="hidden sm:inline-block bg-blue-500 text-white px-3 py-1.5 rounded-md text-sm hover:bg-blue-700"
+                        >
+                            Đăng ký
+                        </Link>
+                    </motion.div>
                     <button className="md:hidden p-2 rounded hover:bg-gray-100">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

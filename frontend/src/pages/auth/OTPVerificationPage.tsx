@@ -14,9 +14,17 @@ import { Route } from "@/routes/auth/otp-verification";
 import { motion } from "motion/react";
 import { fadeInUp } from "@/lib/animation";
 import { ArrowLeftIcon } from "lucide-react";
+import {
+    ACCESS_TOKEN_STORAGE_KEY,
+    REFRESH_TOKEN_STORAGE_KEY,
+} from "@/constant/SecurityConstant";
+import type {
+    ApiResponseVoid,
+    LoginResponse,
+} from "@/types";
 
 export default function OTPVerificationPage() {
-    const { purpose } = Route.useSearch();
+    const { purpose, isOAR } = Route.useSearch();
     const navigate = useNavigate();
     const { otpDestination, setVerificationToken } = useAuthStore();
     const [value, setValue] = useState("");
@@ -28,6 +36,12 @@ export default function OTPVerificationPage() {
                     setVerificationToken(data.data?.verificationToken);
                 }
                 if (purpose === "REGISTRATION") {
+                    if (isOAR) {
+                        if (data.data?.verificationToken) {
+                            registerWithGoogle(data.data?.verificationToken);
+                        }
+                        return;
+                    }
                     navigate({ to: "/auth/sign-up-addition" });
                 }
                 if (purpose === "PASSWORD_RESET") {
@@ -39,6 +53,7 @@ export default function OTPVerificationPage() {
             },
         },
     });
+
     const handleVerifyOtp = () => {
         if (value.length === 6 && otpDestination && purpose) {
             mutation.mutate({
@@ -50,6 +65,62 @@ export default function OTPVerificationPage() {
             });
         }
     };
+
+    const registerWithGoogle = (verificationToken: string) => {
+        const width = 600;
+        const height = 600;
+        const left = window.screen.width / 2 - width / 2;
+        const top = window.screen.height / 2 - height / 2;
+        const popup = window.open(
+            `http://localhost:8080/oauth2/authorize/google?verificationToken=${verificationToken}`,
+            "Login with Google",
+            `width=${width},height=${height},top=${top},left=${left}`,
+        );
+
+        if (!popup) {
+            toast.error("Không thể mở cửa sổ đăng ký với Google");
+            return;
+        }
+
+        let intervalId: number | null = null;
+
+        const messageListener = (event: MessageEvent) => {
+            if (event.origin !== "http://localhost:8080") return;
+            const data: ApiResponseVoid = event.data;
+            console.log("Received message:", data);
+            if (data.code === 1000) {
+                const parseData = data.data as LoginResponse;
+                const refreshToken = parseData.refreshToken;
+                const accessToken = parseData.accessToken;
+                if (refreshToken && accessToken) {
+                    localStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, refreshToken);
+                    localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);
+                    toast.success("Đăng ký thành công với Google");
+                    navigate({ to: "/" });
+                }
+            } else {
+                toast.error("Đăng ký thất bại với Google. Vui lòng thử lại.");
+                navigate({ to: "/auth/sign-up" });
+            }
+            popup.close();
+
+            window.removeEventListener("message", messageListener);
+
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+        };
+
+        intervalId = window.setInterval(() => {
+            if (popup.closed) {
+                clearInterval(intervalId!);
+                window.removeEventListener("message", messageListener);
+            }
+        }, 500);
+
+        window.addEventListener("message", messageListener);
+    };
+
     return (
         <div className="flex">
             <div className="hidden sm:block w-4/7 h-screen">

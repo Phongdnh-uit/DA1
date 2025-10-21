@@ -1,3 +1,4 @@
+import { RichTextEditor } from "@/components/tiptap/rich-text-editor";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
     FormControl,
@@ -54,6 +55,13 @@ export function FormInput<K>({
                                 className="border-0 focus-visible:ring-0 shadow-none w-full rounded-[24px] h-16 placeholder:text-lg !text-lg"
                                 {...field}
                                 {...props}
+                                onChange={(e) => {
+                                    if (type === "number") {
+                                        field.onChange(Number(e.target.value));
+                                    } else {
+                                        field.onChange(e.target.value);
+                                    }
+                                }}
                             />
                         </div>
                     </FormControl>
@@ -118,6 +126,7 @@ interface FormSelectProps<K> {
     options: { key: string; render: React.ReactNode }[];
     keyType?: "string" | "number";
     className?: string;
+    disabled?: boolean;
 }
 
 export function FormSelect<K>({
@@ -126,6 +135,7 @@ export function FormSelect<K>({
     className,
     keyType,
     options,
+    disabled = false,
     ...props
 }: FormSelectProps<K>) {
     const form = useFormContext();
@@ -138,6 +148,7 @@ export function FormSelect<K>({
                     <FormLabel className="text-xl text-blue-500">{title}</FormLabel>
                     <FormControl>
                         <Select
+                            disabled={disabled}
                             value={field.value ? String(field.value) : undefined}
                             onValueChange={(value) => {
                                 if (keyType === "number") {
@@ -164,6 +175,44 @@ export function FormSelect<K>({
                                 ))}
                             </SelectContent>
                         </Select>
+                    </FormControl>
+                    <FormMessage />
+                </FormItem>
+            )}
+        />
+    );
+}
+
+interface FormEditorProps<K> {
+    title?: string;
+    name: keyof K & string;
+    placeholder?: string;
+    type?: string;
+    className?: string;
+}
+
+export function FormEditor<K>({
+    title,
+    name,
+    placeholder,
+    className,
+}: FormEditorProps<K>) {
+    const form = useFormContext();
+    return (
+        <FormField
+            control={form.control}
+            name={name}
+            render={({ field }) => (
+                <FormItem className="flex flex-col gap-2 h-full">
+                    <FormLabel className="text-xl text-blue-500">{title}</FormLabel>
+                    <FormControl>
+                        <div className={cn("rounded-[24px]", className)}>
+                            <RichTextEditor
+                                value={field.value || ""}
+                                placeholder={placeholder}
+                                onChange={(v) => field.onChange(v)}
+                            />
+                        </div>
                     </FormControl>
                     <FormMessage />
                 </FormItem>

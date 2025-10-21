@@ -9,9 +9,7 @@ export interface ProvinceRequest {
   /** @minLength 1 */
   name: string;
   /** @minLength 1 */
-  phoneCode: string;
+  code: string;
   /** @minLength 1 */
-  codeName: string;
-  /** @minLength 1 */
-  divisionType: string;
+  type: string;
 }

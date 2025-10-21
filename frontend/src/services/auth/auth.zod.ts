@@ -36,6 +36,14 @@ export const registerBody = zod.object({
   "password": zod.string().min(1)
 })
 
+export const refreshTokenBody = zod.object({
+  "refreshToken": zod.string().min(1)
+})
+
+export const logoutBody = zod.object({
+  "refreshToken": zod.string().min(1)
+})
+
 export const loginBody = zod.object({
   "credential": zod.string().min(1),
   "password": zod.string().min(1)

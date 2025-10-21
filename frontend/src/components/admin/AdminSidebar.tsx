@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "@tanstack/react-router";
 import logo from "@/assets/logo.svg";
 import {
+    Building2Icon,
     CircleStarIcon,
     HouseIcon,
     MapIcon,
@@ -92,6 +93,17 @@ export function AdminSidebar(props: AdminSidebarProps) {
             href: "/admin/property-type",
             icon: (
                 <HouseIcon
+                    className={cn(
+                        "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
+                    )}
+                />
+            ),
+        },
+        {
+            label: "Bất động sản",
+            href: "/admin/property",
+            icon: (
+                <Building2Icon
                     className={cn(
                         "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
                     )}

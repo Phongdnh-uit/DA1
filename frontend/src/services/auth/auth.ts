@@ -21,6 +21,7 @@ import type {
   ApiResponseVerifyOtpResponse,
   ApiResponseVoid,
   LoginRequest,
+  RefreshTokenRequest,
   RegisterRequest,
   ResetPasswordRequest,
   SendOtpRequest,
@@ -323,6 +324,122 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
 
       const mutationOptions = getRegisterMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    export const refreshToken = (
+    refreshTokenRequest: BodyType<RefreshTokenRequest>,
+ options?: SecondParameter<typeof axiosInstanceFn>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstanceFn<ApiResponseLoginResponse>(
+      {url: `/auth/refresh`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: refreshTokenRequest, signal
+    },
+      options);
+    }
+  
+
+
+export const getRefreshTokenMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof refreshToken>>, TError,{data: BodyType<RefreshTokenRequest>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
+): UseMutationOptions<Awaited<ReturnType<typeof refreshToken>>, TError,{data: BodyType<RefreshTokenRequest>}, TContext> => {
+
+const mutationKey = ['refreshToken'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof refreshToken>>, {data: BodyType<RefreshTokenRequest>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  refreshToken(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RefreshTokenMutationResult = NonNullable<Awaited<ReturnType<typeof refreshToken>>>
+    export type RefreshTokenMutationBody = BodyType<RefreshTokenRequest>
+    export type RefreshTokenMutationError = ErrorType<unknown>
+
+    export const useRefreshToken = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof refreshToken>>, TError,{data: BodyType<RefreshTokenRequest>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof refreshToken>>,
+        TError,
+        {data: BodyType<RefreshTokenRequest>},
+        TContext
+      > => {
+
+      const mutationOptions = getRefreshTokenMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    export const logout = (
+    refreshTokenRequest: BodyType<RefreshTokenRequest>,
+ options?: SecondParameter<typeof axiosInstanceFn>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstanceFn<ApiResponseLoginResponse>(
+      {url: `/auth/logout`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: refreshTokenRequest, signal
+    },
+      options);
+    }
+  
+
+
+export const getLogoutMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof logout>>, TError,{data: BodyType<RefreshTokenRequest>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
+): UseMutationOptions<Awaited<ReturnType<typeof logout>>, TError,{data: BodyType<RefreshTokenRequest>}, TContext> => {
+
+const mutationKey = ['logout'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof logout>>, {data: BodyType<RefreshTokenRequest>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  logout(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type LogoutMutationResult = NonNullable<Awaited<ReturnType<typeof logout>>>
+    export type LogoutMutationBody = BodyType<RefreshTokenRequest>
+    export type LogoutMutationError = ErrorType<unknown>
+
+    export const useLogout = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof logout>>, TError,{data: BodyType<RefreshTokenRequest>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof logout>>,
+        TError,
+        {data: BodyType<RefreshTokenRequest>},
+        TContext
+      > => {
+
+      const mutationOptions = getLogoutMutationOptions(options);
 
       return useMutation(mutationOptions , queryClient);
     }

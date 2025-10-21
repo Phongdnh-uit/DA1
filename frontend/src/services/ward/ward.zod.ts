@@ -19,7 +19,8 @@ export const updateWardParams = zod.object({
 
 export const updateWardBody = zod.object({
   "name": zod.string().min(1),
-  "codeName": zod.string().min(1),
+  "code": zod.string().min(1),
+  "type": zod.string().min(1),
   "provinceId": zod.number()
 })
 
@@ -29,19 +30,21 @@ export const deleteWardByIdParams = zod.object({
 
 export const createWardBody = zod.object({
   "name": zod.string().min(1),
-  "codeName": zod.string().min(1),
+  "code": zod.string().min(1),
+  "type": zod.string().min(1),
   "provinceId": zod.number()
 })
 
 export const findAllWardQueryPageDefault = 0;
 export const findAllWardQueryPageMin = 0;
-export const findAllWardQuerySizeDefault = 20;
+export const findAllWardQuerySizeDefault = 20;export const findAllWardQueryAllDefault = false;
 
 export const findAllWardQueryParams = zod.object({
   "page": zod.number().min(findAllWardQueryPageMin).optional().describe('Zero-based page index (0..N)'),
   "size": zod.number().min(1).default(findAllWardQuerySizeDefault).describe('The size of the page to be returned'),
   "sort": zod.array(zod.string()).optional().describe('Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.'),
-  "filter": zod.string().optional()
+  "filter": zod.string().optional(),
+  "all": zod.boolean().optional()
 })
 
 export const deleteBulkWardQueryParams = zod.object({

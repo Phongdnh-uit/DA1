@@ -4,6 +4,7 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
+import type { ProvinceResponse } from './provinceResponse';
 
 export interface WardResponse {
   id?: number;
@@ -13,6 +14,7 @@ export interface WardResponse {
   createdAt?: string;
   updatedAt?: string;
   name?: string;
-  codeName?: string;
-  provinceId?: string;
+  code?: string;
+  type?: string;
+  province?: ProvinceResponse;
 }

@@ -12,8 +12,7 @@ export interface ProvinceResponse {
   updatedBy?: number;
   createdAt?: string;
   updatedAt?: string;
-  phoneCode?: string;
   name?: string;
-  codeName?: string;
-  divisionType?: string;
+  code?: string;
+  type?: string;
 }

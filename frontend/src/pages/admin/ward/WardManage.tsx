@@ -3,7 +3,10 @@ import { DataTable } from "@/components/general/DataTable";
 import DeleteDialog from "@/components/general/DeleteDialog";
 import { RippleButton } from "@/components/ui/shadcn-io/ripple-button";
 import { useDatatable } from "@/hooks/useDatatable";
-import { useDeleteBulkWard, useFindAllWard } from "@/services/ward/ward";
+import {
+    useDeleteBulkWard,
+    useFindAllWard,
+} from "@/services/ward/ward";
 import type { WardResponse } from "@/types";
 import {
     createActionColumn,
@@ -19,7 +22,6 @@ const keys: (keyof WardResponse)[] = [
     "id",
     "name",
     "codeName",
-    "provinceId",
     "createdAt",
     "updatedAt",
     "createdBy",
@@ -105,6 +107,23 @@ export const WardManage = () => {
         setFilterParam({ sort, filter });
     };
 
+    // useEffect(() => {
+    //     if (
+    //         list.isSuccess &&
+    //         list.data?.data?.totalPages &&
+    //         list.data?.data?.totalPages > pagination.page + 1
+    //     ) {
+    //         queryClient.fetchQuery(
+    //             getFindAllWardQueryOptions({
+    //                 page: pagination.page + 1,
+    //                 size: pagination.size,
+    //                 sort: filterParam.sort,
+    //                 filter: filterParam.filter,
+    //             }),
+    //         );
+    //     }
+    // }, [list.isSuccess, list.data, pagination.page, pagination, filterParam]);
+
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-end">
@@ -120,7 +139,7 @@ export const WardManage = () => {
                     { key: "id", label: "Id" },
                     { key: "name", label: "Name" },
                     { key: "code", label: "Code" },
-                    { key: "provinceId", label: "Province Id" },
+                    { key: "province.id", label: "Province Id" },
                     { key: "createdBy", label: "Created By" },
                     { key: "updatedBy", label: "Updated By" },
                     { key: "createdAt", label: "Created At" },
@@ -130,7 +149,7 @@ export const WardManage = () => {
                     { name: "id", label: "Id", type: "number" },
                     { name: "name", label: "Name", type: "text" },
                     { name: "codeName", label: "Code Name", type: "text" },
-                    { name: "provinceId", label: "Province Id", type: "number" },
+                    { name: "province.id", label: "Province Id", type: "number" },
                     { name: "createdBy", label: "Created By", type: "number" },
                     { name: "updatedBy", label: "Updated By", type: "number" },
                     { name: "createdAt", label: "Created At", type: "date" },

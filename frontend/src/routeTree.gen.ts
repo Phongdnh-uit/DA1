@@ -12,7 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TestDatatableRouteImport } from './routes/test-datatable'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as _clientRouteImport } from './routes/__client'
+import { Route as _clientIndexRouteImport } from './routes/__client/index'
 import { Route as AuthVerifyEmailRouteImport } from './routes/auth/verify-email'
 import { Route as AuthSignUpAdditionRouteImport } from './routes/auth/sign-up-addition'
 import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
@@ -20,14 +21,17 @@ import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-passw
 import { Route as AuthOtpVerificationRouteImport } from './routes/auth/otp-verification'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
+import { Route as _clientDetailRouteImport } from './routes/__client/detail'
 import { Route as AdminWardIndexRouteImport } from './routes/admin/ward/index'
 import { Route as AdminUserIndexRouteImport } from './routes/admin/user/index'
 import { Route as AdminRoleIndexRouteImport } from './routes/admin/role/index'
 import { Route as AdminProvinceIndexRouteImport } from './routes/admin/province/index'
+import { Route as AdminPropertyIndexRouteImport } from './routes/admin/property/index'
 import { Route as AdminPropertyTypeIndexRouteImport } from './routes/admin/property-type/index'
 import { Route as AdminPermissionIndexRouteImport } from './routes/admin/permission/index'
 import { Route as AdminDashboardIndexRouteImport } from './routes/admin/dashboard/index'
 import { Route as AdminUserCreateRouteImport } from './routes/admin/user/create'
+import { Route as AdminPropertyCreateRouteImport } from './routes/admin/property/create'
 import { Route as AdminUserUpdateIdRouteImport } from './routes/admin/user/update.$id'
 
 const TestDatatableRoute = TestDatatableRouteImport.update({
@@ -45,10 +49,14 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const _clientRoute = _clientRouteImport.update({
+  id: '/__client',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const _clientIndexRoute = _clientIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => _clientRoute,
 } as any)
 const AuthVerifyEmailRoute = AuthVerifyEmailRouteImport.update({
   id: '/verify-email',
@@ -85,6 +93,11 @@ const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => AuthRoute,
 } as any)
+const _clientDetailRoute = _clientDetailRouteImport.update({
+  id: '/detail',
+  path: '/detail',
+  getParentRoute: () => _clientRoute,
+} as any)
 const AdminWardIndexRoute = AdminWardIndexRouteImport.update({
   id: '/ward/',
   path: '/ward/',
@@ -103,6 +116,11 @@ const AdminRoleIndexRoute = AdminRoleIndexRouteImport.update({
 const AdminProvinceIndexRoute = AdminProvinceIndexRouteImport.update({
   id: '/province/',
   path: '/province/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPropertyIndexRoute = AdminPropertyIndexRouteImport.update({
+  id: '/property/',
+  path: '/property/',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminPropertyTypeIndexRoute = AdminPropertyTypeIndexRouteImport.update({
@@ -125,6 +143,11 @@ const AdminUserCreateRoute = AdminUserCreateRouteImport.update({
   path: '/user/create',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminPropertyCreateRoute = AdminPropertyCreateRouteImport.update({
+  id: '/property/create',
+  path: '/property/create',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminUserUpdateIdRoute = AdminUserUpdateIdRouteImport.update({
   id: '/user/update/$id',
   path: '/user/update/$id',
@@ -132,10 +155,10 @@ const AdminUserUpdateIdRoute = AdminUserUpdateIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/test-datatable': typeof TestDatatableRoute
+  '/detail': typeof _clientDetailRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/otp-verification': typeof AuthOtpVerificationRoute
@@ -143,10 +166,13 @@ export interface FileRoutesByFullPath {
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/sign-up-addition': typeof AuthSignUpAdditionRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/': typeof _clientIndexRoute
+  '/admin/property/create': typeof AdminPropertyCreateRoute
   '/admin/user/create': typeof AdminUserCreateRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
   '/admin/permission': typeof AdminPermissionIndexRoute
   '/admin/property-type': typeof AdminPropertyTypeIndexRoute
+  '/admin/property': typeof AdminPropertyIndexRoute
   '/admin/province': typeof AdminProvinceIndexRoute
   '/admin/role': typeof AdminRoleIndexRoute
   '/admin/user': typeof AdminUserIndexRoute
@@ -154,10 +180,10 @@ export interface FileRoutesByFullPath {
   '/admin/user/update/$id': typeof AdminUserUpdateIdRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/test-datatable': typeof TestDatatableRoute
+  '/detail': typeof _clientDetailRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/otp-verification': typeof AuthOtpVerificationRoute
@@ -165,10 +191,13 @@ export interface FileRoutesByTo {
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/sign-up-addition': typeof AuthSignUpAdditionRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/': typeof _clientIndexRoute
+  '/admin/property/create': typeof AdminPropertyCreateRoute
   '/admin/user/create': typeof AdminUserCreateRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
   '/admin/permission': typeof AdminPermissionIndexRoute
   '/admin/property-type': typeof AdminPropertyTypeIndexRoute
+  '/admin/property': typeof AdminPropertyIndexRoute
   '/admin/province': typeof AdminProvinceIndexRoute
   '/admin/role': typeof AdminRoleIndexRoute
   '/admin/user': typeof AdminUserIndexRoute
@@ -177,10 +206,11 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/__client': typeof _clientRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/test-datatable': typeof TestDatatableRoute
+  '/__client/detail': typeof _clientDetailRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/otp-verification': typeof AuthOtpVerificationRoute
@@ -188,10 +218,13 @@ export interface FileRoutesById {
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/sign-up-addition': typeof AuthSignUpAdditionRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/__client/': typeof _clientIndexRoute
+  '/admin/property/create': typeof AdminPropertyCreateRoute
   '/admin/user/create': typeof AdminUserCreateRoute
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
   '/admin/permission/': typeof AdminPermissionIndexRoute
   '/admin/property-type/': typeof AdminPropertyTypeIndexRoute
+  '/admin/property/': typeof AdminPropertyIndexRoute
   '/admin/province/': typeof AdminProvinceIndexRoute
   '/admin/role/': typeof AdminRoleIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
@@ -201,10 +234,10 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/admin'
     | '/auth'
     | '/test-datatable'
+    | '/detail'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/otp-verification'
@@ -212,10 +245,13 @@ export interface FileRouteTypes {
     | '/auth/sign-up'
     | '/auth/sign-up-addition'
     | '/auth/verify-email'
+    | '/'
+    | '/admin/property/create'
     | '/admin/user/create'
     | '/admin/dashboard'
     | '/admin/permission'
     | '/admin/property-type'
+    | '/admin/property'
     | '/admin/province'
     | '/admin/role'
     | '/admin/user'
@@ -223,10 +259,10 @@ export interface FileRouteTypes {
     | '/admin/user/update/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/admin'
     | '/auth'
     | '/test-datatable'
+    | '/detail'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/otp-verification'
@@ -234,10 +270,13 @@ export interface FileRouteTypes {
     | '/auth/sign-up'
     | '/auth/sign-up-addition'
     | '/auth/verify-email'
+    | '/'
+    | '/admin/property/create'
     | '/admin/user/create'
     | '/admin/dashboard'
     | '/admin/permission'
     | '/admin/property-type'
+    | '/admin/property'
     | '/admin/province'
     | '/admin/role'
     | '/admin/user'
@@ -245,10 +284,11 @@ export interface FileRouteTypes {
     | '/admin/user/update/$id'
   id:
     | '__root__'
-    | '/'
+    | '/__client'
     | '/admin'
     | '/auth'
     | '/test-datatable'
+    | '/__client/detail'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/otp-verification'
@@ -256,10 +296,13 @@ export interface FileRouteTypes {
     | '/auth/sign-up'
     | '/auth/sign-up-addition'
     | '/auth/verify-email'
+    | '/__client/'
+    | '/admin/property/create'
     | '/admin/user/create'
     | '/admin/dashboard/'
     | '/admin/permission/'
     | '/admin/property-type/'
+    | '/admin/property/'
     | '/admin/province/'
     | '/admin/role/'
     | '/admin/user/'
@@ -268,7 +311,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  _clientRoute: typeof _clientRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
   TestDatatableRoute: typeof TestDatatableRoute
@@ -297,12 +340,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/__client': {
+      id: '/__client'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof _clientRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/__client/': {
+      id: '/__client/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof _clientIndexRouteImport
+      parentRoute: typeof _clientRoute
     }
     '/auth/verify-email': {
       id: '/auth/verify-email'
@@ -353,6 +403,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthForgotPasswordRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/__client/detail': {
+      id: '/__client/detail'
+      path: '/detail'
+      fullPath: '/detail'
+      preLoaderRoute: typeof _clientDetailRouteImport
+      parentRoute: typeof _clientRoute
+    }
     '/admin/ward/': {
       id: '/admin/ward/'
       path: '/ward'
@@ -379,6 +436,13 @@ declare module '@tanstack/react-router' {
       path: '/province'
       fullPath: '/admin/province'
       preLoaderRoute: typeof AdminProvinceIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/property/': {
+      id: '/admin/property/'
+      path: '/property'
+      fullPath: '/admin/property'
+      preLoaderRoute: typeof AdminPropertyIndexRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/property-type/': {
@@ -409,6 +473,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUserCreateRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/property/create': {
+      id: '/admin/property/create'
+      path: '/property/create'
+      fullPath: '/admin/property/create'
+      preLoaderRoute: typeof AdminPropertyCreateRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/user/update/$id': {
       id: '/admin/user/update/$id'
       path: '/user/update/$id'
@@ -419,11 +490,26 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface _clientRouteChildren {
+  _clientDetailRoute: typeof _clientDetailRoute
+  _clientIndexRoute: typeof _clientIndexRoute
+}
+
+const _clientRouteChildren: _clientRouteChildren = {
+  _clientDetailRoute: _clientDetailRoute,
+  _clientIndexRoute: _clientIndexRoute,
+}
+
+const _clientRouteWithChildren =
+  _clientRoute._addFileChildren(_clientRouteChildren)
+
 interface AdminRouteChildren {
+  AdminPropertyCreateRoute: typeof AdminPropertyCreateRoute
   AdminUserCreateRoute: typeof AdminUserCreateRoute
   AdminDashboardIndexRoute: typeof AdminDashboardIndexRoute
   AdminPermissionIndexRoute: typeof AdminPermissionIndexRoute
   AdminPropertyTypeIndexRoute: typeof AdminPropertyTypeIndexRoute
+  AdminPropertyIndexRoute: typeof AdminPropertyIndexRoute
   AdminProvinceIndexRoute: typeof AdminProvinceIndexRoute
   AdminRoleIndexRoute: typeof AdminRoleIndexRoute
   AdminUserIndexRoute: typeof AdminUserIndexRoute
@@ -432,10 +518,12 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminPropertyCreateRoute: AdminPropertyCreateRoute,
   AdminUserCreateRoute: AdminUserCreateRoute,
   AdminDashboardIndexRoute: AdminDashboardIndexRoute,
   AdminPermissionIndexRoute: AdminPermissionIndexRoute,
   AdminPropertyTypeIndexRoute: AdminPropertyTypeIndexRoute,
+  AdminPropertyIndexRoute: AdminPropertyIndexRoute,
   AdminProvinceIndexRoute: AdminProvinceIndexRoute,
   AdminRoleIndexRoute: AdminRoleIndexRoute,
   AdminUserIndexRoute: AdminUserIndexRoute,
@@ -468,7 +556,7 @@ const AuthRouteChildren: AuthRouteChildren = {
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  _clientRoute: _clientRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
   TestDatatableRoute: TestDatatableRoute,

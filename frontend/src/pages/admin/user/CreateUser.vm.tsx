@@ -17,7 +17,7 @@ export const useCreateUserVM = () => {
             emailVerified: false,
             phoneVerified: false,
             roleId: undefined,
-            status: "ACTIVE",
+            status: undefined,
         },
         mode: "onBlur",
         resolver: zodResolver(createUserBody),

@@ -19,9 +19,8 @@ export const updateProvinceParams = zod.object({
 
 export const updateProvinceBody = zod.object({
   "name": zod.string().min(1),
-  "phoneCode": zod.string().min(1),
-  "codeName": zod.string().min(1),
-  "divisionType": zod.string().min(1)
+  "code": zod.string().min(1),
+  "type": zod.string().min(1)
 })
 
 export const deleteProvinceByIdParams = zod.object({
@@ -30,20 +29,20 @@ export const deleteProvinceByIdParams = zod.object({
 
 export const createProvinceBody = zod.object({
   "name": zod.string().min(1),
-  "phoneCode": zod.string().min(1),
-  "codeName": zod.string().min(1),
-  "divisionType": zod.string().min(1)
+  "code": zod.string().min(1),
+  "type": zod.string().min(1)
 })
 
 export const findAllProvinceQueryPageDefault = 0;
 export const findAllProvinceQueryPageMin = 0;
-export const findAllProvinceQuerySizeDefault = 20;
+export const findAllProvinceQuerySizeDefault = 20;export const findAllProvinceQueryAllDefault = false;
 
 export const findAllProvinceQueryParams = zod.object({
   "page": zod.number().min(findAllProvinceQueryPageMin).optional().describe('Zero-based page index (0..N)'),
   "size": zod.number().min(1).default(findAllProvinceQuerySizeDefault).describe('The size of the page to be returned'),
   "sort": zod.array(zod.string()).optional().describe('Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.'),
-  "filter": zod.string().optional()
+  "filter": zod.string().optional(),
+  "all": zod.boolean().optional()
 })
 
 export const deleteBulkProvinceQueryParams = zod.object({

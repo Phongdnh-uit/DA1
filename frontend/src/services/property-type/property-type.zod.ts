@@ -31,13 +31,14 @@ export const createPropertyTypeBody = zod.object({
 
 export const findAllPropertyTypeQueryPageDefault = 0;
 export const findAllPropertyTypeQueryPageMin = 0;
-export const findAllPropertyTypeQuerySizeDefault = 20;
+export const findAllPropertyTypeQuerySizeDefault = 20;export const findAllPropertyTypeQueryAllDefault = false;
 
 export const findAllPropertyTypeQueryParams = zod.object({
   "page": zod.number().min(findAllPropertyTypeQueryPageMin).optional().describe('Zero-based page index (0..N)'),
   "size": zod.number().min(1).default(findAllPropertyTypeQuerySizeDefault).describe('The size of the page to be returned'),
   "sort": zod.array(zod.string()).optional().describe('Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.'),
-  "filter": zod.string().optional()
+  "filter": zod.string().optional(),
+  "all": zod.boolean().optional()
 })
 
 export const deleteBulkPropertyTypeQueryParams = zod.object({

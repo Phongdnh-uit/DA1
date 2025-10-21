@@ -45,13 +45,14 @@ export const createUserBody = zod.object({
 
 export const findAllUserQueryPageDefault = 0;
 export const findAllUserQueryPageMin = 0;
-export const findAllUserQuerySizeDefault = 20;
+export const findAllUserQuerySizeDefault = 20;export const findAllUserQueryAllDefault = false;
 
 export const findAllUserQueryParams = zod.object({
   "page": zod.number().min(findAllUserQueryPageMin).optional().describe('Zero-based page index (0..N)'),
   "size": zod.number().min(1).default(findAllUserQuerySizeDefault).describe('The size of the page to be returned'),
   "sort": zod.array(zod.string()).optional().describe('Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.'),
-  "filter": zod.string().optional()
+  "filter": zod.string().optional(),
+  "all": zod.boolean().optional()
 })
 
 export const deleteBulkUserQueryParams = zod.object({

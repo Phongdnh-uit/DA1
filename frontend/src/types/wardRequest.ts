@@ -9,6 +9,8 @@ export interface WardRequest {
   /** @minLength 1 */
   name: string;
   /** @minLength 1 */
-  codeName: string;
+  code: string;
+  /** @minLength 1 */
+  type: string;
   provinceId: number;
 }

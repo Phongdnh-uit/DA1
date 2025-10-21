@@ -21,4 +21,5 @@ size?: number;
  */
 sort?: string[];
 filter?: string;
+all?: boolean;
 };

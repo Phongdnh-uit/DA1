@@ -35,13 +35,14 @@ export const createPermissionBody = zod.object({
 
 export const findAllPermissionQueryPageDefault = 0;
 export const findAllPermissionQueryPageMin = 0;
-export const findAllPermissionQuerySizeDefault = 20;
+export const findAllPermissionQuerySizeDefault = 20;export const findAllPermissionQueryAllDefault = false;
 
 export const findAllPermissionQueryParams = zod.object({
   "page": zod.number().min(findAllPermissionQueryPageMin).optional().describe('Zero-based page index (0..N)'),
   "size": zod.number().min(1).default(findAllPermissionQuerySizeDefault).describe('The size of the page to be returned'),
   "sort": zod.array(zod.string()).optional().describe('Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.'),
-  "filter": zod.string().optional()
+  "filter": zod.string().optional(),
+  "all": zod.boolean().optional()
 })
 
 export const deleteBulkPermissionQueryParams = zod.object({

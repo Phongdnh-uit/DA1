@@ -12,18 +12,27 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useLogin } from "@/services/auth/auth";
 import { loginBody } from "@/services/auth/auth.zod";
-import type { LoginRequest } from "@/types";
+import type {
+    ApiResponseVoid,
+    LoginRequest,
+    LoginResponse,
+} from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IconBrandGoogle } from "@tabler/icons-react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { KeyIcon, PhoneIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import BannerImage from "@/assets/banner.jpg";
 import { motion } from "motion/react";
 import { fadeInUp } from "@/lib/animation";
+import {
+    ACCESS_TOKEN_STORAGE_KEY,
+    REFRESH_TOKEN_STORAGE_KEY,
+} from "@/constant/SecurityConstant";
 
 export default function LoginPage() {
+    const navigate = useNavigate();
     const form = useForm<LoginRequest>({
         defaultValues: {
             credential: "",
@@ -34,8 +43,19 @@ export default function LoginPage() {
     });
     const login = useLogin({
         mutation: {
-            onSuccess: () => {
+            onSuccess: (data) => {
                 toast.success("Đăng nhập thành công");
+                if (data.data?.refreshToken && data.data?.accessToken) {
+                    localStorage.setItem(
+                        REFRESH_TOKEN_STORAGE_KEY,
+                        data.data?.refreshToken,
+                    );
+                    localStorage.setItem(
+                        ACCESS_TOKEN_STORAGE_KEY,
+                        data.data?.accessToken,
+                    );
+                }
+                navigate({ to: "/" });
             },
             onError: () => {
                 toast.error("Đăng nhập thất bại. Thông tin đăng nhập không đúng");
@@ -44,6 +64,64 @@ export default function LoginPage() {
     });
     const onSubmit = (data: LoginRequest) => {
         login.mutate({ data });
+    };
+
+    const loginWithGoogle = () => {
+        const width = 600;
+        const height = 600;
+        const left = window.screen.width / 2 - width / 2;
+        const top = window.screen.height / 2 - height / 2;
+        const popup = window.open(
+            `http://localhost:8080/oauth2/authorize/google`,
+            "Login with Google",
+            `width=${width},height=${height},top=${top},left=${left}`,
+        );
+
+        if (!popup) {
+            toast.error("Không thể mở cửa sổ đăng nhập Google");
+            return;
+        }
+
+        let intervalId: number | null = null;
+
+        const messageListener = (event: MessageEvent) => {
+            if (event.origin !== "http://localhost:8080") return;
+            const data: ApiResponseVoid = event.data;
+            console.log("Received message:", data);
+            if (data.code === 1000) {
+                const parseData = data.data as LoginResponse;
+                const refreshToken = parseData.refreshToken;
+                const accessToken = parseData.accessToken;
+                if (refreshToken && accessToken) {
+                    localStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, refreshToken);
+                    localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);
+                    toast.success("Đăng nhập thành công bằng Google");
+                    navigate({ to: "/" });
+                    return;
+                }
+            } else {
+                toast.error(
+                    "Bạn chưa liên kết tài khoản Google với hệ thống. Vui lòng đăng ký tài khoản trước khi đăng nhập bằng Google.",
+                );
+            }
+
+            popup.close();
+
+            window.removeEventListener("message", messageListener);
+
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+        };
+
+        intervalId = window.setInterval(() => {
+            if (popup.closed) {
+                clearInterval(intervalId!);
+                window.removeEventListener("message", messageListener);
+            }
+        }, 500);
+
+        window.addEventListener("message", messageListener);
     };
     return (
         <div className="flex">
@@ -134,6 +212,7 @@ export default function LoginPage() {
                             variants={fadeInUp.item}
                             whileTap={{ scale: 0.95 }}
                             whileHover={{ scale: 1.02 }}
+                            transition={{ type: "spring", stiffness: 400 }}
                         >
                             <Button
                                 onClick={() => form.handleSubmit(onSubmit)()}
@@ -151,10 +230,12 @@ export default function LoginPage() {
                             variants={fadeInUp.item}
                             whileTap={{ scale: 0.95 }}
                             whileHover={{ scale: 1.02 }}
+                            transition={{ type: "spring", stiffness: 400 }}
                         >
                             <Button
                                 variant="outline"
                                 className="w-full h-16 rounded-[24px] text-lg"
+                                onClick={() => loginWithGoogle()}
                             >
                                 <IconBrandGoogle className="h-6 w-6 mr-2" />
                                 Đăng nhập với Google

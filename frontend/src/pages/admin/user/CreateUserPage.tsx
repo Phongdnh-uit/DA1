@@ -67,7 +67,7 @@ export const CreateUserPage = () => {
                             </div>
                         </div>
                         <FormSelect<UserRequest>
-                            keyType="number"
+                            keyType="string"
                             title="Trạng thái"
                             options={Object.entries(UserRequestStatus).map(
                                 ([key, value]) => ({
