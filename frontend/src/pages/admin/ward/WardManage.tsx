@@ -1,12 +1,13 @@
 import Filter from "@/components/admin/Filter";
 import { DataTable } from "@/components/general/DataTable";
-import DeleteDialog from "@/components/general/DeleteDialog";
 import { RippleButton } from "@/components/ui/shadcn-io/ripple-button";
 import { useDatatable } from "@/hooks/useDatatable";
 import {
     useDeleteBulkWard,
+    useDeleteWardById,
     useFindAllWard,
 } from "@/services/ward/ward";
+import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
 import type { WardResponse } from "@/types";
 import {
     createActionColumn,
@@ -21,7 +22,8 @@ import { toast } from "react-toastify";
 const keys: (keyof WardResponse)[] = [
     "id",
     "name",
-    "codeName",
+    "type",
+    "code",
     "createdAt",
     "updatedAt",
     "createdBy",
@@ -30,6 +32,18 @@ const keys: (keyof WardResponse)[] = [
 
 export const WardManage = () => {
     const navigate = useNavigate();
+    const openDeleteDialog = useDeleteDialogStore((state) => state.openDialog);
+    const useDeleteWard = useDeleteWardById({
+        mutation: {
+            onSuccess: () => {
+                toast.success("Xoá thành công");
+                list.refetch();
+            },
+            onError: () => {
+                toast.error("Xoá thất bại");
+            },
+        },
+    });
     const columns = useMemo(
         () => [
             createSelectionColumn<WardResponse>(),
@@ -38,9 +52,17 @@ export const WardManage = () => {
                 onEdit: (row) => {
                     navigate({ to: `/admin/district/update/${row.id}` });
                 },
+                onDelete: (row) => {
+                    if (!row.id) return;
+                    openDeleteDialog({
+                        onConfirm() {
+                            useDeleteWard.mutate({ id: row.id! });
+                        },
+                    });
+                },
             }),
         ],
-        [navigate],
+        [navigate, openDeleteDialog, useDeleteWard],
     );
     const [pagination, setPagination] = useState<{
         page: number;
@@ -62,19 +84,14 @@ export const WardManage = () => {
         pageCount: 0,
     });
 
-    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-
     const bulkDeleteMutation = useDeleteBulkWard({
         mutation: {
             onSuccess: () => {
                 toast.success("Delete successfully");
-                setSelectedRows([]);
                 list.refetch();
             },
         },
     });
-
-    const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
     const getSelectedRowIds = () => {
         return table
@@ -88,17 +105,9 @@ export const WardManage = () => {
             toast.info("Please choose one row to delete");
             return;
         }
-        setSelectedRows(ids);
-        setOpenDeleteDialog(true);
-    };
-
-    const onConfirmBulkDelete = () => {
-        if (selectedRows.length === 0) {
-            return;
-        }
-        bulkDeleteMutation.mutate({
-            params: {
-                ids: selectedRows,
+        openDeleteDialog({
+            onConfirm() {
+                bulkDeleteMutation.mutate({ params: { ids } });
             },
         });
     };
@@ -167,11 +176,6 @@ export const WardManage = () => {
                 totalPages={list.data?.data?.totalPages || 0}
                 totalElements={list.data?.data?.totalElements || 0}
                 numberOfElements={list.data?.data?.numberOfElements || 0}
-            />
-            <DeleteDialog
-                open={openDeleteDialog}
-                onOpenChange={setOpenDeleteDialog}
-                onConfirm={onConfirmBulkDelete}
             />
         </div>
     );

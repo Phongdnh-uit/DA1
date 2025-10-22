@@ -1,10 +1,10 @@
 import Filter from "@/components/admin/Filter";
 import { DataTable } from "@/components/general/DataTable";
-import DeleteDialog from "@/components/general/DeleteDialog";
 import { RippleButton } from "@/components/ui/shadcn-io/ripple-button";
 import { useDatatable } from "@/hooks/useDatatable";
 import {
     useDeleteBulkPropertyType,
+    useDeletePropertyTypeById,
     useFindAllPropertyType,
 } from "@/services/property-type/property-type";
 import type { PropertyTypeResponse } from "@/types";
@@ -18,6 +18,7 @@ import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import CreatePropertyTypeModal from "./CreatePropertyTypeModal";
 import UpdatePropertyTypeModal from "./UpdatePropertyTypeModal";
+import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
 
 const keys: (keyof PropertyTypeResponse)[] = [
     "id",
@@ -29,6 +30,18 @@ const keys: (keyof PropertyTypeResponse)[] = [
 ];
 
 export const PropertyTypeManage = () => {
+    const openDeleteDialog = useDeleteDialogStore((state) => state.openDialog);
+    const deletePropertyType = useDeletePropertyTypeById({
+        mutation: {
+            onSuccess: () => {
+                toast.success("Xoá thành công");
+                list.refetch();
+            },
+            onError: () => {
+                toast.error("Xoá thất bại");
+            },
+        },
+    });
     const columns = useMemo(
         () => [
             createSelectionColumn<PropertyTypeResponse>(),
@@ -37,9 +50,17 @@ export const PropertyTypeManage = () => {
                 onEdit: () => {
                     setOpenUpdateModal(true);
                 },
+                onDelete: (row) => {
+                    openDeleteDialog({
+                        onConfirm() {
+                            if (!row.id) return;
+                            deletePropertyType.mutate({ id: row.id });
+                        },
+                    });
+                },
             }),
         ],
-        [],
+        [deletePropertyType, openDeleteDialog],
     );
     const [pagination, setPagination] = useState<{
         page: number;
@@ -61,7 +82,6 @@ export const PropertyTypeManage = () => {
         pageCount: 0,
     });
 
-    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [openCreateModal, setOpenCreateModal] = useState(false);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
@@ -69,13 +89,10 @@ export const PropertyTypeManage = () => {
         mutation: {
             onSuccess: () => {
                 toast.success("Delete successfully");
-                setSelectedRows([]);
                 list.refetch();
             },
         },
     });
-
-    const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
     const getSelectedRowIds = () => {
         return table
@@ -89,17 +106,13 @@ export const PropertyTypeManage = () => {
             toast.info("Please choose one row to delete");
             return;
         }
-        setSelectedRows(ids);
-        setOpenDeleteDialog(true);
-    };
-
-    const onConfirmBulkDelete = () => {
-        if (selectedRows.length === 0) {
-            return;
-        }
-        bulkDeleteMutation.mutate({
-            params: {
-                ids: selectedRows,
+        openDeleteDialog({
+            onConfirm() {
+                bulkDeleteMutation.mutate({
+                    params: {
+                        ids,
+                    },
+                });
             },
         });
     };
@@ -145,11 +158,6 @@ export const PropertyTypeManage = () => {
                 totalPages={list.data?.data?.totalPages || 0}
                 totalElements={list.data?.data?.totalElements || 0}
                 numberOfElements={list.data?.data?.numberOfElements || 0}
-            />
-            <DeleteDialog
-                open={openDeleteDialog}
-                onOpenChange={setOpenDeleteDialog}
-                onConfirm={onConfirmBulkDelete}
             />
             <CreatePropertyTypeModal
                 open={openCreateModal}

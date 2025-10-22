@@ -3,6 +3,7 @@ import { RippleButton } from "@/components/ui/shadcn-io/ripple-button";
 import { useDatatable } from "@/hooks/useDatatable";
 import {
     useDeleteBulkPermission,
+    useDeletePermissionById,
     useFindAllPermission,
 } from "@/services/permission/permission";
 import type { PermissionResponse } from "@/types";
@@ -17,7 +18,7 @@ import CreatePermissionModal from "./CreatePermissionModal";
 import UpdatePermissionModal from "./UpdatePermissionModal";
 import Filter from "@/components/admin/Filter";
 import { toast } from "react-toastify";
-import DeleteDialog from "@/components/general/DeleteDialog";
+import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
 
 const keys: (keyof PermissionResponse)[] = [
     "id",
@@ -31,6 +32,18 @@ const keys: (keyof PermissionResponse)[] = [
 ];
 
 export const PermissionManage = () => {
+    const openDeleteDialog = useDeleteDialogStore((state) => state.openDialog);
+    const deletePermission = useDeletePermissionById({
+        mutation: {
+            onSuccess: () => {
+                toast.success("Xoá thành công");
+                list.refetch();
+            },
+            onError: () => {
+                toast.error("Xoá thất bại");
+            },
+        },
+    });
     const columns = useMemo(
         () => [
             createSelectionColumn<PermissionResponse>(),
@@ -40,9 +53,17 @@ export const PermissionManage = () => {
                     setSelectedPermission(permission);
                     setOpenUpdatePermission(true);
                 },
+                onDelete: (row) => {
+                    openDeleteDialog({
+                        onConfirm() {
+                            if (!row.id) return;
+                            deletePermission.mutate({ id: row.id });
+                        },
+                    });
+                },
             }),
         ],
-        [],
+        [deletePermission, openDeleteDialog],
     );
     const [pagination, setPagination] = useState<{
         page: number;
@@ -66,7 +87,6 @@ export const PermissionManage = () => {
 
     const [openCreatePermission, setOpenCreatePermission] = useState(false);
     const [openUpdatePermission, setOpenUpdatePermission] = useState(false);
-    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [selectedPermission, setSelectedPermission] = useState<
         PermissionResponse | undefined
     >(undefined);
@@ -75,13 +95,10 @@ export const PermissionManage = () => {
         mutation: {
             onSuccess: () => {
                 toast.success("Delete successfully");
-                setSelectedRows([]);
                 list.refetch();
             },
         },
     });
-
-    const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
     const getSelectedRowIds = () => {
         return table
@@ -95,17 +112,13 @@ export const PermissionManage = () => {
             toast.info("Please choose one row to delete");
             return;
         }
-        setSelectedRows(ids);
-        setOpenDeleteDialog(true);
-    };
-
-    const onConfirmBulkDelete = () => {
-        if (selectedRows.length === 0) {
-            return;
-        }
-        bulkDeleteMutation.mutate({
-            params: {
-                ids: selectedRows,
+        openDeleteDialog({
+            onConfirm() {
+                bulkDeleteMutation.mutate({
+                    params: {
+                        ids,
+                    },
+                });
             },
         });
     };
@@ -121,7 +134,7 @@ export const PermissionManage = () => {
                     className="h-12 bg-blue-700 text-white hover:bg-blue-700"
                     onClick={() => setOpenCreatePermission(true)}
                 >
-                    <IconSparkles className="size-5" /> Create new
+                    <IconSparkles className="size-5" /> Thêm mới
                 </RippleButton>
             </div>
             <Filter
@@ -161,11 +174,6 @@ export const PermissionManage = () => {
                 open={openUpdatePermission}
                 onOpenChange={setOpenUpdatePermission}
                 data={selectedPermission}
-            />
-            <DeleteDialog
-                open={openDeleteDialog}
-                onOpenChange={setOpenDeleteDialog}
-                onConfirm={onConfirmBulkDelete}
             />
         </div>
     );

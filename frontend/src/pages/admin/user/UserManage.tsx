@@ -1,9 +1,13 @@
 import Filter from "@/components/admin/Filter";
 import { DataTable } from "@/components/general/DataTable";
-import DeleteDialog from "@/components/general/DeleteDialog";
 import { RippleButton } from "@/components/ui/shadcn-io/ripple-button";
 import { useDatatable } from "@/hooks/useDatatable";
-import { useDeleteBulkUser, useFindAllUser } from "@/services/user/user";
+import {
+    useDeleteBulkUser,
+    useDeleteUserById,
+    useFindAllUser,
+} from "@/services/user/user";
+import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
 import type { UserResponse } from "@/types";
 import {
     createActionColumn,
@@ -17,6 +21,7 @@ import { toast } from "react-toastify";
 
 const keys: (keyof UserResponse)[] = [
     "id",
+    "fullName",
     "email",
     "phone",
     "createdAt",
@@ -27,6 +32,18 @@ const keys: (keyof UserResponse)[] = [
 
 export const UserManage = () => {
     const navigate = useNavigate();
+    const openDeleteDialog = useDeleteDialogStore((state) => state.openDialog);
+    const deleteUser = useDeleteUserById({
+        mutation: {
+            onSuccess: () => {
+                toast.success("Xoá thành công");
+                list.refetch();
+            },
+            onError: () => {
+                toast.error("Xoá thất bại");
+            },
+        },
+    });
     const columns = useMemo(
         () => [
             createSelectionColumn<UserResponse>(),
@@ -35,9 +52,17 @@ export const UserManage = () => {
                 onEdit: (row) => {
                     navigate({ to: `/admin/user/update/${row.id}` });
                 },
+                onDelete: (row) => {
+                    if (!row.id) return;
+                    openDeleteDialog({
+                        onConfirm() {
+                            deleteUser.mutate({ id: row.id! });
+                        },
+                    });
+                },
             }),
         ],
-        [navigate],
+        [deleteUser, navigate, openDeleteDialog],
     );
     const [pagination, setPagination] = useState<{
         page: number;
@@ -66,19 +91,14 @@ export const UserManage = () => {
         pageCount: 0,
     });
 
-    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-
     const bulkDeleteMutation = useDeleteBulkUser({
         mutation: {
             onSuccess: () => {
                 toast.success("Delete successfully");
-                setSelectedRows([]);
                 list.refetch();
             },
         },
     });
-
-    const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
     const getSelectedRowIds = () => {
         return table
@@ -92,17 +112,9 @@ export const UserManage = () => {
             toast.info("Please choose one row to delete");
             return;
         }
-        setSelectedRows(ids);
-        setOpenDeleteDialog(true);
-    };
-
-    const onConfirmBulkDelete = () => {
-        if (selectedRows.length === 0) {
-            return;
-        }
-        bulkDeleteMutation.mutate({
-            params: {
-                ids: selectedRows,
+        openDeleteDialog({
+            onConfirm() {
+                bulkDeleteMutation.mutate({ params: { ids } });
             },
         });
     };
@@ -151,11 +163,6 @@ export const UserManage = () => {
                 totalPages={list.data?.data?.totalPages || 0}
                 totalElements={list.data?.data?.totalElements || 0}
                 numberOfElements={list.data?.data?.numberOfElements || 0}
-            />
-            <DeleteDialog
-                open={openDeleteDialog}
-                onOpenChange={setOpenDeleteDialog}
-                onConfirm={onConfirmBulkDelete}
             />
         </div>
     );

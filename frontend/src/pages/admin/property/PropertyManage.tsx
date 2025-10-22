@@ -1,12 +1,13 @@
 import Filter from "@/components/admin/Filter";
 import { DataTable } from "@/components/general/DataTable";
-import DeleteDialog from "@/components/general/DeleteDialog";
 import { RippleButton } from "@/components/ui/shadcn-io/ripple-button";
 import { useDatatable } from "@/hooks/useDatatable";
 import {
     useDeleteBulkProperty,
+    useDeletePropertyById,
     useFindAllProperty,
 } from "@/services/property/property";
+import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
 import type { PropertyResponse } from "@/types";
 import {
     createActionColumn,
@@ -31,6 +32,18 @@ const keys: (keyof PropertyResponse)[] = [
 
 export const PropertyManage = () => {
     const navigate = useNavigate();
+    const openDeleteDialog = useDeleteDialogStore((state) => state.openDialog);
+    const deleteProperty = useDeletePropertyById({
+        mutation: {
+            onSuccess: () => {
+                toast.success("Xoá thành công");
+                list.refetch();
+            },
+            onError: () => {
+                toast.error("Xoá thất bại");
+            },
+        },
+    });
     const columns = useMemo(
         () => [
             createSelectionColumn<PropertyResponse>(),
@@ -39,9 +52,21 @@ export const PropertyManage = () => {
                 onEdit: (row) => {
                     navigate({ to: `/admin/property/update/${row.id}` });
                 },
+                onDelete: (row) => {
+                    openDeleteDialog({
+                        onConfirm() {
+                            if (!row.id) {
+                                return;
+                            }
+                            deleteProperty.mutate({
+                                id: row.id,
+                            });
+                        },
+                    });
+                },
             }),
         ],
-        [navigate],
+        [deleteProperty, navigate, openDeleteDialog],
     );
     const [pagination, setPagination] = useState<{
         page: number;
@@ -63,19 +88,17 @@ export const PropertyManage = () => {
         pageCount: 0,
     });
 
-    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-
     const bulkDeleteMutation = useDeleteBulkProperty({
         mutation: {
             onSuccess: () => {
-                toast.success("Delete successfully");
-                setSelectedRows([]);
+                toast.success("Xoá thành công");
                 list.refetch();
+            },
+            onError: () => {
+                toast.error("Xoá thất bại");
             },
         },
     });
-
-    const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
     const getSelectedRowIds = () => {
         return table
@@ -86,20 +109,16 @@ export const PropertyManage = () => {
     const onBulkDelete = () => {
         const ids = getSelectedRowIds();
         if (ids.length === 0) {
-            toast.info("Please choose one row to delete");
+            toast.info("Hãy chọn ít nhất một mục để xóa.");
             return;
         }
-        setSelectedRows(ids);
-        setOpenDeleteDialog(true);
-    };
-
-    const onConfirmBulkDelete = () => {
-        if (selectedRows.length === 0) {
-            return;
-        }
-        bulkDeleteMutation.mutate({
-            params: {
-                ids: selectedRows,
+        openDeleteDialog({
+            onConfirm() {
+                bulkDeleteMutation.mutate({
+                    params: {
+                        ids,
+                    },
+                });
             },
         });
     };
@@ -123,7 +142,7 @@ export const PropertyManage = () => {
                     { key: "id", label: "Id" },
                     { key: "name", label: "Name" },
                     { key: "code", label: "Code" },
-                    { key: "provinceId", label: "Province Id" },
+                    { key: "province.id", label: "Province Id" },
                     { key: "createdBy", label: "Created By" },
                     { key: "updatedBy", label: "Updated By" },
                     { key: "createdAt", label: "Created At" },
@@ -133,7 +152,7 @@ export const PropertyManage = () => {
                     { name: "id", label: "Id", type: "number" },
                     { name: "name", label: "Name", type: "text" },
                     { name: "codeName", label: "Code Name", type: "text" },
-                    { name: "provinceId", label: "Province Id", type: "number" },
+                    { name: "province.id", label: "Province Id", type: "number" },
                     { name: "createdBy", label: "Created By", type: "number" },
                     { name: "updatedBy", label: "Updated By", type: "number" },
                     { name: "createdAt", label: "Created At", type: "date" },
@@ -151,11 +170,6 @@ export const PropertyManage = () => {
                 totalPages={list.data?.data?.totalPages || 0}
                 totalElements={list.data?.data?.totalElements || 0}
                 numberOfElements={list.data?.data?.numberOfElements || 0}
-            />
-            <DeleteDialog
-                open={openDeleteDialog}
-                onOpenChange={setOpenDeleteDialog}
-                onConfirm={onConfirmBulkDelete}
             />
         </div>
     );

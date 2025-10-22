@@ -61,7 +61,7 @@ export default function Filter({
                         onClick={() => setShowFilter(!showFilter)}
                     >
                         <FilterIcon className="size-5 mr-1" />
-                        <span className="hidden sm:inline">Filter</span>
+                        <span className="hidden sm:inline">Lọc nâng cao</span>
                     </Button>
                 </div>
                 <motion.div whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.02 }}>

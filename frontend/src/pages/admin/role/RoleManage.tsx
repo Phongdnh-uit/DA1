@@ -11,8 +11,12 @@ import { IconSparkles } from "@tabler/icons-react";
 import { useMemo, useState } from "react";
 import Filter from "@/components/admin/Filter";
 import { toast } from "react-toastify";
-import DeleteDialog from "@/components/general/DeleteDialog";
-import { useDeleteBulkRole, useFindAllRole } from "@/services/role/role";
+import {
+    useDeleteBulkRole,
+    useDeleteRoleById,
+    useFindAllRole,
+} from "@/services/role/role";
+import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
 
 const keys: (keyof RoleResponse)[] = [
     "id",
@@ -24,15 +28,35 @@ const keys: (keyof RoleResponse)[] = [
 ];
 
 export const RoleManage = () => {
+    const openDeleteDialog = useDeleteDialogStore((state) => state.openDialog);
+    const useDeleteRole = useDeleteRoleById({
+        mutation: {
+            onSuccess: () => {
+                toast.success("Xoá thành công");
+                list.refetch();
+            },
+            onError: () => {
+                toast.error("Xoá thất bại");
+            },
+        },
+    });
     const columns = useMemo(
         () => [
             createSelectionColumn<RoleResponse>(),
             ...createColumnsFromType<RoleResponse>(keys),
             createActionColumn<RoleResponse>({
                 onEdit: () => { },
+                onDelete: (row) => {
+                    openDeleteDialog({
+                        onConfirm() {
+                            if (!row.id) return;
+                            useDeleteRole.mutate({ id: row.id });
+                        },
+                    });
+                },
             }),
         ],
-        [],
+        [openDeleteDialog, useDeleteRole],
     );
     const [pagination, setPagination] = useState<{
         page: number;
@@ -48,25 +72,20 @@ export const RoleManage = () => {
         sort: filterParam.sort,
         filter: filterParam.filter,
     });
-    const { table } = useDatatable<RoleResponseDTO>({
+    const { table } = useDatatable<RoleResponse>({
         columns,
         data: list.data?.data?.content || [],
         pageCount: 0,
     });
 
-    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-
     const bulkDeleteMutation = useDeleteBulkRole({
         mutation: {
             onSuccess: () => {
                 toast.success("Delete successfully");
-                setSelectedRows([]);
                 list.refetch();
             },
         },
     });
-
-    const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
     const getSelectedRowIds = () => {
         return table
@@ -80,17 +99,9 @@ export const RoleManage = () => {
             toast.info("Please choose one row to delete");
             return;
         }
-        setSelectedRows(ids);
-        setOpenDeleteDialog(true);
-    };
-
-    const onConfirmBulkDelete = () => {
-        if (selectedRows.length === 0) {
-            return;
-        }
-        bulkDeleteMutation.mutate({
-            params: {
-                ids: selectedRows,
+        openDeleteDialog({
+            onConfirm() {
+                bulkDeleteMutation.mutate({ params: { ids } });
             },
         });
     };
@@ -133,11 +144,6 @@ export const RoleManage = () => {
                 totalPages={list.data?.data?.totalPages || 0}
                 totalElements={list.data?.data?.totalElements || 0}
                 numberOfElements={list.data?.data?.numberOfElements || 0}
-            />
-            <DeleteDialog
-                open={openDeleteDialog}
-                onOpenChange={setOpenDeleteDialog}
-                onConfirm={onConfirmBulkDelete}
             />
         </div>
     );

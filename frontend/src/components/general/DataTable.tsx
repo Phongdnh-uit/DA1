@@ -90,14 +90,14 @@ export function DataTable<TData>({
                             className="text-rose-500 bg-transparent hover:bg-rose-500 hover:text-white hover:border-rose-500"
                         >
                             <Trash className="mr-2 h-4 w-4" />
-                            Delete
+                            Xóa
                         </Button>
                         <Button
                             variant={"outline"}
                             className="bg-transparen text-violet-500 border-violet-300 hover:bg-violet-500 hover:text-white hover:border-violet-500"
                         >
                             <DownloadCloud className="mr-2 h-4 w-4" />
-                            Export
+                            Xuất CSV
                         </Button>
                         <DensitySelect
                             density={densityState}
@@ -199,14 +199,14 @@ export function DataTable<TData>({
                             ) : (
                                 <span className="text-sm text-muted-foreground whitespace-nowrap">
                                     {!totalElements ? 0 : pagination.page * pagination.size + 1}-
-                                    {pagination.page * pagination.size + numberOfElements} of{" "}
+                                    {pagination.page * pagination.size + numberOfElements} trên {" "}
                                     {totalElements}
                                 </span>
                             )}
                         </div>
                         <div className="flex items-center justify-end gap-4 px-4">
                             <div className="flex items-center gap-2">
-                                <div className="whitespace-nowrap">Rows per page:</div>
+                                <div className="whitespace-nowrap">Số hàng trên trang:</div>
                                 <Select
                                     value={String(pagination.size)}
                                     onValueChange={(v) =>
@@ -254,7 +254,7 @@ export default function DensitySelect({
     return (
         <Select value={density} onValueChange={setDensity}>
             <SelectTrigger
-                className={cn("w-34 text-zinc-500 border-zinc-300", className)}
+                className={cn("w-40 text-zinc-500 border-zinc-300", className)}
             >
                 <SelectValue placeholder={density} />
             </SelectTrigger>
@@ -265,19 +265,19 @@ export default function DensitySelect({
                         value="compact"
                         className="flex items-center gap-2 cursor-pointer hover:bg-purple-200/40 data-[state=checked]:bg-purple-100/50"
                     >
-                        <Rows4 className="h-4 w-4" /> Compact
+                        <Rows4 className="h-4 w-4" /> Thu hẹp
                     </SelectItem>
                     <SelectItem
                         value="normal"
                         className="flex items-center gap-2 cursor-pointer hover:bg-purple-200/40 data-[state=checked]:bg-purple-100/50"
                     >
-                        <Rows3 className="h-4 w-4" /> Normal
+                        <Rows3 className="h-4 w-4" /> Bình thường
                     </SelectItem>
                     <SelectItem
                         value="flexible"
                         className="flex items-center gap-2 cursor-pointer hover:bg-purple-200/40 data-[state=checked]:bg-purple-100/50"
                     >
-                        <Rows2 className="h-4 w-4" /> Flexible
+                        <Rows2 className="h-4 w-4" /> Mở rộng
                     </SelectItem>
                 </SelectGroup>
             </SelectContent>
@@ -304,11 +304,11 @@ export function ColumnVisibilitySelect<TData>({
                         className,
                     )}
                 >
-                    <Columns3 /> Columns <ChevronDown className="ml-3" />
+                    <Columns3 /> Cột hiển thị <ChevronDown className="ml-3" />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Columns</DropdownMenuLabel>
+                <DropdownMenuLabel>Cột hiển thị</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {table
                     .getAllColumns()

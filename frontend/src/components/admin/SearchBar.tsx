@@ -30,7 +30,7 @@ export default function SearchBar({
   return (
     <div className="relative w-full sm:max-w-xl">
       <Input
-        placeholder="Search..."
+        placeholder="Tìm kiếm..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         className={cn(
