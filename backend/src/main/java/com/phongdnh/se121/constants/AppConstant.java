@@ -5,4 +5,5 @@ public interface AppConstant {
   String FROM_EMAIL = "dangnguyenhuyphong@gmail.com";
   String OAUTH2_AUTHORIZATION_BASE_URI = "/oauth2/authorize";
   String OAUTH2_AUTHORIZATION_CALLBACK_URI = "/oauth2/callback/{registrationId}";
+  String QDRANT_COLLECTION_NAME = "property";
 }

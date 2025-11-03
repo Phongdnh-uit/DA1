@@ -36,7 +36,6 @@ public class Property extends BaseEntity {
   @Column(nullable = false, precision = 15, scale = 2)
   private BigDecimal price;
 
-  @Column(nullable = false)
   private String lineAddress;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)

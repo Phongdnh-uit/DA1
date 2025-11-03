@@ -1,5 +1,6 @@
 package com.phongdnh.se121.hooks.property;
 
+import com.phongdnh.se121.ai.RAGIngestionService;
 import com.phongdnh.se121.dtos.PageResponse;
 import com.phongdnh.se121.dtos.general.MediaResponse;
 import com.phongdnh.se121.dtos.property.PropertyRequest;
@@ -33,6 +34,7 @@ public class PropertyHook extends DefaultHook<Property, Long, PropertyRequest, P
   private final UploadService uploadService;
   private final MediaRepository mediaRepository;
   private final MediaMapper mediaMapper;
+  private final RAGIngestionService ragIngestionService;
 
   @Override
   public void enrichFindAll(PageResponse<PropertyResponse> responses) {
@@ -87,11 +89,15 @@ public class PropertyHook extends DefaultHook<Property, Long, PropertyRequest, P
   @Override
   public void afterCreate(Property entity, PropertyResponse response, Map<String, Object> context) {
     saveMediasAfter((PropertyRequest) context.get("request"), entity.getId(), response);
+    // Ingest to RAG system
+    ragIngestionService.ingestProperty(entity);
   }
 
   @Override
   public void afterUpdate(Property entity, PropertyResponse response, Map<String, Object> context) {
     saveMediasAfter((PropertyRequest) context.get("request"), entity.getId(), response);
+    // Ingest to RAG system
+    ragIngestionService.updatePropertyIngestion(entity);
   }
 
   @Override
@@ -102,6 +108,18 @@ public class PropertyHook extends DefaultHook<Property, Long, PropertyRequest, P
   @Override
   public void enrichUpdate(PropertyRequest input, Property entity, Map<String, Object> context) {
     enrich(input, entity);
+  }
+
+  @Override
+  public void afterBulkDelete(Iterable<Long> ids) {
+    for (Long propertyId : ids) {
+      ragIngestionService.deletePropertyIngestion(propertyId);
+    }
+  }
+
+  @Override
+  public void afterDelete(Long id) {
+    ragIngestionService.deletePropertyIngestion(id);
   }
 
   private void validate(PropertyRequest request) {

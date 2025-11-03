@@ -28,4 +28,6 @@ public interface AuthService {
   void verifyEmail(VerifyEmailRequest request);
 
   void resetPassword(ResetPasswordRequest request);
+
+  UserResponse getCurrentUser();
 }

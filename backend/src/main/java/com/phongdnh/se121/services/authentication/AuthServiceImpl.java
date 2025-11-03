@@ -277,4 +277,14 @@ public class AuthServiceImpl implements AuthService {
     RefreshToken refreshToken = refreshTokenService.findByToken(request.getRefreshToken());
     refreshTokenService.delete(refreshToken);
   }
+
+  @Override
+  public UserResponse getCurrentUser() {
+    Long userId = SecurityUtil.getCurrentUserId();
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND));
+    return userMapper.entityToResponse(user);
+  }
 }

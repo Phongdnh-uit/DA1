@@ -4,7 +4,7 @@ set -e
 /bin/ollama serve &
 sleep 5
 
-ollama pull phi3:3.8b-mini-128k-instruct-q2_K
+ollama pull llama3:8b
 ollama pull nomic-embed-text
 
 wait

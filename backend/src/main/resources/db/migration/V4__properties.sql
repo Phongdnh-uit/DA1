@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS properties (
     purpose VARCHAR(100) NOT NULL,
     type_id BIGINT NOT NULL,
     price DECIMAL(15, 2) NOT NULL,
-    line_address VARCHAR(255) NOT NULL,
+    line_address VARCHAR(255),
     ward_id BIGINT NOT NULL,
     land_area DECIMAL(10, 2),
     floor_area DECIMAL(10, 2),

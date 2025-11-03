@@ -22,7 +22,7 @@ public class PropertyRequest {
 
   @NotNull private BigDecimal price;
 
-  @NotBlank private String lineAddress;
+  private String lineAddress;
 
   @NotNull private Long provinceId;
 
@@ -53,7 +53,7 @@ public class PropertyRequest {
   private Boolean hasBasement = false;
 
   private Boolean hasElevator = false;
-    
+
   private String interior;
 
   @NotNull private PropertyStatus status;
