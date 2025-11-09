@@ -1,5 +1,6 @@
 package com.phongdnh.se121.services.authentication;
 
+import com.phongdnh.se121.dtos.authentication.ChangePasswordRequest;
 import com.phongdnh.se121.dtos.authentication.LoginRequest;
 import com.phongdnh.se121.dtos.authentication.LoginResponse;
 import com.phongdnh.se121.dtos.authentication.RefreshTokenRequest;
@@ -28,6 +29,8 @@ public interface AuthService {
   void verifyEmail(VerifyEmailRequest request);
 
   void resetPassword(ResetPasswordRequest request);
+
+  void changePassword(ChangePasswordRequest request);
 
   UserResponse getCurrentUser();
 }

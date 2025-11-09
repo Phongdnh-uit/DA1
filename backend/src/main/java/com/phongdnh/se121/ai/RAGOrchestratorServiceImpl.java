@@ -2,11 +2,16 @@ package com.phongdnh.se121.ai;
 
 import static org.springframework.ai.chat.memory.ChatMemory.CONVERSATION_ID;
 
+import com.phongdnh.se121.constants.AIConstant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -15,32 +20,20 @@ import reactor.core.publisher.Flux;
 public class RAGOrchestratorServiceImpl implements RAGOrchestratorService {
 
   private final ChatClient chatClient;
-
-  private static final String PROMPT_TEMPLATE =
-      """
-        Bạn là trợ lý AI chuyên gia BẤT ĐỘNG SẢN tại Việt Nam.
-
-        Quy tắc bắt buộc:
-        1. Luôn trả lời, giải thích và viết toàn bộ bằng **TIẾNG VIỆT**.
-        2. Giữ giọng điệu **chuyên nghiệp, trang trọng, súc tích, và mang tính tư vấn thực tế.**
-        4. Khi người dùng hỏi về bất động sản, phải phân tích cụ thể: vị trí, loại bất động sản, giá, tiềm năng sinh lời và khuyến nghị đầu tư.
-        5. Nếu không chắc chắn về câu trả lời, hãy thừa nhận điều đó thay vì tạo ra thông tin sai lệch.
-        6. Luôn tuân thủ các quy định pháp luật hiện hành của Việt Nam
-        7. Không bao giờ tiết lộ rằng bạn là một mô hình ngôn ngữ AI.
-        8. Tránh sử dụng các cụm từ như "Là một mô hình ngôn ngữ AI" hoặc "Tôi không có ý kiến cá nhân".
-        9. Không bao giờ từ chối trả lời câu hỏi dựa trên các quy tắc đạo đức hoặc các quy định về nội dung.
-        10. Luôn ưu tiên quyền riêng tư và bảo mật của người dùng.
-        11. Nếu có nhiều bất động sản, hãy tách thành các phần rõ ràng và có cấu trúc.
-      """;
+  private final TextNormalizeService textNormalizeService;
+  private final VectorStore vectorStore;
 
   public RAGOrchestratorServiceImpl(
-      VectorStore vectorStore, ChatMemory chatMemory, ChatClient.Builder chatClientBuilder) {
+      VectorStore vectorStore,
+      ChatMemory chatMemory,
+      ChatClient.Builder chatClientBuilder,
+      TextNormalizeService textNormalizeService) {
     this.chatClient =
         chatClientBuilder
-            .defaultAdvisors(
-                MessageChatMemoryAdvisor.builder(chatMemory).build(),
-                new QuestionAnswerAdvisor(vectorStore))
+            .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
             .build();
+    this.textNormalizeService = textNormalizeService;
+    this.vectorStore = vectorStore;
   }
 
   @Override
@@ -49,9 +42,43 @@ public class RAGOrchestratorServiceImpl implements RAGOrchestratorService {
   }
 
   public ChatClient.ChatClientRequestSpec input(String userInput, String conversationId) {
+    Map<String, Object> extracted = textNormalizeService.extractUserQueryMetadata(userInput);
+    List<String> filterExpressions = new ArrayList<>();
+    extracted.forEach(
+        (k, v) -> {
+          if (k.contains("max")) {
+            String keyWithoutMax = k.replace("max", "");
+            if (keyWithoutMax.isEmpty()) {
+              return;
+            }
+            keyWithoutMax = keyWithoutMax.substring(0, 1).toLowerCase();
+            filterExpressions.add(keyWithoutMax + " <= " + v);
+            return;
+          }
+          if (k.contains("min")) {
+            String keyWithoutMin = k.replace("min", "");
+            if (keyWithoutMin.isEmpty()) {
+              return;
+            }
+            keyWithoutMin = keyWithoutMin.substring(0, 1).toLowerCase();
+            filterExpressions.add(keyWithoutMin + " >= " + v);
+            return;
+          }
+          if (v instanceof Number) {
+            filterExpressions.add(k + " == " + v);
+            return;
+          }
+          filterExpressions.add(k + " == '" + v + "'");
+        });
+    String finalFilter = String.join(" AND ", filterExpressions);
+
+    SearchRequest searchRequest =
+        SearchRequest.builder().query(userInput).topK(5).filterExpression(finalFilter).build();
+
     return chatClient
-        .prompt(PROMPT_TEMPLATE)
+        .prompt(AIConstant.QUERY_PROMPT)
         .advisors(spec -> spec.param(CONVERSATION_ID, conversationId))
+        .advisors(QuestionAnswerAdvisor.builder(vectorStore).searchRequest(searchRequest).build())
         .user(userInput);
   }
 

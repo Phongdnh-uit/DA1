@@ -1,5 +1,6 @@
 package com.phongdnh.se121.services.authentication;
 
+import com.phongdnh.se121.dtos.authentication.ChangePasswordRequest;
 import com.phongdnh.se121.dtos.authentication.LoginRequest;
 import com.phongdnh.se121.dtos.authentication.LoginResponse;
 import com.phongdnh.se121.dtos.authentication.RefreshTokenRequest;
@@ -286,5 +287,20 @@ public class AuthServiceImpl implements AuthService {
             .findById(userId)
             .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND));
     return userMapper.entityToResponse(user);
+  }
+
+  @Override
+  public void changePassword(ChangePasswordRequest request) {
+    Long userId = SecurityUtil.getCurrentUserId();
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND));
+    if (!passwordEncoder.matches(request.getOldPassword(), user.getPasswordHash())) {
+      throw new ApiException(
+          ErrorCode.VALIDATION_ERROR, Map.of("oldPassword", "Invalid current password"));
+    }
+    user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+    userRepository.save(user);
   }
 }

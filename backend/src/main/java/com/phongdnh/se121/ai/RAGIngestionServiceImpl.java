@@ -1,7 +1,9 @@
 package com.phongdnh.se121.ai;
 
 import com.phongdnh.se121.entities.property.Property;
+import com.phongdnh.se121.utils.StringUtil;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +24,14 @@ public class RAGIngestionServiceImpl implements RAGIngestionService {
 
   private final VectorStore vectorStore;
   private final TextSplitter textSplitter;
+  private final TextNormalizeService textNormalizeService;
 
   @Async
   @Override
   public void ingestProperty(Property property) {
     log.info("Ingesting property with ID: {}", property.getId());
+    Map<String, Object> metadata = createPropertyPayload(property);
     String documentToEmbed = createStrategyDocument(property);
-    Map<String, Object> metadata = new HashMap<>();
-    metadata.put("propertyId", property.getId());
     Document document = Document.builder().text(documentToEmbed).metadata(metadata).build();
     var chunks = textSplitter.split(document);
     vectorStore.add(chunks);
@@ -119,53 +121,63 @@ public class RAGIngestionServiceImpl implements RAGIngestionService {
     return finalResults.stream().limit(topK).toList();
   }
 
-  String createStrategyDocument(Property property) {
-    StringBuilder documentBuilder = new StringBuilder();
-    documentBuilder.append("Tiêu đề: ").append(property.getTitle()).append("\n");
-    documentBuilder.append("Mục đích: ").append(property.getPurpose().getName()).append("\n");
-    documentBuilder.append("Loại: ").append(property.getType().getName()).append("\n");
-    documentBuilder.append("Giá: ").append(property.getPrice()).append(" VND\n");
-    documentBuilder
-        .append("Tỉnh/Thành phố: ")
-        .append(property.getWard().getProvince().getName())
-        .append("\n");
-    documentBuilder.append("Xã/Phường: ").append(property.getWard().getName()).append("\n");
-    if (property.getLineAddress() != null) {
-      documentBuilder.append("Địa chỉ: ").append(property.getLineAddress()).append("\n");
-    }
-    if (property.getLandArea() != null) {
+  private Map<String, Object> createPropertyPayload(Property property) {
+    Map<String, Object> payload = new LinkedHashMap<>();
+    payload.put("propertyId", property.getId());
+    payload.put("city", StringUtil.safe(property.getWard().getProvince().getName()));
+    payload.put("ward", StringUtil.safe(property.getWard().getName()));
+    payload.put("purpose", StringUtil.safe(property.getPurpose().getName()));
+    payload.put("type", StringUtil.safe(property.getType().getName()));
 
-      documentBuilder.append("Diện tích đất: ").append(property.getLandArea()).append(" m2\n");
-    }
-    if (property.getFloorArea() != null) {
+    putIfNotNull(payload, "price", property.getPrice().doubleValue());
 
-      documentBuilder.append("Diện tích sàn: ").append(property.getFloorArea()).append(" m2\n");
-    }
-    if (property.getFloors() != null) {
+    if (property.getLandArea() != null)
+      putIfNotNull(payload, "landArea", property.getLandArea().doubleValue());
+    if (property.getFloorArea() != null)
+      putIfNotNull(payload, "floorArea", property.getFloorArea().doubleValue());
+    putIfNotNull(payload, "bedrooms", property.getBedrooms());
+    putIfNotNull(payload, "bathrooms", property.getBathrooms());
+    putIfNotNull(payload, "floors", property.getFloors());
+    putIfNotNull(payload, "entranceRoadWidth", property.getEntranceRoadWidth());
 
-      documentBuilder.append("Số tầng: ").append(property.getFloors()).append("\n");
-    }
-    if (property.getFloorNumber() != null) {
+    return payload;
+  }
 
-      documentBuilder.append("Tầng số: ").append(property.getFloorNumber()).append("\n");
-    }
-    if (property.getBedrooms() != null) {
+  private String createStrategyDocument(Property property) {
+    String title = StringUtil.safe(textNormalizeService.normalizeTitle(property.getTitle()));
+    String purpose = StringUtil.safe(property.getPurpose().getName());
+    String type = StringUtil.safe(property.getType().getName());
+    String city = StringUtil.safe(property.getWard().getProvince().getName());
+    String ward = StringUtil.safe(property.getWard().getName());
+    String price = StringUtil.formatPrice(property.getPrice());
+    String landArea = StringUtil.formatArea(property.getLandArea());
+    String floorArea = StringUtil.formatArea(property.getFloorArea());
+    String floors = StringUtil.safeNumber(property.getFloors());
+    String bedrooms = StringUtil.safeNumber(property.getBedrooms());
+    String bathrooms = StringUtil.safeNumber(property.getBathrooms());
+    String width = StringUtil.formatWidth(property.getEntranceRoadWidth());
+    String address = StringUtil.safe(property.getLineAddress());
 
-      documentBuilder.append("Số phòng ngủ: ").append(property.getBedrooms()).append("\n");
-    }
-    if (property.getBathrooms() != null) {
-      documentBuilder.append("Số phòng tắm: ").append(property.getBathrooms()).append("\n");
-    }
-    if (property.getEntranceRoadWidth() != null) {
+    StringBuilder sb = new StringBuilder();
 
-      documentBuilder.append("Số phòng tắm: ").append(property.getBathrooms()).append("\n");
-    }
-    if (property.getEntranceRoadWidth() != null) {
-      documentBuilder
-          .append("Chiều rộng đường vào: ")
-          .append(property.getEntranceRoadWidth())
-          .append(" m\n");
-    }
-    return documentBuilder.toString();
+    sb.append(title).append(". ");
+    sb.append(
+        String.format(
+            "%s %s tại %s, %s. ", StringUtil.capitalize(type), purpose.toLowerCase(), ward, city));
+
+    if (price != null) sb.append("Giá: ").append(price).append(". ");
+    if (landArea != null) sb.append("Diện tích đất: ").append(landArea).append(". ");
+    if (floorArea != null) sb.append("Diện tích sàn: ").append(floorArea).append(". ");
+    if (floors != null) sb.append("Số tầng: ").append(floors).append(". ");
+    if (bedrooms != null) sb.append("Phòng ngủ: ").append(bedrooms).append(". ");
+    if (bathrooms != null) sb.append("Phòng tắm: ").append(bathrooms).append(". ");
+    if (width != null) sb.append("Đường vào rộng: ").append(width).append(". ");
+    if (!address.isEmpty()) sb.append("Địa chỉ: ").append(address).append(". ");
+
+    return sb.toString().trim();
+  }
+
+  private void putIfNotNull(Map<String, Object> map, String key, Object value) {
+    if (value != null) map.put(key, value);
   }
 }

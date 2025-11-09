@@ -12,31 +12,36 @@ import com.phongdnh.se121.dtos.property.ProvinceRequest;
 import com.phongdnh.se121.dtos.property.ProvinceResponse;
 import com.phongdnh.se121.dtos.property.WardRequest;
 import com.phongdnh.se121.dtos.property.WardResponse;
+import com.phongdnh.se121.dtos.wish.WishRequest;
+import com.phongdnh.se121.dtos.wish.WishResponse;
 import com.phongdnh.se121.entities.authentication.User;
 import com.phongdnh.se121.entities.authorization.Permission;
 import com.phongdnh.se121.entities.property.Property;
 import com.phongdnh.se121.entities.property.PropertyType;
 import com.phongdnh.se121.entities.property.Province;
 import com.phongdnh.se121.entities.property.Ward;
-import com.phongdnh.se121.hooks.GeneralHook;
+import com.phongdnh.se121.entities.wish.Wish;
 import com.phongdnh.se121.hooks.authentication.UserHook;
 import com.phongdnh.se121.hooks.authorizations.PermissionHook;
 import com.phongdnh.se121.hooks.property.PropertyHook;
 import com.phongdnh.se121.hooks.property.PropertyTypeHook;
 import com.phongdnh.se121.hooks.property.ProvinceHook;
 import com.phongdnh.se121.hooks.property.WardHook;
+import com.phongdnh.se121.hooks.wish.WishHook;
 import com.phongdnh.se121.mappers.authentication.UserMapper;
 import com.phongdnh.se121.mappers.authorization.PermissionMapper;
 import com.phongdnh.se121.mappers.property.PropertyMapper;
 import com.phongdnh.se121.mappers.property.PropertyTypeMapper;
 import com.phongdnh.se121.mappers.property.ProvinceMapper;
 import com.phongdnh.se121.mappers.property.WardMapper;
+import com.phongdnh.se121.mappers.wish.WishMapper;
 import com.phongdnh.se121.repositories.authentication.UserRepository;
 import com.phongdnh.se121.repositories.authorization.PermissionRepository;
 import com.phongdnh.se121.repositories.property.PropertyRepository;
 import com.phongdnh.se121.repositories.property.PropertyTypeRepository;
 import com.phongdnh.se121.repositories.property.ProvinceRepository;
 import com.phongdnh.se121.repositories.property.WardRepository;
+import com.phongdnh.se121.repositories.wish.WishRepository;
 import com.phongdnh.se121.services.CrudService;
 import com.phongdnh.se121.services.GenericService;
 import lombok.RequiredArgsConstructor;
@@ -95,5 +100,13 @@ public class ServiceRegistration {
         context.getBean(PropertyRepository.class),
         context.getBean(PropertyMapper.class),
         context.getBean(PropertyHook.class));
+  }
+
+  @Bean
+  CrudService<Wish, Long, WishRequest, WishResponse> wishService() {
+    return new GenericService<Wish, Long, WishRequest, WishResponse>(
+        context.getBean(WishRepository.class),
+        context.getBean(WishMapper.class),
+        context.getBean(WishHook.class));
   }
 }

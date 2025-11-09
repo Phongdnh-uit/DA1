@@ -37,7 +37,7 @@ spring:
       embedding:
         model: nomic-embed-text
       chat:
-        model: llama3:8b
+        model: mistral:7b
     chat:
       client:
         enabled: true

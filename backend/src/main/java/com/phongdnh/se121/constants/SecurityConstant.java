@@ -14,4 +14,6 @@ public interface SecurityConstant {
     "/auth/reset-password",
     "/ai/chat/**"
   };
+
+  String[] PUBLIC_GET_URLS = {"/properties/all", "/properties/{id}", "/provinces/all", "wards/all", "property-types/all" };
 }

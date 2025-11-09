@@ -14,8 +14,5 @@ public interface WardRepository extends SimpleRepository<Ward, Long> {
 
   @EntityGraph(attributePaths = {"province"})
   @Override
-  Page<Ward> findAll(
-      @Nullable Specification<Ward> spec,
-      @Nullable Specification<Ward> countSpec,
-      Pageable pageable);
+  Page<Ward> findAll(@Nullable Specification<Ward> spec, Pageable pageable);
 }

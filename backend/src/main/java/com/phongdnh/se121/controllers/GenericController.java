@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public abstract class GenericController<E, ID, I, O> {
 
-  private final CrudService<E, ID, I, O> service;
+  protected final CrudService<E, ID, I, O> service;
 
   @Operation(operationId = "findAll{Resource}")
   @GetMapping("/all")
@@ -37,7 +37,7 @@ public abstract class GenericController<E, ID, I, O> {
       @RequestParam(value = "all", defaultValue = "false") boolean all) {
     Specification<E> specification = RSQLJPASupport.toSpecification(filter);
     if (all) {
-      pageable = Pageable.unpaged();
+      pageable = Pageable.unpaged(pageable.getSort());
     }
     return ResponseEntity.ok(ApiResponse.ok(service.findAll(pageable, specification)));
   }

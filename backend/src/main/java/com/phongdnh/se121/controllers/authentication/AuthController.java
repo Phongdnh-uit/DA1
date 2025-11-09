@@ -1,6 +1,7 @@
 package com.phongdnh.se121.controllers.authentication;
 
 import com.phongdnh.se121.dtos.ApiResponse;
+import com.phongdnh.se121.dtos.authentication.ChangePasswordRequest;
 import com.phongdnh.se121.dtos.authentication.LoginRequest;
 import com.phongdnh.se121.dtos.authentication.LoginResponse;
 import com.phongdnh.se121.dtos.authentication.RefreshTokenRequest;
@@ -72,6 +73,13 @@ public class AuthController {
   public ResponseEntity<ApiResponse<UserResponse>> register(
       @Valid @RequestBody RegisterRequest request) {
     return ResponseEntity.ok(ApiResponse.ok(authService.register(request)));
+  }
+
+  @PostMapping("/change-password")
+  public ResponseEntity<ApiResponse<Void>> changePassword(
+      @Valid @RequestBody ChangePasswordRequest request) {
+    authService.changePassword(request);
+    return ResponseEntity.ok(ApiResponse.ok(null));
   }
 
   @PostMapping("/reset-password")

@@ -46,7 +46,8 @@ public class SecurityConfig implements WebMvcConfigurer {
             auth ->
                 auth.requestMatchers(SecurityConstant.PUBLIC_URLS)
                     .permitAll()
-                    .requestMatchers(HttpMethod.GET, "/properties/all").permitAll()
+                    .requestMatchers(HttpMethod.GET, SecurityConstant.PUBLIC_GET_URLS)
+                    .permitAll()
                     .anyRequest()
                     .authenticated())
         .oauth2ResourceServer(
