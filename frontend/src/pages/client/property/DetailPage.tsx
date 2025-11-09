@@ -1,72 +1,151 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { generateHTML } from "@tiptap/react";
 import {
+    BathIcon,
+    BedDoubleIcon,
+    Building2Icon,
+    DoorOpenIcon,
     Heart,
     HouseIcon,
-    PackageIcon,
     Share2,
+    SofaIcon,
     TriangleAlert,
+    TriangleIcon,
 } from "lucide-react";
 import { fadeInUp } from "@/lib/animation";
 
-// Import Components
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ImageGallery } from "./component/ImageGallery";
-import { ProductSpecs } from "./component/PropertySpec";
-import { IconRoad } from "@tabler/icons-react";
+import { ProductSpecs, type SpecItemProps } from "./component/PropertySpec";
+import {
+    IconDirections,
+    IconElevator,
+    IconRoad,
+    IconStairs,
+    IconTransferIn,
+} from "@tabler/icons-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-
-// Mock Data
-const productData = {
-    images: [
-        {
-            largeUrl:
-                "https://file4.batdongsan.com.vn/resize/1275x717/2025/10/14/20251014210133-38fa_wm.jpg",
-            thumbnailUrl:
-                "https://file4.batdongsan.com.vn/resize/200x200/2025/10/14/20251014210133-38fa_wm.jpg",
-            alt: "Ảnh 1",
-        },
-        {
-            largeUrl:
-                "https://file4.batdongsan.com.vn/resize/1275x717/2025/10/14/20251014205410-b650_wm.jpg",
-            thumbnailUrl:
-                "https://file4.batdongsan.com.vn/resize/200x200/2025/10/14/20251014205410-b650_wm.jpg",
-            alt: "Ảnh 2",
-        },
-        {
-            largeUrl:
-                "https://file4.batdongsan.com.vn/resize/1275x717/2025/10/14/20251014205847-1fdb_wm.jpg",
-            thumbnailUrl:
-                "https://file4.batdongsan.com.vn/resize/200x200/2025/10/14/20251014205847-1fdb_wm.jpg",
-            alt: "Ảnh 3",
-        },
-        {
-            largeUrl:
-                "https://file4.batdongsan.com.vn/resize/1275x717/2025/10/14/20251014205848-b2bb_wm.jpg",
-            thumbnailUrl:
-                "https://file4.batdongsan.com.vn/resize/200x200/2025/10/14/20251014205848-b2bb_wm.jpg",
-            alt: "Ảnh 4",
-        },
-        {
-            largeUrl:
-                "https://file4.batdongsan.com.vn/resize/1275x717/2025/10/15/20251015084114-3770_wm.jpg",
-            thumbnailUrl:
-                "https://file4.batdongsan.com.vn/resize/200x200/2025/10/15/20251015084114-3770_wm.jpg",
-            alt: "Ảnh 5",
-        },
-    ],
-    title: "Đất ngộp cần bán thích hợp đầu tư",
-    address: "Đường 12, Xã Nha Bích, Chơn Thành, Bình Phước",
-    price: "450 triệu",
-    pricePerSqm: "1,8 triệu",
-    area: "250 m²",
-    description:
-        "Cần tiền làm ăn nên bán gấp miếng đất nằm ngay mặt tiền đường nhựa 16m. Dân cư xung quanh sầm uất đất đã có sẵn thổ cư, sổ hồng sẵn thích hợp đầu tư. Diện tích 250m² gần hồ khu du lịch nghỉ dưỡng. Thiện chí gọi trực tiếp xem đất.",
-};
+import { useFindPropertyById } from "@/services/property/property";
+import { Route } from "@/routes/__client/detail.$id";
+import { extensions } from "@/components/tiptap/rich-text-editor";
+import { directionConverter, formatCurrency } from "@/utils/converter";
 
 export default function PropertyDetailPage() {
+    const { id } = Route.useParams();
+    const product = useFindPropertyById(+id);
+    const productData = product.data?.data;
+    const getAddress = () => {
+        let address = "";
+        if (productData?.lineAddress) {
+            address += productData.lineAddress + ", ";
+        }
+        address += productData?.ward?.name + ", ";
+        address += productData?.ward?.province?.name;
+        return address;
+    };
+    const getPricePerSquareMeter = () => {
+        if (productData?.price && productData?.landArea) {
+            return formatCurrency(productData.price / productData.landArea);
+        }
+    };
+    const getProductSpec = () => {
+        const productSpec: SpecItemProps[] = [];
+        if (productData?.type?.name) {
+            productSpec.push({
+                icon: HouseIcon,
+                title: "Loại BĐS",
+                value: productData.type.name,
+            });
+        }
+        if (productData?.floors) {
+            productSpec.push({
+                icon: IconStairs,
+                title: "Số tầng",
+                value: productData.floors.toString() + " tầng",
+            });
+        }
+        if (productData?.floorNumber) {
+            productSpec.push({
+                icon: DoorOpenIcon,
+                title: "Tầng thứ",
+                value: productData.floorNumber.toString(),
+            });
+        }
+        if (productData?.bedrooms) {
+            productSpec.push({
+                icon: BedDoubleIcon,
+                title: "Phòng ngủ",
+                value: productData.bedrooms.toString() + " phòng",
+            });
+        }
+        if (productData?.bathrooms) {
+            productSpec.push({
+                icon: BathIcon,
+                title: "Phòng tắm",
+                value: productData.bathrooms.toString() + " phòng",
+            });
+        }
+        if (productData?.interior) {
+            productSpec.push({
+                icon: SofaIcon,
+                title: "Nội thất",
+                value: productData.interior,
+            });
+        }
+        if (productData?.entranceRoadWidth) {
+            productSpec.push({
+                icon: IconRoad,
+                title: "Đường vào",
+                value: productData.entranceRoadWidth + " m",
+            });
+        }
+        if (productData?.direction) {
+            productSpec.push({
+                icon: IconDirections,
+                title: "Hướng nhà",
+                value: directionConverter(productData.direction),
+            });
+        }
+        if (productData?.balconyDirection) {
+            productSpec.push({
+                icon: Building2Icon,
+                title: "Hướng ban công",
+                value: directionConverter(productData.balconyDirection),
+            });
+        }
+        if (productData?.hasMezzanine) {
+            productSpec.push({
+                icon: TriangleIcon,
+                title: "Gác lửng",
+                value: "Có gác lửng",
+            });
+        }
+        if (productData?.hasBasement) {
+            productSpec.push({
+                icon: IconTransferIn,
+                title: "Hầm",
+                value: "Có hầm",
+            });
+        }
+        if (productData?.hasElevator) {
+            productSpec.push({
+                icon: IconElevator,
+                title: "Thang máy",
+                value: "Có thang máy",
+            });
+        }
+        return productSpec;
+    };
+    const descriptionHTML = generateHTML(
+        productData?.description
+            ? JSON.parse(productData.description)
+            : { type: "doc", content: [] },
+        extensions,
+    );
+
     return (
         <motion.div
             className="container mx-auto py-8 grid grid-cols-1 md:grid-cols-6 gap-2"
@@ -79,7 +158,15 @@ export default function PropertyDetailPage() {
                 className="flex flex-col gap-6 col-start-2 col-span-4"
                 variants={fadeInUp.item}
             >
-                <ImageGallery images={productData.images} />
+                <ImageGallery
+                    images={
+                        productData?.medias?.map((media) => ({
+                            alt: productData.title || "Property Image",
+                            largeUrl: media.secureUrl,
+                            thumbnailUrl: media.secureUrl,
+                        })) || []
+                    }
+                />
 
                 <Separator />
 
@@ -91,9 +178,9 @@ export default function PropertyDetailPage() {
                         whileInView="show"
                         className="text-3xl font-bold leading-tight"
                     >
-                        {productData.title}
+                        {productData?.title}
                     </motion.h1>
-                    <p className="text-muted-foreground mt-1">{productData.address}</p>
+                    <p className="text-muted-foreground mt-1">{getAddress()}</p>
                 </div>
 
                 <Card>
@@ -108,17 +195,22 @@ export default function PropertyDetailPage() {
                                 <div>
                                     <p className="text-sm text-muted-foreground">Khoảng giá</p>
                                     <p className="text-2xl font-bold text-primary">
-                                        {productData.price}
+                                        {formatCurrency(productData?.price)}
                                     </p>
-                                    <p className="text-sm text-muted-foreground">
-                                        ~{productData.pricePerSqm}/m²
-                                    </p>
+                                    {productData?.landArea && (
+                                        <p className="text-sm text-muted-foreground">
+                                            ~{getPricePerSquareMeter()}
+                                            /m²
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                             <Separator orientation="vertical" className="h-12" />
                             <div>
                                 <p className="text-sm text-muted-foreground">Diện tích</p>
-                                <p className="text-2xl font-bold">{productData.area}</p>
+                                <p className="text-2xl font-bold">
+                                    {productData?.landArea + " m²"}
+                                </p>
                             </div>
                             <div className="flex items-center gap-2">
                                 <motion.div
@@ -155,30 +247,7 @@ export default function PropertyDetailPage() {
                     whileInView="show"
                     viewport={{ once: true, amount: 0.25 }}
                 >
-                    <ProductSpecs
-                        specs={[
-                            {
-                                icon: HouseIcon,
-                                title: "Loại BĐS",
-                                value: "Đất nền",
-                            },
-                            {
-                                icon: IconRoad,
-                                title: "Đường rộng",
-                                value: "16 m",
-                            },
-                            {
-                                icon: IconRoad,
-                                title: "Mặt tiền",
-                                value: "5 m",
-                            },
-                            {
-                                icon: PackageIcon,
-                                title: "Pháp lý",
-                                value: "Sổ hồng riêng",
-                            },
-                        ]}
-                    />
+                    <ProductSpecs specs={getProductSpec()} />
                 </motion.div>
 
                 {/* Description Section */}
@@ -193,9 +262,10 @@ export default function PropertyDetailPage() {
                             whileInView="show"
                             viewport={{ once: true, amount: 0.25 }}
                         >
-                            <p className="text-muted-foreground whitespace-pre-line">
-                                {productData.description}
-                            </p>
+                            <div
+                                className="text-muted-foreground whitespace-pre-line"
+                                dangerouslySetInnerHTML={{ __html: descriptionHTML }}
+                            ></div>
                         </motion.div>
                     </CardContent>
                 </Card>

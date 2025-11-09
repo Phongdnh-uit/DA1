@@ -17,7 +17,7 @@ import type { SendOtpRequest } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { sendOtpBody } from "@/services/auth/auth.zod";
 import { useNavigate } from "@tanstack/react-router";
-import { useAuthStore } from "@/stores/useAuthStore";
+import { useAuthSessionStore } from "@/stores/useAuthSessionStore";
 import { useSendOtp } from "@/services/auth/auth";
 import { toast } from "react-toastify";
 
@@ -31,7 +31,7 @@ export default function ForgotPasswordPage() {
         resolver: zodResolver(sendOtpBody),
     });
     const navigate = useNavigate();
-    const { setOtpDestination } = useAuthStore();
+    const { setOtpDestination } = useAuthSessionStore();
     const mutation = useSendOtp({
         mutation: {
             onSuccess: () => {

@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 import { queryClient } from "@/lib/queryClient";
 import { useEffect } from "react";
 import { DeleteDialogGlobal } from "@/components/general/DeleteDialogGlobal";
+import { AuthInitializer } from "@/components/general/AuthInitializer";
 
 export const Route = createRootRoute({
     component: RootComponent,
@@ -20,9 +21,10 @@ function RootComponent() {
     return (
         <React.Fragment>
             <QueryClientProvider client={queryClient}>
+                <AuthInitializer />
                 <Outlet />
-                <ReactQueryDevtools initialIsOpen={false} />
-                <TanStackRouterDevtools />
+                {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+                {/* <TanStackRouterDevtools /> */}
                 <ToastContainer />
                 <DeleteDialogGlobal />
             </QueryClientProvider>

@@ -16,8 +16,7 @@ export interface PropertyRequest {
   purpose: PropertyRequestPurpose;
   typeId: number;
   price: number;
-  /** @minLength 1 */
-  lineAddress: string;
+  lineAddress?: string;
   provinceId: number;
   wardId: number;
   landArea?: number;

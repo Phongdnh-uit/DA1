@@ -21,7 +21,8 @@ import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-passw
 import { Route as AuthOtpVerificationRouteImport } from './routes/auth/otp-verification'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
-import { Route as _clientDetailRouteImport } from './routes/__client/detail'
+import { Route as _clientWishListRouteImport } from './routes/__client/wish-list'
+import { Route as _clientSettingsRouteImport } from './routes/__client/settings'
 import { Route as AdminWardIndexRouteImport } from './routes/admin/ward/index'
 import { Route as AdminUserIndexRouteImport } from './routes/admin/user/index'
 import { Route as AdminRoleIndexRouteImport } from './routes/admin/role/index'
@@ -32,6 +33,7 @@ import { Route as AdminPermissionIndexRouteImport } from './routes/admin/permiss
 import { Route as AdminDashboardIndexRouteImport } from './routes/admin/dashboard/index'
 import { Route as AdminUserCreateRouteImport } from './routes/admin/user/create'
 import { Route as AdminPropertyCreateRouteImport } from './routes/admin/property/create'
+import { Route as _clientDetailIdRouteImport } from './routes/__client/detail.$id'
 import { Route as AdminUserUpdateIdRouteImport } from './routes/admin/user/update.$id'
 
 const TestDatatableRoute = TestDatatableRouteImport.update({
@@ -93,9 +95,14 @@ const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => AuthRoute,
 } as any)
-const _clientDetailRoute = _clientDetailRouteImport.update({
-  id: '/detail',
-  path: '/detail',
+const _clientWishListRoute = _clientWishListRouteImport.update({
+  id: '/wish-list',
+  path: '/wish-list',
+  getParentRoute: () => _clientRoute,
+} as any)
+const _clientSettingsRoute = _clientSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => _clientRoute,
 } as any)
 const AdminWardIndexRoute = AdminWardIndexRouteImport.update({
@@ -148,6 +155,11 @@ const AdminPropertyCreateRoute = AdminPropertyCreateRouteImport.update({
   path: '/property/create',
   getParentRoute: () => AdminRoute,
 } as any)
+const _clientDetailIdRoute = _clientDetailIdRouteImport.update({
+  id: '/detail/$id',
+  path: '/detail/$id',
+  getParentRoute: () => _clientRoute,
+} as any)
 const AdminUserUpdateIdRoute = AdminUserUpdateIdRouteImport.update({
   id: '/user/update/$id',
   path: '/user/update/$id',
@@ -158,7 +170,8 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/test-datatable': typeof TestDatatableRoute
-  '/detail': typeof _clientDetailRoute
+  '/settings': typeof _clientSettingsRoute
+  '/wish-list': typeof _clientWishListRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/otp-verification': typeof AuthOtpVerificationRoute
@@ -167,6 +180,7 @@ export interface FileRoutesByFullPath {
   '/auth/sign-up-addition': typeof AuthSignUpAdditionRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/': typeof _clientIndexRoute
+  '/detail/$id': typeof _clientDetailIdRoute
   '/admin/property/create': typeof AdminPropertyCreateRoute
   '/admin/user/create': typeof AdminUserCreateRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
@@ -183,7 +197,8 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/test-datatable': typeof TestDatatableRoute
-  '/detail': typeof _clientDetailRoute
+  '/settings': typeof _clientSettingsRoute
+  '/wish-list': typeof _clientWishListRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/otp-verification': typeof AuthOtpVerificationRoute
@@ -192,6 +207,7 @@ export interface FileRoutesByTo {
   '/auth/sign-up-addition': typeof AuthSignUpAdditionRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/': typeof _clientIndexRoute
+  '/detail/$id': typeof _clientDetailIdRoute
   '/admin/property/create': typeof AdminPropertyCreateRoute
   '/admin/user/create': typeof AdminUserCreateRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
@@ -210,7 +226,8 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/test-datatable': typeof TestDatatableRoute
-  '/__client/detail': typeof _clientDetailRoute
+  '/__client/settings': typeof _clientSettingsRoute
+  '/__client/wish-list': typeof _clientWishListRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/otp-verification': typeof AuthOtpVerificationRoute
@@ -219,6 +236,7 @@ export interface FileRoutesById {
   '/auth/sign-up-addition': typeof AuthSignUpAdditionRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/__client/': typeof _clientIndexRoute
+  '/__client/detail/$id': typeof _clientDetailIdRoute
   '/admin/property/create': typeof AdminPropertyCreateRoute
   '/admin/user/create': typeof AdminUserCreateRoute
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
@@ -237,7 +255,8 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/test-datatable'
-    | '/detail'
+    | '/settings'
+    | '/wish-list'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/otp-verification'
@@ -246,6 +265,7 @@ export interface FileRouteTypes {
     | '/auth/sign-up-addition'
     | '/auth/verify-email'
     | '/'
+    | '/detail/$id'
     | '/admin/property/create'
     | '/admin/user/create'
     | '/admin/dashboard'
@@ -262,7 +282,8 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/test-datatable'
-    | '/detail'
+    | '/settings'
+    | '/wish-list'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/otp-verification'
@@ -271,6 +292,7 @@ export interface FileRouteTypes {
     | '/auth/sign-up-addition'
     | '/auth/verify-email'
     | '/'
+    | '/detail/$id'
     | '/admin/property/create'
     | '/admin/user/create'
     | '/admin/dashboard'
@@ -288,7 +310,8 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/test-datatable'
-    | '/__client/detail'
+    | '/__client/settings'
+    | '/__client/wish-list'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/otp-verification'
@@ -297,6 +320,7 @@ export interface FileRouteTypes {
     | '/auth/sign-up-addition'
     | '/auth/verify-email'
     | '/__client/'
+    | '/__client/detail/$id'
     | '/admin/property/create'
     | '/admin/user/create'
     | '/admin/dashboard/'
@@ -403,11 +427,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthForgotPasswordRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/__client/detail': {
-      id: '/__client/detail'
-      path: '/detail'
-      fullPath: '/detail'
-      preLoaderRoute: typeof _clientDetailRouteImport
+    '/__client/wish-list': {
+      id: '/__client/wish-list'
+      path: '/wish-list'
+      fullPath: '/wish-list'
+      preLoaderRoute: typeof _clientWishListRouteImport
+      parentRoute: typeof _clientRoute
+    }
+    '/__client/settings': {
+      id: '/__client/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof _clientSettingsRouteImport
       parentRoute: typeof _clientRoute
     }
     '/admin/ward/': {
@@ -480,6 +511,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPropertyCreateRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/__client/detail/$id': {
+      id: '/__client/detail/$id'
+      path: '/detail/$id'
+      fullPath: '/detail/$id'
+      preLoaderRoute: typeof _clientDetailIdRouteImport
+      parentRoute: typeof _clientRoute
+    }
     '/admin/user/update/$id': {
       id: '/admin/user/update/$id'
       path: '/user/update/$id'
@@ -491,13 +529,17 @@ declare module '@tanstack/react-router' {
 }
 
 interface _clientRouteChildren {
-  _clientDetailRoute: typeof _clientDetailRoute
+  _clientSettingsRoute: typeof _clientSettingsRoute
+  _clientWishListRoute: typeof _clientWishListRoute
   _clientIndexRoute: typeof _clientIndexRoute
+  _clientDetailIdRoute: typeof _clientDetailIdRoute
 }
 
 const _clientRouteChildren: _clientRouteChildren = {
-  _clientDetailRoute: _clientDetailRoute,
+  _clientSettingsRoute: _clientSettingsRoute,
+  _clientWishListRoute: _clientWishListRoute,
   _clientIndexRoute: _clientIndexRoute,
+  _clientDetailIdRoute: _clientDetailIdRoute,
 }
 
 const _clientRouteWithChildren =

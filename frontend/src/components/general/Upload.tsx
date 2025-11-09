@@ -24,6 +24,7 @@ const UploadIcon = ({ className }: { className: string }) => (
 );
 
 interface UploadProps {
+    name?: string;
     className?: string;
     isMinimal?: boolean;
     accept?: Accept;
@@ -31,9 +32,10 @@ interface UploadProps {
     isSingle?: boolean;
 }
 
-export default function Upload({ className, isMinimal, accept, onUpload , isSingle}: UploadProps) {
+export default function Upload({ className, isMinimal, accept, onUpload , isSingle, name}: UploadProps) {
     return (
         <Dropzone
+            name={name}
             className={cn(
                 "h-48 rounded-md border-2 border-dashed border-gray-300 bg-gray-50",
                 className,

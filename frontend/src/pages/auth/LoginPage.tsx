@@ -10,13 +10,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { useLogin } from "@/services/auth/auth";
+import { getGetCurrentUserQueryKey, useLogin } from "@/services/auth/auth";
 import { loginBody } from "@/services/auth/auth.zod";
-import type {
-    ApiResponseVoid,
-    LoginRequest,
-    LoginResponse,
-} from "@/types";
+import type { ApiResponseVoid, LoginRequest, LoginResponse } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IconBrandGoogle } from "@tabler/icons-react";
 import { Link, useNavigate } from "@tanstack/react-router";
@@ -30,6 +26,7 @@ import {
     ACCESS_TOKEN_STORAGE_KEY,
     REFRESH_TOKEN_STORAGE_KEY,
 } from "@/constant/SecurityConstant";
+import { queryClient } from "@/lib/queryClient";
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -54,8 +51,11 @@ export default function LoginPage() {
                         ACCESS_TOKEN_STORAGE_KEY,
                         data.data?.accessToken,
                     );
+                    queryClient.invalidateQueries({
+                        queryKey: getGetCurrentUserQueryKey(),
+                    });
+                    navigate({ to: "/" });
                 }
-                navigate({ to: "/" });
             },
             onError: () => {
                 toast.error("Đăng nhập thất bại. Thông tin đăng nhập không đúng");
@@ -96,6 +96,9 @@ export default function LoginPage() {
                     localStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, refreshToken);
                     localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);
                     toast.success("Đăng nhập thành công bằng Google");
+                    queryClient.invalidateQueries({
+                        queryKey: getGetCurrentUserQueryKey(),
+                    });
                     navigate({ to: "/" });
                     return;
                 }
@@ -217,6 +220,7 @@ export default function LoginPage() {
                             <Button
                                 onClick={() => form.handleSubmit(onSubmit)()}
                                 className="w-full mt-8 h-16 rounded-[24px] bg-blue-500 hover:bg-blue-600 text-lg"
+                                name="login-button"
                             >
                                 Tiếp tục
                             </Button>
@@ -235,6 +239,7 @@ export default function LoginPage() {
                             <Button
                                 variant="outline"
                                 className="w-full h-16 rounded-[24px] text-lg"
+                                name="login-with-google-button"
                                 onClick={() => loginWithGoogle()}
                             >
                                 <IconBrandGoogle className="h-6 w-6 mr-2" />

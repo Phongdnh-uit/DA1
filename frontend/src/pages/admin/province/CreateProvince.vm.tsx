@@ -9,10 +9,9 @@ import { toast } from "react-toastify";
 export default function useCreateProvinceVM() {
     const form = useForm<ProvinceRequest>({
         defaultValues: {
-            codeName: "",
+            code: "",
             name: "",
-            divisionType: "",
-            phoneCode: "",
+            type: "",
         },
         mode: "onSubmit",
         resolver: zodResolver(createProvinceBody),

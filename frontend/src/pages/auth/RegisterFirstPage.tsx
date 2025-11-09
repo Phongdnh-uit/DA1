@@ -19,7 +19,7 @@ import { PhoneIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import BannerImage from "@/assets/banner.jpg";
-import { useAuthStore } from "@/stores/useAuthStore";
+import { useAuthSessionStore } from "@/stores/useAuthSessionStore";
 import { motion } from "motion/react";
 import { fadeInUp } from "@/lib/animation";
 
@@ -33,7 +33,7 @@ export default function RegisterFirstPage() {
         resolver: zodResolver(sendOtpBody),
     });
     const navigate = useNavigate();
-    const { setOtpDestination } = useAuthStore();
+    const { setOtpDestination } = useAuthSessionStore();
     const mutation = useSendOtp({
         mutation: {
             onError: () => {

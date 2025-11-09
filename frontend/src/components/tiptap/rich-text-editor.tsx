@@ -22,7 +22,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import { Slash } from "./extensions/command";
 import { suggestion } from "./extensions/suggestion";
 
-const extensions = [
+export const extensions = [
     StarterKit.configure({
         orderedList: {
             HTMLAttributes: {

@@ -15,6 +15,7 @@ import {
     ShieldUserIcon,
     UsersRoundIcon,
 } from "lucide-react";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 interface AdminSidebarProps {
     children: React.ReactNode;
@@ -117,6 +118,7 @@ export function AdminSidebar(props: AdminSidebarProps) {
         opacity: number;
     }>({ top: 0, opacity: 0 });
     const navigate = useNavigate();
+    const user = useAuthStore((state) => state.user);
     return (
         <div
             className={cn(
@@ -162,7 +164,7 @@ export function AdminSidebar(props: AdminSidebarProps) {
                     <div>
                         <SidebarLink
                             link={{
-                                label: "Manu Arora",
+                                label: user?.email ? user?.email : "",
                                 href: "#",
                                 icon: (
                                     <img

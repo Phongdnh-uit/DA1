@@ -49,3 +49,8 @@ export const loginBody = zod.object({
   "password": zod.string().min(1)
 })
 
+export const changePasswordBody = zod.object({
+  "oldPassword": zod.string().min(1),
+  "newPassword": zod.string().min(1)
+})
+

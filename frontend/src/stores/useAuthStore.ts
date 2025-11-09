@@ -1,26 +1,16 @@
+import type { UserResponse } from "@/types";
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
 
 interface AuthState {
-    otpDestination: string | null;
-    setOtpDestination: (destination: string) => void;
-    verificationToken: string | null;
-    setVerificationToken: (token: string) => void;
+    isAuthenticated: boolean;
+    user: UserResponse | null;
+    setUser: (user: UserResponse | null) => void;
+    clearUser: () => void;
 }
 
-export const useAuthStore = create(
-    persist<AuthState>(
-        (set) => ({
-            verificationToken: null,
-            otpDestination: null,
-            setOtpDestination: (destination: string) =>
-                set({ otpDestination: destination }),
-            setVerificationToken: (token: string) =>
-                set({ verificationToken: token }),
-        }),
-        {
-            name: "auth-session",
-            storage: createJSONStorage(() => sessionStorage),
-        },
-    ),
-);
+export const useAuthStore = create<AuthState>((set) => ({
+    isAuthenticated: false,
+    user: null,
+    setUser: (user) => set(() => ({ isAuthenticated: user !== null, user })),
+    clearUser: () => set(() => ({ isAuthenticated: false, user: null })),
+}));

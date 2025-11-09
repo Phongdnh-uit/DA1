@@ -9,4 +9,6 @@ export const PUBLIC_ENDPOINTS = [
     "/auth/verify-email",
     "/auth/register",
     "/auth/reset-password",
+    "/ai/chat/query",
+    "/ai/chat/stream",
 ];

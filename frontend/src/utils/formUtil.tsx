@@ -161,6 +161,7 @@ export function FormSelect<K>({
                         >
                             <SelectTrigger
                                 className={cn("!h-16 w-full text-lg rounded-[24px]", className)}
+                                name={name}
                             >
                                 <SelectValue
                                     className="!text-lg"

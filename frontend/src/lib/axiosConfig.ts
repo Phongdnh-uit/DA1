@@ -51,6 +51,7 @@ axiosInstance.interceptors.response.use(
             if (refreshToken) {
                 try {
                     const data = await refreshFn({ refreshToken });
+                    console.log("Refresh token response data:", data);
                     if (data?.data?.accessToken && data?.data?.refreshToken) {
                         const { accessToken, refreshToken: newRefreshToken } = data.data;
                         localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);
@@ -61,18 +62,13 @@ axiosInstance.interceptors.response.use(
                     }
                     localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
                     localStorage.removeItem(REFRESH_TOKEN_STORAGE_KEY);
-                    window.location.href = "/auth/login";
                     return Promise.reject(error);
                 } catch {
                     localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
                     localStorage.removeItem(REFRESH_TOKEN_STORAGE_KEY);
-                    window.location.href = "/auth/login";
                     return Promise.reject(error);
                 }
             }
-        }
-        if (error.response?.status === 401) {
-            window.location.href = "/auth/login";
         }
         return Promise.reject(error);
     },

@@ -151,8 +151,10 @@ export const PropertyManage = () => {
                 filterAttributes={[
                     { name: "id", label: "Id", type: "number" },
                     { name: "name", label: "Name", type: "text" },
-                    { name: "codeName", label: "Code Name", type: "text" },
-                    { name: "province.id", label: "Province Id", type: "number" },
+                    { name: "ward.province.id", label: "Province Id", type: "number" },
+                    { name: "ward.province.name", label: "Province Name", type: "text" },
+                    { name: "ward.name", label: "Ward Name", type: "text" },
+                    { name: "ward.id", label: "Ward Id", type: "text" },
                     { name: "createdBy", label: "Created By", type: "number" },
                     { name: "updatedBy", label: "Updated By", type: "number" },
                     { name: "createdAt", label: "Created At", type: "date" },

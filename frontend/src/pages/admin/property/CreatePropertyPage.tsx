@@ -5,18 +5,16 @@ import {
     FormInput,
     FormSelect,
 } from "@/utils/formUtil";
-import {
-    PropertyRequestPurpose,
-    PropertyRequestStatus,
-    type PropertyRequest,
-} from "@/types";
+import { PropertyRequestStatus, type PropertyRequest } from "@/types";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ArrowLeft, XIcon } from "lucide-react";
 import useCreatePropertyVM from "./CreateProperty.vm";
 import Upload from "@/components/general/Upload";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import SpiralLoader from "@/components/ui/SpiralLoader";
+import { LocationPicker } from "@/components/general/LocationPicker";
+import { Separator } from "@/components/ui/separator";
 
 export const CreatePropertyPage = () => {
     const {
@@ -45,8 +43,99 @@ export const CreatePropertyPage = () => {
                 </Button>
                 <h1 className="text-2xl font-semibold">Tạo bất động sản mới</h1>
             </div>
-            <div className="flex flex-wrap gap-8">
-                <Card className="max-w-2xl p-4 rounded-[24px] flex-1">
+
+            <div className="flex flex-col items-center gap-8 max-w-5xl mx-auto mb-16">
+                <Card className="p-4 rounded-[24px] w-full">
+                    <div className="mb-6 text-center">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
+                            Tải lên hình ảnh mô tả bất động sản
+                        </h1>
+                        <p className="text-gray-500 mt-1">
+                            Chọn một ảnh làm thumbnail và các ảnh còn lại cho gallery.
+                        </p>
+                    </div>
+
+                    <div className="mb-8">
+                        <h2 className="text-lg font-semibold text-gray-700 mb-2 text-center">
+                            Ảnh Thumbnail
+                        </h2>
+                        {thumbnail ? (
+                            <div className="relative flex justify-center items-center">
+                                {thumbnail.preview && (
+                                    <SpiralLoader className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-10" />
+                                )}
+                                <div className="relative inline-block">
+                                    <XIcon
+                                        className="absolute -top-2 -right-2 bg-red-500 rounded-full z-20 text-white cursor-pointer"
+                                        onClick={() => handleRemoveThumbnail()}
+                                    />
+                                    <ImageZoom>
+                                        <img
+                                            className={
+                                                "h-80 w-80 object-cover mx-auto rounded-lg cursor-pointer border-2 border-violet-300 shadow-lg " +
+                                                (thumbnail.preview ? " opacity-50" : "")
+                                            }
+                                            src={thumbnail.preview || thumbnail.result?.secureUrl}
+                                        />
+                                    </ImageZoom>
+                                </div>
+                            </div>
+                        ) : (
+                            <Upload
+                                name="thumbnail"
+                                onUpload={(files) => handleThumbnailChange(files[0])}
+                                isSingle={true}
+                            />
+                        )}
+                    </div>
+
+                    <div className="w-full overflow-y-auto">
+                        <h2 className="text-lg font-semibold text-gray-700 mb-2">
+                            Gallery
+                        </h2>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                            {gallery.length > 0 &&
+                                gallery.map((imageSrc, index) => (
+                                    <div key={index} className="aspect-square size-50">
+                                        <div className="relative flex justify-center items-center">
+                                            {imageSrc.preview && (
+                                                <SpiralLoader className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-10" />
+                                            )}
+                                            <div className="relative inline-block h-50">
+                                                <XIcon
+                                                    className="absolute -top-2 -right-2 bg-red-500 rounded-full z-20 text-white cursor-pointer"
+                                                    onClick={() => handleRemoveGallery(index)}
+                                                />
+                                                <ImageZoom>
+                                                    <img
+                                                        className={
+                                                            "object-cover mx-auto rounded-lg cursor-pointer border-2 border-violet-300 shadow-lg size-49" +
+                                                            (imageSrc.preview ? " opacity-50" : "")
+                                                        }
+                                                        src={imageSrc.preview || imageSrc.result?.secureUrl}
+                                                    />
+                                                </ImageZoom>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            <Upload
+                                name="gallery"
+                                isMinimal
+                                onUpload={(files) => handleGalleryChange(files[0])}
+                                isSingle={true}
+                            />
+                        </div>
+                    </div>
+                </Card>
+                <Card className="w-full p-4 rounded-[24px]">
+                    <CardHeader>
+                        <div className="mb-6 text-center">
+                            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
+                                Thông tin cơ bản bất động sản
+                            </h1>
+                        </div>
+                    </CardHeader>
                     <CardContent>
                         <Form {...form}>
                             <div className="flex flex-col gap-4">
@@ -58,13 +147,16 @@ export const CreatePropertyPage = () => {
                                 <FormSelect<PropertyRequest>
                                     title="Mục đích"
                                     name="purpose"
-                                    options={Object.keys(PropertyRequestPurpose).map((key) => ({
-                                        key: key,
-                                        render:
-                                            PropertyRequestPurpose[
-                                            key as keyof typeof PropertyRequestPurpose
-                                            ],
-                                    }))}
+                                    options={[
+                                        {
+                                            key: "FOR_SALE",
+                                            render: "Bán",
+                                        },
+                                        {
+                                            key: "FOR_RENT",
+                                            render: "Cho thuê",
+                                        },
+                                    ]}
                                 />
                                 <FormInput<PropertyRequest>
                                     title="Giá"
@@ -83,14 +175,16 @@ export const CreatePropertyPage = () => {
                                         })) || []
                                     }
                                 />
+                                <Separator />
                                 <FormSelect<PropertyRequest>
                                     title="Tỉnh/Thành phố"
                                     name="provinceId"
                                     keyType="number"
+                                    disabled={provinces?.data?.content?.length === 0}
                                     options={
                                         provinces?.data?.content?.map((province) => ({
                                             key: "" + province.id,
-                                            render: province.name,
+                                            render: "" + province.type + " " + province.name,
                                         })) || []
                                     }
                                 />
@@ -102,7 +196,7 @@ export const CreatePropertyPage = () => {
                                     options={
                                         wards?.data?.content?.map((ward) => ({
                                             key: "" + ward.id,
-                                            render: ward.name,
+                                            render: "" + ward.type + " " + ward.name,
                                         })) || []
                                     }
                                 />
@@ -111,6 +205,7 @@ export const CreatePropertyPage = () => {
                                     placeholder="Nhập địa chỉ"
                                     name="lineAddress"
                                 />
+                                <Separator />
                                 <FormInput<PropertyRequest>
                                     title="Diện tích đất (m²)"
                                     placeholder="Nhập diện tích đất"
@@ -160,10 +255,10 @@ export const CreatePropertyPage = () => {
                                         { key: "SOUTH", render: "Nam" },
                                         { key: "EAST", render: "Đông" },
                                         { key: "WEST", render: "Tây" },
-                                        { key: "NORTHEAST", render: "Đông Bắc" },
-                                        { key: "NORTHWEST", render: "Tây Bắc" },
-                                        { key: "SOUTHEAST", render: "Đông Nam" },
-                                        { key: "SOUTHWEST", render: "Tây Nam" },
+                                        { key: "NORTHEAST", render: "Đông - Bắc" },
+                                        { key: "NORTHWEST", render: "Tây - Bắc" },
+                                        { key: "SOUTHEAST", render: "Đông - Nam" },
+                                        { key: "SOUTHWEST", render: "Tây - Nam" },
                                     ]}
                                     name="direction"
                                 />
@@ -174,10 +269,10 @@ export const CreatePropertyPage = () => {
                                         { key: "SOUTH", render: "Nam" },
                                         { key: "EAST", render: "Đông" },
                                         { key: "WEST", render: "Tây" },
-                                        { key: "NORTHEAST", render: "Đông Bắc" },
-                                        { key: "NORTHWEST", render: "Tây Bắc" },
-                                        { key: "SOUTHEAST", render: "Đông Nam" },
-                                        { key: "SOUTHWEST", render: "Tây Nam" },
+                                        { key: "NORTHEAST", render: "Đông - Bắc" },
+                                        { key: "NORTHWEST", render: "Tây - Bắc" },
+                                        { key: "SOUTHEAST", render: "Đông - Nam" },
+                                        { key: "SOUTHWEST", render: "Tây - Nam" },
                                     ]}
                                     name="balconyDirection"
                                 />
@@ -221,6 +316,7 @@ export const CreatePropertyPage = () => {
                                         })()
                                     }
                                     className="h-14 bg-blue-500 rounded-xl text-lg hover:bg-blue-600"
+                                    name="confirm-button"
                                 >
                                     Xác nhận
                                 </Button>
@@ -228,103 +324,21 @@ export const CreatePropertyPage = () => {
                         </Form>
                     </CardContent>
                 </Card>
-                <div className="max-w-4xl flex-1 flex flex-col gap-8">
-                    <Card className="p-4 rounded-[24px] h-1/2">
-                        {/* Tiêu đề */}
-                        <div className="mb-6 text-center">
-                            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
-                                Tải lên hình ảnh mô tả bất động sản
-                            </h1>
-                            <p className="text-gray-500 mt-1">
-                                Chọn một ảnh làm thumbnail và các ảnh còn lại cho gallery.
-                            </p>
-                        </div>
 
-                        {/* Khu vực Upload */}
-                        <div className="mb-8">
-                            <h2 className="text-lg font-semibold text-gray-700 mb-2 text-center">
-                                Ảnh Thumbnail
-                            </h2>
-                            {thumbnail ? (
-                                <div className="relative flex justify-center items-center">
-                                    {thumbnail.preview && (
-                                        <SpiralLoader className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-10" />
-                                    )}
-                                    <div className="relative inline-block">
-                                        <XIcon
-                                            className="absolute -top-2 -right-2 bg-red-500 rounded-full z-20 text-white cursor-pointer"
-                                            onClick={() => handleRemoveThumbnail()}
-                                        />
-                                        <ImageZoom>
-                                            <img
-                                                className={
-                                                    "h-80 w-80 object-cover mx-auto rounded-lg cursor-pointer border-2 border-violet-300 shadow-lg " +
-                                                    (thumbnail.preview ? " opacity-50" : "")
-                                                }
-                                                src={thumbnail.preview || thumbnail.result?.secureUrl}
-                                            />
-                                        </ImageZoom>
-                                    </div>
-                                </div>
-                            ) : (
-                                <Upload
-                                    onUpload={(files) => handleThumbnailChange(files[0])}
-                                    isSingle={true}
-                                />
-                            )}
-                        </div>
+                <Card className="p-4 rounded-[24px] w-full">
+                    <CardContent className="h-full">
+                        <Form {...form}>
+                            <FormEditor<PropertyRequest>
+                                name="description"
+                                title="Mô tả"
+                                className="h-full"
+                            />
+                        </Form>
+                    </CardContent>
+                </Card>
 
-                        <div className="w-full overflow-y-auto">
-                            <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                                Gallery
-                            </h2>
-                            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                                {gallery.length > 0 &&
-                                    gallery.map((imageSrc, index) => (
-                                        <div key={index} className="aspect-square size-50">
-                                            <div className="relative flex justify-center items-center">
-                                                {imageSrc.preview && (
-                                                    <SpiralLoader className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-10" />
-                                                )}
-                                                <div className="relative inline-block h-50">
-                                                    <XIcon
-                                                        className="absolute -top-2 -right-2 bg-red-500 rounded-full z-20 text-white cursor-pointer"
-                                                        onClick={() => handleRemoveGallery(index)}
-                                                    />
-                                                    <ImageZoom>
-                                                        <img
-                                                            className={
-                                                                "object-cover mx-auto rounded-lg cursor-pointer border-2 border-violet-300 shadow-lg size-49" +
-                                                                (imageSrc.preview ? " opacity-50" : "")
-                                                            }
-                                                            src={
-                                                                imageSrc.preview || imageSrc.result?.secureUrl
-                                                            }
-                                                        />
-                                                    </ImageZoom>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                <Upload
-                                    isMinimal
-                                    onUpload={(files) => handleGalleryChange(files[0])}
-                                    isSingle={true}
-                                />
-                            </div>
-                        </div>
-                    </Card>
-                    <Card className="p-4 rounded-[24px] h-1/2">
-                        <CardContent className="h-full">
-                            <Form {...form}>
-                                <FormEditor<PropertyRequest>
-                                    name="description"
-                                    title="Mô tả"
-                                    className="h-full"
-                                />
-                            </Form>
-                        </CardContent>
-                    </Card>
+                <div className="w-full">
+                    <LocationPicker />
                 </div>
             </div>
         </div>

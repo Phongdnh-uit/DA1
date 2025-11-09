@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fadeInUp } from "@/lib/animation";
 
-interface SpecItemProps {
+export interface SpecItemProps {
     icon: React.ElementType;
     title: string;
     value: string;

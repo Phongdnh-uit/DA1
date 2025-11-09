@@ -31,17 +31,12 @@ export default function CreateProvinceModal({
                         title="Tên tỉnh/thành phố"
                     />
                     <FormInput<ProvinceRequest>
-                        name="codeName"
+                        name="code"
                         placeholder="Nhập tên code"
                         title="Tên code"
                     />
                     <FormInput<ProvinceRequest>
-                        name="phoneCode"
-                        placeholder="Nhập mã điện thoại"
-                        title="Mã điện thoại"
-                    />
-                    <FormInput<ProvinceRequest>
-                        name="divisionType"
+                        name="type"
                         placeholder="Nhập loại phân vùng"
                         title="Loại phân vùng"
                     />

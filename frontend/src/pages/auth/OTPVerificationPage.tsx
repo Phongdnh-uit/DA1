@@ -6,10 +6,10 @@ import {
     InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { useNavigate } from "@tanstack/react-router";
-import { useVerifyOtp } from "@/services/auth/auth";
+import { getGetCurrentUserQueryKey, useVerifyOtp } from "@/services/auth/auth";
 import { toast } from "react-toastify";
 import { useState } from "react";
-import { useAuthStore } from "@/stores/useAuthStore";
+import { useAuthSessionStore } from "@/stores/useAuthSessionStore";
 import { Route } from "@/routes/auth/otp-verification";
 import { motion } from "motion/react";
 import { fadeInUp } from "@/lib/animation";
@@ -18,15 +18,13 @@ import {
     ACCESS_TOKEN_STORAGE_KEY,
     REFRESH_TOKEN_STORAGE_KEY,
 } from "@/constant/SecurityConstant";
-import type {
-    ApiResponseVoid,
-    LoginResponse,
-} from "@/types";
+import type { ApiResponseVoid, LoginResponse } from "@/types";
+import { queryClient } from "@/lib/queryClient";
 
 export default function OTPVerificationPage() {
     const { purpose, isOAR } = Route.useSearch();
     const navigate = useNavigate();
-    const { otpDestination, setVerificationToken } = useAuthStore();
+    const { otpDestination, setVerificationToken } = useAuthSessionStore();
     const [value, setValue] = useState("");
     const mutation = useVerifyOtp({
         mutation: {
@@ -96,6 +94,9 @@ export default function OTPVerificationPage() {
                     localStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, refreshToken);
                     localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);
                     toast.success("Đăng ký thành công với Google");
+                    queryClient.invalidateQueries({
+                        queryKey: getGetCurrentUserQueryKey(),
+                    });
                     navigate({ to: "/" });
                 }
             } else {
