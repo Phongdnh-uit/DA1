@@ -12,16 +12,6 @@ function Checkbox({
 }: React.ComponentProps<typeof CheckboxPrimitive.Root> & {
     splashClassName?: string;
 }) {
-    const [splashes, setSplashes] = React.useState<number[]>([]);
-
-    const handleClick = (checked: boolean) => {
-        if (!checked) return;
-        setSplashes((prev) => [...prev, Date.now()]);
-        setTimeout(() => {
-            setSplashes((prev) => prev.slice(1));
-        }, 1000);
-    };
-
     return (
         <div className="relative inline-block">
             <CheckboxPrimitive.Root
@@ -31,7 +21,6 @@ function Checkbox({
                     className,
                 )}
                 {...props}
-                onClick={() => handleClick(!props.checked)}
             >
                 <CheckboxPrimitive.Indicator
                     data-slot="checkbox-indicator"
@@ -66,43 +55,6 @@ function Checkbox({
                     )}
                 </CheckboxPrimitive.Indicator>
             </CheckboxPrimitive.Root>
-
-            {splashes.map((id) => (
-                <div
-                    key={id}
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-                >
-                    {Array.from({ length: 6 }).map((_, i) => {
-                        const angle = (i / 6) * Math.PI * 2;
-
-                        return (
-                            <motion.div
-                                key={i}
-                                style={{ rotate: `${angle}rad` }}
-                                className="absolute z-50"
-                            >
-                                <motion.span
-                                    className={cn(
-                                        "block h-1 w-1 rounded-full bg-current",
-                                        splashClassName,
-                                    )}
-                                    initial={{ x: 0, opacity: 1, scaleX: 1 }}
-                                    animate={{
-                                        x: 30,
-                                        scaleX: [1, 1, 3],
-                                        opacity: [1, 0.9, 0],
-                                    }}
-                                    transition={{
-                                        duration: 0.6,
-                                        ease: "easeInOut",
-                                        times: [0, 0.3, 1],
-                                    }}
-                                />
-                            </motion.div>
-                        );
-                    })}
-                </div>
-            ))}
         </div>
     );
 }

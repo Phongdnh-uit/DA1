@@ -6,9 +6,26 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { useInitializeChat } from "@/services/chat/chat";
+import { useNavigate } from "@tanstack/react-router";
 import { Phone, Mail, MessageCircle } from "lucide-react";
+import { toast } from "react-toastify";
 
 export function CTASection() {
+    const navigate = useNavigate();
+    const chatInitializeMutation = useInitializeChat({
+        mutation: {
+            onSuccess: () => {
+                toast.success("Xin chờ một chút, đang chuyển bạn đến phòng chat...");
+                navigate({
+                    to: "/chat",
+                });
+            },
+        },
+    });
+    const handleChatNow = () => {
+        chatInitializeMutation.mutate();
+    };
     return (
         <section className="py-20 px-4 bg-blue-500 text-primary-foreground">
             <div className="max-w-7xl mx-auto text-center">
@@ -60,7 +77,11 @@ export function CTASection() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <Button variant="secondary" className="w-full">
+                            <Button
+                                onClick={handleChatNow}
+                                variant="secondary"
+                                className="w-full"
+                            >
                                 Bắt đầu trò chuyện
                             </Button>
                         </CardContent>

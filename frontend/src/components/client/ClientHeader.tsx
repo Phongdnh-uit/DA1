@@ -50,7 +50,7 @@ export default function ClientHeader() {
                     ))}
                 </nav>
 
-                {authStore.isAuthenticated ? (
+                {authStore.user ? (
                     <div>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>

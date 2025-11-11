@@ -23,6 +23,7 @@ import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
 import { Route as _clientWishListRouteImport } from './routes/__client/wish-list'
 import { Route as _clientSettingsRouteImport } from './routes/__client/settings'
+import { Route as _clientChatRouteImport } from './routes/__client/chat'
 import { Route as AdminWardIndexRouteImport } from './routes/admin/ward/index'
 import { Route as AdminUserIndexRouteImport } from './routes/admin/user/index'
 import { Route as AdminRoleIndexRouteImport } from './routes/admin/role/index'
@@ -105,6 +106,11 @@ const _clientSettingsRoute = _clientSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => _clientRoute,
 } as any)
+const _clientChatRoute = _clientChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => _clientRoute,
+} as any)
 const AdminWardIndexRoute = AdminWardIndexRouteImport.update({
   id: '/ward/',
   path: '/ward/',
@@ -170,6 +176,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/test-datatable': typeof TestDatatableRoute
+  '/chat': typeof _clientChatRoute
   '/settings': typeof _clientSettingsRoute
   '/wish-list': typeof _clientWishListRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -197,6 +204,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/test-datatable': typeof TestDatatableRoute
+  '/chat': typeof _clientChatRoute
   '/settings': typeof _clientSettingsRoute
   '/wish-list': typeof _clientWishListRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -226,6 +234,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/test-datatable': typeof TestDatatableRoute
+  '/__client/chat': typeof _clientChatRoute
   '/__client/settings': typeof _clientSettingsRoute
   '/__client/wish-list': typeof _clientWishListRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -255,6 +264,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/test-datatable'
+    | '/chat'
     | '/settings'
     | '/wish-list'
     | '/auth/forgot-password'
@@ -282,6 +292,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/test-datatable'
+    | '/chat'
     | '/settings'
     | '/wish-list'
     | '/auth/forgot-password'
@@ -310,6 +321,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/test-datatable'
+    | '/__client/chat'
     | '/__client/settings'
     | '/__client/wish-list'
     | '/auth/forgot-password'
@@ -441,6 +453,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof _clientSettingsRouteImport
       parentRoute: typeof _clientRoute
     }
+    '/__client/chat': {
+      id: '/__client/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof _clientChatRouteImport
+      parentRoute: typeof _clientRoute
+    }
     '/admin/ward/': {
       id: '/admin/ward/'
       path: '/ward'
@@ -529,6 +548,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface _clientRouteChildren {
+  _clientChatRoute: typeof _clientChatRoute
   _clientSettingsRoute: typeof _clientSettingsRoute
   _clientWishListRoute: typeof _clientWishListRoute
   _clientIndexRoute: typeof _clientIndexRoute
@@ -536,6 +556,7 @@ interface _clientRouteChildren {
 }
 
 const _clientRouteChildren: _clientRouteChildren = {
+  _clientChatRoute: _clientChatRoute,
   _clientSettingsRoute: _clientSettingsRoute,
   _clientWishListRoute: _clientWishListRoute,
   _clientIndexRoute: _clientIndexRoute,

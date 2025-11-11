@@ -23,8 +23,8 @@ function RootComponent() {
             <QueryClientProvider client={queryClient}>
                 <AuthInitializer />
                 <Outlet />
-                {/* <ReactQueryDevtools initialIsOpen={false} /> */}
-                {/* <TanStackRouterDevtools /> */}
+                <ReactQueryDevtools initialIsOpen={false} />
+                <TanStackRouterDevtools />
                 <ToastContainer />
                 <DeleteDialogGlobal />
             </QueryClientProvider>

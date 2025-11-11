@@ -6,6 +6,7 @@ import {
     useLocalRuntime,
     type ChatModelAdapter,
 } from "@assistant-ui/react";
+import { v7 } from "uuid";
 
 const MyModelAdapter: ChatModelAdapter = {
     async *run({ messages, abortSignal }) {
@@ -13,11 +14,15 @@ const MyModelAdapter: ChatModelAdapter = {
         const lastMessageText =
             lastMessage.content.find((part) => part.type === "text")?.text || "";
 
+        let conversationId = sessionStorage.getItem("conversationId");
+        if (!conversationId) {
+            conversationId = v7().toString();
+            sessionStorage.setItem("conversationId", conversationId);
+        }
         const request = {
             message: lastMessageText,
-            conversationId: "example-conversation-id",
+            conversationId: conversationId,
         };
-        // TODO replace with your own API
         const result = await fetch("http://localhost:8080/ai/chat/stream", {
             method: "POST",
             headers: {

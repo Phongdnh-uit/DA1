@@ -1,3 +1,4 @@
+import { ProtectedRoute } from "@/components/general/ProtectedRoute";
 import SettingsPage from "@/pages/client/setting/SettingPage";
 import { createFileRoute } from "@tanstack/react-router";
 
@@ -6,5 +7,9 @@ export const Route = createFileRoute("/__client/settings")({
 });
 
 function RouteComponent() {
-    return <SettingsPage />;
+    return (
+        <ProtectedRoute>
+            <SettingsPage />
+        </ProtectedRoute>
+    );
 }

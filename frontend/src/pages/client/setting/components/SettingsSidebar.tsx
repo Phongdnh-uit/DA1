@@ -65,7 +65,7 @@ export function SettingsSidebar() {
 
     return (
         <motion.aside
-            className="w-full lg:w-48"
+            className="w-full lg:w-48 sticky top-27 self-start"
             variants={fadeInUp.container}
             initial="hidden"
             animate="show"

@@ -1,105 +1,169 @@
+import { Link } from "@tanstack/react-router";
+import {
+    Mail,
+    Phone,
+    MapPin,
+    Facebook,
+    Twitter,
+    Instagram,
+    Linkedin,
+} from "lucide-react";
 import Logo from "@/assets/logo.svg";
 
-const navigation = {
-  connect: [
-    { name: 'Book Meeting', href: '' },
-    {
-      name: 'Twitter',
-      href: 'https://twitter.com/justansub',
-    },
-    {
-      name: 'Github',
-      href: 'https://www.youtube.com/@SpeedyBrand-SEO',
-    },
-    {
-      name: 'LinkedIn',
-      href: 'https://www.linkedin.com/company/speedy-brand-inc/',
-    },
-  ],
-  company: [
-    { name: 'Blogs', href: '/' },
-    { name: 'Pricing', href: '/' },
-    { name: 'Affiliate Partner', href: '/' },
-    { name: 'AI For Enterprise', href: '/' },
-  ],
-}
+export default function ClientFooter() {
+    const currentYear = new Date().getFullYear();
 
-const TwoColumnFooter = () => {
-  return (
-    <footer
-      aria-labelledby="footer-heading"
-      className="font-inter w-full bg-white"
-    >
-      <h2 id="footer-heading" className="sr-only">
-        Footer
-      </h2>
-      <div className="mx-auto px-2">
-        <div className="flex flex-col justify-between lg:flex-row">
-          <div className="space-y-8">
-            <img
-              width={100}
-              height={40}
-              src={Logo}
-              alt="logo"
-              className="h-7 w-auto"
-            />
-            <p className="text-md max-w-xs leading-6 text-gray-700 dark:text-gray-300">
-              Not your average component library - build faster, launch sooner.
-            </p>
-            <div className="flex space-x-6 text-sm text-gray-700  dark:text-gray-300">
-              <div>Made with ❤️ by Ansub.</div>
-            </div>
-          </div>
-          {/* Navigations */}
-          <div className="mt-16 grid grid-cols-2 gap-14 md:grid-cols-2 lg:mt-0 xl:col-span-2">
-            <div className="md:mt-0">
-              <h3 className="text-sm font-semibold leading-6 text-gray-900  dark:text-gray-200">
-                Connect
-              </h3>
-              <div className="mt-6 space-y-4">
-                {navigation.connect.map((item) => (
-                  <div key={item.name}>
-                    <a
-                      href={item.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-sm leading-6 text-gray-700 hover:text-gray-900 dark:text-gray-600 hover:dark:text-gray-200"
-                    >
-                      {item.name}
-                    </a>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <div>
-                <h3 className="text-sm font-semibold leading-6 text-gray-900 dark:text-gray-200">
-                  Company
-                </h3>
-                <div className="mt-6 space-y-4">
-                  {navigation.company.map((item) => (
-                    <div key={item.name}>
-                      <a
-                        href={item.href}
-                        className="text-sm leading-6 text-gray-700 hover:text-gray-900 dark:text-gray-600 hover:dark:text-gray-200"
-                      >
-                        {item.name}
-                      </a>
+    const services = [
+        { name: "Mua Bất Động Sản", href: "#" },
+        { name: "Bán Bất Động Sản", href: "#" },
+        { name: "Cho Thuê", href: "#" },
+        { name: "Định Giá Bất Động Sản", href: "#" },
+    ];
+
+    const company = [
+        { name: "Về Chúng Tôi", href: "#" },
+        { name: "Tin Tức & Blog", href: "#" },
+        { name: "Câu Hỏi Thường Gặp", href: "#" },
+        { name: "Liên Hệ", href: "#" },
+    ];
+
+    const legal = [
+        { name: "Chính Sách Bảo Mật", href: "#" },
+        { name: "Điều Khoản Dịch Vụ", href: "#" },
+        { name: "Chính Sách Cookie", href: "#" },
+    ];
+
+    const socialLinks = [
+        { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
+        { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
+        { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
+        { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
+    ];
+
+    return (
+        <footer className="w-full bg-slate-900 text-slate-50">
+            <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+                {/* Main Footer Content */}
+                <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+                    {/* Company Info */}
+                    <div className="space-y-6">
+                        <img src={Logo} />
+                        <div>
+                            <p className="text-sm text-slate-400">
+                                Nền tảng tư vấn bất động sản hàng đầu
+                            </p>
+                        </div>
+                        <p className="text-sm leading-relaxed text-slate-300">
+                            Giúp bạn tìm ngôi nhà mơ ước hoặc đầu tư bất động sản thông minh
+                            cùng những chuyên gia hàng đầu.
+                        </p>
+                        {/* Social Links */}
+                        <div className="flex gap-4">
+                            {socialLinks.map((social) => {
+                                const Icon = social.icon;
+                                return (
+                                    <a
+                                        key={social.label}
+                                        href={social.href}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        aria-label={social.label}
+                                        className="rounded-full bg-slate-800 p-2 transition-colors hover:bg-blue-600"
+                                    >
+                                        <Icon className="h-5 w-5" />
+                                    </a>
+                                );
+                            })}
+                        </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="mt-16 border-t border-gray-900/10 pt-8 sm:mt-20 lg:mt-24 dark:border-gray-100/10">
-          <p className="text-xs leading-5 text-gray-700 dark:text-gray-300">
-            &copy; 2024 SyntaxUI. All rights reserved.
-          </p>
-        </div>
-      </div>
-    </footer>
-  )
-}
 
-export default TwoColumnFooter
+                    {/* Services */}
+                    <div>
+                        <h3 className="mb-6 text-lg font-semibold">Dịch Vụ</h3>
+                        <ul className="space-y-3">
+                            {services.map((item) => (
+                                <li key={item.name}>
+                                    <Link
+                                        to={item.href}
+                                        className="text-sm text-slate-300 transition-colors hover:text-white"
+                                    >
+                                        {item.name}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Company */}
+                    <div>
+                        <h3 className="mb-6 text-lg font-semibold">Công Ty</h3>
+                        <ul className="space-y-3">
+                            {company.map((item) => (
+                                <li key={item.name}>
+                                    <Link
+                                        to={item.href}
+                                        className="text-sm text-slate-300 transition-colors hover:text-white"
+                                    >
+                                        {item.name}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Contact Info */}
+                    <div>
+                        <h3 className="mb-6 text-lg font-semibold">Liên Hệ</h3>
+                        <ul className="space-y-4">
+                            <li className="flex gap-3">
+                                <Phone className="h-5 w-5 flex-shrink-0 text-blue-400" />
+                                <a
+                                    href="tel:+84912345678"
+                                    className="text-sm text-slate-300 transition-colors hover:text-white"
+                                >
+                                    +84 (867) 907-500
+                                </a>
+                            </li>
+                            <li className="flex gap-3">
+                                <Mail className="h-5 w-5 flex-shrink-0 text-blue-400" />
+                                <a
+                                    className="text-sm text-slate-300 transition-colors hover:text-white"
+                                >
+                                    dangnguyenhuyphong@gmail.com
+                                </a>
+                            </li>
+                            <li className="flex gap-3">
+                                <MapPin className="h-5 w-5 flex-shrink-0 text-blue-400" />
+                                <span className="text-sm text-slate-300">
+                                    Hàn Thuyên, khu phố 6 P, Thủ Đức, Thành phố Hồ Chí Minh, Việt
+                                    Nam
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                {/* Divider */}
+                <div className="my-12 border-t border-slate-700" />
+
+                {/* Bottom Section */}
+                <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                    <p className="text-sm text-slate-400">
+                        &copy; {currentYear} UITLAND. Tất cả quyền được bảo lưu.
+                    </p>
+                    <div className="flex flex-wrap gap-6">
+                        {legal.map((item) => (
+                            <Link
+                                key={item.name}
+                                to={item.href}
+                                className="text-sm text-slate-400 transition-colors hover:text-white"
+                            >
+                                {item.name}
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </footer>
+    );
+}

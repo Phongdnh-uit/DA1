@@ -5,6 +5,9 @@ import { useEffect } from "react";
 
 export const AuthInitializer = () => {
     const setUser = useAuthStore((state) => state.setUser);
+    const finishInitialization = useAuthStore(
+        (state) => state.finishInitialization,
+    );
     const accessToken = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
     const { data, isSuccess, isError } = useGetCurrentUser({
         query: {
@@ -12,6 +15,13 @@ export const AuthInitializer = () => {
             enabled: !!accessToken,
         },
     });
+
+    useEffect(() => {
+        if (!accessToken) {
+            finishInitialization();
+        }
+    }, [accessToken, finishInitialization]);
+
     useEffect(() => {
         if (isSuccess && data.data) {
             setUser(data.data);
@@ -19,6 +29,9 @@ export const AuthInitializer = () => {
         if (isError) {
             setUser(null);
         }
-    }, [data, isSuccess, isError, setUser]);
+        if (isSuccess || isError) {
+            finishInitialization();
+        }
+    }, [data, isSuccess, isError, setUser, finishInitialization]);
     return null;
 };
