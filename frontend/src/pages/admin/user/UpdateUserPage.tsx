@@ -39,6 +39,7 @@ export const UpdateUserPage = () => {
                                 name="phone"
                             />
                             <FormInput<UserRequest>
+                                disabled
                                 title="Mật khẩu"
                                 placeholder="Nhập mật khẩu"
                                 name="password"

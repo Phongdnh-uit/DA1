@@ -16,9 +16,8 @@ import {
 import { IconSparkles } from "@tabler/icons-react";
 import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import CreatePropertyTypeModal from "./CreatePropertyTypeModal";
-import UpdatePropertyTypeModal from "./UpdatePropertyTypeModal";
 import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
+import { useNavigate } from "@tanstack/react-router";
 
 const keys: (keyof PropertyTypeResponse)[] = [
     "id",
@@ -30,6 +29,7 @@ const keys: (keyof PropertyTypeResponse)[] = [
 ];
 
 export const PropertyTypeManage = () => {
+    const navigate = useNavigate();
     const openDeleteDialog = useDeleteDialogStore((state) => state.openDialog);
     const deletePropertyType = useDeletePropertyTypeById({
         mutation: {
@@ -47,8 +47,10 @@ export const PropertyTypeManage = () => {
             createSelectionColumn<PropertyTypeResponse>(),
             ...createColumnsFromType<PropertyTypeResponse>(keys),
             createActionColumn<PropertyTypeResponse>({
-                onEdit: () => {
-                    setOpenUpdateModal(true);
+                onEdit: (row) => {
+                    navigate({
+                        to: `/admin/property-type/${row.id}`,
+                    });
                 },
                 onDelete: (row) => {
                     openDeleteDialog({
@@ -60,7 +62,7 @@ export const PropertyTypeManage = () => {
                 },
             }),
         ],
-        [deletePropertyType, openDeleteDialog],
+        [deletePropertyType, navigate, openDeleteDialog],
     );
     const [pagination, setPagination] = useState<{
         page: number;
@@ -81,9 +83,6 @@ export const PropertyTypeManage = () => {
         data: list.data?.data?.content || [],
         pageCount: 0,
     });
-
-    const [openCreateModal, setOpenCreateModal] = useState(false);
-    const [openUpdateModal, setOpenUpdateModal] = useState(false);
 
     const bulkDeleteMutation = useDeleteBulkPropertyType({
         mutation: {
@@ -125,7 +124,7 @@ export const PropertyTypeManage = () => {
         <div className="space-y-4">
             <div className="flex items-center justify-end">
                 <RippleButton
-                    onClick={() => setOpenCreateModal(true)}
+                    onClick={() => navigate({ to: "/admin/property-type/create" })}
                     className="h-12 bg-blue-700 text-white hover:bg-blue-700"
                 >
                     <IconSparkles className="size-5" /> Create new
@@ -158,14 +157,6 @@ export const PropertyTypeManage = () => {
                 totalPages={list.data?.data?.totalPages || 0}
                 totalElements={list.data?.data?.totalElements || 0}
                 numberOfElements={list.data?.data?.numberOfElements || 0}
-            />
-            <CreatePropertyTypeModal
-                open={openCreateModal}
-                onOpenChange={setOpenCreateModal}
-            />
-            <UpdatePropertyTypeModal
-                open={openUpdateModal}
-                onOpenChange={setOpenUpdateModal}
             />
         </div>
     );

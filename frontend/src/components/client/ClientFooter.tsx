@@ -41,7 +41,7 @@ export default function ClientFooter() {
     ];
 
     return (
-        <footer className="w-full bg-slate-900 text-slate-50">
+        <footer className="w-full dark:bg-slate-900">
             <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
                 {/* Main Footer Content */}
                 <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
@@ -49,11 +49,11 @@ export default function ClientFooter() {
                     <div className="space-y-6">
                         <img src={Logo} />
                         <div>
-                            <p className="text-sm text-slate-400">
+                            <p className="text-sm">
                                 Nền tảng tư vấn bất động sản hàng đầu
                             </p>
                         </div>
-                        <p className="text-sm leading-relaxed text-slate-300">
+                        <p className="text-sm leading-relaxed">
                             Giúp bạn tìm ngôi nhà mơ ước hoặc đầu tư bất động sản thông minh
                             cùng những chuyên gia hàng đầu.
                         </p>
@@ -85,7 +85,7 @@ export default function ClientFooter() {
                                 <li key={item.name}>
                                     <Link
                                         to={item.href}
-                                        className="text-sm text-slate-300 transition-colors hover:text-white"
+                                        className="text-sm transition-colors hover:text-white"
                                     >
                                         {item.name}
                                     </Link>
@@ -102,7 +102,7 @@ export default function ClientFooter() {
                                 <li key={item.name}>
                                     <Link
                                         to={item.href}
-                                        className="text-sm text-slate-300 transition-colors hover:text-white"
+                                        className="text-sm transition-colors hover:text-white"
                                     >
                                         {item.name}
                                     </Link>
@@ -119,7 +119,7 @@ export default function ClientFooter() {
                                 <Phone className="h-5 w-5 flex-shrink-0 text-blue-400" />
                                 <a
                                     href="tel:+84912345678"
-                                    className="text-sm text-slate-300 transition-colors hover:text-white"
+                                    className="text-sm transition-colors hover:text-white"
                                 >
                                     +84 (867) 907-500
                                 </a>
@@ -127,14 +127,14 @@ export default function ClientFooter() {
                             <li className="flex gap-3">
                                 <Mail className="h-5 w-5 flex-shrink-0 text-blue-400" />
                                 <a
-                                    className="text-sm text-slate-300 transition-colors hover:text-white"
+                                    className="text-sm transition-colors hover:text-white"
                                 >
                                     dangnguyenhuyphong@gmail.com
                                 </a>
                             </li>
                             <li className="flex gap-3">
                                 <MapPin className="h-5 w-5 flex-shrink-0 text-blue-400" />
-                                <span className="text-sm text-slate-300">
+                                <span className="text-sm">
                                     Hàn Thuyên, khu phố 6 P, Thủ Đức, Thành phố Hồ Chí Minh, Việt
                                     Nam
                                 </span>
@@ -148,7 +148,7 @@ export default function ClientFooter() {
 
                 {/* Bottom Section */}
                 <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-                    <p className="text-sm text-slate-400">
+                    <p className="text-sm text-neutral-500 dark:text-neutral-400">
                         &copy; {currentYear} UITLAND. Tất cả quyền được bảo lưu.
                     </p>
                     <div className="flex flex-wrap gap-6">
@@ -156,7 +156,7 @@ export default function ClientFooter() {
                             <Link
                                 key={item.name}
                                 to={item.href}
-                                className="text-sm text-slate-400 transition-colors hover:text-white"
+                                className="text-sm transition-colors hover:text-white text-neutral-500 dark:text-neutral-400"
                             >
                                 {item.name}
                             </Link>

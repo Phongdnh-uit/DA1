@@ -6,7 +6,7 @@ import FilterInline, {
     type FilterAttribute,
     type FilterRule,
 } from "./FilterInline";
-import { ArrowRight, FilterIcon, Sparkles } from "lucide-react";
+import { ArrowRight, FilterIcon } from "lucide-react";
 import { motion } from "motion/react";
 
 interface FilterProps {

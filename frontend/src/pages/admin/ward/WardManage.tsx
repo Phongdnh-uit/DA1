@@ -50,7 +50,7 @@ export const WardManage = () => {
             ...createColumnsFromType<WardResponse>(keys),
             createActionColumn<WardResponse>({
                 onEdit: (row) => {
-                    navigate({ to: `/admin/district/update/${row.id}` });
+                    navigate({ to: `/admin/ward/update/${row.id}` });
                 },
                 onDelete: (row) => {
                     if (!row.id) return;
@@ -120,7 +120,7 @@ export const WardManage = () => {
         <div className="space-y-4">
             <div className="flex items-center justify-end">
                 <RippleButton
-                    onClick={() => navigate({ to: "/admin/user/create" })}
+                    onClick={() => navigate({ to: "/admin/ward/create" })}
                     className="h-12 bg-blue-700 text-white hover:bg-blue-700"
                 >
                     <IconSparkles className="size-5" /> Create new

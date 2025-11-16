@@ -32,14 +32,20 @@ import { Route as AdminPropertyTypeIndexRouteImport } from './routes/admin/prope
 import { Route as AdminPermissionIndexRouteImport } from './routes/admin/permission/index'
 import { Route as AdminDashboardIndexRouteImport } from './routes/admin/dashboard/index'
 import { Route as AdminChatIndexRouteImport } from './routes/admin/chat/index'
+import { Route as AdminWardCreateRouteImport } from './routes/admin/ward/create'
 import { Route as AdminUserCreateRouteImport } from './routes/admin/user/create'
 import { Route as AdminRoleCreateRouteImport } from './routes/admin/role/create'
+import { Route as AdminProvinceCreateRouteImport } from './routes/admin/province/create'
 import { Route as AdminPropertyCreateRouteImport } from './routes/admin/property/create'
+import { Route as AdminPropertyTypeCreateRouteImport } from './routes/admin/property-type/create'
 import { Route as AdminPermissionCreateRouteImport } from './routes/admin/permission/create'
 import { Route as _clientDetailIdRouteImport } from './routes/__client/detail.$id'
 import { Route as _clientChatIdRouteImport } from './routes/__client/chat.$id'
+import { Route as AdminWardUpdateIdRouteImport } from './routes/admin/ward/update.$id'
 import { Route as AdminUserUpdateIdRouteImport } from './routes/admin/user/update.$id'
 import { Route as AdminRoleUpdateIdRouteImport } from './routes/admin/role/update.$id'
+import { Route as AdminProvinceUpdateIdRouteImport } from './routes/admin/province/update.$id'
+import { Route as AdminPropertyTypeUpdateIdRouteImport } from './routes/admin/property-type/update.$id'
 import { Route as AdminPermissionUpdateIdRouteImport } from './routes/admin/permission/update.$id'
 
 const TestDatatableRoute = TestDatatableRouteImport.update({
@@ -156,6 +162,11 @@ const AdminChatIndexRoute = AdminChatIndexRouteImport.update({
   path: '/chat/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminWardCreateRoute = AdminWardCreateRouteImport.update({
+  id: '/ward/create',
+  path: '/ward/create',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminUserCreateRoute = AdminUserCreateRouteImport.update({
   id: '/user/create',
   path: '/user/create',
@@ -166,9 +177,19 @@ const AdminRoleCreateRoute = AdminRoleCreateRouteImport.update({
   path: '/role/create',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminProvinceCreateRoute = AdminProvinceCreateRouteImport.update({
+  id: '/province/create',
+  path: '/province/create',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPropertyCreateRoute = AdminPropertyCreateRouteImport.update({
   id: '/property/create',
   path: '/property/create',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPropertyTypeCreateRoute = AdminPropertyTypeCreateRouteImport.update({
+  id: '/property-type/create',
+  path: '/property-type/create',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminPermissionCreateRoute = AdminPermissionCreateRouteImport.update({
@@ -186,6 +207,11 @@ const _clientChatIdRoute = _clientChatIdRouteImport.update({
   path: '/chat/$id',
   getParentRoute: () => _clientRoute,
 } as any)
+const AdminWardUpdateIdRoute = AdminWardUpdateIdRouteImport.update({
+  id: '/ward/update/$id',
+  path: '/ward/update/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminUserUpdateIdRoute = AdminUserUpdateIdRouteImport.update({
   id: '/user/update/$id',
   path: '/user/update/$id',
@@ -196,6 +222,17 @@ const AdminRoleUpdateIdRoute = AdminRoleUpdateIdRouteImport.update({
   path: '/role/update/$id',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminProvinceUpdateIdRoute = AdminProvinceUpdateIdRouteImport.update({
+  id: '/province/update/$id',
+  path: '/province/update/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPropertyTypeUpdateIdRoute =
+  AdminPropertyTypeUpdateIdRouteImport.update({
+    id: '/property-type/update/$id',
+    path: '/property-type/update/$id',
+    getParentRoute: () => AdminRoute,
+  } as any)
 const AdminPermissionUpdateIdRoute = AdminPermissionUpdateIdRouteImport.update({
   id: '/permission/update/$id',
   path: '/permission/update/$id',
@@ -219,9 +256,12 @@ export interface FileRoutesByFullPath {
   '/chat/$id': typeof _clientChatIdRoute
   '/detail/$id': typeof _clientDetailIdRoute
   '/admin/permission/create': typeof AdminPermissionCreateRoute
+  '/admin/property-type/create': typeof AdminPropertyTypeCreateRoute
   '/admin/property/create': typeof AdminPropertyCreateRoute
+  '/admin/province/create': typeof AdminProvinceCreateRoute
   '/admin/role/create': typeof AdminRoleCreateRoute
   '/admin/user/create': typeof AdminUserCreateRoute
+  '/admin/ward/create': typeof AdminWardCreateRoute
   '/admin/chat': typeof AdminChatIndexRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
   '/admin/permission': typeof AdminPermissionIndexRoute
@@ -232,8 +272,11 @@ export interface FileRoutesByFullPath {
   '/admin/user': typeof AdminUserIndexRoute
   '/admin/ward': typeof AdminWardIndexRoute
   '/admin/permission/update/$id': typeof AdminPermissionUpdateIdRoute
+  '/admin/property-type/update/$id': typeof AdminPropertyTypeUpdateIdRoute
+  '/admin/province/update/$id': typeof AdminProvinceUpdateIdRoute
   '/admin/role/update/$id': typeof AdminRoleUpdateIdRoute
   '/admin/user/update/$id': typeof AdminUserUpdateIdRoute
+  '/admin/ward/update/$id': typeof AdminWardUpdateIdRoute
 }
 export interface FileRoutesByTo {
   '/admin': typeof AdminRouteWithChildren
@@ -252,9 +295,12 @@ export interface FileRoutesByTo {
   '/chat/$id': typeof _clientChatIdRoute
   '/detail/$id': typeof _clientDetailIdRoute
   '/admin/permission/create': typeof AdminPermissionCreateRoute
+  '/admin/property-type/create': typeof AdminPropertyTypeCreateRoute
   '/admin/property/create': typeof AdminPropertyCreateRoute
+  '/admin/province/create': typeof AdminProvinceCreateRoute
   '/admin/role/create': typeof AdminRoleCreateRoute
   '/admin/user/create': typeof AdminUserCreateRoute
+  '/admin/ward/create': typeof AdminWardCreateRoute
   '/admin/chat': typeof AdminChatIndexRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
   '/admin/permission': typeof AdminPermissionIndexRoute
@@ -265,8 +311,11 @@ export interface FileRoutesByTo {
   '/admin/user': typeof AdminUserIndexRoute
   '/admin/ward': typeof AdminWardIndexRoute
   '/admin/permission/update/$id': typeof AdminPermissionUpdateIdRoute
+  '/admin/property-type/update/$id': typeof AdminPropertyTypeUpdateIdRoute
+  '/admin/province/update/$id': typeof AdminProvinceUpdateIdRoute
   '/admin/role/update/$id': typeof AdminRoleUpdateIdRoute
   '/admin/user/update/$id': typeof AdminUserUpdateIdRoute
+  '/admin/ward/update/$id': typeof AdminWardUpdateIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -287,9 +336,12 @@ export interface FileRoutesById {
   '/__client/chat/$id': typeof _clientChatIdRoute
   '/__client/detail/$id': typeof _clientDetailIdRoute
   '/admin/permission/create': typeof AdminPermissionCreateRoute
+  '/admin/property-type/create': typeof AdminPropertyTypeCreateRoute
   '/admin/property/create': typeof AdminPropertyCreateRoute
+  '/admin/province/create': typeof AdminProvinceCreateRoute
   '/admin/role/create': typeof AdminRoleCreateRoute
   '/admin/user/create': typeof AdminUserCreateRoute
+  '/admin/ward/create': typeof AdminWardCreateRoute
   '/admin/chat/': typeof AdminChatIndexRoute
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
   '/admin/permission/': typeof AdminPermissionIndexRoute
@@ -300,8 +352,11 @@ export interface FileRoutesById {
   '/admin/user/': typeof AdminUserIndexRoute
   '/admin/ward/': typeof AdminWardIndexRoute
   '/admin/permission/update/$id': typeof AdminPermissionUpdateIdRoute
+  '/admin/property-type/update/$id': typeof AdminPropertyTypeUpdateIdRoute
+  '/admin/province/update/$id': typeof AdminProvinceUpdateIdRoute
   '/admin/role/update/$id': typeof AdminRoleUpdateIdRoute
   '/admin/user/update/$id': typeof AdminUserUpdateIdRoute
+  '/admin/ward/update/$id': typeof AdminWardUpdateIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -322,9 +377,12 @@ export interface FileRouteTypes {
     | '/chat/$id'
     | '/detail/$id'
     | '/admin/permission/create'
+    | '/admin/property-type/create'
     | '/admin/property/create'
+    | '/admin/province/create'
     | '/admin/role/create'
     | '/admin/user/create'
+    | '/admin/ward/create'
     | '/admin/chat'
     | '/admin/dashboard'
     | '/admin/permission'
@@ -335,8 +393,11 @@ export interface FileRouteTypes {
     | '/admin/user'
     | '/admin/ward'
     | '/admin/permission/update/$id'
+    | '/admin/property-type/update/$id'
+    | '/admin/province/update/$id'
     | '/admin/role/update/$id'
     | '/admin/user/update/$id'
+    | '/admin/ward/update/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/admin'
@@ -355,9 +416,12 @@ export interface FileRouteTypes {
     | '/chat/$id'
     | '/detail/$id'
     | '/admin/permission/create'
+    | '/admin/property-type/create'
     | '/admin/property/create'
+    | '/admin/province/create'
     | '/admin/role/create'
     | '/admin/user/create'
+    | '/admin/ward/create'
     | '/admin/chat'
     | '/admin/dashboard'
     | '/admin/permission'
@@ -368,8 +432,11 @@ export interface FileRouteTypes {
     | '/admin/user'
     | '/admin/ward'
     | '/admin/permission/update/$id'
+    | '/admin/property-type/update/$id'
+    | '/admin/province/update/$id'
     | '/admin/role/update/$id'
     | '/admin/user/update/$id'
+    | '/admin/ward/update/$id'
   id:
     | '__root__'
     | '/__client'
@@ -389,9 +456,12 @@ export interface FileRouteTypes {
     | '/__client/chat/$id'
     | '/__client/detail/$id'
     | '/admin/permission/create'
+    | '/admin/property-type/create'
     | '/admin/property/create'
+    | '/admin/province/create'
     | '/admin/role/create'
     | '/admin/user/create'
+    | '/admin/ward/create'
     | '/admin/chat/'
     | '/admin/dashboard/'
     | '/admin/permission/'
@@ -402,8 +472,11 @@ export interface FileRouteTypes {
     | '/admin/user/'
     | '/admin/ward/'
     | '/admin/permission/update/$id'
+    | '/admin/property-type/update/$id'
+    | '/admin/province/update/$id'
     | '/admin/role/update/$id'
     | '/admin/user/update/$id'
+    | '/admin/ward/update/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -576,6 +649,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminChatIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/ward/create': {
+      id: '/admin/ward/create'
+      path: '/ward/create'
+      fullPath: '/admin/ward/create'
+      preLoaderRoute: typeof AdminWardCreateRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/user/create': {
       id: '/admin/user/create'
       path: '/user/create'
@@ -590,11 +670,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRoleCreateRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/province/create': {
+      id: '/admin/province/create'
+      path: '/province/create'
+      fullPath: '/admin/province/create'
+      preLoaderRoute: typeof AdminProvinceCreateRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/property/create': {
       id: '/admin/property/create'
       path: '/property/create'
       fullPath: '/admin/property/create'
       preLoaderRoute: typeof AdminPropertyCreateRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/property-type/create': {
+      id: '/admin/property-type/create'
+      path: '/property-type/create'
+      fullPath: '/admin/property-type/create'
+      preLoaderRoute: typeof AdminPropertyTypeCreateRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/permission/create': {
@@ -618,6 +712,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof _clientChatIdRouteImport
       parentRoute: typeof _clientRoute
     }
+    '/admin/ward/update/$id': {
+      id: '/admin/ward/update/$id'
+      path: '/ward/update/$id'
+      fullPath: '/admin/ward/update/$id'
+      preLoaderRoute: typeof AdminWardUpdateIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/user/update/$id': {
       id: '/admin/user/update/$id'
       path: '/user/update/$id'
@@ -630,6 +731,20 @@ declare module '@tanstack/react-router' {
       path: '/role/update/$id'
       fullPath: '/admin/role/update/$id'
       preLoaderRoute: typeof AdminRoleUpdateIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/province/update/$id': {
+      id: '/admin/province/update/$id'
+      path: '/province/update/$id'
+      fullPath: '/admin/province/update/$id'
+      preLoaderRoute: typeof AdminProvinceUpdateIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/property-type/update/$id': {
+      id: '/admin/property-type/update/$id'
+      path: '/property-type/update/$id'
+      fullPath: '/admin/property-type/update/$id'
+      preLoaderRoute: typeof AdminPropertyTypeUpdateIdRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/permission/update/$id': {
@@ -663,9 +778,12 @@ const _clientRouteWithChildren =
 
 interface AdminRouteChildren {
   AdminPermissionCreateRoute: typeof AdminPermissionCreateRoute
+  AdminPropertyTypeCreateRoute: typeof AdminPropertyTypeCreateRoute
   AdminPropertyCreateRoute: typeof AdminPropertyCreateRoute
+  AdminProvinceCreateRoute: typeof AdminProvinceCreateRoute
   AdminRoleCreateRoute: typeof AdminRoleCreateRoute
   AdminUserCreateRoute: typeof AdminUserCreateRoute
+  AdminWardCreateRoute: typeof AdminWardCreateRoute
   AdminChatIndexRoute: typeof AdminChatIndexRoute
   AdminDashboardIndexRoute: typeof AdminDashboardIndexRoute
   AdminPermissionIndexRoute: typeof AdminPermissionIndexRoute
@@ -676,15 +794,21 @@ interface AdminRouteChildren {
   AdminUserIndexRoute: typeof AdminUserIndexRoute
   AdminWardIndexRoute: typeof AdminWardIndexRoute
   AdminPermissionUpdateIdRoute: typeof AdminPermissionUpdateIdRoute
+  AdminPropertyTypeUpdateIdRoute: typeof AdminPropertyTypeUpdateIdRoute
+  AdminProvinceUpdateIdRoute: typeof AdminProvinceUpdateIdRoute
   AdminRoleUpdateIdRoute: typeof AdminRoleUpdateIdRoute
   AdminUserUpdateIdRoute: typeof AdminUserUpdateIdRoute
+  AdminWardUpdateIdRoute: typeof AdminWardUpdateIdRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminPermissionCreateRoute: AdminPermissionCreateRoute,
+  AdminPropertyTypeCreateRoute: AdminPropertyTypeCreateRoute,
   AdminPropertyCreateRoute: AdminPropertyCreateRoute,
+  AdminProvinceCreateRoute: AdminProvinceCreateRoute,
   AdminRoleCreateRoute: AdminRoleCreateRoute,
   AdminUserCreateRoute: AdminUserCreateRoute,
+  AdminWardCreateRoute: AdminWardCreateRoute,
   AdminChatIndexRoute: AdminChatIndexRoute,
   AdminDashboardIndexRoute: AdminDashboardIndexRoute,
   AdminPermissionIndexRoute: AdminPermissionIndexRoute,
@@ -695,8 +819,11 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminUserIndexRoute: AdminUserIndexRoute,
   AdminWardIndexRoute: AdminWardIndexRoute,
   AdminPermissionUpdateIdRoute: AdminPermissionUpdateIdRoute,
+  AdminPropertyTypeUpdateIdRoute: AdminPropertyTypeUpdateIdRoute,
+  AdminProvinceUpdateIdRoute: AdminProvinceUpdateIdRoute,
   AdminRoleUpdateIdRoute: AdminRoleUpdateIdRoute,
   AdminUserUpdateIdRoute: AdminUserUpdateIdRoute,
+  AdminWardUpdateIdRoute: AdminWardUpdateIdRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)

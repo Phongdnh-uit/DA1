@@ -69,7 +69,7 @@ export default function ClientHeader() {
         <motion.header
             animate={{ y: hidden ? "-100%" : "0%" }}
             transition={{ type: "tween", ease: "easeInOut", duration: 0.3 }}
-            className={"bg-white h-20 shadow-sm border-b sticky top-0 z-50"}
+            className={"bg-white h-20 shadow-sm border-b sticky top-0 z-50 dark:bg-slate-900"}
         >
             <div className="w-full h-full mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
                 <Link to="/" className="flex items-center space-x-2">
@@ -89,7 +89,7 @@ export default function ClientHeader() {
                             initial="rest"
                             whileHover="hover"
                         >
-                            <Link to="/" key={item} className="text-gray-700 font-medium">
+                            <Link to="/" key={item} className="font-medium">
                                 {item}
                             </Link>
                             <motion.div

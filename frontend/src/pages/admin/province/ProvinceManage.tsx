@@ -17,7 +17,6 @@ import { IconSparkles } from "@tabler/icons-react";
 import { useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import CreateProvinceModal from "./CreateProvinceModal";
 import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
 
 const keys: (keyof ProvinceResponse)[] = [
@@ -87,8 +86,6 @@ export const ProvinceManage = () => {
         pageCount: 0,
     });
 
-    const [openCreateModal, setOpenCreateModal] = useState(false);
-
     const bulkDeleteMutation = useDeleteBulkProvince({
         mutation: {
             onSuccess: () => {
@@ -129,7 +126,11 @@ export const ProvinceManage = () => {
         <div className="space-y-4">
             <div className="flex items-center justify-end">
                 <RippleButton
-                    onClick={() => setOpenCreateModal(true)}
+                    onClick={() =>
+                        navigate({
+                            to: "/admin/province/create",
+                        })
+                    }
                     className="h-12 bg-blue-700 text-white hover:bg-blue-700"
                 >
                     <IconSparkles className="size-5" /> Create new
@@ -165,10 +166,6 @@ export const ProvinceManage = () => {
                 totalPages={list.data?.data?.totalPages || 0}
                 totalElements={list.data?.data?.totalElements || 0}
                 numberOfElements={list.data?.data?.numberOfElements || 0}
-            />
-            <CreateProvinceModal
-                open={openCreateModal}
-                onOpenChange={setOpenCreateModal}
             />
         </div>
     );
