@@ -2,6 +2,7 @@ import { RichTextEditor } from "@/components/tiptap/rich-text-editor";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
     FormControl,
+    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -24,6 +25,8 @@ interface FormInputProps<K> {
     placeholder?: string;
     type?: string;
     className?: string;
+    description?: string;
+    required?: boolean;
 }
 
 export function FormInput<K>({
@@ -31,6 +34,8 @@ export function FormInput<K>({
     name,
     placeholder,
     className,
+    description,
+    required,
     type,
     ...props
 }: FormInputProps<K> & React.InputHTMLAttributes<HTMLInputElement>) {
@@ -41,18 +46,29 @@ export function FormInput<K>({
             name={name}
             render={({ field }) => (
                 <FormItem className="flex flex-col gap-2">
-                    <FormLabel className="text-xl text-blue-500">{title}</FormLabel>
+                    <FormLabel
+                        htmlFor={name}
+                        className={"text-xl flex tems-center gap-1"}
+                    >
+                        {title}
+                        {required && <span className="text-red-500">*</span>}
+                    </FormLabel>
                     <FormControl>
                         <div
                             className={cn(
-                                "relative flex items-center rounded-[24px] border focus-within:ring-1 focus-within:ring-ring error-display",
+                                "relative flex items-center rounded-2xl border backdrop-blur-sm",
+                                "focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30",
+                                "focus-within:scale-102 transition-all",
+                                "hover:border-primary",
+                                "has-[:disabled]:opacity-50 has-[:disabled]:cursor-not-allowed error-display",
                                 className,
                             )}
                         >
                             <Input
+                                id={name}
                                 type={type}
                                 placeholder={placeholder}
-                                className="border-0 focus-visible:ring-0 shadow-none w-full rounded-[24px] h-16 placeholder:text-lg !text-lg"
+                                className="border-0 focus-visible:ring-0 shadow-none w-full rounded-[24px] h-14 placeholder:text-lg !text-lg"
                                 {...field}
                                 {...props}
                                 onChange={(e) => {
@@ -65,6 +81,7 @@ export function FormInput<K>({
                             />
                         </div>
                     </FormControl>
+                    <FormDescription className="text-base">{description}</FormDescription>
                     <FormMessage />
                 </FormItem>
             )}
@@ -77,13 +94,17 @@ interface FormCheckboxProps<K> {
     name: keyof K & string;
     direction?: "row" | "column";
     className?: string;
+    description?: string;
+    required?: boolean;
 }
 
 export function FormCheckbox<K>({
     title,
     name,
+    required,
     className,
     direction,
+    description,
     ...props
 }: FormCheckboxProps<K>) {
     const form = useFormContext();
@@ -98,21 +119,28 @@ export function FormCheckbox<K>({
                         "flex flex-row items-center gap-2": direction === "row",
                     })}
                 >
-                    <FormLabel className="text-xl text-blue-500">{title}</FormLabel>
+                    <FormLabel
+                        htmlFor={name}
+                        className={"text-xl flex tems-center gap-1"}
+                    >
+                        {title}
+                        {required && <span className="text-red-500">*</span>}
+                    </FormLabel>
                     <FormControl>
                         <div>
                             <Checkbox
+                                id={name}
                                 checked={field.value}
                                 className={cn(
                                     "size-5 rounded-[6px] bg-white data-[state=checked]:bg-blue-500 data-[state=checked]:border-transparent",
                                     className,
                                 )}
-                                splashClassName="bg-blue-500"
                                 onCheckedChange={field.onChange}
                                 {...props}
                             />
                         </div>
                     </FormControl>
+                    <FormDescription className="text-base">{description}</FormDescription>
                     <FormMessage />
                 </FormItem>
             )}
@@ -127,6 +155,8 @@ interface FormSelectProps<K> {
     keyType?: "string" | "number";
     className?: string;
     disabled?: boolean;
+    description?: string;
+    required?: boolean;
 }
 
 export function FormSelect<K>({
@@ -135,6 +165,8 @@ export function FormSelect<K>({
     className,
     keyType,
     options,
+    required,
+    description,
     disabled = false,
     ...props
 }: FormSelectProps<K>) {
@@ -145,7 +177,13 @@ export function FormSelect<K>({
             name={name}
             render={({ field }) => (
                 <FormItem className={cn("flex flex-col gap-2")}>
-                    <FormLabel className="text-xl text-blue-500">{title}</FormLabel>
+                    <FormLabel
+                        htmlFor={name}
+                        className={"text-xl flex tems-center gap-1"}
+                    >
+                        {title}
+                        {required && <span className="text-red-500">*</span>}
+                    </FormLabel>
                     <FormControl>
                         <Select
                             disabled={disabled}
@@ -160,7 +198,8 @@ export function FormSelect<K>({
                             {...props}
                         >
                             <SelectTrigger
-                                className={cn("!h-16 w-full text-lg rounded-[24px]", className)}
+                                id={name}
+                                className={cn("!h-14 w-full text-lg rounded-2xl", className)}
                                 name={name}
                             >
                                 <SelectValue
@@ -177,6 +216,7 @@ export function FormSelect<K>({
                             </SelectContent>
                         </Select>
                     </FormControl>
+                    <FormDescription className="text-base">{description}</FormDescription>
                     <FormMessage />
                 </FormItem>
             )}
@@ -189,12 +229,16 @@ interface FormEditorProps<K> {
     name: keyof K & string;
     placeholder?: string;
     type?: string;
+    required?: boolean;
+    description?: string;
     className?: string;
 }
 
 export function FormEditor<K>({
     title,
     name,
+    required,
+    description,
     placeholder,
     className,
 }: FormEditorProps<K>) {
@@ -205,9 +249,12 @@ export function FormEditor<K>({
             name={name}
             render={({ field }) => (
                 <FormItem className="flex flex-col gap-2 h-full">
-                    <FormLabel className="text-xl text-blue-500">{title}</FormLabel>
+                    <FormLabel className={"text-xl flex tems-center gap-1"}>
+                        {title}
+                        {required && <span className="text-red-500">*</span>}
+                    </FormLabel>
                     <FormControl>
-                        <div className={cn("rounded-[24px]", className)}>
+                        <div className={cn("rounded-2xl", className)}>
                             <RichTextEditor
                                 value={field.value || ""}
                                 placeholder={placeholder}
@@ -215,6 +262,7 @@ export function FormEditor<K>({
                             />
                         </div>
                     </FormControl>
+                    <FormDescription className="text-base">{description}</FormDescription>
                     <FormMessage />
                 </FormItem>
             )}

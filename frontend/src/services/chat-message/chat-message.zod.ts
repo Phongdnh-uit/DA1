@@ -26,6 +26,25 @@ export const getMessagesByConversationIdQueryParams = zod.object({
   "all": zod.boolean().optional()
 })
 
+export const getMessagesByConversationIdForManagerParams = zod.object({
+  "conversationId": zod.number()
+})
+
+export const getMessagesByConversationIdForManagerQueryPageDefault = 0;
+export const getMessagesByConversationIdForManagerQueryPageMin = 0;
+
+export const getMessagesByConversationIdForManagerQuerySizeDefault = 20;
+
+
+
+export const getMessagesByConversationIdForManagerQueryParams = zod.object({
+  "page": zod.number().min(getMessagesByConversationIdForManagerQueryPageMin).optional().describe('Zero-based page index (0..N)'),
+  "size": zod.number().min(1).default(getMessagesByConversationIdForManagerQuerySizeDefault).describe('The size of the page to be returned'),
+  "sort": zod.array(zod.string()).optional().describe('Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.'),
+  "filter": zod.string().optional(),
+  "all": zod.boolean().optional()
+})
+
 export const deleteMessageByIdParams = zod.object({
   "messageId": zod.number()
 })

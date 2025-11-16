@@ -110,7 +110,6 @@ function AlertDialogContent({
                                 data-slot="alert-dialog-content"
                                 {...props}
                                 forceMount={true}
-                                asChild
                             >
                                 <motion.div
                                     key={"content"}

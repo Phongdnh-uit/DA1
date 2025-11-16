@@ -14,17 +14,18 @@ import {
 } from "@/utils/createColumn";
 import { IconSparkles } from "@tabler/icons-react";
 import { useMemo, useState } from "react";
-import CreatePermissionModal from "./CreatePermissionModal";
-import UpdatePermissionModal from "./UpdatePermissionModal";
 import Filter from "@/components/admin/Filter";
 import { toast } from "react-toastify";
 import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
+import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "@tanstack/react-router";
 
 const keys: (keyof PermissionResponse)[] = [
     "id",
     "name",
     "resource",
-    "action",
+    "method",
+    "urlPattern",
     "createdAt",
     "updatedAt",
     "createdBy",
@@ -32,6 +33,7 @@ const keys: (keyof PermissionResponse)[] = [
 ];
 
 export const PermissionManage = () => {
+    const navigate = useNavigate();
     const openDeleteDialog = useDeleteDialogStore((state) => state.openDialog);
     const deletePermission = useDeletePermissionById({
         mutation: {
@@ -47,11 +49,30 @@ export const PermissionManage = () => {
     const columns = useMemo(
         () => [
             createSelectionColumn<PermissionResponse>(),
-            ...createColumnsFromType<PermissionResponse>(keys),
+            ...createColumnsFromType<PermissionResponse>(keys, [
+                {
+                    key: "method",
+                    cell: ({ row }) => {
+                        const method = row.original.method;
+
+                        const colorMap: Record<string, string> = {
+                            GET: "bg-green-100 text-green-800 hover:bg-green-200",
+                            POST: "bg-blue-100 text-blue-800 hover:bg-blue-200",
+                            PUT: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
+                            DELETE: "bg-red-100 text-red-800 hover:bg-red-200",
+                            PATCH: "bg-purple-100 text-purple-800 hover:bg-purple-200",
+                        };
+
+                        const badgeClass =
+                            colorMap[method] ?? "bg-gray-100 text-gray-800 hover:bg-gray-200";
+
+                        return <Badge className={badgeClass}>{method}</Badge>;
+                    },
+                },
+            ]),
             createActionColumn<PermissionResponse>({
                 onEdit: (permission) => {
-                    setSelectedPermission(permission);
-                    setOpenUpdatePermission(true);
+                    navigate({ to: `/admin/permission/update/${permission.id}` });
                 },
                 onDelete: (row) => {
                     openDeleteDialog({
@@ -63,7 +84,7 @@ export const PermissionManage = () => {
                 },
             }),
         ],
-        [deletePermission, openDeleteDialog],
+        [deletePermission, navigate, openDeleteDialog],
     );
     const [pagination, setPagination] = useState<{
         page: number;
@@ -84,12 +105,6 @@ export const PermissionManage = () => {
         data: list.data?.data?.content || [],
         pageCount: 0,
     });
-
-    const [openCreatePermission, setOpenCreatePermission] = useState(false);
-    const [openUpdatePermission, setOpenUpdatePermission] = useState(false);
-    const [selectedPermission, setSelectedPermission] = useState<
-        PermissionResponse | undefined
-    >(undefined);
 
     const bulkDeleteMutation = useDeleteBulkPermission({
         mutation: {
@@ -132,7 +147,7 @@ export const PermissionManage = () => {
             <div className="flex items-center justify-end">
                 <RippleButton
                     className="h-12 bg-blue-700 text-white hover:bg-blue-700"
-                    onClick={() => setOpenCreatePermission(true)}
+                    onClick={() => navigate({ to: "/admin/permission/create" })}
                 >
                     <IconSparkles className="size-5" /> Thêm mới
                 </RippleButton>
@@ -156,8 +171,8 @@ export const PermissionManage = () => {
                 onApply={onApplyFilter}
             />
             <DataTable
-                className="h-[500px]"
-                name="Permission"
+                className="h-[550px]"
+                name="Quyền hạn"
                 table={table}
                 onBulkDelete={onBulkDelete}
                 pagination={pagination}
@@ -165,15 +180,6 @@ export const PermissionManage = () => {
                 totalPages={list.data?.data?.totalPages || 0}
                 totalElements={list.data?.data?.totalElements || 0}
                 numberOfElements={list.data?.data?.numberOfElements || 0}
-            />
-            <CreatePermissionModal
-                open={openCreatePermission}
-                onOpenChange={setOpenCreatePermission}
-            />
-            <UpdatePermissionModal
-                open={openUpdatePermission}
-                onOpenChange={setOpenUpdatePermission}
-                data={selectedPermission}
             />
         </div>
     );

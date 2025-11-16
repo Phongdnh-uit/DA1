@@ -14,5 +14,4 @@ export interface RoleResponse {
   updatedAt?: string;
   name?: string;
   description?: string;
-  permissionIds?: number[];
 }

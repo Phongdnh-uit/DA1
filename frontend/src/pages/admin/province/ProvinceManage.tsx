@@ -156,8 +156,8 @@ export const ProvinceManage = () => {
                 onApply={onApplyFilter}
             />
             <DataTable
-                className="h-[500px]"
-                name="User"
+                className="h-[550px]"
+                name="Tỉnh/Thành phố"
                 table={table}
                 onBulkDelete={onBulkDelete}
                 pagination={pagination}

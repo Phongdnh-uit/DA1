@@ -81,7 +81,7 @@ export function DataTable<TData>({
         <div className="w-full">
             <Card className="pb-0 pt-4 gap-1 rounded-3xl">
                 <div className="flex items-center justify-between">
-                    <CardHeader className="font-medium text-lg text-zinc-900">
+                    <CardHeader className="font-medium text-lg text-zinc-900 w-full">
                         {name}
                     </CardHeader>
                     <div className="flex items-center gap-4 justify-end pr-4">
@@ -108,10 +108,10 @@ export function DataTable<TData>({
                 </div>
                 <CardContent className="px-0 my-2">
                     <div
-                        className={
-                            "w-full [&>div]:h-full border-b rounded overflow-y-auto " +
-                            className
-                        }
+                        className={cn(
+                            "w-full [&>div]:h-full border-b rounded overflow-y-auto",
+                            className,
+                        )}
                     >
                         <Table
                             className={cn({
@@ -120,7 +120,7 @@ export function DataTable<TData>({
                                 "[&_td]:py-4 [&_th]:py-4": densityState === "flexible",
                             })}
                         >
-                            <TableHeader className="sticky z-10 top-0 bg-zinc-100 h-[50px] dark:bg-zinc-700">
+                            <TableHeader className="sticky z-10 top-0 h-[50px] bg-slate-200 dark:bg-slate-700">
                                 {table.getHeaderGroups().map((headerGroup) => (
                                     <TableRow
                                         key={headerGroup.id}
@@ -129,7 +129,7 @@ export function DataTable<TData>({
                                         {headerGroup.headers.map((header) => (
                                             <TableHead
                                                 key={header.id}
-                                                className="text-zinc-800 text-base font-bold first:rounded-l-lg last:rounded-r-lg dark:text-zinc-200"
+                                                className="text-zinc-800 text-base font-bold dark:text-zinc-200"
                                             >
                                                 {header.isPlaceholder
                                                     ? null
@@ -199,7 +199,7 @@ export function DataTable<TData>({
                             ) : (
                                 <span className="text-sm text-muted-foreground whitespace-nowrap">
                                     {!totalElements ? 0 : pagination.page * pagination.size + 1}-
-                                    {pagination.page * pagination.size + numberOfElements} trên {" "}
+                                    {pagination.page * pagination.size + numberOfElements} trên{" "}
                                     {totalElements}
                                 </span>
                             )}
@@ -322,7 +322,7 @@ export function ColumnVisibilitySelect<TData>({
                         >
                             <div className="flex items-center gap-3">
                                 <Checkbox
-                                    className="bg-white data-[state=checked]:bg-blue-500 data-[state=checked]:border-transparent"
+                                    className="text-white!"
                                     checked={column.getIsVisible()}
                                     onCheckedChange={(value) => column.toggleVisibility(!!value)}
                                 />

@@ -13,13 +13,64 @@ import {
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { HeartIcon, LogOut, Settings, User } from "lucide-react";
+import { CircuitBoard, HeartIcon, LogOut, Settings, User } from "lucide-react";
+import { useLogout } from "@/services/auth/auth";
+import {
+    ACCESS_TOKEN_STORAGE_KEY,
+    REFRESH_TOKEN_STORAGE_KEY,
+} from "@/constant/SecurityConstant";
+import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
 
 export default function ClientHeader() {
     const authStore = useAuthStore();
     const navigate = useNavigate();
+    const logoutMutation = useLogout({
+        mutation: {
+            onSuccess: () => {
+                localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
+                localStorage.removeItem(REFRESH_TOKEN_STORAGE_KEY);
+                authStore.setUser(null);
+                navigate({ to: "/" });
+            },
+            onError: (error) => {
+                console.error("Logout error:", error);
+                toast.error("Đăng xuất thất bại.");
+            },
+        },
+    });
+
+    const handleLogout = () => {
+        const refreshToken = localStorage.getItem(REFRESH_TOKEN_STORAGE_KEY) || "";
+        logoutMutation.mutate({
+            data: {
+                refreshToken,
+            },
+        });
+    };
+    const [hidden, setHidden] = useState(false);
+    const [lastScroll, setLastScroll] = useState(0);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScroll = window.scrollY;
+            if (currentScroll > lastScroll && currentScroll > 100) {
+                setHidden(true);
+            } else {
+                setHidden(false);
+            }
+            setLastScroll(currentScroll);
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [lastScroll]);
     return (
-        <header className="bg-white h-20 shadow-sm border-b sticky top-0 z-50">
+        <motion.header
+            animate={{ y: hidden ? "-100%" : "0%" }}
+            transition={{ type: "tween", ease: "easeInOut", duration: 0.3 }}
+            className={"bg-white h-20 shadow-sm border-b sticky top-0 z-50"}
+        >
             <div className="w-full h-full mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
                 <Link to="/" className="flex items-center space-x-2">
                     <img src={Logo} alt="Logo" className="h-12 w-auto" />
@@ -77,8 +128,14 @@ export default function ClientHeader() {
                                     <HeartIcon className="mr-2 h-4 w-4" />
                                     <span>Yêu thích</span>
                                 </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onClick={() => navigate({ to: "/admin/dashboard" })}
+                                >
+                                    <CircuitBoard className="mr-2 h-4 w-4" />
+                                    <span>Trang quản trị</span>
+                                </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => console.log("Logout clicked")}>
+                                <DropdownMenuItem onClick={() => handleLogout()}>
                                     <LogOut className="mr-2 h-4 w-4 text-destructive" />
                                     <span className="text-destructive">Đăng xuất</span>
                                 </DropdownMenuItem>
@@ -130,6 +187,6 @@ export default function ClientHeader() {
                     </div>
                 )}
             </div>
-        </header>
+        </motion.header>
     );
 }

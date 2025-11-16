@@ -19,10 +19,12 @@ export const updatePermissionParams = zod.object({
 
 
 
+
 export const updatePermissionBody = zod.object({
   "name": zod.string().min(1),
   "resource": zod.string().min(1),
-  "action": zod.enum(['CREATE', 'READ', 'UPDATE', 'DELETE'])
+  "urlPattern": zod.string().min(1),
+  "method": zod.enum(['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'])
 })
 
 export const deletePermissionByIdParams = zod.object({
@@ -33,10 +35,12 @@ export const deletePermissionByIdParams = zod.object({
 
 
 
+
 export const createPermissionBody = zod.object({
   "name": zod.string().min(1),
   "resource": zod.string().min(1),
-  "action": zod.enum(['CREATE', 'READ', 'UPDATE', 'DELETE'])
+  "urlPattern": zod.string().min(1),
+  "method": zod.enum(['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'])
 })
 
 export const findAllPermissionQueryPageDefault = 0;

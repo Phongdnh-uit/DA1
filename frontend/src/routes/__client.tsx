@@ -10,7 +10,9 @@ function RouteComponent() {
     return (
         <>
             <ClientHeader />
-            <Outlet />
+            <main>
+                <Outlet />
+            </main>
             <ClientFooter />
         </>
     );

@@ -45,7 +45,7 @@ export function SettingsSidebar() {
                 localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
                 localStorage.removeItem(REFRESH_TOKEN_STORAGE_KEY);
                 setUser(null);
-                navigate({ to: "/auth/login" });
+                navigate({ to: "/" });
             },
             onError: (error) => {
                 console.error("Logout error:", error);

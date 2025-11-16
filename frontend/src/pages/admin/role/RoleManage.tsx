@@ -17,6 +17,7 @@ import {
     useFindAllRole,
 } from "@/services/role/role";
 import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
+import { useNavigate } from "@tanstack/react-router";
 
 const keys: (keyof RoleResponse)[] = [
     "id",
@@ -28,6 +29,7 @@ const keys: (keyof RoleResponse)[] = [
 ];
 
 export const RoleManage = () => {
+    const navigate = useNavigate();
     const openDeleteDialog = useDeleteDialogStore((state) => state.openDialog);
     const useDeleteRole = useDeleteRoleById({
         mutation: {
@@ -45,7 +47,9 @@ export const RoleManage = () => {
             createSelectionColumn<RoleResponse>(),
             ...createColumnsFromType<RoleResponse>(keys),
             createActionColumn<RoleResponse>({
-                onEdit: () => { },
+                onEdit: (row) => {
+                    navigate({ to: `/admin/role/update/${row.id}` });
+                },
                 onDelete: (row) => {
                     openDeleteDialog({
                         onConfirm() {
@@ -56,7 +60,7 @@ export const RoleManage = () => {
                 },
             }),
         ],
-        [openDeleteDialog, useDeleteRole],
+        [navigate, openDeleteDialog, useDeleteRole],
     );
     const [pagination, setPagination] = useState<{
         page: number;
@@ -113,7 +117,10 @@ export const RoleManage = () => {
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-end">
-                <RippleButton className="h-12 bg-blue-700 text-white hover:bg-blue-700">
+                <RippleButton
+                    onClick={() => navigate({ to: "/admin/role/create" })}
+                    className="h-12 bg-blue-700 text-white hover:bg-blue-700"
+                >
                     <IconSparkles className="size-5" /> Create new
                 </RippleButton>
             </div>
@@ -135,8 +142,8 @@ export const RoleManage = () => {
                 onApply={onApplyFilter}
             />
             <DataTable
-                className="h-[500px]"
-                name="Role"
+                className="h-[550px]"
+                name="Vai trò"
                 table={table}
                 onBulkDelete={onBulkDelete}
                 pagination={pagination}

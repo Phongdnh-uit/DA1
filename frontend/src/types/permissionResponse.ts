@@ -4,7 +4,7 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import type { PermissionResponseAction } from './permissionResponseAction';
+import type { PermissionResponseMethod } from './permissionResponseMethod';
 
 export interface PermissionResponse {
   id?: number;
@@ -15,5 +15,6 @@ export interface PermissionResponse {
   updatedAt?: string;
   name?: string;
   resource?: string;
-  action?: PermissionResponseAction;
+  urlPattern?: string;
+  method?: PermissionResponseMethod;
 }

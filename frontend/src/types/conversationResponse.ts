@@ -5,6 +5,7 @@
  * OpenAPI spec version: v0
  */
 import type { ConversationResponseStatus } from './conversationResponseStatus';
+import type { ParticipantResponse } from './participantResponse';
 
 export interface ConversationResponse {
   id?: number;
@@ -13,5 +14,8 @@ export interface ConversationResponse {
   updatedBy?: number;
   createdAt?: string;
   updatedAt?: string;
+  contextId?: number;
   status?: ConversationResponseStatus;
+  lastMessageAt?: string;
+  participants?: ParticipantResponse[];
 }

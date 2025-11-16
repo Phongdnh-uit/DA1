@@ -154,8 +154,8 @@ export const UserManage = () => {
                 onApply={onApplyFilter}
             />
             <DataTable
-                className="h-[500px]"
-                name="User"
+                className="h-[550px]"
+                name="Người dùng"
                 table={table}
                 onBulkDelete={onBulkDelete}
                 pagination={pagination}

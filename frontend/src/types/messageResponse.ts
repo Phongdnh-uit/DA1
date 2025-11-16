@@ -4,7 +4,6 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import type { Conversation } from './conversation';
 import type { UserResponse } from './userResponse';
 
 export interface MessageResponse {
@@ -14,7 +13,6 @@ export interface MessageResponse {
   updatedBy?: number;
   createdAt?: string;
   updatedAt?: string;
-  conversation?: Conversation;
   sender?: UserResponse;
   content?: string;
 }

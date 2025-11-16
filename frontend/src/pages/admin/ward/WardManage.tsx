@@ -116,23 +116,6 @@ export const WardManage = () => {
         setFilterParam({ sort, filter });
     };
 
-    // useEffect(() => {
-    //     if (
-    //         list.isSuccess &&
-    //         list.data?.data?.totalPages &&
-    //         list.data?.data?.totalPages > pagination.page + 1
-    //     ) {
-    //         queryClient.fetchQuery(
-    //             getFindAllWardQueryOptions({
-    //                 page: pagination.page + 1,
-    //                 size: pagination.size,
-    //                 sort: filterParam.sort,
-    //                 filter: filterParam.filter,
-    //             }),
-    //         );
-    //     }
-    // }, [list.isSuccess, list.data, pagination.page, pagination, filterParam]);
-
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-end">
@@ -167,8 +150,8 @@ export const WardManage = () => {
                 onApply={onApplyFilter}
             />
             <DataTable
-                className="h-[500px]"
-                name="User"
+                className="h-[550px]"
+                name="Xã/Phường"
                 table={table}
                 onBulkDelete={onBulkDelete}
                 pagination={pagination}

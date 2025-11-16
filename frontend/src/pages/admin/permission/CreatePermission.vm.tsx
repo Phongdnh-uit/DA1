@@ -12,7 +12,8 @@ export function useCreatePermissionVM() {
         defaultValues: {
             name: "",
             resource: "",
-            action: "READ",
+            method: "GET",
+            urlPattern: "/",
         },
         mode: "onSubmit",
         resolver: zodResolver(createPermissionBody),

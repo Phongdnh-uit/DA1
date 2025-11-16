@@ -163,8 +163,8 @@ export const PropertyManage = () => {
                 onApply={onApplyFilter}
             />
             <DataTable
-                className="h-[500px]"
-                name="User"
+                className="h-[550px]"
+                name="Bất động sản"
                 table={table}
                 onBulkDelete={onBulkDelete}
                 pagination={pagination}

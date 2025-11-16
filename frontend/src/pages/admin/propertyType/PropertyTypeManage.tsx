@@ -149,8 +149,8 @@ export const PropertyTypeManage = () => {
                 onApply={onApplyFilter}
             />
             <DataTable
-                className="h-[500px]"
-                name="User"
+                className="h-[550px]"
+                name="Loại bất động sản"
                 table={table}
                 onBulkDelete={onBulkDelete}
                 pagination={pagination}

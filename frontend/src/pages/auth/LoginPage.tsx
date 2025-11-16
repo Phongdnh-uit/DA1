@@ -10,12 +10,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { getGetCurrentUserQueryKey, useLogin } from "@/services/auth/auth";
+import {
+    getGetCurrentUserQueryKey,
+    getGetCurrentUserQueryOptions,
+    useLogin,
+} from "@/services/auth/auth";
 import { loginBody } from "@/services/auth/auth.zod";
 import type { ApiResponseVoid, LoginRequest, LoginResponse } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IconBrandGoogle } from "@tabler/icons-react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { KeyIcon, PhoneIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -27,8 +31,12 @@ import {
     REFRESH_TOKEN_STORAGE_KEY,
 } from "@/constant/SecurityConstant";
 import { queryClient } from "@/lib/queryClient";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 export default function LoginPage() {
+    const search = useSearch({
+        from: "/auth/login",
+    });
     const navigate = useNavigate();
     const form = useForm<LoginRequest>({
         defaultValues: {
@@ -38,9 +46,10 @@ export default function LoginPage() {
         mode: "onSubmit",
         resolver: zodResolver(loginBody),
     });
+    const setUser = useAuthStore((state) => state.setUser);
     const login = useLogin({
         mutation: {
-            onSuccess: (data) => {
+            onSuccess: async (data) => {
                 toast.success("Đăng nhập thành công");
                 if (data.data?.refreshToken && data.data?.accessToken) {
                     localStorage.setItem(
@@ -51,10 +60,17 @@ export default function LoginPage() {
                         ACCESS_TOKEN_STORAGE_KEY,
                         data.data?.accessToken,
                     );
-                    queryClient.invalidateQueries({
-                        queryKey: getGetCurrentUserQueryKey(),
+                    const user = await queryClient.fetchQuery(
+                        getGetCurrentUserQueryOptions(),
+                    );
+
+                    if (user.data) {
+                        setUser(user.data);
+                    }
+
+                    navigate({
+                        to: search.redirect ?? "/",
                     });
-                    navigate({ to: "/" });
                 }
             },
             onError: () => {
@@ -198,10 +214,7 @@ export default function LoginPage() {
                         </Form>
                         <div className="w-full flex justify-between items-center mt-4">
                             <div>
-                                <Checkbox
-                                    className="size-5 rounded-[8px] bg-white data-[state=checked]:bg-blue-500 data-[state=checked]:border-transparent"
-                                    splashClassName="bg-blue-500"
-                                />
+                                <Checkbox className="size-5 rounded-[8px] bg-white data-[state=checked]:bg-blue-500 data-[state=checked]:border-transparent" />
                                 <span className="ml-2 text-lg">Ghi nhớ đăng nhập</span>
                             </div>
                             <Link

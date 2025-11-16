@@ -32,6 +32,7 @@ import { useFindPropertyById } from "@/services/property/property";
 import { Route } from "@/routes/__client/detail.$id";
 import { extensions } from "@/components/tiptap/rich-text-editor";
 import { directionConverter, formatCurrency } from "@/utils/converter";
+import ConsultationCard from "./component/ConsultationCard";
 
 export default function PropertyDetailPage() {
     const { id } = Route.useParams();
@@ -148,7 +149,7 @@ export default function PropertyDetailPage() {
 
     return (
         <motion.div
-            className="container mx-auto py-8 grid grid-cols-1 md:grid-cols-6 gap-2"
+            className="h-full container mx-auto py-8 grid grid-cols-1 md:grid-cols-6 gap-2"
             variants={fadeInUp.container}
             initial="hidden"
             animate="show"
@@ -195,7 +196,7 @@ export default function PropertyDetailPage() {
                                 <div>
                                     <p className="text-sm text-muted-foreground">Khoảng giá</p>
                                     <p className="text-2xl font-bold text-primary">
-                                        {formatCurrency(productData?.price)}
+                                        {formatCurrency(productData?.price as number)}
                                     </p>
                                     {productData?.landArea && (
                                         <p className="text-sm text-muted-foreground">
@@ -270,6 +271,14 @@ export default function PropertyDetailPage() {
                     </CardContent>
                 </Card>
             </motion.div>
+            {/* Right Column */}
+            <div className="ml-6">
+                <ConsultationCard
+                    className="sticky top-20"
+                    propertyId={productData?.id}
+                />
+            </div>
+            {/* <ConsultationCard className="hidden lg:block sticky top-30 right-20 w-80 z-40" /> */}
         </motion.div>
     );
 }

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "../ui/sidebar";
-import { IconChartPie2 } from "@tabler/icons-react";
+import { IconBrandWechat, IconChartPie2 } from "@tabler/icons-react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "@tanstack/react-router";
@@ -111,6 +111,17 @@ export function AdminSidebar(props: AdminSidebarProps) {
                 />
             ),
         },
+        {
+            label: "Trò chuyện",
+            href: "/admin/chat",
+            icon: (
+                <IconBrandWechat
+                    className={cn(
+                        "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
+                    )}
+                />
+            ),
+        },
     ];
     const [open, setOpen] = useState(false);
     const [tabPosition, setTabPosition] = useState<{
@@ -127,7 +138,7 @@ export function AdminSidebar(props: AdminSidebarProps) {
             )}
         >
             <Sidebar open={open} setOpen={setOpen}>
-                <SidebarBody className="justify-between gap-10">
+                <SidebarBody className="justify-between gap-10 bg-white dark:bg-neutral-900 mr-0 md:mr-4">
                     <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
                         {open ? <Logo /> : <LogoIcon />}
                         <div

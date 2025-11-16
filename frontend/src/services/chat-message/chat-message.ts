@@ -26,6 +26,7 @@ import type {
 import type {
   ApiResponsePageResponseMessageResponse,
   ApiResponseVoid,
+  GetMessagesByConversationIdForManagerParams,
   GetMessagesByConversationIdParams
 } from '../../types';
 
@@ -120,6 +121,100 @@ export function useGetMessagesByConversationId<TData = Awaited<ReturnType<typeof
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetMessagesByConversationIdQueryOptions(conversationId,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const getMessagesByConversationIdForManager = (
+    conversationId: number,
+    params?: GetMessagesByConversationIdForManagerParams,
+ options?: SecondParameter<typeof axiosInstanceFn>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstanceFn<ApiResponsePageResponseMessageResponse>(
+      {url: `/chat/conversations/${conversationId}/messages/manager`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
+
+
+
+export const getGetMessagesByConversationIdForManagerQueryKey = (conversationId?: number,
+    params?: GetMessagesByConversationIdForManagerParams,) => {
+    return [
+    `/chat/conversations/${conversationId}/messages/manager`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetMessagesByConversationIdForManagerQueryOptions = <TData = Awaited<ReturnType<typeof getMessagesByConversationIdForManager>>, TError = ErrorType<unknown>>(conversationId: number,
+    params?: GetMessagesByConversationIdForManagerParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMessagesByConversationIdForManager>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMessagesByConversationIdForManagerQueryKey(conversationId,params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMessagesByConversationIdForManager>>> = ({ signal }) => getMessagesByConversationIdForManager(conversationId,params, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(conversationId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMessagesByConversationIdForManager>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetMessagesByConversationIdForManagerQueryResult = NonNullable<Awaited<ReturnType<typeof getMessagesByConversationIdForManager>>>
+export type GetMessagesByConversationIdForManagerQueryError = ErrorType<unknown>
+
+
+export function useGetMessagesByConversationIdForManager<TData = Awaited<ReturnType<typeof getMessagesByConversationIdForManager>>, TError = ErrorType<unknown>>(
+ conversationId: number,
+    params: undefined |  GetMessagesByConversationIdForManagerParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMessagesByConversationIdForManager>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMessagesByConversationIdForManager>>,
+          TError,
+          Awaited<ReturnType<typeof getMessagesByConversationIdForManager>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMessagesByConversationIdForManager<TData = Awaited<ReturnType<typeof getMessagesByConversationIdForManager>>, TError = ErrorType<unknown>>(
+ conversationId: number,
+    params?: GetMessagesByConversationIdForManagerParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMessagesByConversationIdForManager>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMessagesByConversationIdForManager>>,
+          TError,
+          Awaited<ReturnType<typeof getMessagesByConversationIdForManager>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMessagesByConversationIdForManager<TData = Awaited<ReturnType<typeof getMessagesByConversationIdForManager>>, TError = ErrorType<unknown>>(
+ conversationId: number,
+    params?: GetMessagesByConversationIdForManagerParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMessagesByConversationIdForManager>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetMessagesByConversationIdForManager<TData = Awaited<ReturnType<typeof getMessagesByConversationIdForManager>>, TError = ErrorType<unknown>>(
+ conversationId: number,
+    params?: GetMessagesByConversationIdForManagerParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMessagesByConversationIdForManager>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetMessagesByConversationIdForManagerQueryOptions(conversationId,params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

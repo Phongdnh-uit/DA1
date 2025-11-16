@@ -47,7 +47,7 @@ export const findWishById = (
       
       
       return axiosInstanceFn<ApiResponseWishResponse>(
-      {url: `/wishs/${id}`, method: 'GET', signal
+      {url: `/wishes/${id}`, method: 'GET', signal
     },
       options);
     }
@@ -57,7 +57,7 @@ export const findWishById = (
 
 export const getFindWishByIdQueryKey = (id?: number,) => {
     return [
-    `/wishs/${id}`
+    `/wishes/${id}`
     ] as const;
     }
 
@@ -133,7 +133,7 @@ export const updateWish = (
       
       
       return axiosInstanceFn<ApiResponseWishResponse>(
-      {url: `/wishs/${id}`, method: 'PUT',
+      {url: `/wishes/${id}`, method: 'PUT',
       headers: {'Content-Type': 'application/json', },
       data: wishRequest
     },
@@ -190,7 +190,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
       
       return axiosInstanceFn<ApiResponseVoid>(
-      {url: `/wishs/${id}`, method: 'DELETE'
+      {url: `/wishes/${id}`, method: 'DELETE'
     },
       options);
     }
@@ -246,7 +246,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
       
       return axiosInstanceFn<ApiResponseWishResponse>(
-      {url: `/wishs`, method: 'POST',
+      {url: `/wishes`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: wishRequest, signal
     },
@@ -304,7 +304,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
       
       return axiosInstanceFn<ApiResponsePageResponseWishResponse>(
-      {url: `/wishs/all`, method: 'GET',
+      {url: `/wishes/all`, method: 'GET',
         params, signal
     },
       options);
@@ -315,7 +315,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 export const getFindAllWishQueryKey = (params?: FindAllWishParams,) => {
     return [
-    `/wishs/all`, ...(params ? [params]: [])
+    `/wishes/all`, ...(params ? [params]: [])
     ] as const;
     }
 
@@ -390,7 +390,7 @@ export const deleteBulkWish = (
       
       
       return axiosInstanceFn<ApiResponseVoid>(
-      {url: `/wishs/bulk`, method: 'DELETE',
+      {url: `/wishes/bulk`, method: 'DELETE',
         params
     },
       options);

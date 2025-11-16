@@ -13,7 +13,12 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
     useEffect(() => {
         if (!isInitializing && !isAuthenticated) {
-            navigate({ to: "/auth/login" });
+            navigate({
+                to: "/auth/login",
+                search: {
+                    redirect: location.pathname + location.search + location.hash,
+                },
+            });
         }
     }, [isAuthenticated, navigate, isInitializing]);
 
