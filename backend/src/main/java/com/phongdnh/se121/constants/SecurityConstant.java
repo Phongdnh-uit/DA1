@@ -12,8 +12,17 @@ public interface SecurityConstant {
     "/auth/verify-email",
     "/auth/register",
     "/auth/reset-password",
-    "/ai/chat/**"
+    "/ai/chat/**",
+    "/ws/**"
   };
 
-  String[] PUBLIC_GET_URLS = {"/properties/all", "/properties/{id}", "/provinces/all", "wards/all", "property-types/all" };
+  String[] PUBLIC_GET_URLS = {
+    "/properties/all",
+    "/properties/{id}",
+    "/provinces/all",
+    "/wards/all",
+    "/property-types/all",
+    "/properties/similar/{id}",
+    "/properties/within-radius"
+  };
 }

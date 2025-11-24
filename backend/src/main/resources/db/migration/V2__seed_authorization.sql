@@ -1,25 +1,68 @@
--- Seed permissions
-INSERT IGNORE INTO permissions (id, name, resource, action)
-VALUES 
-    (1, 'Xem quyền hạn', 'PERMISSION', 'READ'),
-    (2, 'Tạo quyền hạn', 'PERMISSION', 'CREATE'),
-    (3, 'Cập nhật quyền hạn', 'PERMISSION', 'UPDATE'),
-    (4, 'Xóa quyền hạn', 'PERMISSION', 'DELETE'),
-    (5, 'Xem vai trò', 'ROLE', 'READ'),
-    (6, 'Tạo vai trò', 'ROLE', 'CREATE'),
-    (7, 'Cập nhật vai trò', 'ROLE', 'UPDATE'),
-    (8, 'Xóa vai trò', 'ROLE', 'DELETE');
-
 -- Seed roles
 INSERT IGNORE INTO roles (id, name, description)
 VALUES
-    (1, 'ADMIN', 'Quản trị viên hệ thống'),
-    (2, 'USER', 'Người dùng thông thường');
+    (1, 'SUPER_ADMIN', 'Quản trị viên toàn quyền, quản lý hệ thống'),
+    (2, 'USER', 'Người dùng cuối, khách hàng mua/bán bất động sản'),
+    (3, 'STAFF', 'Nhân viên hệ thống, môi giới hoặc quản lý nội bộ');
 
--- Assign all permissions to ADMIN
-INSERT IGNORE INTO role_permissions (role_id, permission_id)
-SELECT 1, p.id FROM permissions p;
 
--- Assign only READ permissions to USER
-INSERT IGNORE INTO role_permissions (role_id, permission_id)
-SELECT 2, p.id FROM permissions p WHERE p.action = 'READ';
+INSERT INTO permissions (name, resource, url_pattern, method) VALUES
+('Tạo yêu thích', 'yêu thích', '/wishes', 'POST'),
+('Cập nhật bất động sản', 'bất động sản', '/properties/{id}', 'PUT'),
+('Tham gia trò chuyện', 'trò chuyện', '/chat/conversations/{conversationId}/participate', 'POST'),
+('Xóa nhiều loại bất động sản', 'loại bất động sản', '/property-types/bulk', 'DELETE'),
+('Đăng xuất', 'auth', '/auth/logout', 'POST'),
+('Xóa nhiều quyền', 'quyền hạn', '/permissions/bulk', 'DELETE'),
+('Xem danh sách yêu thích', 'yêu thích', '/wishes/all', 'GET'),
+('Xem danh sách loại bất động sản', 'loại bất động sản', '/property-types/all', 'GET'),
+('Cập nhật loại bất động sản', 'loại bất động sản', '/property-types/{id}', 'PUT'),
+('Xem chi tiết yêu thích', 'yêu thích', '/wishes/{id}', 'GET'),
+('Tải lên chữ ký', 'upload', '/uploads/signature', 'POST'),
+('Cập nhật quyền', 'quyền hạn', '/permissions/{id}', 'PUT'),
+('Tạo tỉnh', 'tỉnh', '/provinces', 'POST'),
+('Tạo người dùng', 'người dùng', '/users', 'POST'),
+('Xóa tin nhắn trò chuyện', 'trò chuyện', '/chat/messages/{messageId}', 'DELETE'),
+('Xem chi tiết loại bất động sản', 'loại bất động sản', '/property-types/{id}', 'GET'),
+('Xóa nhiều vai trò', 'vai trò', '/roles/bulk', 'DELETE'),
+('Xem tất cả quyền', 'quyền hạn', '/permissions/all', 'GET'),
+('Xem chi tiết quyền', 'quyền hạn', '/permissions/{id}', 'GET'),
+('Tạo bất động sản', 'bất động sản', '/properties', 'POST'),
+('Xem danh sách vai trò', 'vai trò', '/roles/all', 'GET'),
+('Cập nhật vai trò', 'vai trò', '/roles/{id}', 'PUT'),
+('Xem tin nhắn trò chuyện', 'trò chuyện', '/chat/conversations/{conversationId}/messages', 'GET'),
+('Tạo loại bất động sản', 'loại bất động sản', '/property-types', 'POST'),
+('Xóa yêu thích', 'yêu thích', '/wishes/{id}', 'DELETE'),
+('Xóa tệp tải lên', 'upload', '/uploads/{id}', 'DELETE'),
+('Xem chi tiết vai trò', 'vai trò', '/roles/{id}', 'GET'),
+('Xóa bất động sản', 'bất động sản', '/properties/{id}', 'DELETE'),
+('Xóa loại bất động sản', 'loại bất động sản', '/property-types/{id}', 'DELETE'),
+('Xem danh sách cuộc trò chuyện của tôi', 'trò chuyện', '/chat/conversations/me', 'GET'),
+('Xóa nhiều xã/phường', 'phường', '/wards/bulk', 'DELETE'),
+('Xóa nhiều người dùng', 'người dùng', '/users/bulk', 'DELETE'),
+('Cập nhật xã/phường', 'phường', '/wards/{id}', 'PUT'),
+('Cập nhật người dùng', 'người dùng', '/users/{id}', 'PUT'),
+('Xóa quyền', 'quyền hạn', '/permissions/{id}', 'DELETE'),
+('Xóa nhiều tỉnh', 'tỉnh', '/provinces/bulk', 'DELETE'),
+('Xem tin nhắn quản lý', 'trò chuyện', '/chat/conversations/{conversationId}/messages/manager', 'GET'),
+('Cập nhật tỉnh', 'tỉnh', '/provinces/{id}', 'PUT'),
+('Xem chi tiết người dùng', 'người dùng', '/users/{id}', 'GET'),
+('Đổi mật khẩu', 'auth', '/auth/change-password', 'POST'),
+('Xem chi tiết xã/phường', 'phường', '/wards/{id}', 'GET'),
+('Xóa vai trò', 'vai trò', '/roles/{id}', 'DELETE'),
+('Xem chi tiết tỉnh', 'tỉnh', '/provinces/{id}', 'GET'),
+('Tạo quyền', 'quyền hạn', '/permissions', 'POST'),
+('Xem danh sách người dùng', 'người dùng', '/users/all', 'GET'),
+('Xem danh sách cuộc trò chuyện', 'trò chuyện', '/chat/conversations', 'GET'),
+('Xóa người dùng', 'người dùng', '/users/{id}', 'DELETE'),
+('Xem danh sách xã/phường', 'phường', '/wards/all', 'GET'),
+('Xóa xã/phường', 'phường', '/wards/{id}', 'DELETE'),
+('Đóng cuộc trò chuyện', 'trò chuyện', '/chat/conversations/{conversationId}/close', 'POST'),
+('Tạo xã/phường', 'phường', '/wards', 'POST'),
+('Tạo vai trò', 'vai trò', '/roles', 'POST'),
+('Xóa tỉnh', 'tỉnh', '/provinces/{id}', 'DELETE'),
+('Xóa nhiều yêu thích', 'yêu thích', '/wishes/bulk', 'DELETE'),
+('Xem thông tin người dùng', 'auth', '/auth/me', 'GET'),
+('Khởi tạo cuộc trò chuyện', 'trò chuyện', '/chat/conversations/initialize', 'POST'),
+('Xóa nhiều bất động sản', 'bất động sản', '/properties/bulk', 'DELETE'),
+('Xem chi tiết yêu thích', 'yêu thích', '/wishes/{id}', 'PUT'),
+('Xem báo cáo thống kê', 'báo cáo', '/statistics', 'GET');

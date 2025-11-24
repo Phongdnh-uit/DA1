@@ -23,7 +23,8 @@ public enum ErrorCode {
   OTP_INVALID(2101, HttpStatus.BAD_REQUEST, "OTP Invalid"),
   ACCOUNT_LOCKED(2200, HttpStatus.LOCKED, "Account Locked"),
   ACCOUNT_DISABLED(2201, HttpStatus.FORBIDDEN, "Account Disabled"),
-  EMAIL_NOT_VERIFIED(2202, HttpStatus.PRECONDITION_REQUIRED, "Email Not Verified");
+  EMAIL_NOT_VERIFIED(2202, HttpStatus.PRECONDITION_REQUIRED, "Email Not Verified"),
+  OPERATION_NOT_ALLOWED(2300, HttpStatus.BAD_REQUEST, "Operation Not Allowed");
 
   private final int code;
   private final HttpStatus httpCode;

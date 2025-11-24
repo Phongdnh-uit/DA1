@@ -2,12 +2,15 @@ package com.phongdnh.se121.configurations;
 
 import com.phongdnh.se121.constants.AppConstant;
 import com.phongdnh.se121.constants.SecurityConstant;
+import com.phongdnh.se121.repositories.authorization.PermissionRepository;
 import com.phongdnh.se121.securities.CustomAuthenticationEntryPoint;
+import com.phongdnh.se121.securities.interceptors.PermissionInterceptor;
 import com.phongdnh.se121.securities.jwt.CustomJwtAuthenticationConverter;
 import com.phongdnh.se121.securities.oauth2.CustomAuthorizationRequestResolver;
 import com.phongdnh.se121.securities.oauth2.CustomOAuth2UserService;
 import com.phongdnh.se121.securities.oauth2.OAuth2FailureHandler;
 import com.phongdnh.se121.securities.oauth2.OAuth2SuccessHandler;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -21,12 +24,21 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+@RequiredArgsConstructor
 @Configuration
 @EnableMethodSecurity
 @EnableWebSecurity
 public class SecurityConfig implements WebMvcConfigurer {
+
+  private final PermissionRepository permissionRepository;
+
+  @Bean
+  PermissionInterceptor permissionInterceptor() {
+    return new PermissionInterceptor(permissionRepository);
+  }
 
   @Bean
   PasswordEncoder passwordEncoder() {
@@ -90,5 +102,10 @@ public class SecurityConfig implements WebMvcConfigurer {
         .csrf(AbstractHttpConfigurer::disable)
         .cors(Customizer.withDefaults());
     return http.build();
+  }
+
+  @Override
+  public void addInterceptors(InterceptorRegistry registry) {
+    registry.addInterceptor(permissionInterceptor());
   }
 }

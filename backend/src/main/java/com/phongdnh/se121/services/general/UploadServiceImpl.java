@@ -61,7 +61,7 @@ public class UploadServiceImpl implements UploadService {
       paramsToSign.put("timestamp", timestamp);
       paramsToSign.put("public_id", publicId);
       paramsToSign.put("tags", tags);
-        paramsToSign.put("transformation", "w_1024,h_1024,c_fill,q_auto,f_auto");
+      paramsToSign.put("transformation", "w_1024,h_1024,c_fill,q_auto,f_auto");
       String signature =
           cloudinary.apiSignRequest(
               paramsToSign, cloudinary.config.apiSecret, cloudinary.config.signatureVersion);
@@ -88,6 +88,11 @@ public class UploadServiceImpl implements UploadService {
     List<Media> mediasToSave = new ArrayList<>();
     List<String> publicIdsToChangeTag = new ArrayList<>();
     for (UploadConfirmRequest r : request) {
+      // pre-check
+      if (r.getSignature() == null || r.getPublicId() == null || r.getVersion() == null) {
+        throw new ApiException(
+            ErrorCode.SIGNATURE_INVALID, "Missing fields in confirm upload request");
+      }
       // 1. ---- Validate signature ----
       if (!isSignatureValid(r.getPublicId(), r.getVersion(), r.getSignature())) {
         throw new ApiException(ErrorCode.SIGNATURE_INVALID);

@@ -12,6 +12,9 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.spatial.dialect.mysql.MySQLSpatialDialect
 
   flyway:
     enabled: true
@@ -33,11 +36,13 @@ spring:
         initialize-schema: true
         collection-name: spring
     ollama:
+      init:
+        pull-model-strategy: always
       base-url: http://localhost:11434
       embedding:
-        model: nomic-embed-text
+        model: qwen3-embedding:4b
       chat:
-        model: mistral:7b
+        model: qwen3:8b
     chat:
       client:
         enabled: true

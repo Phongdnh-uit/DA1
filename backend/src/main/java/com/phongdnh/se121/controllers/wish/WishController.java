@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Wish")
-@RequestMapping("/wishs")
+@RequestMapping("/wishes")
 @RestController
 public class WishController extends GenericController<Wish, Long, WishRequest, WishResponse> {
 

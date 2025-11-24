@@ -34,14 +34,14 @@ public class PermissionHook
     Specification<Permission> validateSpec =
         (root, _, builder) ->
             builder.and(
-                builder.equal(root.get("action"), request.getAction()),
-                builder.equal(root.get("resource"), request.getResource()));
+                builder.equal(root.get("method"), request.getMethod()),
+                builder.equal(root.get("urlPattern"), request.getUrlPattern()));
     if (id != null) {
       validateSpec = validateSpec.and((root, _, builder) -> builder.notEqual(root.get("id"), id));
     }
     if (permissionRepository.exists(validateSpec)) {
       throw new ApiException(
-          ErrorCode.RESOURCE_EXISTS, "Permission with the same action and resource already exists");
+          ErrorCode.RESOURCE_EXISTS, "Permission with the same method and url already exists");
     }
   }
 }

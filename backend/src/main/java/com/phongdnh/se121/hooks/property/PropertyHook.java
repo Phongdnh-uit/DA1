@@ -3,6 +3,7 @@ package com.phongdnh.se121.hooks.property;
 import com.phongdnh.se121.ai.RAGIngestionService;
 import com.phongdnh.se121.dtos.PageResponse;
 import com.phongdnh.se121.dtos.general.MediaResponse;
+import com.phongdnh.se121.dtos.general.UploadConfirmRequest;
 import com.phongdnh.se121.dtos.property.PropertyRequest;
 import com.phongdnh.se121.dtos.property.PropertyResponse;
 import com.phongdnh.se121.entities.general.Media;
@@ -22,7 +23,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
@@ -35,6 +40,7 @@ public class PropertyHook extends DefaultHook<Property, Long, PropertyRequest, P
   private final MediaRepository mediaRepository;
   private final MediaMapper mediaMapper;
   private final RAGIngestionService ragIngestionService;
+  private final GeometryFactory geometryFactory;
 
   @Override
   public void enrichFindAll(PageResponse<PropertyResponse> responses) {
@@ -88,14 +94,59 @@ public class PropertyHook extends DefaultHook<Property, Long, PropertyRequest, P
 
   @Override
   public void afterCreate(Property entity, PropertyResponse response, Map<String, Object> context) {
-    saveMediasAfter((PropertyRequest) context.get("request"), entity.getId(), response);
+    List<UploadConfirmRequest> mediasInRequest =
+        ((PropertyRequest) context.get("request")).getMedias();
+    List<MediaResponse> mediaResponses = saveMediasAfter(mediasInRequest, entity.getId(), response);
+    response.setMedias(mediaResponses);
     // Ingest to RAG system
     ragIngestionService.ingestProperty(entity);
   }
 
   @Override
   public void afterUpdate(Property entity, PropertyResponse response, Map<String, Object> context) {
-    saveMediasAfter((PropertyRequest) context.get("request"), entity.getId(), response);
+    List<UploadConfirmRequest> mediasInRequest =
+        ((PropertyRequest) context.get("request")).getMedias();
+    // before saving new medias, check old medias
+    // if any old media is not in the new request, delete it
+    // only need to call saveMediasAfter with new upload not in database
+    // 1. get current medias
+    List<Media> currentMedias =
+        mediaRepository.findAll(
+            (root, _, builder) ->
+                builder.and(
+                    builder.equal(root.get("entityType"), MediaEntityType.PROPERTY),
+                    builder.equal(root.get("entityId"), entity.getId())));
+
+    // 2. determine which medias to delete, which to keep, which to add
+    Set<String> requestPulicIds =
+        mediasInRequest.stream()
+            .filter(m -> m.getPublicId() != null)
+            .map(UploadConfirmRequest::getPublicId)
+            .collect(Collectors.toSet());
+
+    // 3. delete medias not in request
+    List<Media> mediasToDelete =
+        currentMedias.stream().filter(m -> !requestPulicIds.contains(m.getPublicId())).toList();
+    if (!mediasToDelete.isEmpty()) {
+      mediaRepository.deleteAll(mediasToDelete);
+    }
+
+    // 4. save new medias
+    Set<String> currentPublicIds =
+        currentMedias.stream().map(Media::getPublicId).collect(Collectors.toSet());
+    List<UploadConfirmRequest> newMedias =
+        mediasInRequest.stream().filter(m -> !currentPublicIds.contains(m.getPublicId())).toList();
+    List<MediaResponse> mediaResponses = saveMediasAfter(newMedias, entity.getId(), response);
+
+    // 5. combine current medias (after deletion) and new medias
+    List<MediaResponse> finalMedias =
+        new ArrayList<>(
+            currentMedias.stream()
+                .filter(m -> requestPulicIds.contains(m.getPublicId()))
+                .map(mediaMapper::entityToResponse)
+                .toList());
+    finalMedias.addAll(mediaResponses);
+    response.setMedias(finalMedias);
     // Ingest to RAG system
     ragIngestionService.updatePropertyIngestion(entity);
   }
@@ -114,12 +165,14 @@ public class PropertyHook extends DefaultHook<Property, Long, PropertyRequest, P
   public void afterBulkDelete(Iterable<Long> ids) {
     for (Long propertyId : ids) {
       ragIngestionService.deletePropertyIngestion(propertyId);
+      uploadService.deleteAllByEntity(MediaEntityType.PROPERTY, propertyId);
     }
   }
 
   @Override
   public void afterDelete(Long id) {
     ragIngestionService.deletePropertyIngestion(id);
+    uploadService.deleteAllByEntity(MediaEntityType.PROPERTY, id);
   }
 
   private void validate(PropertyRequest request) {
@@ -148,13 +201,21 @@ public class PropertyHook extends DefaultHook<Property, Long, PropertyRequest, P
   }
 
   private void enrich(PropertyRequest input, Property entity) {
+    // if location is provided, set location
+    if (input.getLocation() != null) {
+      entity.setLocation(
+          geometryFactory.createPoint(
+              new Coordinate(
+                  input.getLocation().getLongitude(), input.getLocation().getLatitude())));
+    }
+
+    // set other foreign keys
     entity.setType(propertyTypeRepository.getReferenceById(input.getTypeId()));
     entity.setWard(wardRepository.getReferenceById(input.getWardId()));
   }
 
-  private void saveMediasAfter(PropertyRequest request, Long entityId, PropertyResponse response) {
-    List<MediaResponse> medias =
-        uploadService.confirmUpload(request.getMedias(), MediaEntityType.PROPERTY, entityId);
-    response.setMedias(medias);
+  private List<MediaResponse> saveMediasAfter(
+      List<UploadConfirmRequest> newMedias, Long entityId, PropertyResponse response) {
+    return uploadService.confirmUpload(newMedias, MediaEntityType.PROPERTY, entityId);
   }
 }

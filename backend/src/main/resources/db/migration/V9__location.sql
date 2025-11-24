@@ -1,0 +1,1 @@
+ALTER TABLE properties ADD COLUMN location POINT SRID 4326;

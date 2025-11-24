@@ -1,5 +1,6 @@
 package com.phongdnh.se121.dtos.general;
 
+import com.phongdnh.se121.dtos.Action.Create;
 import com.phongdnh.se121.enums.general.MediaPurpose;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +12,10 @@ import lombok.Setter;
 public class UploadConfirmRequest {
   @NotBlank private String publicId;
   @NotNull private Long version;
-  @NotBlank private String signature;
+
+  @NotBlank(groups = {Create.class})
+  private String signature;
+
   @NotBlank private String secureUrl;
   @NotNull private Integer width;
   @NotNull private Integer height;

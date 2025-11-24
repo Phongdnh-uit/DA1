@@ -10,6 +10,6 @@ public class AiConfig {
 
   @Bean
   TextSplitter tokenTextSplitter() {
-    return TokenTextSplitter.builder().withChunkSize(500).build();
+    return TokenTextSplitter.builder().withKeepSeparator(true).withChunkSize(500).build();
   }
 }

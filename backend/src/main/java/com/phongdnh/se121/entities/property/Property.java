@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
+import org.locationtech.jts.geom.Point;
 
 @Getter
 @Setter
@@ -47,6 +48,8 @@ public class Property extends BaseEntity {
 
   @Column(precision = 10, scale = 2)
   private BigDecimal floorArea;
+
+  private Point location;
 
   private Integer floors;
 

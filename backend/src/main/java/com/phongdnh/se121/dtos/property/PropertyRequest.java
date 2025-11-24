@@ -59,4 +59,6 @@ public class PropertyRequest {
   @NotNull private PropertyStatus status;
 
   private List<UploadConfirmRequest> medias;
+
+  private Location location;
 }

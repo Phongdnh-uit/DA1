@@ -2,15 +2,12 @@ package com.phongdnh.se121.ai;
 
 import com.phongdnh.se121.entities.property.Property;
 import com.phongdnh.se121.utils.StringUtil;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.transformer.splitter.TextSplitter;
-import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.ai.vectorstore.filter.Filter;
 import org.springframework.ai.vectorstore.filter.FilterExpressionBuilder;
@@ -63,64 +60,6 @@ public class RAGIngestionServiceImpl implements RAGIngestionService {
     ingestProperty(property);
   }
 
-  @Override
-  public List<Document> findSimilar(List<Property> properties, int topK) {
-    if (properties.isEmpty()) {
-      return List.of();
-    }
-    List<String> queries = properties.stream().map(this::createStrategyDocument).toList();
-    List<Document> combinedResults =
-        queries.parallelStream()
-            .<Document>mapMulti(
-                (query, consumer) -> {
-                  SearchRequest request = SearchRequest.builder().query(query).topK(topK).build();
-                  vectorStore.similaritySearch(request).forEach(consumer);
-                })
-            .toList();
-
-    Map<String, Document> uniqueResults = new HashMap<>();
-    Map<String, Double> relevanceScores = new HashMap<>();
-    Map<String, Integer> frequency = new HashMap<>();
-
-    for (Document doc : combinedResults) {
-      String docId = doc.getMetadata().get("propertyId").toString();
-      double distance = (double) doc.getMetadata().getOrDefault("distance", 1.0);
-      double similarity = 1.0 - distance;
-      if (!uniqueResults.containsKey(docId)) {
-        uniqueResults.put(docId, doc);
-        relevanceScores.put(docId, similarity);
-        frequency.put(docId, 1);
-      } else {
-        relevanceScores.merge(docId, similarity, Double::max);
-        frequency.merge(docId, 1, Integer::sum);
-      }
-    }
-
-    List<Document> rankedResults =
-        uniqueResults.values().stream()
-            .sorted(
-                (doc1, doc2) -> {
-                  String docId1 = doc1.getMetadata().get("propertyId").toString();
-                  String docId2 = doc2.getMetadata().get("propertyId").toString();
-
-                  int freqCompare = frequency.get(docId2).compareTo(frequency.get(docId1));
-                  if (freqCompare != 0) {
-                    return freqCompare;
-                  } else {
-                    return relevanceScores.get(docId2).compareTo(relevanceScores.get(docId1));
-                  }
-                })
-            .toList();
-    List<String> inputPropertyIds = properties.stream().map(p -> p.getId().toString()).toList();
-    List<Document> finalResults =
-        rankedResults.stream()
-            .filter(
-                doc -> !inputPropertyIds.contains(doc.getMetadata().get("propertyId").toString()))
-            .limit(topK)
-            .toList();
-    return finalResults.stream().limit(topK).toList();
-  }
-
   private Map<String, Object> createPropertyPayload(Property property) {
     Map<String, Object> payload = new LinkedHashMap<>();
     payload.put("propertyId", property.getId());
@@ -143,36 +82,45 @@ public class RAGIngestionServiceImpl implements RAGIngestionService {
     return payload;
   }
 
-  private String createStrategyDocument(Property property) {
-    String title = StringUtil.safe(textNormalizeService.normalizeTitle(property.getTitle()));
-    String purpose = StringUtil.safe(property.getPurpose().getName());
-    String type = StringUtil.safe(property.getType().getName());
-    String city = StringUtil.safe(property.getWard().getProvince().getName());
-    String ward = StringUtil.safe(property.getWard().getName());
-    String price = StringUtil.formatPrice(property.getPrice());
-    String landArea = StringUtil.formatArea(property.getLandArea());
-    String floorArea = StringUtil.formatArea(property.getFloorArea());
-    String floors = StringUtil.safeNumber(property.getFloors());
-    String bedrooms = StringUtil.safeNumber(property.getBedrooms());
-    String bathrooms = StringUtil.safeNumber(property.getBathrooms());
-    String width = StringUtil.formatWidth(property.getEntranceRoadWidth());
-    String address = StringUtil.safe(property.getLineAddress());
-
+  @Override
+  public String createStrategyDocument(Property property) {
     StringBuilder sb = new StringBuilder();
 
-    sb.append(title).append(". ");
-    sb.append(
-        String.format(
-            "%s %s tại %s, %s. ", StringUtil.capitalize(type), purpose.toLowerCase(), ward, city));
+    sb.append("[BẤT ĐỘNG SẢN]").append("\n");
+    sb.append("ID: ").append(property.getId()).append("\n");
+    sb.append("Tiêu đề: ")
+        .append(StringUtil.safe(textNormalizeService.normalizeTitle(property.getTitle())))
+        .append("\n");
+    sb.append("Mục đích: ").append(StringUtil.safe(property.getPurpose().getName())).append("\n");
+    sb.append("Loại: ").append(StringUtil.safe(property.getType().getName())).append("\n");
+    sb.append("Thành phố: ")
+        .append(StringUtil.safe(property.getWard().getProvince().getName()))
+        .append("\n");
+    sb.append("Phường/Xã: ").append(StringUtil.safe(property.getWard().getName())).append("\n");
 
-    if (price != null) sb.append("Giá: ").append(price).append(". ");
-    if (landArea != null) sb.append("Diện tích đất: ").append(landArea).append(". ");
-    if (floorArea != null) sb.append("Diện tích sàn: ").append(floorArea).append(". ");
-    if (floors != null) sb.append("Số tầng: ").append(floors).append(". ");
-    if (bedrooms != null) sb.append("Phòng ngủ: ").append(bedrooms).append(". ");
-    if (bathrooms != null) sb.append("Phòng tắm: ").append(bathrooms).append(". ");
-    if (width != null) sb.append("Đường vào rộng: ").append(width).append(". ");
-    if (!address.isEmpty()) sb.append("Địa chỉ: ").append(address).append(". ");
+    if (property.getPrice() != null)
+      sb.append("Giá: ").append(StringUtil.formatPrice(property.getPrice())).append("\n");
+    if (property.getLandArea() != null)
+      sb.append("Diện tích đất: ")
+          .append(StringUtil.formatArea(property.getLandArea()))
+          .append("\n");
+    if (property.getFloorArea() != null)
+      sb.append("Diện tích sàn: ")
+          .append(StringUtil.formatArea(property.getFloorArea()))
+          .append("\n");
+    if (property.getFloors() != null)
+      sb.append("Số tầng: ").append(property.getFloors()).append("\n");
+    if (property.getBedrooms() != null)
+      sb.append("Số phòng ngủ: ").append(property.getBedrooms()).append("\n");
+    if (property.getBathrooms() != null)
+      sb.append("Số phòng tắm: ").append(property.getBathrooms()).append("\n");
+    if (property.getEntranceRoadWidth() != null)
+      sb.append("Đường vào rộng: ")
+          .append(property.getEntranceRoadWidth())
+          .append(" m")
+          .append("\n");
+    if (!StringUtil.safe(property.getLineAddress()).isEmpty())
+      sb.append("Địa chỉ: ").append(property.getLineAddress()).append("\n");
 
     return sb.toString().trim();
   }

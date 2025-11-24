@@ -56,4 +56,6 @@ public class PropertyResponse extends BaseEntity {
   private String interior;
 
   private List<MediaResponse> medias;
+
+  private Location location;
 }
