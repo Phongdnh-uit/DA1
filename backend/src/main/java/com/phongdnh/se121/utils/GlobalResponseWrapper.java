@@ -17,7 +17,9 @@ public class GlobalResponseWrapper implements ResponseBodyAdvice<Object> {
   public boolean supports(
       MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
     String className = returnType.getDeclaringClass().getName();
-    if (className.startsWith("org.springdoc") || className.startsWith("springfox")) {
+    if (className.startsWith("org.springdoc")
+        || className.startsWith("springfox")
+        || className.startsWith("com.phongdnh.se121.controllers.ai")) {
       return false;
     }
     return true;
@@ -31,6 +33,10 @@ public class GlobalResponseWrapper implements ResponseBodyAdvice<Object> {
       Class<? extends HttpMessageConverter<?>> selectedConverterType,
       ServerHttpRequest request,
       ServerHttpResponse response) {
+    if (body instanceof String) {
+      // Let String responses be handled by StringHttpMessageConverter
+      return body;
+    }
     if (body instanceof ApiResponse) {
       return body;
     }

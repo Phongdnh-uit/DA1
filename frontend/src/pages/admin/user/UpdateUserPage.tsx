@@ -1,29 +1,28 @@
 import { Form } from "@/components/ui/form";
 import { FormCheckbox, FormInput, FormSelect } from "@/utils/formUtil";
 import { UserRequestStatus, type UserRequest } from "@/types";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { BackButton } from "@/components/general/BackButton";
+import { MotionButton } from "@/components/general/MotionShadcn";
 import { useUpdateUserVM } from "./UpdateUser.vm";
 
 export const UpdateUserPage = () => {
     const { form, roles, onSubmit } = useUpdateUserVM();
     return (
-        <div>
-            <div className="flex items-center gap-2 mb-4">
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => window.history.back()}
-                >
-                    <ArrowLeft className="size-7" />
-                </Button>
-                <h1 className="text-2xl font-semibold">Tạo mới người dùng</h1>
-            </div>
-            <Card className="max-w-2xl p-4 rounded-[24px]">
-                <CardContent>
+        <main>
+            <BackButton />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <Card className="p-6 md:p-8 border border-border/50 shadow-lg">
+                    <div>
+                        <h2 className="text-2xl font-bold text-foreground mb-2">
+                            Cập Nhật Người Dùng
+                        </h2>
+                        <p className="text-base text-muted-foreground">
+                            Vui lòng điền thông tin người dùng bên dưới để cập nhật.
+                        </p>
+                    </div>
                     <Form {...form}>
-                        <div className="flex flex-col gap-4">
+                        <div className="space-y-6">
                             <FormInput<UserRequest>
                                 title="Họ và tên"
                                 placeholder="Nhập họ và tên"
@@ -40,10 +39,10 @@ export const UpdateUserPage = () => {
                                 name="phone"
                             />
                             <FormInput<UserRequest>
+                                disabled
                                 title="Mật khẩu"
                                 placeholder="Nhập mật khẩu"
                                 name="password"
-                                disabled={true}
                             />
                             <FormSelect<UserRequest>
                                 keyType="number"
@@ -65,30 +64,45 @@ export const UpdateUserPage = () => {
                                     name="phoneVerified"
                                     direction="row"
                                 />
-                            </div>
-                            <FormSelect<UserRequest>
-                                keyType="number"
-                                title="Trạng thái"
-                                options={Object.entries(UserRequestStatus).map(
-                                    ([key, value]) => ({
-                                        key: key,
-                                        render: value,
-                                    }),
-                                )}
-                                name="status"
-                            />
+                            </div>{" "}
                         </div>
-                        <div className="mt-4 flex justify-end items-center">
-                            <Button
+                        <FormSelect<UserRequest>
+                            keyType="string"
+                            title="Trạng thái"
+                            options={Object.entries(UserRequestStatus).map(
+                                ([key, value]) => ({
+                                    key: key,
+                                    render: value,
+                                }),
+                            )}
+                            name="status"
+                        />
+                        <div className="flex gap-3 pt-4">
+                            <MotionButton
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                transition={{ type: "spring", stiffness: 400, damping: 20 }}
                                 onClick={() => form.handleSubmit(onSubmit)()}
-                                className="h-14 bg-blue-500 rounded-xl text-lg hover:bg-blue-600"
+                                className="flex-1 text-xl h-12 rounded-2xl transition-none"
+                                size="lg"
                             >
-                                Xác nhận
-                            </Button>
+                                Cập Nhật Người Dùng
+                            </MotionButton>
+                            <MotionButton
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                                variant="outline"
+                                className="flex-1 text-xl h-12 rounded-2xl transition-none"
+                                size="lg"
+                                onClick={() => form.reset()}
+                            >
+                                Hủy Bỏ
+                            </MotionButton>
                         </div>
                     </Form>
-                </CardContent>
-            </Card>
-        </div>
+                </Card>
+            </div>
+        </main>
     );
 };

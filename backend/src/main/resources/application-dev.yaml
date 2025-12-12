@@ -3,7 +3,7 @@ spring:
     activate:
       on-profile: dev
   datasource:
-    url: jdbc:mysql://localhost:3306/mydatabase
+    url: jdbc:mysql://localhost:3306/uitland
     username: myuser
     password: secret
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -11,6 +11,10 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.spatial.dialect.mysql.MySQLSpatialDialect
 
   flyway:
     enabled: true
@@ -23,15 +27,44 @@ spring:
   redis:
     host: localhost
     port: 6379
+  ai:
+    vectorstore:
+      milvus:
+        client:
+          host: localhost
+          port: 19530
+        database-name: default
+        collection-name: uitland_embeddings
+        embedding-dimension: 4096
+        metric-type: cosine
+        index-type: ivf-flat
+        initialize-schema: true
+    ollama:
+      init:
+        pull-model-strategy: always
+      base-url: http://localhost:11434
+      embedding:
+        model: qwen3-embedding:8b-q4_K_M
+      chat:
+        model: qwen3:4b-instruct-2507-q4_K_M
+    chat:
+      client:
+        enabled: true
 
-# logging:
-#   level:
-#     root: DEBUG
-#     org.springframework: DEBUG
+logging:
+  level:
+    org.springframework.security: DEBUG
 
 jwt:
   secret: xin_chao_ban!_day_la_du_an_uit_land_cho_do_an_1_cua_minh!_xin_cam_on_ban_da_doc_du_an_nay
   refresh-token:
-    expiration: 86400
+    expiration: 172800
   access-token:
-    expiration: 3600
+    expiration: 18000
+
+minio:
+  host: localhost
+  port: 9000
+  credentials:
+    username: minioadmin
+    password: minioadmin

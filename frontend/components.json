@@ -6,7 +6,7 @@
   "tailwind": {
     "config": "",
     "css": "src/index.css",
-    "baseColor": "zinc",
+    "baseColor": "neutral",
     "cssVariables": true,
     "prefix": ""
   },
@@ -18,5 +18,9 @@
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
-  "registries": {}
+  "registries": {
+    "@aceternity": "https://ui.aceternity.com/registry/{name}.json",
+    "@magicui": "https://magicui.design/r/{name}.json",
+    "@assistant-ui": "https://r.assistant-ui.com/{name}.json"
+  }
 }

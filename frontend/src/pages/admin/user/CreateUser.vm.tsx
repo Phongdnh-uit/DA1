@@ -17,9 +17,9 @@ export const useCreateUserVM = () => {
             emailVerified: false,
             phoneVerified: false,
             roleId: undefined,
-            status: "ACTIVE",
+            status: undefined,
         },
-        mode: "onBlur",
+        mode: "onSubmit",
         resolver: zodResolver(createUserBody),
     });
     const roles = useFindAllRole().data?.data?.content || [];

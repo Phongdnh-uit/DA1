@@ -1,16 +1,23 @@
 "use client";
 import { useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "../ui/sidebar";
-import {
-    IconArrowLeft,
-    IconChartPie2,
-    IconSettings,
-    IconUserBolt,
-} from "@tabler/icons-react";
+import { IconBrandWechat, IconChartPie2 } from "@tabler/icons-react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "@tanstack/react-router";
 import logo from "@/assets/logo.svg";
+import {
+    Building2Icon,
+    Calendar,
+    CircleStarIcon,
+    HouseIcon,
+    MapIcon,
+    MapPinnedIcon,
+    ShieldUserIcon,
+    TagIcon,
+    UsersRoundIcon,
+} from "lucide-react";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 interface AdminSidebarProps {
     children: React.ReactNode;
@@ -19,7 +26,7 @@ interface AdminSidebarProps {
 export function AdminSidebar(props: AdminSidebarProps) {
     const links = [
         {
-            label: "Overview",
+            label: "Dashboard",
             href: "/admin/dashboard",
             icon: (
                 <IconChartPie2
@@ -28,23 +35,37 @@ export function AdminSidebar(props: AdminSidebarProps) {
                     )}
                 />
             ),
+            permissionCode: "STATISTICS_VIEW",
         },
         {
-            label: "Permission",
+            label: "Quyền hạn",
             href: "/admin/permission",
             icon: (
-                <IconUserBolt
+                <ShieldUserIcon
                     className={cn(
                         "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
                     )}
                 />
             ),
+            permissionCode: "PERMISSION_VIEW_LIST",
         },
         {
-            label: "Role",
+            label: "Vai trò",
             href: "/admin/role",
             icon: (
-                <IconSettings
+                <CircleStarIcon
+                    className={cn(
+                        "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
+                    )}
+                />
+            ),
+            permissionCode: "ROLE_VIEW_LIST",
+        },
+        {
+            label: "Người dùng",
+            href: "/admin/user",
+            icon: (
+                <UsersRoundIcon
                     className={cn(
                         "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
                     )}
@@ -52,10 +73,76 @@ export function AdminSidebar(props: AdminSidebarProps) {
             ),
         },
         {
-            label: "User",
-            href: "/admin/user",
+            label: "Tỉnh thành",
+            href: "/admin/province",
             icon: (
-                <IconArrowLeft
+                <MapIcon
+                    className={cn(
+                        "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
+                    )}
+                />
+            ),
+        },
+        {
+            label: "Xã phường",
+            href: "/admin/ward",
+            icon: (
+                <MapPinnedIcon
+                    className={cn(
+                        "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
+                    )}
+                />
+            ),
+        },
+        {
+            label: "Thống kê giá cả",
+            href: "/admin/price-reference",
+            icon: (
+                <TagIcon
+                    className={cn(
+                        "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
+                    )}
+                />
+            ),
+        },
+        {
+            label: "Loại bất động sản",
+            href: "/admin/property-type",
+            icon: (
+                <HouseIcon
+                    className={cn(
+                        "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
+                    )}
+                />
+            ),
+        },
+        {
+            label: "Bất động sản",
+            href: "/admin/property",
+            icon: (
+                <Building2Icon
+                    className={cn(
+                        "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
+                    )}
+                />
+            ),
+        },
+        {
+            label: "Trò chuyện",
+            href: "/admin/chat",
+            icon: (
+                <IconBrandWechat
+                    className={cn(
+                        "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
+                    )}
+                />
+            ),
+        },
+        {
+            label: "Đặt lịch",
+            href: "/admin/booking",
+            icon: (
+                <Calendar
                     className={cn(
                         "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
                     )}
@@ -69,6 +156,7 @@ export function AdminSidebar(props: AdminSidebarProps) {
         opacity: number;
     }>({ top: 0, opacity: 0 });
     const navigate = useNavigate();
+    const user = useAuthStore((state) => state.user);
     return (
         <div
             className={cn(
@@ -77,7 +165,7 @@ export function AdminSidebar(props: AdminSidebarProps) {
             )}
         >
             <Sidebar open={open} setOpen={setOpen}>
-                <SidebarBody className="justify-between gap-10">
+                <SidebarBody className="justify-between gap-10 bg-white dark:bg-neutral-900 mr-0 md:mr-4">
                     <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
                         {open ? <Logo /> : <LogoIcon />}
                         <div
@@ -114,7 +202,7 @@ export function AdminSidebar(props: AdminSidebarProps) {
                     <div>
                         <SidebarLink
                             link={{
-                                label: "Manu Arora",
+                                label: user?.email ? user?.email : "",
                                 href: "#",
                                 icon: (
                                     <img

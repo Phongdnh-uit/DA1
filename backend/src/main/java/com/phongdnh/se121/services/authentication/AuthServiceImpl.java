@@ -1,5 +1,7 @@
 package com.phongdnh.se121.services.authentication;
 
+import com.phongdnh.se121.dtos.authentication.BaseUserRequest;
+import com.phongdnh.se121.dtos.authentication.ChangePasswordRequest;
 import com.phongdnh.se121.dtos.authentication.LoginRequest;
 import com.phongdnh.se121.dtos.authentication.LoginResponse;
 import com.phongdnh.se121.dtos.authentication.RefreshTokenRequest;
@@ -11,23 +13,32 @@ import com.phongdnh.se121.dtos.authentication.UserResponse;
 import com.phongdnh.se121.dtos.authentication.VerifyEmailRequest;
 import com.phongdnh.se121.dtos.authentication.VerifyOtpRequest;
 import com.phongdnh.se121.dtos.authentication.VerifyOtpResponse;
+import com.phongdnh.se121.dtos.general.MediaResponse;
+import com.phongdnh.se121.dtos.general.UploadConfirmRequest;
 import com.phongdnh.se121.entities.authentication.RefreshToken;
 import com.phongdnh.se121.entities.authentication.User;
 import com.phongdnh.se121.entities.authentication.Verification;
+import com.phongdnh.se121.entities.authorization.Permission;
 import com.phongdnh.se121.enums.authentication.OtpChannel;
 import com.phongdnh.se121.enums.authentication.UserStatus;
 import com.phongdnh.se121.enums.authentication.VerificationType;
 import com.phongdnh.se121.enums.general.ContactType;
+import com.phongdnh.se121.enums.general.MediaEntityType;
+import com.phongdnh.se121.enums.general.MediaPurpose;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
 import com.phongdnh.se121.mappers.authentication.UserMapper;
 import com.phongdnh.se121.repositories.authentication.UserRepository;
+import com.phongdnh.se121.repositories.authorization.PermissionRepository;
 import com.phongdnh.se121.repositories.authorization.RoleRepository;
 import com.phongdnh.se121.securities.SecurityUtil;
 import com.phongdnh.se121.securities.TokenProvider;
 import com.phongdnh.se121.services.general.MailService;
+import com.phongdnh.se121.services.general.UploadService;
 import com.phongdnh.se121.utils.OtpGenerator;
 import com.phongdnh.se121.utils.ValidationUtil;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -54,6 +65,8 @@ public class AuthServiceImpl implements AuthService {
   private final MailService mailService;
   private final UserMapper userMapper;
   private final RoleRepository roleRepository;
+  private final UploadService uploadService;
+  private final PermissionRepository permissionRepository;
 
   // ============================ LOGIN ============================
   @Override
@@ -276,5 +289,109 @@ public class AuthServiceImpl implements AuthService {
   public void logout(RefreshTokenRequest request) {
     RefreshToken refreshToken = refreshTokenService.findByToken(request.getRefreshToken());
     refreshTokenService.delete(refreshToken);
+  }
+
+  // ============================ CURRENT USER ============================
+
+  @Override
+  public UserResponse getCurrentUser() {
+    Long userId = SecurityUtil.getCurrentUserId();
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND));
+    UserResponse userResponse = userMapper.entityToResponse(user);
+    List<MediaResponse> avatars =
+        uploadService.findAll(
+            (root, _, builder) ->
+                builder.and(
+                    builder.equal(root.get("entityType"), MediaEntityType.USER),
+                    builder.equal(root.get("entityId"), userId),
+                    builder.equal(root.get("purpose"), MediaPurpose.AVATAR)));
+    if (!avatars.isEmpty()) {
+      userResponse.setAvatar(avatars.get(0));
+    }
+    return userResponse;
+  }
+
+  // ============================ CHANGE PASSWORD ============================
+  @Override
+  public void changePassword(ChangePasswordRequest request) {
+    Long userId = SecurityUtil.getCurrentUserId();
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND));
+    if (!passwordEncoder.matches(request.getOldPassword(), user.getPasswordHash())) {
+      throw new ApiException(
+          ErrorCode.VALIDATION_ERROR, Map.of("oldPassword", "Invalid current password"));
+    }
+    user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+    userRepository.save(user);
+  }
+
+  // ============================ UPDATE CURRENT USER ============================
+
+  @Override
+  public UserResponse updateCurrentUser(BaseUserRequest request) {
+    Long userId = SecurityUtil.getCurrentUserId();
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND));
+    Map<String, String> errors = new HashMap<>();
+    // Check if email is existing
+    if (userRepository.exists(
+        (root, _, builder) ->
+            builder.and(
+                builder.equal(root.get("email"), request.getEmail()),
+                builder.notEqual(root.get("id"), userId)))) {
+      errors.put("email", "Email is already in use");
+    }
+
+    // Check if phone is existing
+    if (userRepository.exists(
+        (root, _, builder) ->
+            builder.and(
+                builder.equal(root.get("phone"), request.getPhone()),
+                builder.notEqual(root.get("id"), userId)))) {
+      errors.put("phone", "Phone number is already in use");
+    }
+
+    if (!errors.isEmpty()) {
+      throw new ApiException(ErrorCode.VALIDATION_ERROR, errors);
+    }
+    userMapper.partialUpdate(request, user);
+    user = userRepository.save(user);
+    return userMapper.entityToResponse(user);
+  }
+
+  // ============================ UPDATE CURRENT USER AVATAR ============================
+  @Override
+  public MediaResponse updateCurrentUserAvatar(UploadConfirmRequest request) {
+    Long userId = SecurityUtil.getCurrentUserId();
+    if (request.getPurpose() != MediaPurpose.AVATAR) {
+      throw new ApiException(ErrorCode.VALIDATION_ERROR, Map.of("purpose", "Invalid purpose"));
+    }
+    uploadService.deleteAllByEntity(MediaEntityType.USER, userId);
+    List<MediaResponse> mediaResponse =
+        uploadService.confirmUpload(List.of(request), MediaEntityType.USER, userId);
+    if (mediaResponse.isEmpty()) {
+      throw new ApiException(ErrorCode.UPLOAD_FAILED);
+    }
+    return mediaResponse.get(0);
+  }
+
+  // ============================ GET CURRENT USER PERMISSIONS ============================
+  @Override
+  public List<String> getCurrentPermissionCodes() {
+    Long userRoleId = SecurityUtil.getCurrentUserDetails().getRoleId();
+    List<Permission> permissions =
+        permissionRepository.findAll(
+            (root, query, builder) -> {
+              query.distinct(true);
+              return builder.equal(root.join("roles").get("id"), userRoleId);
+            });
+    return permissions.stream().map(Permission::getCode).toList();
   }
 }

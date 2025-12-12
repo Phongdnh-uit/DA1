@@ -3,6 +3,7 @@ import { RippleButton } from "@/components/ui/shadcn-io/ripple-button";
 import { useDatatable } from "@/hooks/useDatatable";
 import {
     useDeleteBulkPermission,
+    useDeletePermissionById,
     useFindAllPermission,
 } from "@/services/permission/permission";
 import type { PermissionResponse } from "@/types";
@@ -13,17 +14,19 @@ import {
 } from "@/utils/createColumn";
 import { IconSparkles } from "@tabler/icons-react";
 import { useMemo, useState } from "react";
-import CreatePermissionModal from "./CreatePermissionModal";
-import UpdatePermissionModal from "./UpdatePermissionModal";
 import Filter from "@/components/admin/Filter";
 import { toast } from "react-toastify";
-import DeleteDialog from "@/components/general/DeleteDialog";
+import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
+import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "@tanstack/react-router";
+import PermissionGate from "@/components/general/PermissionGate";
+import { PermissionDetailSheet } from "./DetailPermissionSheet";
 
 const keys: (keyof PermissionResponse)[] = [
     "id",
     "name",
-    "resource",
-    "action",
+    "method",
+    "code",
     "createdAt",
     "updatedAt",
     "createdBy",
@@ -31,18 +34,73 @@ const keys: (keyof PermissionResponse)[] = [
 ];
 
 export const PermissionManage = () => {
+    const [viewDetailPermission, setViewDetailPermission] =
+        useState<PermissionResponse | null>(null);
+    const [openedPermissionDetail, setOpenedPermissionDetail] =
+        useState<boolean>(false);
+    const navigate = useNavigate();
+    const openDeleteDialog = useDeleteDialogStore((state) => state.openDialog);
+    const deletePermission = useDeletePermissionById({
+        mutation: {
+            onSuccess: () => {
+                toast.success("Xoá thành công");
+                list.refetch();
+            },
+            onError: () => {
+                toast.error("Xoá thất bại");
+            },
+        },
+    });
     const columns = useMemo(
         () => [
             createSelectionColumn<PermissionResponse>(),
-            ...createColumnsFromType<PermissionResponse>(keys),
-            createActionColumn<PermissionResponse>({
-                onEdit: (permission) => {
-                    setSelectedPermission(permission);
-                    setOpenUpdatePermission(true);
+            ...createColumnsFromType<PermissionResponse>(keys, [
+                {
+                    key: "method",
+                    cell: ({ row }) => {
+                        const method = row.original.method as string;
+
+                        const colorMap: Record<string, string> = {
+                            GET: "bg-green-100 text-green-800 hover:bg-green-200",
+                            POST: "bg-blue-100 text-blue-800 hover:bg-blue-200",
+                            PUT: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
+                            DELETE: "bg-red-100 text-red-800 hover:bg-red-200",
+                            PATCH: "bg-purple-100 text-purple-800 hover:bg-purple-200",
+                        };
+
+                        const badgeClass =
+                            colorMap[method] ?? "bg-gray-100 text-gray-800 hover:bg-gray-200";
+
+                        return <Badge className={badgeClass}>{method}</Badge>;
+                    },
                 },
-            }),
+            ]),
+            createActionColumn<PermissionResponse>(
+                {
+                    onEdit: (permission) => {
+                        navigate({ to: `/admin/permission/update/${permission.id}` });
+                    },
+                    onDelete: (row) => {
+                        openDeleteDialog({
+                            onConfirm() {
+                                if (!row.id) return;
+                                deletePermission.mutate({ id: row.id });
+                            },
+                        });
+                    },
+                    onView: (permission) => {
+                        setViewDetailPermission(permission);
+                        setOpenedPermissionDetail(true);
+                    }
+                },
+                {
+                    deleteCode: "PERMISSION_DELETE",
+                    editCode: "PERMISSION_UPDATE",
+                    viewCode: "PERMISSION_VIEW_DETAIL",
+                },
+            ),
         ],
-        [],
+        [deletePermission, navigate, openDeleteDialog],
     );
     const [pagination, setPagination] = useState<{
         page: number;
@@ -64,24 +122,14 @@ export const PermissionManage = () => {
         pageCount: 0,
     });
 
-    const [openCreatePermission, setOpenCreatePermission] = useState(false);
-    const [openUpdatePermission, setOpenUpdatePermission] = useState(false);
-    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-    const [selectedPermission, setSelectedPermission] = useState<
-        PermissionResponse | undefined
-    >(undefined);
-
     const bulkDeleteMutation = useDeleteBulkPermission({
         mutation: {
             onSuccess: () => {
-                toast.success("Delete successfully");
-                setSelectedRows([]);
+                toast.success("Xoá thành công");
                 list.refetch();
             },
         },
     });
-
-    const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
     const getSelectedRowIds = () => {
         return table
@@ -92,20 +140,16 @@ export const PermissionManage = () => {
     const onBulkDelete = () => {
         const ids = getSelectedRowIds();
         if (ids.length === 0) {
-            toast.info("Please choose one row to delete");
+            toast.info("Vui lòng chọn ít nhất một mục để xoá");
             return;
         }
-        setSelectedRows(ids);
-        setOpenDeleteDialog(true);
-    };
-
-    const onConfirmBulkDelete = () => {
-        if (selectedRows.length === 0) {
-            return;
-        }
-        bulkDeleteMutation.mutate({
-            params: {
-                ids: selectedRows,
+        openDeleteDialog({
+            onConfirm() {
+                bulkDeleteMutation.mutate({
+                    params: {
+                        ids,
+                    },
+                });
             },
         });
     };
@@ -116,21 +160,25 @@ export const PermissionManage = () => {
 
     return (
         <div className="space-y-4">
-            <div className="flex items-center justify-end">
-                <RippleButton
-                    className="h-12 bg-blue-700 text-white hover:bg-blue-700"
-                    onClick={() => setOpenCreatePermission(true)}
-                >
-                    <IconSparkles className="size-5" /> Create new
-                </RippleButton>
+            <div className="flex items-center justify-end p-2">
+                <PermissionGate permission="PERMISSION_CREATE">
+                    <RippleButton
+                        className="h-12 bg-blue-700 text-white hover:bg-blue-700"
+                        onClick={() => navigate({ to: "/admin/permission/create" })}
+                    >
+                        <IconSparkles className="size-5" /> Thêm mới
+                    </RippleButton>
+                </PermissionGate>
             </div>
             <Filter
                 sortAttributes={[
-                    { key: "name", label: "Name" },
-                    { key: "resource", label: "Resource" },
-                    { key: "action", label: "Action" },
-                    { key: "createdAt", label: "Created At" },
-                    { key: "updatedAt", label: "Updated At" },
+                    { key: "name", label: "Tên" },
+                    { key: "code", label: "Mã" },
+                    { key: "resource", label: "Tài nguyên" },
+                    { key: "method", label: "Phương thức" },
+                    { key: "urlPattern", label: "Mẫu URL" },
+                    { key: "createdAt", label: "Ngày tạo" },
+                    { key: "updatedAt", label: "Ngày cập nhật" },
                 ]}
                 filterAttributes={[
                     { name: "id", label: "Id", type: "number" },
@@ -143,8 +191,9 @@ export const PermissionManage = () => {
                 onApply={onApplyFilter}
             />
             <DataTable
+                deleteCode="PERMISSION_DELETE_BULK"
                 className="h-[500px]"
-                name="Permission"
+                name="Quyền hạn"
                 table={table}
                 onBulkDelete={onBulkDelete}
                 pagination={pagination}
@@ -153,19 +202,10 @@ export const PermissionManage = () => {
                 totalElements={list.data?.data?.totalElements || 0}
                 numberOfElements={list.data?.data?.numberOfElements || 0}
             />
-            <CreatePermissionModal
-                open={openCreatePermission}
-                onOpenChange={setOpenCreatePermission}
-            />
-            <UpdatePermissionModal
-                open={openUpdatePermission}
-                onOpenChange={setOpenUpdatePermission}
-                data={selectedPermission}
-            />
-            <DeleteDialog
-                open={openDeleteDialog}
-                onOpenChange={setOpenDeleteDialog}
-                onConfirm={onConfirmBulkDelete}
+            <PermissionDetailSheet
+                open={openedPermissionDetail}
+                onOpenChange={setOpenedPermissionDetail}
+                permission={viewDetailPermission}
             />
         </div>
     );

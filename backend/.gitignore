@@ -40,3 +40,5 @@ out/
 application-imp.yaml
 application-imp.yml
 application-imp.properties
+
+/docker/dev/volumes/

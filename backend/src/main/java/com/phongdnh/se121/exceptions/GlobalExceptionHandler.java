@@ -39,4 +39,13 @@ public class GlobalExceptionHandler {
     response.setErrors(fieldErrors);
     return ResponseEntity.status(ErrorCode.VALIDATION_ERROR.getHttpCode()).body(response);
   }
+
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<ApiResponse<Void>> handleUncatchException(Exception ex) {
+    ApiResponse<Void> response = new ApiResponse<>();
+    response.setCode(ErrorCode.INTERNAL_SERVER_ERROR.getCode());
+    response.setMessage(
+        ex.getMessage().isEmpty() ? ErrorCode.INTERNAL_SERVER_ERROR.getMessage() : ex.getMessage());
+    return ResponseEntity.status(ErrorCode.VALIDATION_ERROR.getHttpCode()).body(response);
+  }
 }

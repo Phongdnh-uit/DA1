@@ -5,6 +5,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 export const Route = createFileRoute("/auth/otp-verification")({
     validateSearch: (search) => ({
         purpose: search.purpose as VerifyOtpRequestPurpose,
+        isOAR: search.isOAR,
     }),
     beforeLoad: ({ search }) => {
         if (

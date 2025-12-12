@@ -44,3 +44,16 @@ CREATE TABLE IF NOT EXISTS verifications (
     updated_by BIGINT,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS linked_accounts (
+    id              BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id         BIGINT NOT NULL,
+    provider        VARCHAR(100) NOT NULL,
+    provider_user_id VARCHAR(255) NOT NULL,
+    version BIGINT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by BIGINT,
+    updated_by BIGINT,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

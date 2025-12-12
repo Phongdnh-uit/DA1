@@ -19,10 +19,10 @@ import { motion } from "motion/react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import BannerImage from "@/assets/banner.jpg";
-import { useAuthStore } from "@/stores/useAuthStore";
+import { useAuthSessionStore } from "@/stores/useAuthSessionStore";
 
 export default function ResetPasswordPage() {
-    const { verificationToken } = useAuthStore();
+    const { verificationToken } = useAuthSessionStore();
     const form = useForm<ResetPasswordRequest & { confirmPassword: string }>({
         defaultValues: {
             verificationCode: verificationToken || "",

@@ -11,8 +11,15 @@ import { IconSparkles } from "@tabler/icons-react";
 import { useMemo, useState } from "react";
 import Filter from "@/components/admin/Filter";
 import { toast } from "react-toastify";
-import DeleteDialog from "@/components/general/DeleteDialog";
-import { useDeleteBulkRole, useFindAllRole } from "@/services/role/role";
+import {
+    useDeleteBulkRole,
+    useDeleteRoleById,
+    useFindAllRole,
+} from "@/services/role/role";
+import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
+import { useNavigate } from "@tanstack/react-router";
+import PermissionGate from "@/components/general/PermissionGate";
+import { RoleDetailSheet } from "./DetailRoleSheet";
 
 const keys: (keyof RoleResponse)[] = [
     "id",
@@ -24,15 +31,51 @@ const keys: (keyof RoleResponse)[] = [
 ];
 
 export const RoleManage = () => {
+    const [detailRole, setDetailRole] = useState<RoleResponse | null>(null);
+    const [openedDetail, setOpenedDetail] = useState<boolean>(false);
+    const navigate = useNavigate();
+    const openDeleteDialog = useDeleteDialogStore((state) => state.openDialog);
+    const useDeleteRole = useDeleteRoleById({
+        mutation: {
+            onSuccess: () => {
+                toast.success("Xoá thành công");
+                list.refetch();
+            },
+            onError: () => {
+                toast.error("Xoá thất bại");
+            },
+        },
+    });
     const columns = useMemo(
         () => [
             createSelectionColumn<RoleResponse>(),
             ...createColumnsFromType<RoleResponse>(keys),
-            createActionColumn<RoleResponse>({
-                onEdit: () => { },
-            }),
+            createActionColumn<RoleResponse>(
+                {
+                    onEdit: (row) => {
+                        navigate({ to: `/admin/role/update/${row.id}` });
+                    },
+                    onDelete: (row) => {
+                        openDeleteDialog({
+                            onConfirm() {
+                                if (!row.id) return;
+                                useDeleteRole.mutate({ id: row.id });
+                            },
+                        });
+                    },
+                    onView: (row) => {
+                        setDetailRole(row);
+                        setOpenedDetail(true);
+                    }
+                },
+                {
+                    viewCode: "ROLE_VIEW_DETAIL",
+                    editCode: "ROLE_UPDATE",
+                    deleteCode: "ROLE_DELETE",
+                },
+            ),
         ],
-        [],
+        [navigate, openDeleteDialog, useDeleteRole],
     );
     const [pagination, setPagination] = useState<{
         page: number;
@@ -48,25 +91,20 @@ export const RoleManage = () => {
         sort: filterParam.sort,
         filter: filterParam.filter,
     });
-    const { table } = useDatatable<RoleResponseDTO>({
+    const { table } = useDatatable<RoleResponse>({
         columns,
         data: list.data?.data?.content || [],
         pageCount: 0,
     });
 
-    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-
     const bulkDeleteMutation = useDeleteBulkRole({
         mutation: {
             onSuccess: () => {
-                toast.success("Delete successfully");
-                setSelectedRows([]);
+                toast.success("Xoá thành công");
                 list.refetch();
             },
         },
     });
-
-    const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
     const getSelectedRowIds = () => {
         return table
@@ -77,20 +115,12 @@ export const RoleManage = () => {
     const onBulkDelete = () => {
         const ids = getSelectedRowIds();
         if (ids.length === 0) {
-            toast.info("Please choose one row to delete");
+            toast.info("Vui lòng chọn ít nhất một vai trò để xoá.");
             return;
         }
-        setSelectedRows(ids);
-        setOpenDeleteDialog(true);
-    };
-
-    const onConfirmBulkDelete = () => {
-        if (selectedRows.length === 0) {
-            return;
-        }
-        bulkDeleteMutation.mutate({
-            params: {
-                ids: selectedRows,
+        openDeleteDialog({
+            onConfirm() {
+                bulkDeleteMutation.mutate({ params: { ids } });
             },
         });
     };
@@ -101,17 +131,23 @@ export const RoleManage = () => {
 
     return (
         <div className="space-y-4">
-            <div className="flex items-center justify-end">
-                <RippleButton className="h-12 bg-blue-700 text-white hover:bg-blue-700">
-                    <IconSparkles className="size-5" /> Create new
-                </RippleButton>
+            <div className="flex items-center justify-end p-2">
+                <PermissionGate permission="ROLE_CREATE">
+                    <RippleButton
+                        onClick={() => navigate({ to: "/admin/role/create" })}
+                        className="h-12 bg-blue-700 text-white hover:bg-blue-700"
+                    >
+                        <IconSparkles className="size-5" />
+                        Thêm mới
+                    </RippleButton>
+                </PermissionGate>
             </div>
             <Filter
                 sortAttributes={[
-                    { key: "id", label: "Id" },
-                    { key: "name", label: "Name" },
-                    { key: "createdAt", label: "Created At" },
-                    { key: "updatedAt", label: "Updated At" },
+                    { key: "id", label: "ID" },
+                    { key: "name", label: "Tên" },
+                    { key: "createdAt", label: "Ngày tạo" },
+                    { key: "updatedAt", label: "Ngày cập nhật" },
                 ]}
                 filterAttributes={[
                     { name: "name", label: "Name", type: "text" },
@@ -124,8 +160,9 @@ export const RoleManage = () => {
                 onApply={onApplyFilter}
             />
             <DataTable
+                deleteCode="ROLE_DELETE_BULK"
                 className="h-[500px]"
-                name="Role"
+                name="Vai trò"
                 table={table}
                 onBulkDelete={onBulkDelete}
                 pagination={pagination}
@@ -134,10 +171,10 @@ export const RoleManage = () => {
                 totalElements={list.data?.data?.totalElements || 0}
                 numberOfElements={list.data?.data?.numberOfElements || 0}
             />
-            <DeleteDialog
-                open={openDeleteDialog}
-                onOpenChange={setOpenDeleteDialog}
-                onConfirm={onConfirmBulkDelete}
+            <RoleDetailSheet
+                open={openedDetail}
+                onOpenChange={setOpenedDetail}
+                role={detailRole}
             />
         </div>
     );

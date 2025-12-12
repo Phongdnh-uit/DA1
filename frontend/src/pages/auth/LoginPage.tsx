@@ -10,20 +10,34 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { useLogin } from "@/services/auth/auth";
+import {
+    getGetCurrentUserQueryKey,
+    getGetCurrentUserQueryOptions,
+    useLogin,
+} from "@/services/auth/auth";
 import { loginBody } from "@/services/auth/auth.zod";
-import type { LoginRequest } from "@/types";
+import type { ApiResponseVoid, LoginRequest, LoginResponse } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IconBrandGoogle } from "@tabler/icons-react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { KeyIcon, PhoneIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import BannerImage from "@/assets/banner.jpg";
 import { motion } from "motion/react";
 import { fadeInUp } from "@/lib/animation";
+import {
+    ACCESS_TOKEN_STORAGE_KEY,
+    REFRESH_TOKEN_STORAGE_KEY,
+} from "@/constant/SecurityConstant";
+import { queryClient } from "@/lib/queryClient";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 export default function LoginPage() {
+    const search = useSearch({
+        from: "/auth/login",
+    });
+    const navigate = useNavigate();
     const form = useForm<LoginRequest>({
         defaultValues: {
             credential: "",
@@ -32,10 +46,32 @@ export default function LoginPage() {
         mode: "onSubmit",
         resolver: zodResolver(loginBody),
     });
+    const setUser = useAuthStore((state) => state.setUser);
     const login = useLogin({
         mutation: {
-            onSuccess: () => {
+            onSuccess: async (data) => {
                 toast.success("Đăng nhập thành công");
+                if (data.data?.refreshToken && data.data?.accessToken) {
+                    localStorage.setItem(
+                        REFRESH_TOKEN_STORAGE_KEY,
+                        data.data?.refreshToken,
+                    );
+                    localStorage.setItem(
+                        ACCESS_TOKEN_STORAGE_KEY,
+                        data.data?.accessToken,
+                    );
+                    const user = await queryClient.fetchQuery(
+                        getGetCurrentUserQueryOptions(),
+                    );
+
+                    if (user.data) {
+                        setUser(user.data);
+                    }
+
+                    navigate({
+                        to: search.redirect ?? "/",
+                    });
+                }
             },
             onError: () => {
                 toast.error("Đăng nhập thất bại. Thông tin đăng nhập không đúng");
@@ -44,6 +80,67 @@ export default function LoginPage() {
     });
     const onSubmit = (data: LoginRequest) => {
         login.mutate({ data });
+    };
+
+    const loginWithGoogle = () => {
+        const width = 600;
+        const height = 600;
+        const left = window.screen.width / 2 - width / 2;
+        const top = window.screen.height / 2 - height / 2;
+        const popup = window.open(
+            `http://localhost:8080/oauth2/authorize/google`,
+            "Login with Google",
+            `width=${width},height=${height},top=${top},left=${left}`,
+        );
+
+        if (!popup) {
+            toast.error("Không thể mở cửa sổ đăng nhập Google");
+            return;
+        }
+
+        let intervalId: number | null = null;
+
+        const messageListener = (event: MessageEvent) => {
+            if (event.origin !== "http://localhost:8080") return;
+            const data: ApiResponseVoid = event.data;
+            console.log("Received message:", data);
+            if (data.code === 1000) {
+                const parseData = data.data as LoginResponse;
+                const refreshToken = parseData.refreshToken;
+                const accessToken = parseData.accessToken;
+                if (refreshToken && accessToken) {
+                    localStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, refreshToken);
+                    localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, accessToken);
+                    toast.success("Đăng nhập thành công bằng Google");
+                    queryClient.invalidateQueries({
+                        queryKey: getGetCurrentUserQueryKey(),
+                    });
+                    navigate({ to: "/" });
+                    return;
+                }
+            } else {
+                toast.error(
+                    "Bạn chưa liên kết tài khoản Google với hệ thống. Vui lòng đăng ký tài khoản trước khi đăng nhập bằng Google.",
+                );
+            }
+
+            popup.close();
+
+            window.removeEventListener("message", messageListener);
+
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+        };
+
+        intervalId = window.setInterval(() => {
+            if (popup.closed) {
+                clearInterval(intervalId!);
+                window.removeEventListener("message", messageListener);
+            }
+        }, 500);
+
+        window.addEventListener("message", messageListener);
     };
     return (
         <div className="flex">
@@ -103,7 +200,7 @@ export default function LoginPage() {
                                             <div className="relative flex items-center rounded-[24px] border focus-within:ring-1 focus-within:ring-ring pl-4 error-display">
                                                 <KeyIcon className="h-7 w-7 text-muted-foreground" />
                                                 <Input
-                                                    type="text"
+                                                    type="password"
                                                     placeholder="Nhập mật khẩu"
                                                     className="border-0 focus-visible:ring-0 shadow-none h-16 placeholder:text-lg !text-xl"
                                                     {...field}
@@ -117,10 +214,7 @@ export default function LoginPage() {
                         </Form>
                         <div className="w-full flex justify-between items-center mt-4">
                             <div>
-                                <Checkbox
-                                    className="size-5 rounded-[8px] bg-white data-[state=checked]:bg-blue-500 data-[state=checked]:border-transparent"
-                                    splashClassName="bg-blue-500"
-                                />
+                                <Checkbox className="size-5 rounded-[8px] bg-white data-[state=checked]:bg-blue-500 data-[state=checked]:border-transparent" />
                                 <span className="ml-2 text-lg">Ghi nhớ đăng nhập</span>
                             </div>
                             <Link
@@ -134,10 +228,12 @@ export default function LoginPage() {
                             variants={fadeInUp.item}
                             whileTap={{ scale: 0.95 }}
                             whileHover={{ scale: 1.02 }}
+                            transition={{ type: "spring", stiffness: 400 }}
                         >
                             <Button
                                 onClick={() => form.handleSubmit(onSubmit)()}
                                 className="w-full mt-8 h-16 rounded-[24px] bg-blue-500 hover:bg-blue-600 text-lg"
+                                name="login-button"
                             >
                                 Tiếp tục
                             </Button>
@@ -151,10 +247,13 @@ export default function LoginPage() {
                             variants={fadeInUp.item}
                             whileTap={{ scale: 0.95 }}
                             whileHover={{ scale: 1.02 }}
+                            transition={{ type: "spring", stiffness: 400 }}
                         >
                             <Button
                                 variant="outline"
                                 className="w-full h-16 rounded-[24px] text-lg"
+                                name="login-with-google-button"
+                                onClick={() => loginWithGoogle()}
                             >
                                 <IconBrandGoogle className="h-6 w-6 mr-2" />
                                 Đăng nhập với Google

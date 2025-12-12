@@ -17,10 +17,10 @@ import { KeyRoundIcon, LockIcon, PhoneIcon, UserIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import BannerImage from "@/assets/banner.jpg";
-import { useAuthStore } from "@/stores/useAuthStore";
+import { useAuthSessionStore } from "@/stores/useAuthSessionStore";
 
 export default function RegisterPage() {
-    const { verificationToken } = useAuthStore();
+    const { verificationToken } = useAuthSessionStore();
     const form = useForm<RegisterRequest & { confirmPassword: string }>({
         defaultValues: {
             email: "",

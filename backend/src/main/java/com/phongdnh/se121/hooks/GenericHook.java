@@ -1,5 +1,6 @@
 package com.phongdnh.se121.hooks;
 
+import com.phongdnh.se121.dtos.PageResponse;
 import java.util.Map;
 
 /**
@@ -10,6 +11,11 @@ import java.util.Map;
  * @param <I> Input type
  */
 public interface GenericHook<E, ID, I, O> {
+  // ============================ VIEW ============================
+  void enrichFindAll(PageResponse<O> response);
+
+  void enrichFindById(O response);
+
   // ============================ CREATE ============================
   void validateCreate(I input, Map<String, Object> context);
 

@@ -22,7 +22,7 @@ export const useUpdateUserVM = () => {
             roleId: user.data?.data?.roleId,
             status: user.data?.data?.status,
         },
-        mode: "onBlur",
+        mode: "onSubmit",
         resolver: zodResolver(updateUserBody),
     });
     const roles = useFindAllRole().data?.data?.content || [];

@@ -19,7 +19,7 @@ import { PhoneIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import BannerImage from "@/assets/banner.jpg";
-import { useAuthStore } from "@/stores/useAuthStore";
+import { useAuthSessionStore } from "@/stores/useAuthSessionStore";
 import { motion } from "motion/react";
 import { fadeInUp } from "@/lib/animation";
 
@@ -33,24 +33,44 @@ export default function RegisterFirstPage() {
         resolver: zodResolver(sendOtpBody),
     });
     const navigate = useNavigate();
-    const { setOtpDestination } = useAuthStore();
+    const { setOtpDestination } = useAuthSessionStore();
     const mutation = useSendOtp({
         mutation: {
-            onSuccess: () => {
-                toast.success("Yêu cầu thành công");
-                setOtpDestination(form.getValues("destination"));
-                navigate({
-                    to: `/auth/otp-verification?purpose=${form.getValues("purpose")}`,
-                });
-            },
             onError: () => {
                 toast.error("Yêu cầu không thành công");
             },
         },
     });
     const onSubmit = (data: SendOtpRequest) => {
-        mutation.mutate({ data });
+        mutation.mutate(
+            { data },
+            {
+                onSuccess: () => {
+                    toast.success("Yêu cầu thành công");
+                    setOtpDestination(form.getValues("destination"));
+                    navigate({
+                        to: `/auth/otp-verification?purpose=${form.getValues("purpose")}`,
+                    });
+                },
+            },
+        );
     };
+
+    const onLoginWithGoogle = (data: SendOtpRequest) => {
+        mutation.mutate(
+            { data },
+            {
+                onSuccess: () => {
+                    toast.success("Yêu cầu thành công");
+                    setOtpDestination(form.getValues("destination"));
+                    navigate({
+                        to: `/auth/otp-verification?purpose=${form.getValues("purpose")}&isOAR=true`,
+                    });
+                },
+            },
+        );
+    };
+
     return (
         <div className="flex">
             <div className="w-full sm:w-3/7 flex flex-col items-center justify-between h-screen px-20">
@@ -102,11 +122,10 @@ export default function RegisterFirstPage() {
                             variants={fadeInUp.item}
                             whileTap={{ scale: 0.95 }}
                             whileHover={{ scale: 1.02 }}
+                            transition={{ type: "spring", stiffness: 400 }}
+                            onClick={() => form.handleSubmit(onSubmit)()}
                         >
-                            <Button
-                                onClick={() => form.handleSubmit(onSubmit)()}
-                                className="w-full mt-8 h-16 rounded-[24px] bg-blue-500 hover:bg-blue-600 text-lg"
-                            >
+                            <Button className="w-full mt-8 h-16 rounded-[24px] bg-blue-500 hover:bg-blue-600 text-lg">
                                 Tiếp tục
                             </Button>
                         </motion.div>
@@ -119,6 +138,8 @@ export default function RegisterFirstPage() {
                             variants={fadeInUp.item}
                             whileTap={{ scale: 0.95 }}
                             whileHover={{ scale: 1.02 }}
+                            transition={{ type: "spring", stiffness: 400 }}
+                            onClick={() => form.handleSubmit(onLoginWithGoogle)()}
                         >
                             <Button
                                 variant="outline"

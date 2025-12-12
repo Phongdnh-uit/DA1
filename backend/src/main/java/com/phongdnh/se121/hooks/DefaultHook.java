@@ -1,8 +1,15 @@
 package com.phongdnh.se121.hooks;
 
+import com.phongdnh.se121.dtos.PageResponse;
 import java.util.Map;
 
 public class DefaultHook<E, ID, I, O> implements GenericHook<E, ID, I, O> {
+
+  @Override
+  public void enrichFindAll(PageResponse<O> responses) {}
+
+  @Override
+  public void enrichFindById(O response) {}
 
   @Override
   public void validateCreate(I input, Map<String, Object> context) {}

@@ -1,131 +1,339 @@
 "use client";
 
+import { buttonVariants } from "@/components/ui/button";
 import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
+    Pagination,
+    PaginationContent,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
 } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
-import {
-  ChevronFirst,
-  ChevronLast,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Props {
-  currentPage: number;
-  totalPages: number;
-  onPageChange?: (page: number) => void;
+    currentPage: number;
+    totalPages: number;
+    onPageChange?: (page: number) => void;
+}
+
+interface PageItem {
+    render: React.ReactNode;
+    onChange: () => void;
 }
 
 export default function PaginationTabs({
-  currentPage,
-  totalPages,
-  onPageChange,
+    currentPage,
+    totalPages,
+    onPageChange,
 }: Props) {
-  const getPageNumbers = () => {
-    const pages: (number | string)[] = [];
-    const lastPageIndex = totalPages - 1;
+    const getPageNumbers = () => {
+        const pages: PageItem[] = [];
+        const lastPageIndex = totalPages - 1;
 
-    if (totalPages <= 7) {
-      for (let i = 0; i < totalPages; i++) pages.push(i);
-    } else {
-      if (currentPage <= 1) {
-        pages.push(0, 1, 2, "...", lastPageIndex);
-      } else if (currentPage >= lastPageIndex - 1) {
-        pages.push(
-          0,
-          "...",
-          lastPageIndex - 2,
-          lastPageIndex - 1,
-          lastPageIndex,
-        );
-      } else {
-        pages.push(
-          0,
-          "...",
-          currentPage - 1,
-          currentPage,
-          currentPage + 1,
-          "...",
-          lastPageIndex,
-        );
-      }
-    }
+        if (totalPages <= 7) {
+            for (let i = 0; i < totalPages; i++)
+                pages.push({
+                    render: i + 1,
+                    onChange: () => onPageChange && onPageChange(i),
+                });
+        } else {
+            if (currentPage <= 1) {
+                // pages.push(0, 1, 2, "...", lastPageIndex);
+                pages.push(
+                    { render: 1, onChange: () => onPageChange && onPageChange(0) },
+                    { render: 2, onChange: () => onPageChange && onPageChange(1) },
+                    { render: 3, onChange: () => onPageChange && onPageChange(2) },
+                    { render: "...", onChange: () => onPageChange && onPageChange(3) },
+                    {
+                        render: lastPageIndex + 1,
+                        onChange: () => onPageChange && onPageChange(lastPageIndex),
+                    },
+                );
+            } else if (currentPage >= lastPageIndex - 1) {
+                pages.push(
+                    { render: 1, onChange: () => onPageChange && onPageChange(0) },
+                    {
+                        render: "...",
+                        onChange: () => onPageChange && onPageChange(lastPageIndex - 3),
+                    },
+                    {
+                        render: lastPageIndex - 1,
+                        onChange: () => onPageChange && onPageChange(lastPageIndex - 2),
+                    },
+                    {
+                        render: lastPageIndex,
+                        onChange: () => onPageChange && onPageChange(lastPageIndex - 1),
+                    },
+                    {
+                        render: lastPageIndex + 1,
+                        onChange: () => onPageChange && onPageChange(lastPageIndex),
+                    },
+                );
+            } else {
+                pages.push(
+                    { render: 1, onChange: () => onPageChange && onPageChange(0) },
+                    {
+                        render: "...",
+                        onChange: () => onPageChange && onPageChange(currentPage - 2),
+                    },
+                    {
+                        render: currentPage,
+                        onChange: () => onPageChange && onPageChange(currentPage - 1),
+                    },
+                    {
+                        render: currentPage + 1,
+                        onChange: () => onPageChange && onPageChange(currentPage),
+                    },
+                    {
+                        render: currentPage + 2,
+                        onChange: () => onPageChange && onPageChange(currentPage + 1),
+                    },
+                    {
+                        render: "...",
+                        onChange: () => onPageChange && onPageChange(currentPage + 2),
+                    },
+                    {
+                        render: lastPageIndex + 1,
+                        onChange: () => onPageChange && onPageChange(lastPageIndex),
+                    },
+                );
+            }
+        }
 
-    return pages;
-  };
+        return pages;
+    };
 
-  const pages = getPageNumbers();
+    const pages = getPageNumbers();
+    return (
+        <>
+            <div className="hidden items-center rounded-full px-0.5 shadow-sm ring-1 ring-inset ring-slate-200 dark:shadow-sm dark:ring-slate-800 sm:inline-flex h-10">
+                <TextButton
+                    onClick={() => onPageChange && onPageChange(currentPage - 1)}
+                    disabled={currentPage === 0}
+                    className={"group"}
+                >
+                    <span className="sr-only">Previous</span>
+                    <ChevronLeft
+                        className="size-5 text-slate-500 group-hover:text-slate-900 dark:text-slate-400 group-hover:dark:text-slate-50"
+                        aria-hidden={true}
+                    />
+                </TextButton>
+                <span
+                    className="h-5 border-r border-slate-200 dark:border-slate-800"
+                    aria-hidden={true}
+                />
+                <div className="flex items-center gap-2">
+                    {pages.map((page, index) => (
+                        <NumberButton
+                            key={index}
+                            onClick={() => page.onChange()}
+                            active={page.render === currentPage + 1}
+                        >
+                            {page.render}
+                        </NumberButton>
+                    ))}
+                </div>
+                <span className="h-5 border-r border-slate-200 dark:border-slate-800" />
+                <TextButton
+                    onClick={() => onPageChange && onPageChange(currentPage + 1)}
+                    disabled={!(totalPages - 1 > currentPage)}
+                    className="group"
+                >
+                    <span className="sr-only">Next</span>
+                    <ChevronRight
+                        className="size-5 text-slate-500 group-hover:text-slate-900 dark:text-slate-400 group-hover:dark:text-slate-50"
+                        aria-hidden={true}
+                    />
+                </TextButton>
+            </div>
+        </>
+    );
+}
 
-  return (
-    <Pagination>
-      <PaginationContent>
-        <PaginationItem>
-          <PaginationLink
-            aria-label="Go to first page"
-            size="icon"
-            onClick={() => onPageChange?.(0)}
-            className={cn(currentPage === 0 && "pointer-events-none")}
-          >
-            <ChevronFirst className="h-4 w-4" />
-          </PaginationLink>
-        </PaginationItem>
-
-        <PaginationItem>
-          <PaginationLink
-            aria-label="Go to previous page"
-            size="icon"
-            className={cn(currentPage === 0 && "pointer-events-none")}
-            onClick={() => onPageChange?.(currentPage - 1)}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </PaginationLink>
-        </PaginationItem>
-
-        {pages.map((page, i) => (
-          <PaginationItem key={i}>
-            {page === "..." ? (
-              <span className="px-2 text-gray-400">…</span>
-            ) : (
-              <PaginationLink
-                isActive={page === currentPage}
-                onClick={() => onPageChange?.(page as number)}
-              >
-                {(page as number) + 1}
-              </PaginationLink>
-            )}
-          </PaginationItem>
-        ))}
-
-        <PaginationItem>
-          <PaginationLink
-            aria-label="Go to next page"
-            size="icon"
-            onClick={() => onPageChange?.(currentPage + 1)}
+const TextButton = ({
+    onClick,
+    disabled,
+    children,
+    className,
+}: {
+    onClick: () => void;
+    disabled: boolean;
+    children: React.ReactNode;
+    className?: string;
+}) => {
+    return (
+        <button
+            type="button"
             className={cn(
-              currentPage === totalPages - 1 && "pointer-events-none",
+                "group rounded-md p-2 text-base text-slate-900 disabled:cursor-not-allowed disabled:opacity-50 dark:text-slate-50",
+                className,
             )}
-          >
-            <ChevronRight className="h-4 w-4" />
-          </PaginationLink>
-        </PaginationItem>
+            onClick={onClick}
+            disabled={disabled}
+        >
+            {children}
+        </button>
+    );
+};
 
-        <PaginationItem>
-          <PaginationLink
-            aria-label="Go to last page"
-            size="icon"
+const NumberButton = ({
+    active,
+    onClick,
+    children,
+    position,
+}: {
+    active: boolean;
+    onClick: () => void;
+    children: React.ReactNode;
+    position?: "left" | "right";
+}) => {
+    return (
+        <button
+            type="button"
             className={cn(
-              currentPage === totalPages - 1 && "pointer-events-none",
+                "min-w-[30px] border-b-2 p-2 text-base text-zinc-900 dark:text-zinc-50 hover:cursor-pointer",
+                active
+                    ? "border-blue-500 font-semibold dark:border-blue-500"
+                    : "border-transparent hover:border-slate-200 hover:dark:border-slate-800",
+                position === "left"
+                    ? "rounded-l-md"
+                    : position === "right"
+                        ? "rounded-r-md"
+                        : "",
             )}
-            onClick={() => onPageChange?.(totalPages - 1)}
-          >
-            <ChevronLast className="h-4 w-4" />
-          </PaginationLink>
-        </PaginationItem>
-      </PaginationContent>
-    </Pagination>
-  );
+            onClick={onClick}
+        >
+            {children}
+        </button>
+    );
+};
+
+export function PaginationWithLabel({
+    currentPage,
+    totalPages,
+    onPageChange,
+}: Props) {
+    const getPageNumbers = () => {
+        const pages: PageItem[] = [];
+        const lastPageIndex = totalPages - 1;
+
+        if (totalPages <= 7) {
+            for (let i = 0; i < totalPages; i++)
+                pages.push({
+                    render: i + 1,
+                    onChange: () => onPageChange && onPageChange(i),
+                });
+        } else {
+            if (currentPage <= 1) {
+                // pages.push(0, 1, 2, "...", lastPageIndex);
+                pages.push(
+                    { render: 1, onChange: () => onPageChange && onPageChange(0) },
+                    { render: 2, onChange: () => onPageChange && onPageChange(1) },
+                    { render: 3, onChange: () => onPageChange && onPageChange(2) },
+                    { render: "...", onChange: () => onPageChange && onPageChange(3) },
+                    {
+                        render: lastPageIndex + 1,
+                        onChange: () => onPageChange && onPageChange(lastPageIndex),
+                    },
+                );
+            } else if (currentPage >= lastPageIndex - 1) {
+                pages.push(
+                    { render: 1, onChange: () => onPageChange && onPageChange(0) },
+                    {
+                        render: "...",
+                        onChange: () => onPageChange && onPageChange(lastPageIndex - 3),
+                    },
+                    {
+                        render: lastPageIndex - 1,
+                        onChange: () => onPageChange && onPageChange(lastPageIndex - 2),
+                    },
+                    {
+                        render: lastPageIndex,
+                        onChange: () => onPageChange && onPageChange(lastPageIndex - 1),
+                    },
+                    {
+                        render: lastPageIndex + 1,
+                        onChange: () => onPageChange && onPageChange(lastPageIndex),
+                    },
+                );
+            } else {
+                pages.push(
+                    { render: 1, onChange: () => onPageChange && onPageChange(0) },
+                    {
+                        render: "...",
+                        onChange: () => onPageChange && onPageChange(currentPage - 2),
+                    },
+                    {
+                        render: currentPage,
+                        onChange: () => onPageChange && onPageChange(currentPage - 1),
+                    },
+                    {
+                        render: currentPage + 1,
+                        onChange: () => onPageChange && onPageChange(currentPage),
+                    },
+                    {
+                        render: currentPage + 2,
+                        onChange: () => onPageChange && onPageChange(currentPage + 1),
+                    },
+                    {
+                        render: "...",
+                        onChange: () => onPageChange && onPageChange(currentPage + 2),
+                    },
+                    {
+                        render: lastPageIndex + 1,
+                        onChange: () => onPageChange && onPageChange(lastPageIndex),
+                    },
+                );
+            }
+        }
+
+        return pages;
+    };
+
+    const pages = getPageNumbers();
+    return (
+        <Pagination>
+            <PaginationContent>
+                <PaginationItem>
+                    <PaginationPrevious
+                        onClick={() => onPageChange && onPageChange(currentPage - 1)}
+                        className={"border " + (currentPage === 0 ? "invisible" : "")}
+                    />
+                </PaginationItem>
+
+                {pages.map((page, idx) => {
+                    const isActive = page.render === currentPage + 1;
+
+                    return (
+                        <PaginationItem key={idx}>
+                            <PaginationLink
+                                onClick={page.onChange}
+                                className={cn({
+                                    [buttonVariants({
+                                        variant: "default",
+                                        className:
+                                            "hover:text-primary-foreground! shadow-none! dark:bg-primary dark:hover:bg-primary/90",
+                                    })]: isActive,
+                                    border: !isActive,
+                                })}
+                            >
+                                {page.render}
+                            </PaginationLink>
+                        </PaginationItem>
+                    );
+                })}
+
+                <PaginationItem>
+                    <PaginationNext
+                        onClick={() => onPageChange && onPageChange(currentPage + 1)}
+                        className={
+                            "border " + (!(totalPages - 1 > currentPage) ? "invisible" : "")
+                        }
+                    />
+                </PaginationItem>
+            </PaginationContent>
+        </Pagination>
+    );
 }
