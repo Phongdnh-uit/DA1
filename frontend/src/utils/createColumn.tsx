@@ -1,17 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import type { AccessorColumnDef, ColumnDef } from "@tanstack/react-table";
-import { Copy, Edit, Eye, MoreHorizontal, Trash } from "lucide-react";
+import { Copy, Edit, Eye, Trash } from "lucide-react";
 import { z } from "zod";
 import { formatDate } from "./formatDate";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import PermissionGate from "@/components/general/PermissionGate";
 
 type ColumnOptions<TData, TValue> = Partial<
     AccessorColumnDef<TData, TValue>
@@ -37,11 +36,11 @@ export function createColumn<TData, TValue = unknown>(
             opts.cell ??
             ((info) => {
                 const value = info.getValue();
-                if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value)) {
+                if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}T/.test(value)) {
                     return formatDate(new Date(value), true);
                 }
-                if (value === '' || value === null || value === undefined) {
-                    return 'N/A';
+                if (value === "" || value === null || value === undefined) {
+                    return "N/A";
                 }
                 return String(value ?? "");
             }),
@@ -91,7 +90,6 @@ export function createSelectionColumn<TData>(): ColumnDef<TData> {
         id: "select",
         header: ({ table }) => (
             <Checkbox
-                splashClassName="bg-blue-500"
                 className="size-5 rounded-[6px] bg-white data-[state=checked]:bg-blue-500 data-[state=checked]:border-transparent"
                 checked={
                     table.getIsAllPageRowsSelected() ||
@@ -103,7 +101,6 @@ export function createSelectionColumn<TData>(): ColumnDef<TData> {
         ),
         cell: ({ row }) => (
             <Checkbox
-                splashClassName="bg-blue-500"
                 className="size-5 rounded-[6px] bg-white data-[state=checked]:bg-blue-500 data-[state=checked]:border-transparent"
                 checked={row.getIsSelected()}
                 onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -121,48 +118,112 @@ export function createActionColumn<TData>(
         onEdit?: (row: TData) => void;
         onDelete?: (row: TData) => void;
     } = {},
+    permissions: {
+        viewCode?: string;
+        editCode?: string;
+        deleteCode?: string;
+    } = {},
 ): ColumnDef<TData> {
     return {
-        id: "actions",
+        id: "ACTIONS",
         enableSorting: false,
         enableHiding: false,
-        header: "Action",
+        header: "Actions",
         cell: ({ row }) => {
             const data = row.original;
 
             return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Open menu</span>
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Action</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => handlers.onView?.(data)}>
-                            <Eye className="mr-2 h-4 w-4" /> Detail
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handlers.onEdit?.(data)}>
-                            <Edit className="mr-2 h-4 w-4" /> Update
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                            onClick={() => handlers.onDelete?.(data)}
-                            className="text-red-600 focus:text-red-600"
-                        >
-                            <Trash className="mr-2 h-4 w-4" /> Delete
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                            onClick={() =>
-                                navigator.clipboard.writeText(JSON.stringify(data))
-                            }
-                        >
-                            <Copy className="mr-2 h-4 w-4" /> Copy
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                <div className="flex items-center gap-2">
+                    <TooltipProvider delayDuration={200}>
+                        {handlers.onView && (
+                            <PermissionGate permission={permissions.viewCode || ""}>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="h-9 w-9 p-0 border-blue-200 text-blue-600 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all duration-200 hover:shadow-md"
+                                            onClick={() => handlers.onView?.(data)}
+                                        >
+                                            <Eye className="h-4 w-4" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top">
+                                        <p className="font-medium">
+                                            Xem chi tiết
+                                        </p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </PermissionGate>
+                        )}
+
+                        {handlers.onEdit && (
+                            <PermissionGate permission={permissions.editCode || ""}>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="h-9 w-9 p-0 border-emerald-200 text-emerald-600 hover:bg-emerald-600 hover:text-white hover:border-emerald-600 transition-all duration-200 hover:shadow-md"
+                                            onClick={() => handlers.onEdit?.(data)}
+                                        >
+                                            <Edit className="h-4 w-4" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top">
+                                        <p className="font-medium">
+                                            Cập nhật
+                                        </p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </PermissionGate>
+                        )}
+
+                        {handlers.onDelete && (
+                            <PermissionGate permission={permissions.deleteCode || ""}>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="h-9 w-9 p-0 border-red-200 text-red-600 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-200 hover:shadow-md"
+                                            onClick={() => handlers.onDelete?.(data)}
+                                        >
+                                            <Trash className="h-4 w-4" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top">
+                                        <p className="font-medium">
+                                            Xóa
+                                        </p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </PermissionGate>
+                        )}
+
+                        <div className="w-px h-6 bg-gray-200 mx-1" />
+
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-9 w-9 p-0 border-gray-200 text-gray-600 hover:bg-gray-600 hover:text-white hover:border-gray-600 transition-all duration-200 hover:shadow-md"
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(JSON.stringify(data));
+                                    }}
+                                >
+                                    <Copy className="h-4 w-4" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top">
+                                <p className="font-medium">
+                                    Sao chép dữ liệu
+                                </p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </div>
             );
         },
     };

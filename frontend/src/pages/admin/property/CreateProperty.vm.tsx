@@ -4,7 +4,7 @@ import { useCreateProperty } from "@/services/property/property";
 import { createPropertyBody } from "@/services/property/property.zod";
 import { useFindAllProvince } from "@/services/province/province";
 import { useFindAllWard } from "@/services/ward/ward";
-import type { PropertyRequest, UploadConfirmRequest } from "@/types";
+import type { Location, PropertyRequest, UploadConfirmRequest } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -38,13 +38,16 @@ export default function useCreatePropertyVM() {
         mutation.mutate({ data });
     };
 
-    const { data: provinces } = useFindAllProvince({ size: undefined, all: true });
+    const { data: provinces } = useFindAllProvince({
+        size: undefined,
+        all: true,
+    });
 
     const { data: wards } = useFindAllWard(
         {
             size: undefined,
             filter: `province.id==${form.watch("provinceId")}`,
-            all: true
+            all: true,
         },
         {
             query: {
@@ -155,6 +158,10 @@ export default function useCreatePropertyVM() {
         }
     };
 
+    const onLocationChange = (data: Location | undefined) => {
+        form.setValue("location", data);
+    };
+
     return {
         form,
         onSubmit,
@@ -168,5 +175,6 @@ export default function useCreatePropertyVM() {
         cloudName,
         handleRemoveThumbnail,
         handleRemoveGallery,
+        onLocationChange,
     };
 }

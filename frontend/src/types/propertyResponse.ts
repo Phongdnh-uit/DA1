@@ -11,6 +11,7 @@ import type { PropertyResponseDirection } from './propertyResponseDirection';
 import type { PropertyResponseBalconyDirection } from './propertyResponseBalconyDirection';
 import type { PropertyResponseStatus } from './propertyResponseStatus';
 import type { MediaResponse } from './mediaResponse';
+import type { Location } from './location';
 
 export interface PropertyResponse {
   id?: number;
@@ -41,4 +42,5 @@ export interface PropertyResponse {
   status?: PropertyResponseStatus;
   interior?: string;
   medias?: MediaResponse[];
+  location?: Location;
 }

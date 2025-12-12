@@ -63,6 +63,35 @@ export const refreshTokenBody = zod.object({
 
 
 
+
+export const updateCurrentUserBody = zod.object({
+  "fullName": zod.string().optional(),
+  "email": zod.string().min(1),
+  "phone": zod.string().min(1)
+})
+
+
+
+
+
+
+
+export const updateCurrentUserAvatarBody = zod.object({
+  "publicId": zod.string().min(1),
+  "version": zod.number(),
+  "signature": zod.string().optional(),
+  "secureUrl": zod.string().min(1),
+  "width": zod.number(),
+  "height": zod.number(),
+  "format": zod.string().min(1),
+  "resourceType": zod.string().min(1),
+  "bytes": zod.number(),
+  "purpose": zod.enum(['AVATAR', 'THUMBNAIL', 'BANNER', 'VIDEO', 'GALLERY'])
+})
+
+
+
+
 export const logoutBody = zod.object({
   "refreshToken": zod.string().min(1)
 })

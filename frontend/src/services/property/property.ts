@@ -24,11 +24,14 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ApiResponseListPropertyResponse,
   ApiResponsePageResponsePropertyResponse,
   ApiResponsePropertyResponse,
   ApiResponseVoid,
   DeleteBulkPropertyParams,
   FindAllPropertyParams,
+  FindPropertiesWithinRadiusParams,
+  FindSimilarPropertiesParams,
   PropertyRequest
 } from '../../types';
 
@@ -297,7 +300,188 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
       return useMutation(mutationOptions, queryClient);
     }
-    export const findAllProperty = (
+    export const findPropertiesWithinRadius = (
+    params: FindPropertiesWithinRadiusParams,
+ options?: SecondParameter<typeof axiosInstanceFn>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstanceFn<ApiResponseListPropertyResponse>(
+      {url: `/properties/within-radius`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
+
+
+
+export const getFindPropertiesWithinRadiusQueryKey = (params?: FindPropertiesWithinRadiusParams,) => {
+    return [
+    `/properties/within-radius`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getFindPropertiesWithinRadiusQueryOptions = <TData = Awaited<ReturnType<typeof findPropertiesWithinRadius>>, TError = ErrorType<unknown>>(params: FindPropertiesWithinRadiusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof findPropertiesWithinRadius>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getFindPropertiesWithinRadiusQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof findPropertiesWithinRadius>>> = ({ signal }) => findPropertiesWithinRadius(params, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof findPropertiesWithinRadius>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type FindPropertiesWithinRadiusQueryResult = NonNullable<Awaited<ReturnType<typeof findPropertiesWithinRadius>>>
+export type FindPropertiesWithinRadiusQueryError = ErrorType<unknown>
+
+
+export function useFindPropertiesWithinRadius<TData = Awaited<ReturnType<typeof findPropertiesWithinRadius>>, TError = ErrorType<unknown>>(
+ params: FindPropertiesWithinRadiusParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof findPropertiesWithinRadius>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof findPropertiesWithinRadius>>,
+          TError,
+          Awaited<ReturnType<typeof findPropertiesWithinRadius>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFindPropertiesWithinRadius<TData = Awaited<ReturnType<typeof findPropertiesWithinRadius>>, TError = ErrorType<unknown>>(
+ params: FindPropertiesWithinRadiusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof findPropertiesWithinRadius>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof findPropertiesWithinRadius>>,
+          TError,
+          Awaited<ReturnType<typeof findPropertiesWithinRadius>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFindPropertiesWithinRadius<TData = Awaited<ReturnType<typeof findPropertiesWithinRadius>>, TError = ErrorType<unknown>>(
+ params: FindPropertiesWithinRadiusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof findPropertiesWithinRadius>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useFindPropertiesWithinRadius<TData = Awaited<ReturnType<typeof findPropertiesWithinRadius>>, TError = ErrorType<unknown>>(
+ params: FindPropertiesWithinRadiusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof findPropertiesWithinRadius>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getFindPropertiesWithinRadiusQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const findSimilarProperties = (
+    id: number,
+    params?: FindSimilarPropertiesParams,
+ options?: SecondParameter<typeof axiosInstanceFn>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstanceFn<ApiResponseListPropertyResponse>(
+      {url: `/properties/similar/${id}`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
+
+
+
+export const getFindSimilarPropertiesQueryKey = (id?: number,
+    params?: FindSimilarPropertiesParams,) => {
+    return [
+    `/properties/similar/${id}`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getFindSimilarPropertiesQueryOptions = <TData = Awaited<ReturnType<typeof findSimilarProperties>>, TError = ErrorType<unknown>>(id: number,
+    params?: FindSimilarPropertiesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof findSimilarProperties>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getFindSimilarPropertiesQueryKey(id,params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof findSimilarProperties>>> = ({ signal }) => findSimilarProperties(id,params, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof findSimilarProperties>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type FindSimilarPropertiesQueryResult = NonNullable<Awaited<ReturnType<typeof findSimilarProperties>>>
+export type FindSimilarPropertiesQueryError = ErrorType<unknown>
+
+
+export function useFindSimilarProperties<TData = Awaited<ReturnType<typeof findSimilarProperties>>, TError = ErrorType<unknown>>(
+ id: number,
+    params: undefined |  FindSimilarPropertiesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof findSimilarProperties>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof findSimilarProperties>>,
+          TError,
+          Awaited<ReturnType<typeof findSimilarProperties>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFindSimilarProperties<TData = Awaited<ReturnType<typeof findSimilarProperties>>, TError = ErrorType<unknown>>(
+ id: number,
+    params?: FindSimilarPropertiesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof findSimilarProperties>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof findSimilarProperties>>,
+          TError,
+          Awaited<ReturnType<typeof findSimilarProperties>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFindSimilarProperties<TData = Awaited<ReturnType<typeof findSimilarProperties>>, TError = ErrorType<unknown>>(
+ id: number,
+    params?: FindSimilarPropertiesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof findSimilarProperties>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useFindSimilarProperties<TData = Awaited<ReturnType<typeof findSimilarProperties>>, TError = ErrorType<unknown>>(
+ id: number,
+    params?: FindSimilarPropertiesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof findSimilarProperties>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getFindSimilarPropertiesQueryOptions(id,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const findAllProperty = (
     params?: FindAllPropertyParams,
  options?: SecondParameter<typeof axiosInstanceFn>,signal?: AbortSignal
 ) => {

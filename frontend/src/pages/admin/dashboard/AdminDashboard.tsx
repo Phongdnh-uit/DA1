@@ -1,58 +1,86 @@
-import { KpiCard } from "./components/StatCard";
+import { useGetStatistics } from "@/services/statistic/statistic";
+import { KpiCard, type ChartDataPoint } from "./components/StatCard";
 import { Card } from "@/components/ui/card";
+import { HomeIcon, MessageSquareIcon, UsersIcon } from "lucide-react";
+import { DateRangeFilter } from "./components/DateRange";
 
 export default function AdminDashboard() {
+    const statistic = useGetStatistics();
+    if (statistic.isLoading) {
+        return <div>Loading...</div>;
+    }
     return (
-        // <div className="flex flex-1">
-        //   <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-neutral-900">
-        //     <div className="flex gap-2">
-        //       {[...new Array(4)].map((idx) => (
-        //         <StatCard key={"first-array-demo-1" + idx} />
-        //       ))}
-        //     </div>
-        //     <div className="w-full h-80 rounded-3xl">
-        //       <ChartAreaInteractive />
-        //     </div>
-        //     <div className="flex flex-1 gap-2">
-        //       {[...new Array(2)].map((idx) => (
-        //         <div
-        //           key={"second-array-demo-1" + idx}
-        //           className="h-70 w-full rounded-3xl"
-        //         >
-        //           <ChartBarLabel />
-        //         </div>
-        //       ))}
-        //     </div>
-        //   </div>
-        // </div>
         <>
             <div className="p-4 sm:p-6 lg:p-8">
                 <header>
                     <div className="sm:flex sm:items-center sm:justify-between">
-                        <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                            Overview
-                        </h3>
+                        <div>
+                            <h2 className="text-3xl font-bold text-foreground mb-2">
+                                Dashboard
+                            </h2>
+                            <p className="text-muted-foreground">
+                                Chào mừng quay lại, hãy xem tổng quan hôm nay
+                            </p>
+                        </div>
                     </div>
                 </header>
-                <main>
+                <main className="mt-8">
+                    <DateRangeFilter />
                     <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                         <KpiCard
-                            title={"Số lượng người dùng mới"}
-                            metric={250}
-                            change={0}
-                            chartData={[{ value: 10 }, { value: 20 }, { value: 15 }]}
+                            title={"Tổng số người dùng"}
+                            metric={statistic.data?.data?.totalUsers?.currentCount as number}
+                            changePercentage={
+                                statistic.data?.data?.totalUsers?.percentageChange as number
+                            }
+                            chartData={
+                                statistic.data?.data?.totalUsers?.dataPoints as ChartDataPoint[]
+                            }
+                            icon={
+                                <div className="p-3 rounded-lg bg-green-50 dark:bg-green-950">
+                                    <UsersIcon className="h-6 w-6 text-green-500" />
+                                </div>
+                            }
                         />
                         <KpiCard
-                            title={"Số lượng bất động sản"}
-                            metric={670}
-                            change={-20}
-                            chartData={[{ value: 50 }, { value: 20 }, { value: 10 }]}
+                            title={"Tổng số bất động sản"}
+                            metric={
+                                statistic.data?.data?.totalProperties?.currentCount as number
+                            }
+                            changePercentage={
+                                statistic.data?.data?.totalProperties
+                                    ?.percentageChange as number
+                            }
+                            chartData={
+                                statistic.data?.data?.totalProperties
+                                    ?.dataPoints as ChartDataPoint[]
+                            }
+                            icon={
+                                <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950">
+                                    <HomeIcon className="h-6 w-6 text-blue-500" />
+                                </div>
+                            }
                         />
+
                         <KpiCard
-                            title={"Số lượng truy cập"}
-                            metric={320}
-                            change={0}
-                            chartData={[{ value: 10 }, { value: 20 }, { value: 40 }]}
+                            title={"Cần tư vấn"}
+                            metric={
+                                statistic.data?.data?.pendingConversations
+                                    ?.currentCount as number
+                            }
+                            changePercentage={
+                                statistic.data?.data?.pendingConversations
+                                    ?.percentageChange as number
+                            }
+                            chartData={
+                                statistic.data?.data?.pendingConversations
+                                    ?.dataPoints as ChartDataPoint[]
+                            }
+                            icon={
+                                <div className="p-3 rounded-lg bg-purple-50 dark:bg-purple-950">
+                                    <MessageSquareIcon className="h-6 w-6 text-purple-500" />
+                                </div>
+                            }
                         />
                     </div>
                     <Card className="mt-4 h-96 rounded-tremor-small p-2">test</Card>

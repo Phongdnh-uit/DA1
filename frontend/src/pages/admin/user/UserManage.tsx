@@ -1,5 +1,6 @@
 import Filter from "@/components/admin/Filter";
 import { DataTable } from "@/components/general/DataTable";
+import PermissionGate from "@/components/general/PermissionGate";
 import { RippleButton } from "@/components/ui/shadcn-io/ripple-button";
 import { useDatatable } from "@/hooks/useDatatable";
 import {
@@ -48,19 +49,26 @@ export const UserManage = () => {
         () => [
             createSelectionColumn<UserResponse>(),
             ...createColumnsFromType<UserResponse>(keys),
-            createActionColumn<UserResponse>({
-                onEdit: (row) => {
-                    navigate({ to: `/admin/user/update/${row.id}` });
+            createActionColumn<UserResponse>(
+                {
+                    onEdit: (row) => {
+                        navigate({ to: `/admin/user/update/${row.id}` });
+                    },
+                    onDelete: (row) => {
+                        if (!row.id) return;
+                        openDeleteDialog({
+                            onConfirm() {
+                                deleteUser.mutate({ id: row.id! });
+                            },
+                        });
+                    },
                 },
-                onDelete: (row) => {
-                    if (!row.id) return;
-                    openDeleteDialog({
-                        onConfirm() {
-                            deleteUser.mutate({ id: row.id! });
-                        },
-                    });
+                {
+                    deleteCode: "USER_DELETE",
+                    editCode: "USER_UPDATE",
+                    viewCode: "USER_VIEW_DETAIL",
                 },
-            }),
+            ),
         ],
         [deleteUser, navigate, openDeleteDialog],
     );
@@ -94,7 +102,7 @@ export const UserManage = () => {
     const bulkDeleteMutation = useDeleteBulkUser({
         mutation: {
             onSuccess: () => {
-                toast.success("Delete successfully");
+                toast.success("Xoá thành công");
                 list.refetch();
             },
         },
@@ -109,7 +117,7 @@ export const UserManage = () => {
     const onBulkDelete = () => {
         const ids = getSelectedRowIds();
         if (ids.length === 0) {
-            toast.info("Please choose one row to delete");
+            toast.info("Vui lòng chọn ít nhất một mục để xoá");
             return;
         }
         openDeleteDialog({
@@ -125,13 +133,15 @@ export const UserManage = () => {
 
     return (
         <div className="space-y-4">
-            <div className="flex items-center justify-end">
-                <RippleButton
-                    onClick={() => navigate({ to: "/admin/user/create" })}
-                    className="h-12 bg-blue-700 text-white hover:bg-blue-700"
-                >
-                    <IconSparkles className="size-5" /> Create new
-                </RippleButton>
+            <div className="flex items-center justify-end p-2">
+                <PermissionGate permission="USER_CREATE">
+                    <RippleButton
+                        onClick={() => navigate({ to: "/admin/user/create" })}
+                        className="h-12 bg-blue-700 text-white hover:bg-blue-700"
+                    >
+                        <IconSparkles className="size-5" /> Create new
+                    </RippleButton>
+                </PermissionGate>
             </div>
             <Filter
                 sortAttributes={[
@@ -154,7 +164,8 @@ export const UserManage = () => {
                 onApply={onApplyFilter}
             />
             <DataTable
-                className="h-[550px]"
+                deleteCode="USER_DELETE_BULK"
+                className="h-[500px]"
                 name="Người dùng"
                 table={table}
                 onBulkDelete={onBulkDelete}

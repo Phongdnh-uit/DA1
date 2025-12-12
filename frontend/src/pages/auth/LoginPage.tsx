@@ -200,7 +200,7 @@ export default function LoginPage() {
                                             <div className="relative flex items-center rounded-[24px] border focus-within:ring-1 focus-within:ring-ring pl-4 error-display">
                                                 <KeyIcon className="h-7 w-7 text-muted-foreground" />
                                                 <Input
-                                                    type="text"
+                                                    type="password"
                                                     placeholder="Nhập mật khẩu"
                                                     className="border-0 focus-visible:ring-0 shadow-none h-16 placeholder:text-lg !text-xl"
                                                     {...field}

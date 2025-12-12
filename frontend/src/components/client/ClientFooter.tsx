@@ -68,7 +68,7 @@ export default function ClientFooter() {
                                         target="_blank"
                                         rel="noreferrer"
                                         aria-label={social.label}
-                                        className="rounded-full bg-slate-800 p-2 transition-colors hover:bg-blue-600"
+                                        className="rounded-full p-2 transition-colors hover:bg-blue-600"
                                     >
                                         <Icon className="h-5 w-5" />
                                     </a>

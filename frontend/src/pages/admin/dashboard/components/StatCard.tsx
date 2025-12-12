@@ -3,33 +3,29 @@ import { LineChart, Line, ResponsiveContainer, Tooltip } from "recharts";
 import { clsx } from "clsx";
 import TextTicker from "@/components/ui/text-ticker";
 
-type ChartDataPoint = {
+export type ChartDataPoint = {
+    label: string;
     value: number;
 };
 
 interface KpiCardProps {
     title: string;
     metric: number;
-    change: number;
+    changePercentage: number;
     chartData: ChartDataPoint[];
-    category?: string;
+    icon?: React.ReactNode;
 }
 
 export function KpiCard({
     title,
     metric,
-    change,
+    changePercentage,
     chartData,
-    category,
+    icon,
 }: KpiCardProps) {
-    const isPositive = change >= 0;
-
+    const isPositive = changePercentage >= 0;
     const colorClass = isPositive ? "text-green-500" : "text-red-500";
     const chartStrokeColor = isPositive ? "#22c55e" : "#ef4444";
-
-    const changePercentage =
-        metric !== 0 ? (change / (metric - change)) * 100 : 0;
-
     return (
         <Card className="w-full">
             <CardHeader>
@@ -37,9 +33,7 @@ export function KpiCard({
                     <CardTitle className="text-lg font-medium text-gray-800 dark:text-gray-200">
                         {title}
                     </CardTitle>
-                    {category && (
-                        <span className="text-sm text-gray-500">{category}</span>
-                    )}
+                    {icon}
                 </div>
             </CardHeader>
             <CardContent>
@@ -49,8 +43,6 @@ export function KpiCard({
                             <TextTicker value={metric} />
                         </p>
                         <div className={clsx("font-semibold", colorClass)}>
-                            <span>{isPositive ? "+" : "-"}</span>
-                            <span>{Math.abs(change)}</span>
                             {!isNaN(changePercentage) && (
                                 <span className="ml-2">
                                     ({isPositive ? "+" : ""}
@@ -69,7 +61,11 @@ export function KpiCard({
                                         borderRadius: "0.5rem",
                                     }}
                                     itemStyle={{ color: "#fff" }}
-                                    formatter={(value: number) => [value, "Value"]}
+                                    formatter={(value: number, _, props) => [
+                                        `${props.payload.label}: ${value}`,
+                                        "",
+                                    ]}
+                                    separator=""
                                     labelFormatter={() => ""}
                                 />
                                 <Line

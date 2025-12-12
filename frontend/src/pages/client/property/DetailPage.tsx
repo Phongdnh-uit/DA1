@@ -18,7 +18,7 @@ import { fadeInUp } from "@/lib/animation";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { ImageGallery } from "./component/ImageGallery";
+import { ImageGallery, type Image } from "./component/ImageGallery";
 import { ProductSpecs, type SpecItemProps } from "./component/PropertySpec";
 import {
     IconDirections,
@@ -28,16 +28,22 @@ import {
     IconTransferIn,
 } from "@tabler/icons-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useFindPropertyById } from "@/services/property/property";
+import {
+    useFindPropertyById,
+    useFindSimilarProperties,
+} from "@/services/property/property";
 import { Route } from "@/routes/__client/detail.$id";
 import { extensions } from "@/components/tiptap/rich-text-editor";
 import { directionConverter, formatCurrency } from "@/utils/converter";
 import ConsultationCard from "./component/ConsultationCard";
+import PropertyCard from "../mainPage/component/PropertyCard";
+import LocationView from "@/components/general/LocationView";
 
 export default function PropertyDetailPage() {
     const { id } = Route.useParams();
     const product = useFindPropertyById(+id);
     const productData = product.data?.data;
+    const similarProperties = useFindSimilarProperties(+id);
     const getAddress = () => {
         let address = "";
         if (productData?.lineAddress) {
@@ -159,15 +165,20 @@ export default function PropertyDetailPage() {
                 className="flex flex-col gap-6 col-start-2 col-span-4"
                 variants={fadeInUp.item}
             >
-                <ImageGallery
-                    images={
-                        productData?.medias?.map((media) => ({
-                            alt: productData.title || "Property Image",
-                            largeUrl: media.secureUrl,
-                            thumbnailUrl: media.secureUrl,
-                        })) || []
-                    }
-                />
+                <Card className="p-6 md:p-8">
+                    <ImageGallery
+                        images={
+                            productData?.medias?.map(
+                                (media) =>
+                                    ({
+                                        alt: productData.title || "Property Image",
+                                        largeUrl: media.secureUrl,
+                                        thumbnailUrl: media.secureUrl,
+                                    }) as Image,
+                            ) || []
+                        }
+                    />
+                </Card>
 
                 <Separator />
 
@@ -251,6 +262,20 @@ export default function PropertyDetailPage() {
                     <ProductSpecs specs={getProductSpec()} />
                 </motion.div>
 
+                {/* Map */}
+                {productData?.location?.latitude && productData?.location?.longitude ? (
+                    <div className="w-full">
+                        <LocationView
+                            locations={[
+                                {
+                                    latitude: productData.location.latitude,
+                                    longitude: productData.location.longitude,
+                                },
+                            ]}
+                        />
+                    </div>
+                ) : null}
+
                 {/* Description Section */}
                 <Card>
                     <CardHeader>
@@ -264,21 +289,39 @@ export default function PropertyDetailPage() {
                             viewport={{ once: true, amount: 0.25 }}
                         >
                             <div
-                                className="text-muted-foreground whitespace-pre-line"
+                                className="prose prose-neutral dark:prose-invert text-muted-foreground whitespace-pre-line"
                                 dangerouslySetInnerHTML={{ __html: descriptionHTML }}
-                            ></div>
+                            />
                         </motion.div>
                     </CardContent>
                 </Card>
+                {/* Similar Properties Section */}
+                {similarProperties.data?.data?.length &&
+                    similarProperties.data?.data?.length > 0 ? (
+                    <motion.div
+                        variants={fadeInUp.item}
+                        initial="hidden"
+                        whileInView="show"
+                        viewport={{ once: true, amount: 0.25 }}
+                    >
+                        <h2 className="text-2xl font-semibold mb-4">
+                            Bất động sản tương tự
+                        </h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {similarProperties.data?.data.map((property) => (
+                                <PropertyCard key={property.id} data={property} isMini />
+                            ))}
+                        </div>
+                    </motion.div>
+                ) : null}
             </motion.div>
             {/* Right Column */}
-            <div className="ml-6">
+            <motion.div className="ml-6">
                 <ConsultationCard
                     className="sticky top-20"
                     propertyId={productData?.id}
                 />
-            </div>
-            {/* <ConsultationCard className="hidden lg:block sticky top-30 right-20 w-80 z-40" /> */}
+            </motion.div>
         </motion.div>
     );
 }

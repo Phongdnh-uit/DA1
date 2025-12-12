@@ -8,11 +8,13 @@ import { useNavigate } from "@tanstack/react-router";
 import logo from "@/assets/logo.svg";
 import {
     Building2Icon,
+    Calendar,
     CircleStarIcon,
     HouseIcon,
     MapIcon,
     MapPinnedIcon,
     ShieldUserIcon,
+    TagIcon,
     UsersRoundIcon,
 } from "lucide-react";
 import { useAuthStore } from "@/stores/useAuthStore";
@@ -33,6 +35,7 @@ export function AdminSidebar(props: AdminSidebarProps) {
                     )}
                 />
             ),
+            permissionCode: "STATISTICS_VIEW",
         },
         {
             label: "Quyền hạn",
@@ -44,6 +47,7 @@ export function AdminSidebar(props: AdminSidebarProps) {
                     )}
                 />
             ),
+            permissionCode: "PERMISSION_VIEW_LIST",
         },
         {
             label: "Vai trò",
@@ -55,6 +59,7 @@ export function AdminSidebar(props: AdminSidebarProps) {
                     )}
                 />
             ),
+            permissionCode: "ROLE_VIEW_LIST",
         },
         {
             label: "Người dùng",
@@ -90,6 +95,17 @@ export function AdminSidebar(props: AdminSidebarProps) {
             ),
         },
         {
+            label: "Thống kê giá cả",
+            href: "/admin/price-reference",
+            icon: (
+                <TagIcon
+                    className={cn(
+                        "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
+                    )}
+                />
+            ),
+        },
+        {
             label: "Loại bất động sản",
             href: "/admin/property-type",
             icon: (
@@ -116,6 +132,17 @@ export function AdminSidebar(props: AdminSidebarProps) {
             href: "/admin/chat",
             icon: (
                 <IconBrandWechat
+                    className={cn(
+                        "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
+                    )}
+                />
+            ),
+        },
+        {
+            label: "Đặt lịch",
+            href: "/admin/booking",
+            icon: (
+                <Calendar
                     className={cn(
                         "h-6 w-6 shrink-0 text-zinc-700 dark:text-zinc-200 group-hover/custom:text-blue-500",
                     )}

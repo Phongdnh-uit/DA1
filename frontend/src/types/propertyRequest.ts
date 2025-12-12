@@ -9,24 +9,33 @@ import type { PropertyRequestDirection } from './propertyRequestDirection';
 import type { PropertyRequestBalconyDirection } from './propertyRequestBalconyDirection';
 import type { PropertyRequestStatus } from './propertyRequestStatus';
 import type { UploadConfirmRequest } from './uploadConfirmRequest';
+import type { Location } from './location';
 
 export interface PropertyRequest {
   /** @minLength 1 */
   title: string;
   purpose: PropertyRequestPurpose;
   typeId: number;
+  /** @minimum 0 */
   price: number;
   lineAddress?: string;
   provinceId: number;
   wardId: number;
+  /** @minimum 0 */
   landArea?: number;
+  /** @minimum 0 */
   floorArea?: number;
+  /** @minimum 0 */
   floors?: number;
+  /** @minimum 0 */
   floorNumber?: number;
+  /** @minimum 0 */
   bedrooms?: number;
+  /** @minimum 0 */
   bathrooms?: number;
   direction?: PropertyRequestDirection;
   description?: string;
+  /** @minimum 0 */
   entranceRoadWidth?: number;
   balconyDirection?: PropertyRequestBalconyDirection;
   hasMezzanine?: boolean;
@@ -35,4 +44,5 @@ export interface PropertyRequest {
   interior?: string;
   status: PropertyRequestStatus;
   medias?: UploadConfirmRequest[];
+  location?: Location;
 }

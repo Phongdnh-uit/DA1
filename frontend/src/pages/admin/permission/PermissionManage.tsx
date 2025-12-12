@@ -19,13 +19,14 @@ import { toast } from "react-toastify";
 import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "@tanstack/react-router";
+import PermissionGate from "@/components/general/PermissionGate";
+import { PermissionDetailSheet } from "./DetailPermissionSheet";
 
 const keys: (keyof PermissionResponse)[] = [
     "id",
     "name",
-    "resource",
     "method",
-    "urlPattern",
+    "code",
     "createdAt",
     "updatedAt",
     "createdBy",
@@ -33,6 +34,10 @@ const keys: (keyof PermissionResponse)[] = [
 ];
 
 export const PermissionManage = () => {
+    const [viewDetailPermission, setViewDetailPermission] =
+        useState<PermissionResponse | null>(null);
+    const [openedPermissionDetail, setOpenedPermissionDetail] =
+        useState<boolean>(false);
     const navigate = useNavigate();
     const openDeleteDialog = useDeleteDialogStore((state) => state.openDialog);
     const deletePermission = useDeletePermissionById({
@@ -53,7 +58,7 @@ export const PermissionManage = () => {
                 {
                     key: "method",
                     cell: ({ row }) => {
-                        const method = row.original.method;
+                        const method = row.original.method as string;
 
                         const colorMap: Record<string, string> = {
                             GET: "bg-green-100 text-green-800 hover:bg-green-200",
@@ -70,19 +75,30 @@ export const PermissionManage = () => {
                     },
                 },
             ]),
-            createActionColumn<PermissionResponse>({
-                onEdit: (permission) => {
-                    navigate({ to: `/admin/permission/update/${permission.id}` });
+            createActionColumn<PermissionResponse>(
+                {
+                    onEdit: (permission) => {
+                        navigate({ to: `/admin/permission/update/${permission.id}` });
+                    },
+                    onDelete: (row) => {
+                        openDeleteDialog({
+                            onConfirm() {
+                                if (!row.id) return;
+                                deletePermission.mutate({ id: row.id });
+                            },
+                        });
+                    },
+                    onView: (permission) => {
+                        setViewDetailPermission(permission);
+                        setOpenedPermissionDetail(true);
+                    }
                 },
-                onDelete: (row) => {
-                    openDeleteDialog({
-                        onConfirm() {
-                            if (!row.id) return;
-                            deletePermission.mutate({ id: row.id });
-                        },
-                    });
+                {
+                    deleteCode: "PERMISSION_DELETE",
+                    editCode: "PERMISSION_UPDATE",
+                    viewCode: "PERMISSION_VIEW_DETAIL",
                 },
-            }),
+            ),
         ],
         [deletePermission, navigate, openDeleteDialog],
     );
@@ -109,7 +125,7 @@ export const PermissionManage = () => {
     const bulkDeleteMutation = useDeleteBulkPermission({
         mutation: {
             onSuccess: () => {
-                toast.success("Delete successfully");
+                toast.success("Xoá thành công");
                 list.refetch();
             },
         },
@@ -124,7 +140,7 @@ export const PermissionManage = () => {
     const onBulkDelete = () => {
         const ids = getSelectedRowIds();
         if (ids.length === 0) {
-            toast.info("Please choose one row to delete");
+            toast.info("Vui lòng chọn ít nhất một mục để xoá");
             return;
         }
         openDeleteDialog({
@@ -144,21 +160,25 @@ export const PermissionManage = () => {
 
     return (
         <div className="space-y-4">
-            <div className="flex items-center justify-end">
-                <RippleButton
-                    className="h-12 bg-blue-700 text-white hover:bg-blue-700"
-                    onClick={() => navigate({ to: "/admin/permission/create" })}
-                >
-                    <IconSparkles className="size-5" /> Thêm mới
-                </RippleButton>
+            <div className="flex items-center justify-end p-2">
+                <PermissionGate permission="PERMISSION_CREATE">
+                    <RippleButton
+                        className="h-12 bg-blue-700 text-white hover:bg-blue-700"
+                        onClick={() => navigate({ to: "/admin/permission/create" })}
+                    >
+                        <IconSparkles className="size-5" /> Thêm mới
+                    </RippleButton>
+                </PermissionGate>
             </div>
             <Filter
                 sortAttributes={[
-                    { key: "name", label: "Name" },
-                    { key: "resource", label: "Resource" },
-                    { key: "action", label: "Action" },
-                    { key: "createdAt", label: "Created At" },
-                    { key: "updatedAt", label: "Updated At" },
+                    { key: "name", label: "Tên" },
+                    { key: "code", label: "Mã" },
+                    { key: "resource", label: "Tài nguyên" },
+                    { key: "method", label: "Phương thức" },
+                    { key: "urlPattern", label: "Mẫu URL" },
+                    { key: "createdAt", label: "Ngày tạo" },
+                    { key: "updatedAt", label: "Ngày cập nhật" },
                 ]}
                 filterAttributes={[
                     { name: "id", label: "Id", type: "number" },
@@ -171,7 +191,8 @@ export const PermissionManage = () => {
                 onApply={onApplyFilter}
             />
             <DataTable
-                className="h-[550px]"
+                deleteCode="PERMISSION_DELETE_BULK"
+                className="h-[500px]"
                 name="Quyền hạn"
                 table={table}
                 onBulkDelete={onBulkDelete}
@@ -180,6 +201,11 @@ export const PermissionManage = () => {
                 totalPages={list.data?.data?.totalPages || 0}
                 totalElements={list.data?.data?.totalElements || 0}
                 numberOfElements={list.data?.data?.numberOfElements || 0}
+            />
+            <PermissionDetailSheet
+                open={openedPermissionDetail}
+                onOpenChange={setOpenedPermissionDetail}
+                permission={viewDetailPermission}
             />
         </div>
     );

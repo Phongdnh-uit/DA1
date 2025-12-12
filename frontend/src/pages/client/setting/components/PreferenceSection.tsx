@@ -11,9 +11,7 @@ import {
 } from "@/components/ui/shadcn-io/theme-toggle-button";
 
 export function PreferencesSection() {
-    const { toggle, isDarkMode } = useDarkMode({
-        localStorageKey: "dark-mode",
-    });
+    const { toggle, isDarkMode } = useDarkMode();
 
     const { startTransition } = useThemeTransition();
 

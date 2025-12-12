@@ -5,7 +5,11 @@ import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
-import { MapPinIcon } from "lucide-react";
+import { MapPinIcon, TrashIcon } from "lucide-react";
+import { motion } from "motion/react";
+import { Button } from "../ui/button";
+
+const MotionButton = motion(Button);
 
 const MAPBOX_ACCESS_TOKEN = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
@@ -17,8 +21,9 @@ interface Coordinates {
 
 interface LocationPickerProps {
     initialLocation?: Coordinates | null;
-    onChange?: (coords: Coordinates) => void;
+    onChange?: (coords: Coordinates | null) => void;
     showGeocoder?: boolean;
+    isMarkerEditable?: boolean;
     interactive?: boolean;
     height?: string;
     borderRadius?: string;
@@ -30,6 +35,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
     initialLocation,
     onChange,
     showGeocoder = true,
+    isMarkerEditable = true,
     interactive = true,
     height = "400px",
     borderRadius = "0.5rem",
@@ -64,17 +70,17 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
             } else {
                 markerRef.current = new mapboxgl.Marker({
                     color: "#e30000",
-                    draggable: interactive,
+                    draggable: interactive && isMarkerEditable,
                 })
                     .setLngLat([lng, lat])
                     .addTo(mapRef.current);
 
-                if (interactive) {
+                if (interactive && isMarkerEditable) {
                     markerRef.current.on("dragend", onDragEnd);
                 }
             }
         },
-        [interactive, onDragEnd],
+        [interactive, isMarkerEditable, onDragEnd],
     );
 
     useEffect(() => {
@@ -88,8 +94,17 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
             interactive: interactive,
         });
 
+        mapRef.current.on("load", () => {
+            if (initialLocation) {
+                updateMarkerPosition(
+                    initialLocation.longitude,
+                    initialLocation.latitude,
+                );
+            }
+        });
+
         mapRef.current.on("click", (e) => {
-            if (!interactive) return;
+            if (!(interactive && isMarkerEditable)) return;
             const { lng, lat } = e.lngLat;
             updateMarkerPosition(lng, lat);
             onChange?.({ longitude: lng, latitude: lat });
@@ -124,25 +139,9 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
         return () => {
             mapRef.current?.remove();
             mapRef.current = null;
+            markerRef.current = null;
         };
-    }, [interactive, showGeocoder, onChange, updateMarkerPosition]);
-
-    useEffect(() => {
-        if (!mapRef.current || !initialLocation) return;
-        const { longitude, latitude } = initialLocation;
-
-        if (
-            longitude !== currentCoords?.longitude ||
-            latitude !== currentCoords?.latitude
-        ) {
-            mapRef.current.flyTo({
-                center: [longitude, latitude],
-                zoom: 15,
-                essential: true,
-            });
-            updateMarkerPosition(longitude, latitude);
-        }
-    }, [initialLocation, updateMarkerPosition, currentCoords]);
+    }, [interactive, showGeocoder, onChange, updateMarkerPosition, initialLocation, isMarkerEditable]);
 
     useEffect(() => {
         if (!mapContainerRef.current) return;
@@ -157,6 +156,13 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
             observer.disconnect();
         };
     }, []);
+
+    const handleClearLocation = useCallback(() => {
+        setCurrentCoords(null);
+        markerRef.current?.remove();
+        markerRef.current = null;
+        onChange?.(null);
+    }, [onChange]);
 
     return (
         <Card className="w-full shadow-lg">
@@ -173,11 +179,10 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
                 </div>
 
                 <div className="relative">
-                    {" "}
                     {showGeocoder && (
                         <div
                             ref={geocoderContainerRef}
-                            className="absolute top-3 right-3 z-10 w-full max-w-xs"
+                            className="absolute top-3 right-0 z-10 w-full max-w-xs"
                         />
                     )}
                     <div
@@ -190,13 +195,24 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
 
             {currentCoords && (
                 <CardFooter>
-                    <div className="p-3 bg-muted border rounded-md w-full">
-                        <h3 className="font-semibold text-foreground text-sm mb-1">
-                            Tọa độ đã chọn
-                        </h3>
-                        <pre className="text-xs text-muted-foreground">
-                            {`Long: ${currentCoords.longitude.toFixed(6)}, Lat: ${currentCoords.latitude.toFixed(6)}`}
-                        </pre>
+                    <div className="p-3 bg-muted border rounded-md w-full flex items-center justify-between">
+                        <div>
+                            <h3 className="font-semibold text-foreground text-sm mb-1">
+                                Tọa độ đã chọn
+                            </h3>
+                            <pre className="text-xs text-muted-foreground">
+                                {`Long: ${currentCoords.longitude.toFixed(6)}, Lat: ${currentCoords.latitude.toFixed(6)}`}
+                            </pre>
+                        </div>
+                        <MotionButton
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="transition-none"
+                            onClick={handleClearLocation}
+                        >
+                            <TrashIcon className="h-4 w-4 mr-2" />
+                            Xóa vị trí
+                        </MotionButton>
                     </div>
                 </CardFooter>
             )}

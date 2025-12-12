@@ -15,9 +15,7 @@ interface AdminHeaderProps {
 
 export default function AdminHeader(props: AdminHeaderProps) {
     const nav = useNavigate();
-    const { toggle, isDarkMode } = useDarkMode({
-        localStorageKey: "dark-mode",
-    });
+    const { toggle, isDarkMode } = useDarkMode();
 
     const { startTransition } = useThemeTransition();
 

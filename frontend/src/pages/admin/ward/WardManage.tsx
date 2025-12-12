@@ -1,5 +1,6 @@
 import Filter from "@/components/admin/Filter";
 import { DataTable } from "@/components/general/DataTable";
+import PermissionGate from "@/components/general/PermissionGate";
 import { RippleButton } from "@/components/ui/shadcn-io/ripple-button";
 import { useDatatable } from "@/hooks/useDatatable";
 import {
@@ -18,6 +19,7 @@ import { IconSparkles } from "@tabler/icons-react";
 import { useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
+import { WardDetailSheet } from "./DetailWardSheet";
 
 const keys: (keyof WardResponse)[] = [
     "id",
@@ -31,6 +33,8 @@ const keys: (keyof WardResponse)[] = [
 ];
 
 export const WardManage = () => {
+    const [detailWard, setDetailWard] = useState<WardResponse | null>(null);
+    const [openedDetail, setOpenedDetail] = useState<boolean>(false);
     const navigate = useNavigate();
     const openDeleteDialog = useDeleteDialogStore((state) => state.openDialog);
     const useDeleteWard = useDeleteWardById({
@@ -48,19 +52,30 @@ export const WardManage = () => {
         () => [
             createSelectionColumn<WardResponse>(),
             ...createColumnsFromType<WardResponse>(keys),
-            createActionColumn<WardResponse>({
-                onEdit: (row) => {
-                    navigate({ to: `/admin/ward/update/${row.id}` });
+            createActionColumn<WardResponse>(
+                {
+                    onEdit: (row) => {
+                        navigate({ to: `/admin/ward/update/${row.id}` });
+                    },
+                    onDelete: (row) => {
+                        if (!row.id) return;
+                        openDeleteDialog({
+                            onConfirm() {
+                                useDeleteWard.mutate({ id: row.id! });
+                            },
+                        });
+                    },
+                    onView: (row) => {
+                        setDetailWard(row);
+                        setOpenedDetail(true);
+                    }
                 },
-                onDelete: (row) => {
-                    if (!row.id) return;
-                    openDeleteDialog({
-                        onConfirm() {
-                            useDeleteWard.mutate({ id: row.id! });
-                        },
-                    });
+                {
+                    deleteCode: "WARD_DELETE",
+                    editCode: "WARD_UPDATE",
+                    viewCode: "WARD_VIEW_DETAIL",
                 },
-            }),
+            ),
         ],
         [navigate, openDeleteDialog, useDeleteWard],
     );
@@ -87,7 +102,7 @@ export const WardManage = () => {
     const bulkDeleteMutation = useDeleteBulkWard({
         mutation: {
             onSuccess: () => {
-                toast.success("Delete successfully");
+                toast.success("Xoá thành công");
                 list.refetch();
             },
         },
@@ -102,7 +117,7 @@ export const WardManage = () => {
     const onBulkDelete = () => {
         const ids = getSelectedRowIds();
         if (ids.length === 0) {
-            toast.info("Please choose one row to delete");
+            toast.info("Vui lòng chọn ít nhất một mục để xoá");
             return;
         }
         openDeleteDialog({
@@ -118,13 +133,15 @@ export const WardManage = () => {
 
     return (
         <div className="space-y-4">
-            <div className="flex items-center justify-end">
-                <RippleButton
-                    onClick={() => navigate({ to: "/admin/ward/create" })}
-                    className="h-12 bg-blue-700 text-white hover:bg-blue-700"
-                >
-                    <IconSparkles className="size-5" /> Create new
-                </RippleButton>
+            <div className="flex items-center justify-end p-2">
+                <PermissionGate permission="WARD_CREATE">
+                    <RippleButton
+                        onClick={() => navigate({ to: "/admin/ward/create" })}
+                        className="h-12 bg-blue-700 text-white hover:bg-blue-700"
+                    >
+                        <IconSparkles className="size-5" /> Create new
+                    </RippleButton>
+                </PermissionGate>
             </div>
             <Filter
                 sortAttributes={[
@@ -150,7 +167,8 @@ export const WardManage = () => {
                 onApply={onApplyFilter}
             />
             <DataTable
-                className="h-[550px]"
+                deleteCode="WARD_DELETE_BULK"
+                className="h-[500px]"
                 name="Xã/Phường"
                 table={table}
                 onBulkDelete={onBulkDelete}
@@ -159,6 +177,11 @@ export const WardManage = () => {
                 totalPages={list.data?.data?.totalPages || 0}
                 totalElements={list.data?.data?.totalElements || 0}
                 numberOfElements={list.data?.data?.numberOfElements || 0}
+            />
+            <WardDetailSheet
+                ward={detailWard}
+                open={openedDetail}
+                onOpenChange={setOpenedDetail}
             />
         </div>
     );

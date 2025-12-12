@@ -12,6 +12,7 @@ import { motion } from "motion/react";
 interface FilterProps {
     onApply: (sort: string[], filter: string) => void;
     filterAttributes?: FilterAttribute[];
+    additionalChildren?: React.ReactNode;
     sortAttributes?: SortOption[];
 }
 
@@ -19,6 +20,7 @@ export default function Filter({
     onApply,
     filterAttributes,
     sortAttributes,
+    additionalChildren,
 }: FilterProps) {
     const [showFilter, setShowFilter] = useState(false);
     const [sortRules, setSortRules] = useState<SortRule[]>([]);
@@ -56,8 +58,9 @@ export default function Filter({
                 {/* Top Bar */}
                 <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between ">
                     <div className="flex gap-3 w-full sm:w-auto flex-1">
-                        <div className="flex-1 sm:w-64">
+                        <div className="flex-1 sm:w-64 flex items-center gap-2 flex-wrap">
                             <SearchBar className="h-10" onSearch={() => { }} />
+                            {additionalChildren}
                         </div>
 
                         <Button

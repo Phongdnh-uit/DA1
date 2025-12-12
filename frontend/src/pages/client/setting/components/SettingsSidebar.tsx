@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { User, Bell, Lock, Eye, LogOut } from "lucide-react";
+import { User, Lock, Eye, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 import { fadeInUp } from "@/lib/animation";
@@ -20,7 +20,7 @@ export function SettingsSidebar() {
     const sections = [
         { id: "profile", label: "Hồ sơ", icon: User },
         { id: "preferences", label: "Tùy chỉnh", icon: Eye },
-        { id: "notifications", label: "Thông báo", icon: Bell },
+        // { id: "notifications", label: "Thông báo", icon: Bell },
         { id: "security", label: "Bảo mật", icon: Lock },
     ];
 

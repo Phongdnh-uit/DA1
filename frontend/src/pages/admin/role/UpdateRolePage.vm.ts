@@ -18,7 +18,7 @@ export function useUpdateRoleVM() {
         Record<string, boolean>
     >({});
 
-    const { data: role } = useFindRoleById(+id);
+    const { data: role, refetch } = useFindRoleById(+id);
 
     const { data: permissions } = useFindAllPermission({
         all: true,
@@ -43,7 +43,7 @@ export function useUpdateRoleVM() {
     const mutation = useUpdateRole({
         mutation: {
             onSuccess: () => {
-                form.reset();
+                refetch();
                 toast.success("Cập nhật vai trò thành công");
             },
             onError: (error) => {

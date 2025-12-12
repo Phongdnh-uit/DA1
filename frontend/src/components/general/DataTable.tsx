@@ -45,6 +45,7 @@ import {
 } from "../ui/dropdown-menu";
 import { Checkbox } from "../ui/checkbox";
 import PaginationTabs from "./Pagination";
+import PermissionGate from "./PermissionGate";
 
 interface PaginationProps {
     page: number;
@@ -61,6 +62,7 @@ interface DataTableProps<TData> {
     totalElements: number;
     numberOfElements: number;
     totalPages: number;
+    deleteCode?: string;
 }
 
 export function DataTable<TData>({
@@ -73,6 +75,7 @@ export function DataTable<TData>({
     totalPages,
     totalElements,
     numberOfElements,
+    deleteCode,
 }: DataTableProps<TData>) {
     const [densityState, setDensityState] = useState<
         "compact" | "normal" | "flexible"
@@ -85,13 +88,15 @@ export function DataTable<TData>({
                         {name}
                     </CardHeader>
                     <div className="flex items-center gap-4 justify-end pr-4">
-                        <Button
-                            onClick={onBulkDelete}
-                            className="text-rose-500 bg-transparent hover:bg-rose-500 hover:text-white hover:border-rose-500"
-                        >
-                            <Trash className="mr-2 h-4 w-4" />
-                            Xóa
-                        </Button>
+                        <PermissionGate permission={deleteCode || ""}>
+                            <Button
+                                onClick={onBulkDelete}
+                                className="text-rose-500 bg-transparent hover:bg-rose-500 hover:text-white hover:border-rose-500"
+                            >
+                                <Trash className="mr-2 h-4 w-4" />
+                                Xóa
+                            </Button>
+                        </PermissionGate>
                         <Button
                             variant={"outline"}
                             className="bg-transparen text-violet-500 border-violet-300 hover:bg-violet-500 hover:text-white hover:border-violet-500"

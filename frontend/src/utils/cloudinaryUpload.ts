@@ -31,10 +31,11 @@ export const upload = async (
         // --- BƯỚC TẠO FORMDATA ---
         const formData = new FormData();
         formData.append("file", fileToUpload);
-        formData.append("api_key", signatureData.apiKey || "");
-        formData.append("signature", signatureData.signature || "");
-        formData.append("timestamp", signatureData.timestamp || "");
-        formData.append("public_id", signatureData.publicId || "");
+        formData.append("api_key", signatureData.apiKey as string);
+        formData.append("signature", signatureData.signature as string);
+        formData.append("timestamp", signatureData.timestamp as string);
+        formData.append("public_id", signatureData.publicId as string);
+        formData.append("folder", signatureData.folder as string);
         formData.append("transformation", "w_1024,h_1024,c_fill,q_auto,f_auto");
         if (signatureData.tags) {
             formData.append("tags", signatureData.tags.join(","));

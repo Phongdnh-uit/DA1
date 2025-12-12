@@ -183,7 +183,7 @@ const Composer: FC = () => {
     return (
         <div className="aui-composer-wrapper sticky bottom-0 mx-auto flex w-full max-w-[var(--thread-max-width)] flex-col gap-4 overflow-visible rounded-t-3xl pb-4 md:pb-6">
             <ThreadScrollToBottom />
-            <ComposerPrimitive.Root className="aui-composer-root relative flex w-full rounded-4xl border border-border bg-zinc-50 px-1 pt-2 shadow-[0_9px_9px_0px_rgba(0,0,0,0.01),0_2px_5px_0px_rgba(0,0,0,0.06)] dark:border-muted-foreground/15 items-center">
+            <ComposerPrimitive.Root className="aui-composer-root relative flex w-full rounded-4xl border border-border px-1 pt-2 shadow-[0_9px_9px_0px_rgba(0,0,0,0.01),0_2px_5px_0px_rgba(0,0,0,0.06)] dark:border-muted-foreground/15 items-center">
                 <ComposerPrimitive.Input
                     placeholder="Hãy nhập tin nhắn của bạn..."
                     className="aui-composer-input mb-1 max-h-32 min-h-16 w-full resize-none bg-transparent px-3.5 pt-1.5 pb-3 text-base outline-none placeholder:text-muted-foreground focus:outline-primary"

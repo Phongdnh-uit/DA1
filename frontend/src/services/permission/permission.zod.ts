@@ -18,12 +18,16 @@ export const updatePermissionParams = zod.object({
 
 
 
+export const updatePermissionBodyCodeMin = 0;
+export const updatePermissionBodyCodeMax = 100;
+
 
 
 export const updatePermissionBody = zod.object({
   "name": zod.string().min(1),
   "resource": zod.string().min(1),
   "urlPattern": zod.string().min(1),
+  "code": zod.string().min(updatePermissionBodyCodeMin).max(updatePermissionBodyCodeMax),
   "method": zod.enum(['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'])
 })
 
@@ -34,12 +38,16 @@ export const deletePermissionByIdParams = zod.object({
 
 
 
+export const createPermissionBodyCodeMin = 0;
+export const createPermissionBodyCodeMax = 100;
+
 
 
 export const createPermissionBody = zod.object({
   "name": zod.string().min(1),
   "resource": zod.string().min(1),
   "urlPattern": zod.string().min(1),
+  "code": zod.string().min(createPermissionBodyCodeMin).max(createPermissionBodyCodeMax),
   "method": zod.enum(['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'])
 })
 

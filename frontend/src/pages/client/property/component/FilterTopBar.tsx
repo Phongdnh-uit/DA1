@@ -12,53 +12,37 @@ import { RippleButton } from "@/components/ui/shadcn-io/ripple-button";
 import { useFindAllPropertyType } from "@/services/property-type/property-type";
 import { useFindAllProvince } from "@/services/province/province";
 import { useFindAllWard } from "@/services/ward/ward";
-import { useClientFilterStore } from "@/stores/useClientFilterStore";
+import { useFilterStore } from "@/stores/filterStore";
 import { MapPinIcon, SearchIcon } from "lucide-react";
 import { motion } from "motion/react";
 
 interface FilterTopBarProps {
-    onFilterChange?: (filterQuery: string) => void;
+    onSubmit: () => void
 }
 
-export const FilterTopBar = ({ onFilterChange }: FilterTopBarProps) => {
-    const clientFilter = useClientFilterStore();
+export const FilterTopBar = (
+    {onSubmit} : FilterTopBarProps
+) => {
+    const filters = useFilterStore((s) => s.filters);
+    const update = useFilterStore((s) => s.update);
     const listProvince = useFindAllProvince({ all: true, sort: ["name,asc"] });
     const listWard = useFindAllWard(
         {
             all: true,
             sort: ["name,asc"],
-            filter: `province.id==${clientFilter.provinceId}`,
+            filter: `province.id==${filters.provinceId}`,
         },
         {
             query: {
-                enabled: !!clientFilter.provinceId,
+                enabled: !!filters.provinceId,
             },
         },
     );
     const listType = useFindAllPropertyType({ all: true });
-    const buildQuery = () => {
-        const conditions: string[] = [];
-        if (clientFilter.search) {
-            conditions.push(
-                `lineAddress=='*${clientFilter.search}*',title=='*${clientFilter.search}*'`,
-            );
-        }
-        if (clientFilter.provinceId) {
-            conditions.push(`ward.province.id==${clientFilter.provinceId}`);
-        }
-        if (clientFilter.wardId) {
-            conditions.push(`ward.id==${clientFilter.wardId}`);
-        }
-        if (clientFilter.typeId) {
-            conditions.push(`type.id==${clientFilter.typeId}`);
-        }
-        const query = conditions.join(";");
-        onFilterChange?.(query);
-    };
     return (
-        <Card className="mb-6 shadow-sm border border-gray-200">
+        <Card className="mb-6 shadow-sm border">
             <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end ">
                     <div className="md:col-span-2">
                         <Label htmlFor="location" className="mb-2 block">
                             Tìm kiếm
@@ -66,7 +50,7 @@ export const FilterTopBar = ({ onFilterChange }: FilterTopBarProps) => {
                         <div className="relative">
                             <MapPinIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                             <Input
-                                onChange={(e) => clientFilter.setSearch(e.target.value)}
+                                onChange={(e) => update({ search: e.target.value })}
                                 id="location"
                                 placeholder="Nhập tên dự án, địa chỉ..."
                                 className="pl-10"
@@ -79,7 +63,12 @@ export const FilterTopBar = ({ onFilterChange }: FilterTopBarProps) => {
                             Tỉnh/Thành phố
                         </Label>
                         <Select
-                            onValueChange={(value) => clientFilter.setProvinceId(+value)}
+                            value={filters.provinceId ? String(filters.provinceId) : ""}
+                            onValueChange={(value) =>
+                                update({
+                                    provinceId: +value,
+                                })
+                            }
                         >
                             <SelectTrigger id="type" className="w-full">
                                 <SelectValue placeholder="Chọn tỉnh/thành phố" />
@@ -105,8 +94,9 @@ export const FilterTopBar = ({ onFilterChange }: FilterTopBarProps) => {
                             Xã/Phường
                         </Label>
                         <Select
-                            onValueChange={(value) => clientFilter.setWardId(+value)}
-                            disabled={!clientFilter.provinceId}
+                            value={filters.wardId ? String(filters.wardId) : ""}
+                            onValueChange={(value) => update({ wardId: +value })}
+                            disabled={!filters.provinceId}
                         >
                             <SelectTrigger id="type" className="w-full">
                                 <SelectValue placeholder="Chọn xã/phường" />
@@ -128,7 +118,14 @@ export const FilterTopBar = ({ onFilterChange }: FilterTopBarProps) => {
                         <Label htmlFor="type" className="mb-2 block">
                             Loại hình
                         </Label>
-                        <Select onValueChange={(value) => clientFilter.setTypeId(+value)}>
+                        <Select
+                            value={filters.typeId ? String(filters.typeId) : ""}
+                            onValueChange={(value) =>
+                                update({
+                                    typeId: +value,
+                                })
+                            }
+                        >
                             <SelectTrigger id="type" className="w-full">
                                 <SelectValue placeholder="Chọn loại hình" />
                             </SelectTrigger>
@@ -146,15 +143,14 @@ export const FilterTopBar = ({ onFilterChange }: FilterTopBarProps) => {
                     </div>
 
                     {/* Search Button */}
-                    <div className="flex justify-end md:justify-start">
+                    <div className="flex items-center justify-end gap-4 ">
                         <motion.div
                             whileTap={{ scale: 0.95 }}
                             whileHover={{ scale: 1.05 }}
                             transition={{ type: "spring", stiffness: 400 }}
                         >
-                            <RippleButton
-                                className="w-full h-10 bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center"
-                                onClick={buildQuery}
+                            <RippleButton className="w-full h-10 bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center"
+                                onClick={onSubmit}
                             >
                                 <SearchIcon className="h-4 w-4 mr-2" />
                                 Tìm kiếm

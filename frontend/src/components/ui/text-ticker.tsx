@@ -8,6 +8,13 @@ export default function Counter({
     value: number;
     direction?: "up" | "down";
 }) {
+    const formatter = useMemo(
+        () =>
+            new Intl.NumberFormat("vi-VN", {
+                maximumFractionDigits: 0,
+            }),
+        [],
+    );
     const ref = useRef<HTMLSpanElement>(null);
     const motionValue = useMotionValue(direction === "down" ? value : 0);
     const springValue = useSpring(motionValue, {
@@ -19,16 +26,12 @@ export default function Counter({
     useEffect(() => {
         if (isInView) {
             motionValue.set(direction === "down" ? 0 : value);
-        }
-    }, [motionValue, isInView, direction, value]);
 
-    const formatter = useMemo(
-        () =>
-            new Intl.NumberFormat("vi-VN", {
-                maximumFractionDigits: 0,
-            }),
-        [],
-    );
+            if (value === 0 && ref.current) {
+                ref.current.textContent = formatter.format(0);
+            }
+        }
+    }, [motionValue, isInView, direction, value, formatter]);
 
     useEffect(
         () =>

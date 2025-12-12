@@ -1,5 +1,8 @@
+import { AssistantModal } from "@/components/assistant-ui/assistant-modal";
 import ClientFooter from "@/components/client/ClientFooter";
 import ClientHeader from "@/components/client/ClientHeader";
+import { FloatingCompareBar } from "@/components/general/FloatingCompareBar";
+import { MyChatRuntimeProvider } from "@/components/general/MyChatRuntimeProvider";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/__client")({
@@ -8,12 +11,16 @@ export const Route = createFileRoute("/__client")({
 
 function RouteComponent() {
     return (
-        <>
+        <main>
             <ClientHeader />
-            <main>
+            <div className="bg-neutral-100 dark:bg-neutral-900">
                 <Outlet />
-            </main>
+            </div>
+            <FloatingCompareBar />
             <ClientFooter />
-        </>
+            <MyChatRuntimeProvider>
+                <AssistantModal />
+            </MyChatRuntimeProvider>
+        </main>
     );
 }

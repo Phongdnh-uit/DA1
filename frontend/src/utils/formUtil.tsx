@@ -199,7 +199,10 @@ export function FormSelect<K>({
                         >
                             <SelectTrigger
                                 id={name}
-                                className={cn("!h-14 w-full text-lg rounded-2xl", className)}
+                                className={cn(
+                                    "!h-14 w-full text-lg rounded-2xl                                 hover:border-primary",
+                                    className,
+                                )}
                                 name={name}
                             >
                                 <SelectValue

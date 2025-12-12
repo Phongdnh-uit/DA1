@@ -22,6 +22,15 @@ import {
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 
+const middleItems = [
+    { name: "Tất cả bất động sản", href: "/properties" },
+    { name: "Nhà đất bán", href: "/" },
+    { name: "Nhà đất cho thuê", href: "/" },
+    { name: "Dự án", href: "/" },
+    { name: "Tin tức", href: "/" },
+    { name: "Wiki BĐS", href: "/" },
+] as { name: string; href: string }[];
+
 export default function ClientHeader() {
     const authStore = useAuthStore();
     const navigate = useNavigate();
@@ -69,28 +78,33 @@ export default function ClientHeader() {
         <motion.header
             animate={{ y: hidden ? "-100%" : "0%" }}
             transition={{ type: "tween", ease: "easeInOut", duration: 0.3 }}
-            className={"bg-white h-20 shadow-sm border-b sticky top-0 z-50 dark:bg-slate-900"}
+            className={
+                "bg-white h-20 shadow-sm border-b sticky top-0 z-50 dark:bg-slate-900"
+            }
         >
             <div className="w-full h-full mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
                 <Link to="/" className="flex items-center space-x-2">
                     <img src={Logo} alt="Logo" className="h-12 w-auto" />
+                    <div className="flex items-center gap-2">
+                        <span className="text-2xl font-extrabold tracking-tighter">
+                            <span className="text-blue-900">UIT</span>
+                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-500 ml-1">
+                                LAND
+                            </span>
+                        </span>
+                    </div>
                 </Link>
 
                 <nav className="hidden md:flex space-x-8">
-                    {[
-                        "Nhà đất bán",
-                        "Nhà đất cho thuê",
-                        "Dự án",
-                        "Tin tức",
-                        "Wiki BĐS",
-                    ].map((item) => (
+                    {middleItems.map((item, idx) => (
                         <motion.div
                             className="relative inline-block cursor-pointer"
                             initial="rest"
                             whileHover="hover"
+                            key={idx}
                         >
-                            <Link to="/" key={item} className="font-medium">
-                                {item}
+                            <Link to={item.href} key={item.name} className="font-medium">
+                                {item.name}
                             </Link>
                             <motion.div
                                 variants={drawLineVariants}
@@ -107,7 +121,10 @@ export default function ClientHeader() {
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="icon" className="rounded-full">
                                     <Avatar className="h-9 w-9">
-                                        <AvatarImage src="/images/avatar.jpg" alt="User" />
+                                        <AvatarImage
+                                            src={authStore?.user?.avatar?.secureUrl}
+                                            alt="User"
+                                        />
                                         <AvatarFallback>
                                             <User className="h-5 w-5" />
                                         </AvatarFallback>
@@ -151,7 +168,7 @@ export default function ClientHeader() {
                         >
                             <Link
                                 to="/auth/login"
-                                className="hidden sm:inline-block border border-gray-300 text-gray-700 px-3 py-1.5 rounded-md text-sm hover:bg-gray-100"
+                                className="hidden sm:inline-block border border-gray-300 px-3 py-1.5 rounded-md text-sm"
                             >
                                 Đăng nhập
                             </Link>

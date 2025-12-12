@@ -10,8 +10,7 @@ export interface UploadConfirmRequest {
   /** @minLength 1 */
   publicId: string;
   version: number;
-  /** @minLength 1 */
-  signature: string;
+  signature?: string;
   /** @minLength 1 */
   secureUrl: string;
   width: number;

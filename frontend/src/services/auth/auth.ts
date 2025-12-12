@@ -24,17 +24,21 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ApiResponseListString,
   ApiResponseLoginResponse,
+  ApiResponseMediaResponse,
   ApiResponseSendOtpResponse,
   ApiResponseUserResponse,
   ApiResponseVerifyOtpResponse,
   ApiResponseVoid,
+  BaseUserRequest,
   ChangePasswordRequest,
   LoginRequest,
   RefreshTokenRequest,
   RegisterRequest,
   ResetPasswordRequest,
   SendOtpRequest,
+  UploadConfirmRequest,
   VerifyEmailRequest,
   VerifyOtpRequest
 } from '../../types';
@@ -395,6 +399,208 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
       return useMutation(mutationOptions, queryClient);
     }
+    export const getCurrentUser = (
+    
+ options?: SecondParameter<typeof axiosInstanceFn>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstanceFn<ApiResponseUserResponse>(
+      {url: `/auth/me`, method: 'GET', signal
+    },
+      options);
+    }
+  
+
+
+
+export const getGetCurrentUserQueryKey = () => {
+    return [
+    `/auth/me`
+    ] as const;
+    }
+
+    
+export const getGetCurrentUserQueryOptions = <TData = Awaited<ReturnType<typeof getCurrentUser>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetCurrentUserQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getCurrentUser>>> = ({ signal }) => getCurrentUser(requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetCurrentUserQueryResult = NonNullable<Awaited<ReturnType<typeof getCurrentUser>>>
+export type GetCurrentUserQueryError = ErrorType<unknown>
+
+
+export function useGetCurrentUser<TData = Awaited<ReturnType<typeof getCurrentUser>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getCurrentUser>>,
+          TError,
+          Awaited<ReturnType<typeof getCurrentUser>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetCurrentUser<TData = Awaited<ReturnType<typeof getCurrentUser>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getCurrentUser>>,
+          TError,
+          Awaited<ReturnType<typeof getCurrentUser>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetCurrentUser<TData = Awaited<ReturnType<typeof getCurrentUser>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetCurrentUser<TData = Awaited<ReturnType<typeof getCurrentUser>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetCurrentUserQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const updateCurrentUser = (
+    baseUserRequest: BodyType<BaseUserRequest>,
+ options?: SecondParameter<typeof axiosInstanceFn>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstanceFn<ApiResponseUserResponse>(
+      {url: `/auth/me`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: baseUserRequest, signal
+    },
+      options);
+    }
+  
+
+
+export const getUpdateCurrentUserMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCurrentUser>>, TError,{data: BodyType<BaseUserRequest>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateCurrentUser>>, TError,{data: BodyType<BaseUserRequest>}, TContext> => {
+
+const mutationKey = ['updateCurrentUser'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateCurrentUser>>, {data: BodyType<BaseUserRequest>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateCurrentUser(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateCurrentUserMutationResult = NonNullable<Awaited<ReturnType<typeof updateCurrentUser>>>
+    export type UpdateCurrentUserMutationBody = BodyType<BaseUserRequest>
+    export type UpdateCurrentUserMutationError = ErrorType<unknown>
+
+    export const useUpdateCurrentUser = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCurrentUser>>, TError,{data: BodyType<BaseUserRequest>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateCurrentUser>>,
+        TError,
+        {data: BodyType<BaseUserRequest>},
+        TContext
+      > => {
+
+      const mutationOptions = getUpdateCurrentUserMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    export const updateCurrentUserAvatar = (
+    uploadConfirmRequest: BodyType<UploadConfirmRequest>,
+ options?: SecondParameter<typeof axiosInstanceFn>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstanceFn<ApiResponseMediaResponse>(
+      {url: `/auth/me/avatar`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: uploadConfirmRequest, signal
+    },
+      options);
+    }
+  
+
+
+export const getUpdateCurrentUserAvatarMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCurrentUserAvatar>>, TError,{data: BodyType<UploadConfirmRequest>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateCurrentUserAvatar>>, TError,{data: BodyType<UploadConfirmRequest>}, TContext> => {
+
+const mutationKey = ['updateCurrentUserAvatar'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateCurrentUserAvatar>>, {data: BodyType<UploadConfirmRequest>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateCurrentUserAvatar(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateCurrentUserAvatarMutationResult = NonNullable<Awaited<ReturnType<typeof updateCurrentUserAvatar>>>
+    export type UpdateCurrentUserAvatarMutationBody = BodyType<UploadConfirmRequest>
+    export type UpdateCurrentUserAvatarMutationError = ErrorType<unknown>
+
+    export const useUpdateCurrentUserAvatar = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCurrentUserAvatar>>, TError,{data: BodyType<UploadConfirmRequest>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateCurrentUserAvatar>>,
+        TError,
+        {data: BodyType<UploadConfirmRequest>},
+        TContext
+      > => {
+
+      const mutationOptions = getUpdateCurrentUserAvatarMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
     export const logout = (
     refreshTokenRequest: BodyType<RefreshTokenRequest>,
  options?: SecondParameter<typeof axiosInstanceFn>,signal?: AbortSignal
@@ -569,14 +775,14 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
       return useMutation(mutationOptions, queryClient);
     }
-    export const getCurrentUser = (
+    export const getCurrentUserPermissionCodes = (
     
  options?: SecondParameter<typeof axiosInstanceFn>,signal?: AbortSignal
 ) => {
       
       
-      return axiosInstanceFn<ApiResponseUserResponse>(
-      {url: `/auth/me`, method: 'GET', signal
+      return axiosInstanceFn<ApiResponseListString>(
+      {url: `/auth/me/permissions`, method: 'GET', signal
     },
       options);
     }
@@ -584,66 +790,66 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-export const getGetCurrentUserQueryKey = () => {
+export const getGetCurrentUserPermissionCodesQueryKey = () => {
     return [
-    `/auth/me`
+    `/auth/me/permissions`
     ] as const;
     }
 
     
-export const getGetCurrentUserQueryOptions = <TData = Awaited<ReturnType<typeof getCurrentUser>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+export const getGetCurrentUserPermissionCodesQueryOptions = <TData = Awaited<ReturnType<typeof getCurrentUserPermissionCodes>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUserPermissionCodes>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetCurrentUserQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetCurrentUserPermissionCodesQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getCurrentUser>>> = ({ signal }) => getCurrentUser(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getCurrentUserPermissionCodes>>> = ({ signal }) => getCurrentUserPermissionCodes(requestOptions, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getCurrentUserPermissionCodes>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type GetCurrentUserQueryResult = NonNullable<Awaited<ReturnType<typeof getCurrentUser>>>
-export type GetCurrentUserQueryError = ErrorType<unknown>
+export type GetCurrentUserPermissionCodesQueryResult = NonNullable<Awaited<ReturnType<typeof getCurrentUserPermissionCodes>>>
+export type GetCurrentUserPermissionCodesQueryError = ErrorType<unknown>
 
 
-export function useGetCurrentUser<TData = Awaited<ReturnType<typeof getCurrentUser>>, TError = ErrorType<unknown>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>> & Pick<
+export function useGetCurrentUserPermissionCodes<TData = Awaited<ReturnType<typeof getCurrentUserPermissionCodes>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUserPermissionCodes>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getCurrentUser>>,
+          Awaited<ReturnType<typeof getCurrentUserPermissionCodes>>,
           TError,
-          Awaited<ReturnType<typeof getCurrentUser>>
+          Awaited<ReturnType<typeof getCurrentUserPermissionCodes>>
         > , 'initialData'
       >, request?: SecondParameter<typeof axiosInstanceFn>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetCurrentUser<TData = Awaited<ReturnType<typeof getCurrentUser>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>> & Pick<
+export function useGetCurrentUserPermissionCodes<TData = Awaited<ReturnType<typeof getCurrentUserPermissionCodes>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUserPermissionCodes>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getCurrentUser>>,
+          Awaited<ReturnType<typeof getCurrentUserPermissionCodes>>,
           TError,
-          Awaited<ReturnType<typeof getCurrentUser>>
+          Awaited<ReturnType<typeof getCurrentUserPermissionCodes>>
         > , 'initialData'
       >, request?: SecondParameter<typeof axiosInstanceFn>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetCurrentUser<TData = Awaited<ReturnType<typeof getCurrentUser>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+export function useGetCurrentUserPermissionCodes<TData = Awaited<ReturnType<typeof getCurrentUserPermissionCodes>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUserPermissionCodes>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useGetCurrentUser<TData = Awaited<ReturnType<typeof getCurrentUser>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUser>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+export function useGetCurrentUserPermissionCodes<TData = Awaited<ReturnType<typeof getCurrentUserPermissionCodes>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCurrentUserPermissionCodes>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetCurrentUserQueryOptions(options)
+  const queryOptions = getGetCurrentUserPermissionCodesQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

@@ -16,6 +16,21 @@ export const updatePropertyParams = zod.object({
 })
 
 
+export const updatePropertyBodyPriceMin = 0;
+
+export const updatePropertyBodyLandAreaMin = 0;
+
+export const updatePropertyBodyFloorAreaMin = 0;
+
+export const updatePropertyBodyFloorsMin = 0;
+
+export const updatePropertyBodyFloorNumberMin = 0;
+
+export const updatePropertyBodyBedroomsMin = 0;
+
+export const updatePropertyBodyBathroomsMin = 0;
+
+export const updatePropertyBodyEntranceRoadWidthMin = 0;
 
 
 
@@ -27,19 +42,19 @@ export const updatePropertyBody = zod.object({
   "title": zod.string().min(1),
   "purpose": zod.enum(['FOR_SALE', 'FOR_RENT']),
   "typeId": zod.number(),
-  "price": zod.number(),
+  "price": zod.number().min(updatePropertyBodyPriceMin),
   "lineAddress": zod.string().optional(),
   "provinceId": zod.number(),
   "wardId": zod.number(),
-  "landArea": zod.number().optional(),
-  "floorArea": zod.number().optional(),
-  "floors": zod.number().optional(),
-  "floorNumber": zod.number().optional(),
-  "bedrooms": zod.number().optional(),
-  "bathrooms": zod.number().optional(),
+  "landArea": zod.number().min(updatePropertyBodyLandAreaMin).optional(),
+  "floorArea": zod.number().min(updatePropertyBodyFloorAreaMin).optional(),
+  "floors": zod.number().min(updatePropertyBodyFloorsMin).optional(),
+  "floorNumber": zod.number().min(updatePropertyBodyFloorNumberMin).optional(),
+  "bedrooms": zod.number().min(updatePropertyBodyBedroomsMin).optional(),
+  "bathrooms": zod.number().min(updatePropertyBodyBathroomsMin).optional(),
   "direction": zod.enum(['NORTH', 'SOUTH', 'EAST', 'WEST', 'NORTHEAST', 'NORTHWEST', 'SOUTHEAST', 'SOUTHWEST']).optional(),
   "description": zod.string().optional(),
-  "entranceRoadWidth": zod.number().optional(),
+  "entranceRoadWidth": zod.number().min(updatePropertyBodyEntranceRoadWidthMin).optional(),
   "balconyDirection": zod.enum(['NORTH', 'SOUTH', 'EAST', 'WEST', 'NORTHEAST', 'NORTHWEST', 'SOUTHEAST', 'SOUTHWEST']).optional(),
   "hasMezzanine": zod.boolean().optional(),
   "hasBasement": zod.boolean().optional(),
@@ -49,7 +64,7 @@ export const updatePropertyBody = zod.object({
   "medias": zod.array(zod.object({
   "publicId": zod.string().min(1),
   "version": zod.number(),
-  "signature": zod.string().min(1),
+  "signature": zod.string().optional(),
   "secureUrl": zod.string().min(1),
   "width": zod.number(),
   "height": zod.number(),
@@ -57,7 +72,11 @@ export const updatePropertyBody = zod.object({
   "resourceType": zod.string().min(1),
   "bytes": zod.number(),
   "purpose": zod.enum(['AVATAR', 'THUMBNAIL', 'BANNER', 'VIDEO', 'GALLERY'])
-})).optional()
+})).optional(),
+  "location": zod.object({
+  "longitude": zod.number(),
+  "latitude": zod.number()
+}).optional()
 })
 
 export const deletePropertyByIdParams = zod.object({
@@ -65,6 +84,21 @@ export const deletePropertyByIdParams = zod.object({
 })
 
 
+export const createPropertyBodyPriceMin = 0;
+
+export const createPropertyBodyLandAreaMin = 0;
+
+export const createPropertyBodyFloorAreaMin = 0;
+
+export const createPropertyBodyFloorsMin = 0;
+
+export const createPropertyBodyFloorNumberMin = 0;
+
+export const createPropertyBodyBedroomsMin = 0;
+
+export const createPropertyBodyBathroomsMin = 0;
+
+export const createPropertyBodyEntranceRoadWidthMin = 0;
 
 
 
@@ -76,19 +110,19 @@ export const createPropertyBody = zod.object({
   "title": zod.string().min(1),
   "purpose": zod.enum(['FOR_SALE', 'FOR_RENT']),
   "typeId": zod.number(),
-  "price": zod.number(),
+  "price": zod.number().min(createPropertyBodyPriceMin),
   "lineAddress": zod.string().optional(),
   "provinceId": zod.number(),
   "wardId": zod.number(),
-  "landArea": zod.number().optional(),
-  "floorArea": zod.number().optional(),
-  "floors": zod.number().optional(),
-  "floorNumber": zod.number().optional(),
-  "bedrooms": zod.number().optional(),
-  "bathrooms": zod.number().optional(),
+  "landArea": zod.number().min(createPropertyBodyLandAreaMin).optional(),
+  "floorArea": zod.number().min(createPropertyBodyFloorAreaMin).optional(),
+  "floors": zod.number().min(createPropertyBodyFloorsMin).optional(),
+  "floorNumber": zod.number().min(createPropertyBodyFloorNumberMin).optional(),
+  "bedrooms": zod.number().min(createPropertyBodyBedroomsMin).optional(),
+  "bathrooms": zod.number().min(createPropertyBodyBathroomsMin).optional(),
   "direction": zod.enum(['NORTH', 'SOUTH', 'EAST', 'WEST', 'NORTHEAST', 'NORTHWEST', 'SOUTHEAST', 'SOUTHWEST']).optional(),
   "description": zod.string().optional(),
-  "entranceRoadWidth": zod.number().optional(),
+  "entranceRoadWidth": zod.number().min(createPropertyBodyEntranceRoadWidthMin).optional(),
   "balconyDirection": zod.enum(['NORTH', 'SOUTH', 'EAST', 'WEST', 'NORTHEAST', 'NORTHWEST', 'SOUTHEAST', 'SOUTHWEST']).optional(),
   "hasMezzanine": zod.boolean().optional(),
   "hasBasement": zod.boolean().optional(),
@@ -98,7 +132,7 @@ export const createPropertyBody = zod.object({
   "medias": zod.array(zod.object({
   "publicId": zod.string().min(1),
   "version": zod.number(),
-  "signature": zod.string().min(1),
+  "signature": zod.string().optional(),
   "secureUrl": zod.string().min(1),
   "width": zod.number(),
   "height": zod.number(),
@@ -106,7 +140,27 @@ export const createPropertyBody = zod.object({
   "resourceType": zod.string().min(1),
   "bytes": zod.number(),
   "purpose": zod.enum(['AVATAR', 'THUMBNAIL', 'BANNER', 'VIDEO', 'GALLERY'])
-})).optional()
+})).optional(),
+  "location": zod.object({
+  "longitude": zod.number(),
+  "latitude": zod.number()
+}).optional()
+})
+
+export const findPropertiesWithinRadiusQueryParams = zod.object({
+  "latitude": zod.number(),
+  "longitude": zod.number(),
+  "radiusInMeters": zod.number()
+})
+
+export const findSimilarPropertiesParams = zod.object({
+  "id": zod.number()
+})
+
+export const findSimilarPropertiesQueryLimitDefault = 5;
+
+export const findSimilarPropertiesQueryParams = zod.object({
+  "limit": zod.number().default(findSimilarPropertiesQueryLimitDefault)
 })
 
 export const findAllPropertyQueryPageDefault = 0;

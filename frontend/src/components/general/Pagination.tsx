@@ -1,5 +1,14 @@
 "use client";
 
+import { buttonVariants } from "@/components/ui/button";
+import {
+    Pagination,
+    PaginationContent,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -201,23 +210,130 @@ const NumberButton = ({
     );
 };
 
-// const MobileButton = ({
-//     onClick,
-//     disabled,
-//     children,
-// }: {
-//     onClick: () => void;
-//     disabled: boolean;
-//     children: React.ReactNode;
-// }) => {
-//     return (
-//         <button
-//             type="button"
-//             className="group px-2.5 py-2 text-tremor-default disabled:cursor-not-allowed disabled:opacity-50"
-//             onClick={onClick}
-//             disabled={disabled}
-//         >
-//             {children}
-//         </button>
-//     );
-// };
+export function PaginationWithLabel({
+    currentPage,
+    totalPages,
+    onPageChange,
+}: Props) {
+    const getPageNumbers = () => {
+        const pages: PageItem[] = [];
+        const lastPageIndex = totalPages - 1;
+
+        if (totalPages <= 7) {
+            for (let i = 0; i < totalPages; i++)
+                pages.push({
+                    render: i + 1,
+                    onChange: () => onPageChange && onPageChange(i),
+                });
+        } else {
+            if (currentPage <= 1) {
+                // pages.push(0, 1, 2, "...", lastPageIndex);
+                pages.push(
+                    { render: 1, onChange: () => onPageChange && onPageChange(0) },
+                    { render: 2, onChange: () => onPageChange && onPageChange(1) },
+                    { render: 3, onChange: () => onPageChange && onPageChange(2) },
+                    { render: "...", onChange: () => onPageChange && onPageChange(3) },
+                    {
+                        render: lastPageIndex + 1,
+                        onChange: () => onPageChange && onPageChange(lastPageIndex),
+                    },
+                );
+            } else if (currentPage >= lastPageIndex - 1) {
+                pages.push(
+                    { render: 1, onChange: () => onPageChange && onPageChange(0) },
+                    {
+                        render: "...",
+                        onChange: () => onPageChange && onPageChange(lastPageIndex - 3),
+                    },
+                    {
+                        render: lastPageIndex - 1,
+                        onChange: () => onPageChange && onPageChange(lastPageIndex - 2),
+                    },
+                    {
+                        render: lastPageIndex,
+                        onChange: () => onPageChange && onPageChange(lastPageIndex - 1),
+                    },
+                    {
+                        render: lastPageIndex + 1,
+                        onChange: () => onPageChange && onPageChange(lastPageIndex),
+                    },
+                );
+            } else {
+                pages.push(
+                    { render: 1, onChange: () => onPageChange && onPageChange(0) },
+                    {
+                        render: "...",
+                        onChange: () => onPageChange && onPageChange(currentPage - 2),
+                    },
+                    {
+                        render: currentPage,
+                        onChange: () => onPageChange && onPageChange(currentPage - 1),
+                    },
+                    {
+                        render: currentPage + 1,
+                        onChange: () => onPageChange && onPageChange(currentPage),
+                    },
+                    {
+                        render: currentPage + 2,
+                        onChange: () => onPageChange && onPageChange(currentPage + 1),
+                    },
+                    {
+                        render: "...",
+                        onChange: () => onPageChange && onPageChange(currentPage + 2),
+                    },
+                    {
+                        render: lastPageIndex + 1,
+                        onChange: () => onPageChange && onPageChange(lastPageIndex),
+                    },
+                );
+            }
+        }
+
+        return pages;
+    };
+
+    const pages = getPageNumbers();
+    return (
+        <Pagination>
+            <PaginationContent>
+                <PaginationItem>
+                    <PaginationPrevious
+                        onClick={() => onPageChange && onPageChange(currentPage - 1)}
+                        className={"border " + (currentPage === 0 ? "invisible" : "")}
+                    />
+                </PaginationItem>
+
+                {pages.map((page, idx) => {
+                    const isActive = page.render === currentPage + 1;
+
+                    return (
+                        <PaginationItem key={idx}>
+                            <PaginationLink
+                                onClick={page.onChange}
+                                className={cn({
+                                    [buttonVariants({
+                                        variant: "default",
+                                        className:
+                                            "hover:text-primary-foreground! shadow-none! dark:bg-primary dark:hover:bg-primary/90",
+                                    })]: isActive,
+                                    border: !isActive,
+                                })}
+                            >
+                                {page.render}
+                            </PaginationLink>
+                        </PaginationItem>
+                    );
+                })}
+
+                <PaginationItem>
+                    <PaginationNext
+                        onClick={() => onPageChange && onPageChange(currentPage + 1)}
+                        className={
+                            "border " + (!(totalPages - 1 > currentPage) ? "invisible" : "")
+                        }
+                    />
+                </PaginationItem>
+            </PaginationContent>
+        </Pagination>
+    );
+}

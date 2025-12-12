@@ -18,6 +18,8 @@ import { useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
+import PermissionGate from "@/components/general/PermissionGate";
+import { ProvinceDetailSheet } from "./DetailProvinceSheet";
 
 const keys: (keyof ProvinceResponse)[] = [
     "id",
@@ -31,6 +33,8 @@ const keys: (keyof ProvinceResponse)[] = [
 ];
 
 export const ProvinceManage = () => {
+    const [provinceDetail, setProvinceDetail] = useState<ProvinceResponse | null>(null);
+    const [openedDetail, setOpenedDetail] = useState<boolean>(false);
     const navigate = useNavigate();
     const openDeleteDialog = useDeleteDialogStore((state) => state.openDialog);
     const deleteProvince = useDeleteProvinceById({
@@ -48,21 +52,32 @@ export const ProvinceManage = () => {
         () => [
             createSelectionColumn<ProvinceResponse>(),
             ...createColumnsFromType<ProvinceResponse>(keys),
-            createActionColumn<ProvinceResponse>({
-                onEdit: (row) => {
-                    navigate({ to: `/admin/province/update/${row.id}` });
+            createActionColumn<ProvinceResponse>(
+                {
+                    onEdit: (row) => {
+                        navigate({ to: `/admin/province/update/${row.id}` });
+                    },
+                    onDelete: (row) => {
+                        if (!row.id) return;
+                        openDeleteDialog({
+                            onConfirm() {
+                                deleteProvince.mutate({
+                                    id: row.id!,
+                                });
+                            },
+                        });
+                    },
+                    onView: (row) => {
+                        setProvinceDetail(row);
+                        setOpenedDetail(true);
+                    }
                 },
-                onDelete: (row) => {
-                    if (!row.id) return;
-                    openDeleteDialog({
-                        onConfirm() {
-                            deleteProvince.mutate({
-                                id: row.id!,
-                            });
-                        },
-                    });
+                {
+                    deleteCode: "PROVINCE_DELETE",
+                    editCode: "PROVINCE_UPDATE",
+                    viewCode: "PROVINCE_VIEW_DETAIL",
                 },
-            }),
+            ),
         ],
         [deleteProvince, navigate, openDeleteDialog],
     );
@@ -89,7 +104,7 @@ export const ProvinceManage = () => {
     const bulkDeleteMutation = useDeleteBulkProvince({
         mutation: {
             onSuccess: () => {
-                toast.success("Delete successfully");
+                toast.success("Xoá thành công");
                 list.refetch();
             },
         },
@@ -104,7 +119,7 @@ export const ProvinceManage = () => {
     const onBulkDelete = () => {
         const ids = getSelectedRowIds();
         if (ids.length === 0) {
-            toast.info("Please choose one row to delete");
+            toast.info("Vui lòng chọn ít nhất một mục để xoá");
             return;
         }
         openDeleteDialog({
@@ -124,17 +139,19 @@ export const ProvinceManage = () => {
 
     return (
         <div className="space-y-4">
-            <div className="flex items-center justify-end">
-                <RippleButton
-                    onClick={() =>
-                        navigate({
-                            to: "/admin/province/create",
-                        })
-                    }
-                    className="h-12 bg-blue-700 text-white hover:bg-blue-700"
-                >
-                    <IconSparkles className="size-5" /> Create new
-                </RippleButton>
+            <div className="flex items-center justify-end p-2">
+                <PermissionGate permission="PROVINCE_CREATE">
+                    <RippleButton
+                        onClick={() =>
+                            navigate({
+                                to: "/admin/province/create",
+                            })
+                        }
+                        className="h-12 bg-blue-700 text-white hover:bg-blue-700"
+                    >
+                        <IconSparkles className="size-5" /> Create new
+                    </RippleButton>
+                </PermissionGate>
             </div>
             <Filter
                 sortAttributes={[
@@ -157,7 +174,8 @@ export const ProvinceManage = () => {
                 onApply={onApplyFilter}
             />
             <DataTable
-                className="h-[550px]"
+                deleteCode="PROVINCE_DELETE_BULK"
+                className="h-[500px]"
                 name="Tỉnh/Thành phố"
                 table={table}
                 onBulkDelete={onBulkDelete}
@@ -166,6 +184,11 @@ export const ProvinceManage = () => {
                 totalPages={list.data?.data?.totalPages || 0}
                 totalElements={list.data?.data?.totalElements || 0}
                 numberOfElements={list.data?.data?.numberOfElements || 0}
+            />
+            <ProvinceDetailSheet 
+                province={provinceDetail}
+                open={openedDetail}
+                onOpenChange={setOpenedDetail}
             />
         </div>
     );

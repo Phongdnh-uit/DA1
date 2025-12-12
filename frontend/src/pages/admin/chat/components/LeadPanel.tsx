@@ -52,7 +52,16 @@ export default function LeadPanel({ selectedConversation }: LeadPanelProps) {
         },
     });
 
-    const closeConversationMutation = useCloseConversation();
+    const closeConversationMutation = useCloseConversation({
+        mutation: {
+            onSuccess: () => {
+                toast.success("Cuộc hội thoại đã được đóng thành công!");
+            },
+            onError: () => {
+                toast.error("Đã có lỗi xảy ra khi đóng cuộc hội thoại.");
+            }
+        },
+    });
     const conversation = useGetConversationById(selectedConversation as number, {
         query: {
             enabled: selectedConversation !== null,

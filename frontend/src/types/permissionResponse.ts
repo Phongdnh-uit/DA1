@@ -17,4 +17,5 @@ export interface PermissionResponse {
   resource?: string;
   urlPattern?: string;
   method?: PermissionResponseMethod;
+  code?: string;
 }

@@ -11,5 +11,6 @@ export interface UploadSignatureResponse {
   apiKey?: string;
   cloudName?: string;
   publicId?: string;
+  folder?: string;
   tags?: string[];
 }

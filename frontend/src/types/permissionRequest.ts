@@ -13,5 +13,10 @@ export interface PermissionRequest {
   resource: string;
   /** @minLength 1 */
   urlPattern: string;
+  /**
+   * @minLength 0
+   * @maxLength 100
+   */
+  code: string;
   method: PermissionRequestMethod;
 }

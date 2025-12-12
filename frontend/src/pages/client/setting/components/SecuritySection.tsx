@@ -3,35 +3,43 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Shield, AlertCircle } from "lucide-react";
 import { useChangePassword } from "@/services/auth/auth";
 import { useForm } from "react-hook-form";
 import type { ChangePasswordRequest } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { changePasswordBody } from "@/services/auth/auth.zod";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { toast } from "react-toastify";
 import { motion } from "motion/react";
+import { FormInput } from "@/utils/formUtil";
+import z from "zod";
 
 export function SecuritySection() {
     const [showPasswordForm, setShowPasswordForm] = useState(false);
 
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    const changePasswordForm = useForm<ChangePasswordRequest>({
+    const changePasswordForm = useForm<
+        ChangePasswordRequest & {
+            confirmPassword: string;
+        }
+    >({
         defaultValues: {
             oldPassword: "",
             newPassword: "",
         },
         mode: "onSubmit",
-        resolver: zodResolver(changePasswordBody),
+        resolver: zodResolver(
+            z
+                .object({
+                    ...changePasswordBody.shape,
+                    confirmPassword: z.string().min(1, "Vui lòng xác nhận mật khẩu mới"),
+                })
+                .refine((data) => data.newPassword === data.confirmPassword, {
+                    message: "Mật khẩu xác nhận không khớp",
+                }),
+        ),
     });
 
     const changePasswordMutation = useChangePassword({
@@ -46,7 +54,10 @@ export function SecuritySection() {
     });
 
     const onSubmit = (data: ChangePasswordRequest) => {
-        if (data.newPassword !== confirmPassword) {
+        console.log(data);
+        console.log(confirmPassword);
+        console.log(data.newPassword);
+        if (data.newPassword !== data.confirmPassword) {
             alert("Mật khẩu xác nhận không khớp!");
             return;
         }
@@ -102,47 +113,26 @@ export function SecuritySection() {
                     {showPasswordForm && (
                         <div className="space-y-4 mt-4 p-4 bg-muted rounded-lg">
                             <Form {...changePasswordForm}>
-                                <FormField
-                                    control={changePasswordForm.control}
+                                <FormInput<ChangePasswordRequest>
+                                    className="bg-white"
                                     name="oldPassword"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormControl>
-                                                <Input
-                                                    type="password"
-                                                    placeholder="Mật khẩu hiện tại"
-                                                    className="bg-background"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={changePasswordForm.control}
-                                    name="newPassword"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormControl>
-                                                <Input
-                                                    type="password"
-                                                    placeholder="Mật khẩu mới"
-                                                    className="bg-background"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <Input
-                                    name="confirm"
+                                    title="Mật khẩu hiện tại"
+                                    placeholder="Nhập mật khẩu hiện tại"
                                     type="password"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                />
+                                <FormInput<ChangePasswordRequest>
+                                    name="newPassword"
+                                    className="bg-white"
+                                    title="Mật khẩu mới"
+                                    placeholder="Nhập mật khẩu mới"
+                                    type="password"
+                                />
+                                <FormInput<ChangePasswordRequest & { confirmPassword: string }>
+                                    name="confirmPassword"
+                                    className="bg-white"
+                                    title="Xác nhận mật khẩu mới"
                                     placeholder="Xác nhận mật khẩu mới"
-                                    className="bg-background"
+                                    type="password"
                                 />
                                 <Button
                                     onClick={() => changePasswordForm.handleSubmit(onSubmit)()}

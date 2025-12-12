@@ -18,6 +18,8 @@ import {
 } from "@/services/role/role";
 import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
 import { useNavigate } from "@tanstack/react-router";
+import PermissionGate from "@/components/general/PermissionGate";
+import { RoleDetailSheet } from "./DetailRoleSheet";
 
 const keys: (keyof RoleResponse)[] = [
     "id",
@@ -29,6 +31,8 @@ const keys: (keyof RoleResponse)[] = [
 ];
 
 export const RoleManage = () => {
+    const [detailRole, setDetailRole] = useState<RoleResponse | null>(null);
+    const [openedDetail, setOpenedDetail] = useState<boolean>(false);
     const navigate = useNavigate();
     const openDeleteDialog = useDeleteDialogStore((state) => state.openDialog);
     const useDeleteRole = useDeleteRoleById({
@@ -46,19 +50,30 @@ export const RoleManage = () => {
         () => [
             createSelectionColumn<RoleResponse>(),
             ...createColumnsFromType<RoleResponse>(keys),
-            createActionColumn<RoleResponse>({
-                onEdit: (row) => {
-                    navigate({ to: `/admin/role/update/${row.id}` });
+            createActionColumn<RoleResponse>(
+                {
+                    onEdit: (row) => {
+                        navigate({ to: `/admin/role/update/${row.id}` });
+                    },
+                    onDelete: (row) => {
+                        openDeleteDialog({
+                            onConfirm() {
+                                if (!row.id) return;
+                                useDeleteRole.mutate({ id: row.id });
+                            },
+                        });
+                    },
+                    onView: (row) => {
+                        setDetailRole(row);
+                        setOpenedDetail(true);
+                    }
                 },
-                onDelete: (row) => {
-                    openDeleteDialog({
-                        onConfirm() {
-                            if (!row.id) return;
-                            useDeleteRole.mutate({ id: row.id });
-                        },
-                    });
+                {
+                    viewCode: "ROLE_VIEW_DETAIL",
+                    editCode: "ROLE_UPDATE",
+                    deleteCode: "ROLE_DELETE",
                 },
-            }),
+            ),
         ],
         [navigate, openDeleteDialog, useDeleteRole],
     );
@@ -85,7 +100,7 @@ export const RoleManage = () => {
     const bulkDeleteMutation = useDeleteBulkRole({
         mutation: {
             onSuccess: () => {
-                toast.success("Delete successfully");
+                toast.success("Xoá thành công");
                 list.refetch();
             },
         },
@@ -100,7 +115,7 @@ export const RoleManage = () => {
     const onBulkDelete = () => {
         const ids = getSelectedRowIds();
         if (ids.length === 0) {
-            toast.info("Please choose one row to delete");
+            toast.info("Vui lòng chọn ít nhất một vai trò để xoá.");
             return;
         }
         openDeleteDialog({
@@ -116,20 +131,23 @@ export const RoleManage = () => {
 
     return (
         <div className="space-y-4">
-            <div className="flex items-center justify-end">
-                <RippleButton
-                    onClick={() => navigate({ to: "/admin/role/create" })}
-                    className="h-12 bg-blue-700 text-white hover:bg-blue-700"
-                >
-                    <IconSparkles className="size-5" /> Create new
-                </RippleButton>
+            <div className="flex items-center justify-end p-2">
+                <PermissionGate permission="ROLE_CREATE">
+                    <RippleButton
+                        onClick={() => navigate({ to: "/admin/role/create" })}
+                        className="h-12 bg-blue-700 text-white hover:bg-blue-700"
+                    >
+                        <IconSparkles className="size-5" />
+                        Thêm mới
+                    </RippleButton>
+                </PermissionGate>
             </div>
             <Filter
                 sortAttributes={[
-                    { key: "id", label: "Id" },
-                    { key: "name", label: "Name" },
-                    { key: "createdAt", label: "Created At" },
-                    { key: "updatedAt", label: "Updated At" },
+                    { key: "id", label: "ID" },
+                    { key: "name", label: "Tên" },
+                    { key: "createdAt", label: "Ngày tạo" },
+                    { key: "updatedAt", label: "Ngày cập nhật" },
                 ]}
                 filterAttributes={[
                     { name: "name", label: "Name", type: "text" },
@@ -142,7 +160,8 @@ export const RoleManage = () => {
                 onApply={onApplyFilter}
             />
             <DataTable
-                className="h-[550px]"
+                deleteCode="ROLE_DELETE_BULK"
+                className="h-[500px]"
                 name="Vai trò"
                 table={table}
                 onBulkDelete={onBulkDelete}
@@ -151,6 +170,11 @@ export const RoleManage = () => {
                 totalPages={list.data?.data?.totalPages || 0}
                 totalElements={list.data?.data?.totalElements || 0}
                 numberOfElements={list.data?.data?.numberOfElements || 0}
+            />
+            <RoleDetailSheet
+                open={openedDetail}
+                onOpenChange={setOpenedDetail}
+                role={detailRole}
             />
         </div>
     );

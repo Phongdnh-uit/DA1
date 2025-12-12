@@ -11,7 +11,7 @@ export const Route = createFileRoute("/__client/detail/$id")({
     },
     loader: async ({ params }) => {
         const id = +params.id;
-        return queryClient.fetchQuery(getFindPropertyByIdQueryOptions(id));
+        await queryClient.ensureQueryData(getFindPropertyByIdQueryOptions(id));
     },
     component: RouteComponent,
 });

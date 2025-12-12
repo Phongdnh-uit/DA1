@@ -4,18 +4,24 @@ import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 import type { PropertyTypeRequest } from "@/types";
 import { createPropertyTypeBody } from "@/services/property-type/property-type.zod";
-import { useCreatePropertyType } from "@/services/property-type/property-type";
+import { Route } from "@/routes/admin/property-type/update.$id";
+import {
+    useFindPropertyTypeById,
+    useUpdatePropertyType,
+} from "@/services/property-type/property-type";
 
 export function useUpdatePropertyTypeVM() {
+    const { id } = Route.useParams();
     const queryClient = useQueryClient();
+    const propertyType = useFindPropertyTypeById(+id);
     const form = useForm<PropertyTypeRequest>({
         defaultValues: {
-            name: "",
+            name: propertyType.data?.data?.name,
         },
         mode: "onSubmit",
         resolver: zodResolver(createPropertyTypeBody),
     });
-    const mutation = useCreatePropertyType({
+    const mutation = useUpdatePropertyType({
         mutation: {
             onSuccess: () => {
                 form.reset();
@@ -33,7 +39,7 @@ export function useUpdatePropertyTypeVM() {
         },
     });
     const onSubmit = (data: PropertyTypeRequest) => {
-        mutation.mutate({ data });
+        mutation.mutate({ id: +id, data: data });
     };
     return { form, onSubmit };
 }

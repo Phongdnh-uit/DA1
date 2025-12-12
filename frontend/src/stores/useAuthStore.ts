@@ -8,6 +8,8 @@ interface AuthState {
     setUser: (user: UserResponse | null) => void;
     clearUser: () => void;
     finishInitialization: () => void;
+    permissionCodes: string[];
+    setPermissionCodes: (codes: string[]) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -21,4 +23,6 @@ export const useAuthStore = create<AuthState>((set) => ({
             isAuthenticated: false,
         })),
     finishInitialization: () => set(() => ({ isInitializing: false })),
+    permissionCodes: [],
+    setPermissionCodes: (codes) => set(() => ({ permissionCodes: codes })),
 }));

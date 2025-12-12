@@ -15,6 +15,7 @@ import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import SpiralLoader from "@/components/ui/SpiralLoader";
 import { LocationPicker } from "@/components/general/LocationPicker";
 import { Separator } from "@/components/ui/separator";
+import { type Location } from "@/types/location";
 
 export const CreatePropertyPage = () => {
     const {
@@ -29,6 +30,7 @@ export const CreatePropertyPage = () => {
         handleGalleryChange,
         handleRemoveGallery,
         handleRemoveThumbnail,
+        onLocationChange,
     } = useCreatePropertyVM();
 
     return (
@@ -338,7 +340,11 @@ export const CreatePropertyPage = () => {
                 </Card>
 
                 <div className="w-full">
-                    <LocationPicker />
+                    <LocationPicker
+                        onChange={(data) =>
+                            onLocationChange(data ? (data as Location) : undefined)
+                        }
+                    />
                 </div>
             </div>
         </div>

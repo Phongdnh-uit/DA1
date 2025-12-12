@@ -5,6 +5,7 @@
  * OpenAPI spec version: v0
  */
 import type { UserResponseStatus } from './userResponseStatus';
+import type { MediaResponse } from './mediaResponse';
 
 export interface UserResponse {
   id?: number;
@@ -16,9 +17,9 @@ export interface UserResponse {
   fullName?: string;
   email?: string;
   phone?: string;
-  avatarUrl?: string;
   emailVerified?: boolean;
   phoneVerified?: boolean;
   status?: UserResponseStatus;
   roleId?: number;
+  avatar?: MediaResponse;
 }

@@ -18,6 +18,8 @@ import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
 import { useNavigate } from "@tanstack/react-router";
+import PermissionGate from "@/components/general/PermissionGate";
+import { PropertyTypeDetailSheet } from "./PropertyTypeDetailSheet";
 
 const keys: (keyof PropertyTypeResponse)[] = [
     "id",
@@ -29,6 +31,8 @@ const keys: (keyof PropertyTypeResponse)[] = [
 ];
 
 export const PropertyTypeManage = () => {
+    const [propertyTypeDetail, setPropertyTypeDetail] = useState<PropertyTypeResponse | null>(null);
+    const [openedDetail, setOpenedDetail] = useState<boolean>(false);
     const navigate = useNavigate();
     const openDeleteDialog = useDeleteDialogStore((state) => state.openDialog);
     const deletePropertyType = useDeletePropertyTypeById({
@@ -46,21 +50,32 @@ export const PropertyTypeManage = () => {
         () => [
             createSelectionColumn<PropertyTypeResponse>(),
             ...createColumnsFromType<PropertyTypeResponse>(keys),
-            createActionColumn<PropertyTypeResponse>({
-                onEdit: (row) => {
-                    navigate({
-                        to: `/admin/property-type/${row.id}`,
-                    });
+            createActionColumn<PropertyTypeResponse>(
+                {
+                    onEdit: (row) => {
+                        navigate({
+                            to: `/admin/property-type/update/${row.id}`,
+                        });
+                    },
+                    onDelete: (row) => {
+                        openDeleteDialog({
+                            onConfirm() {
+                                if (!row.id) return;
+                                deletePropertyType.mutate({ id: row.id });
+                            },
+                        });
+                    },
+                    onView: (row) => {
+                        setPropertyTypeDetail(row);
+                        setOpenedDetail(true);
+                    }
                 },
-                onDelete: (row) => {
-                    openDeleteDialog({
-                        onConfirm() {
-                            if (!row.id) return;
-                            deletePropertyType.mutate({ id: row.id });
-                        },
-                    });
+                {
+                    deleteCode: "PROPERTY_TYPE_DELETE",
+                    editCode: "PROPERTY_TYPE_UPDATE",
+                    viewCode: "PROPERTY_TYPE_VIEW_DETAIL",
                 },
-            }),
+            ),
         ],
         [deletePropertyType, navigate, openDeleteDialog],
     );
@@ -87,7 +102,7 @@ export const PropertyTypeManage = () => {
     const bulkDeleteMutation = useDeleteBulkPropertyType({
         mutation: {
             onSuccess: () => {
-                toast.success("Delete successfully");
+                toast.success("Xoá thành công");
                 list.refetch();
             },
         },
@@ -102,7 +117,7 @@ export const PropertyTypeManage = () => {
     const onBulkDelete = () => {
         const ids = getSelectedRowIds();
         if (ids.length === 0) {
-            toast.info("Please choose one row to delete");
+            toast.info("Vui lòng chọn ít nhất một mục để xoá");
             return;
         }
         openDeleteDialog({
@@ -122,13 +137,17 @@ export const PropertyTypeManage = () => {
 
     return (
         <div className="space-y-4">
-            <div className="flex items-center justify-end">
-                <RippleButton
-                    onClick={() => navigate({ to: "/admin/property-type/create" })}
-                    className="h-12 bg-blue-700 text-white hover:bg-blue-700"
+            <div className="flex items-center justify-end p-2">
+                <PermissionGate
+                    permission="PROPERTY_TYPE_CREATE"
                 >
-                    <IconSparkles className="size-5" /> Create new
-                </RippleButton>
+                    <RippleButton
+                        onClick={() => navigate({ to: "/admin/property-type/create" })}
+                        className="h-12 bg-blue-700 text-white hover:bg-blue-700"
+                    >
+                        <IconSparkles className="size-5" />Thêm mới
+                    </RippleButton>
+                </PermissionGate>
             </div>
             <Filter
                 sortAttributes={[
@@ -148,7 +167,8 @@ export const PropertyTypeManage = () => {
                 onApply={onApplyFilter}
             />
             <DataTable
-                className="h-[550px]"
+                deleteCode="PROPERTY_TYPE_DELETE_BULK"
+                className="h-[500px]"
                 name="Loại bất động sản"
                 table={table}
                 onBulkDelete={onBulkDelete}
@@ -157,6 +177,11 @@ export const PropertyTypeManage = () => {
                 totalPages={list.data?.data?.totalPages || 0}
                 totalElements={list.data?.data?.totalElements || 0}
                 numberOfElements={list.data?.data?.numberOfElements || 0}
+            />
+            <PropertyTypeDetailSheet 
+                open={openedDetail}
+                onOpenChange={setOpenedDetail}
+                propertyType={propertyTypeDetail}
             />
         </div>
     );
