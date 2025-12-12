@@ -33,6 +33,9 @@ public class Permission extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private Method method;
 
+  @Column(nullable = false, unique = true, length = 100)
+  private String code;
+
   @ManyToMany(mappedBy = "permissions", fetch = FetchType.LAZY)
   private Set<Role> roles = new HashSet<>();
 }

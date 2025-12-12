@@ -6,6 +6,8 @@ import com.phongdnh.se121.dtos.authorization.PermissionRequest;
 import com.phongdnh.se121.dtos.authorization.PermissionResponse;
 import com.phongdnh.se121.dtos.authorization.RoleRequest;
 import com.phongdnh.se121.dtos.authorization.RoleResponse;
+import com.phongdnh.se121.dtos.booking.BookingRequest;
+import com.phongdnh.se121.dtos.booking.BookingResponse;
 import com.phongdnh.se121.dtos.property.PropertyRequest;
 import com.phongdnh.se121.dtos.property.PropertyResponse;
 import com.phongdnh.se121.dtos.property.PropertyTypeRequest;
@@ -19,6 +21,7 @@ import com.phongdnh.se121.dtos.wish.WishResponse;
 import com.phongdnh.se121.entities.authentication.User;
 import com.phongdnh.se121.entities.authorization.Permission;
 import com.phongdnh.se121.entities.authorization.Role;
+import com.phongdnh.se121.entities.booking.Booking;
 import com.phongdnh.se121.entities.property.Property;
 import com.phongdnh.se121.entities.property.PropertyType;
 import com.phongdnh.se121.entities.property.Province;
@@ -27,6 +30,7 @@ import com.phongdnh.se121.entities.wish.Wish;
 import com.phongdnh.se121.hooks.authentication.UserHook;
 import com.phongdnh.se121.hooks.authorizations.PermissionHook;
 import com.phongdnh.se121.hooks.authorizations.RoleHook;
+import com.phongdnh.se121.hooks.booking.BookingHook;
 import com.phongdnh.se121.hooks.property.PropertyHook;
 import com.phongdnh.se121.hooks.property.PropertyTypeHook;
 import com.phongdnh.se121.hooks.property.ProvinceHook;
@@ -35,6 +39,7 @@ import com.phongdnh.se121.hooks.wish.WishHook;
 import com.phongdnh.se121.mappers.authentication.UserMapper;
 import com.phongdnh.se121.mappers.authorization.PermissionMapper;
 import com.phongdnh.se121.mappers.authorization.RoleMapper;
+import com.phongdnh.se121.mappers.booking.BookingMapper;
 import com.phongdnh.se121.mappers.property.PropertyMapper;
 import com.phongdnh.se121.mappers.property.PropertyTypeMapper;
 import com.phongdnh.se121.mappers.property.ProvinceMapper;
@@ -43,6 +48,7 @@ import com.phongdnh.se121.mappers.wish.WishMapper;
 import com.phongdnh.se121.repositories.authentication.UserRepository;
 import com.phongdnh.se121.repositories.authorization.PermissionRepository;
 import com.phongdnh.se121.repositories.authorization.RoleRepository;
+import com.phongdnh.se121.repositories.booking.BookingRepository;
 import com.phongdnh.se121.repositories.property.PropertyRepository;
 import com.phongdnh.se121.repositories.property.PropertyTypeRepository;
 import com.phongdnh.se121.repositories.property.ProvinceRepository;
@@ -122,5 +128,13 @@ public class ServiceRegistration {
         context.getBean(WishRepository.class),
         context.getBean(WishMapper.class),
         context.getBean(WishHook.class));
+  }
+
+  @Bean
+  CrudService<Booking, Long, BookingRequest, BookingResponse> bookingService() {
+    return new GenericService<Booking, Long, BookingRequest, BookingResponse>(
+        context.getBean(BookingRepository.class),
+        context.getBean(BookingMapper.class),
+        context.getBean(BookingHook.class));
   }
 }

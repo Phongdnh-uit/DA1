@@ -25,4 +25,6 @@ public interface SecurityConstant {
     "/properties/similar/{id}",
     "/properties/within-radius"
   };
+
+  String[] PUBLIC_POST_URLS = {"/bookings"};
 }

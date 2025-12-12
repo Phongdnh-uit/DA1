@@ -33,9 +33,10 @@ public class PropertyServiceImpl implements PropertyService {
             .findById(id)
             .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND));
     String query = createQueryStategy(property);
+    System.out.println("Similarity Query: \n" + query);
     List<Long> similarPropertyIds =
         ragOrchestratorService.findSimilar(query, limit).stream()
-            .filter(similarId -> !similarId.equals(id))
+            .filter(similarId -> similarId != id)
             .toList();
     List<Property> similarProperties =
         propertyRepository.findAll((root, _, _) -> root.get("id").in(similarPropertyIds));
@@ -51,8 +52,6 @@ public class PropertyServiceImpl implements PropertyService {
         new StringBuilder("Tìm bất động sản có các đặc điểm tương tự với bất động sản sau đây:\n");
 
     sb.append("[BẤT ĐỘNG SẢN]").append("\n");
-    sb.append("ID: ").append(property.getId()).append("\n");
-    sb.append("Tiêu đề: ").append(StringUtil.safe(property.getTitle())).append("\n");
     sb.append("Mục đích: ").append(StringUtil.safe(property.getPurpose().getName())).append("\n");
     sb.append("Loại: ").append(StringUtil.safe(property.getType().getName())).append("\n");
     sb.append("Thành phố: ")
@@ -81,9 +80,6 @@ public class PropertyServiceImpl implements PropertyService {
           .append(property.getEntranceRoadWidth())
           .append(" m")
           .append("\n");
-    if (!StringUtil.safe(property.getLineAddress()).isEmpty())
-      sb.append("Địa chỉ: ").append(property.getLineAddress()).append("\n");
-
     return sb.toString().trim();
   }
 

@@ -1,15 +1,21 @@
 package com.phongdnh.se121.hooks.authentication;
 
+import com.phongdnh.se121.dtos.PageResponse;
 import com.phongdnh.se121.dtos.authentication.UserRequest;
 import com.phongdnh.se121.dtos.authentication.UserResponse;
+import com.phongdnh.se121.dtos.general.MediaResponse;
 import com.phongdnh.se121.entities.authentication.User;
 import com.phongdnh.se121.enums.authentication.UserStatus;
+import com.phongdnh.se121.enums.general.MediaEntityType;
+import com.phongdnh.se121.enums.general.MediaPurpose;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
 import com.phongdnh.se121.hooks.DefaultHook;
 import com.phongdnh.se121.repositories.authentication.UserRepository;
 import com.phongdnh.se121.repositories.authorization.RoleRepository;
+import com.phongdnh.se121.services.general.UploadService;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -22,6 +28,30 @@ public class UserHook extends DefaultHook<User, Long, UserRequest, UserResponse>
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final RoleRepository roleRepository;
+  private final UploadService uploadService;
+
+  @Override
+  public void enrichFindAll(PageResponse<UserResponse> responses) {
+    // Dirty code, lead to N+1 query problem
+    // TODO: Optimize later with batch query
+    for (UserResponse response : responses.getContent()) {
+      enrichFindById(response);
+    }
+  }
+
+  @Override
+  public void enrichFindById(UserResponse response) {
+    List<MediaResponse> avatars =
+        uploadService.findAll(
+            (root, _, builder) ->
+                builder.and(
+                    builder.equal(root.get("entityType"), MediaEntityType.USER),
+                    builder.equal(root.get("entityId"), response.getId()),
+                    builder.equal(root.get("purpose"), MediaPurpose.AVATAR)));
+    if (!avatars.isEmpty()) {
+      response.setAvatar(avatars.get(0));
+    }
+  }
 
   @Override
   public void validateCreate(UserRequest input, Map<String, Object> context) {

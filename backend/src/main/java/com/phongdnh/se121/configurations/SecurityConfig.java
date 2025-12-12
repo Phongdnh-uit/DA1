@@ -60,6 +60,8 @@ public class SecurityConfig implements WebMvcConfigurer {
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, SecurityConstant.PUBLIC_GET_URLS)
                     .permitAll()
+                    .requestMatchers(HttpMethod.POST, SecurityConstant.PUBLIC_POST_URLS)
+                    .permitAll()
                     .anyRequest()
                     .authenticated())
         .oauth2ResourceServer(
@@ -106,6 +108,17 @@ public class SecurityConfig implements WebMvcConfigurer {
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
-    registry.addInterceptor(permissionInterceptor());
+    registry
+        .addInterceptor(permissionInterceptor())
+        .excludePathPatterns(SecurityConstant.PUBLIC_URLS)
+        .excludePathPatterns(SecurityConstant.PUBLIC_GET_URLS)
+        .excludePathPatterns(SecurityConstant.PUBLIC_POST_URLS)
+        .excludePathPatterns(
+            "/auth/me/**",
+            "/auth/logout",
+            "/auth/change-password",
+            "/wishes/**",
+            "/chat/conversations/me",
+            "/chat/conversations/initialize");
   }
 }

@@ -12,4 +12,5 @@ public class PermissionResponse extends BaseEntity {
   private String resource;
   private String urlPattern;
   private Method method;
+  private String code;
 }

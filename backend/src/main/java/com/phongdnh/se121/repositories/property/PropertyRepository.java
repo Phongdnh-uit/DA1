@@ -1,6 +1,7 @@
 package com.phongdnh.se121.repositories.property;
 
 import com.phongdnh.se121.entities.property.Property;
+import com.phongdnh.se121.projections.PriceReferenceProjection;
 import com.phongdnh.se121.repositories.SimpleRepository;
 import java.time.Instant;
 import java.util.List;
@@ -45,4 +46,20 @@ public interface PropertyRepository extends SimpleRepository<Property, Long> {
           + " :distance")
   List<Property> findWithinDistance(
       @Param("point") Point point, @Param("distance") double distance);
+
+  @Query(
+      value =
+          """
+            SELECT
+                p.type_id AS typeId,
+                p.ward_id AS wardId,
+                COUNT(p.id) AS count,
+                AVG(p.price) AS averagePrice,
+                MIN(p.price) AS minPrice,
+                MAX(p.price) AS maxPrice
+            FROM properties p
+            GROUP BY p.type_id, p.ward_id
+          """,
+      nativeQuery = true)
+  List<PriceReferenceProjection> aggregatePriceReferences();
 }

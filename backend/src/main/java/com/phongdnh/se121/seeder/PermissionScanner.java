@@ -1,25 +1,14 @@
 package com.phongdnh.se121.seeder;
 
-import com.phongdnh.se121.constants.AppConstant;
-import com.phongdnh.se121.constants.SecurityConstant;
-import com.phongdnh.se121.entities.authorization.Permission;
-import com.phongdnh.se121.enums.authorization.Method;
 import com.phongdnh.se121.repositories.authorization.PermissionRepository;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 @Component
@@ -41,103 +30,107 @@ public class PermissionScanner {
   @EventListener(ApplicationReadyEvent.class)
   @Transactional
   public void scanAndSavePermissions() {
-    List<Permission> discoveredPermissions = new ArrayList<>();
-    // Lấy tất cả các endpoints
-    Map<RequestMappingInfo, HandlerMethod> handlerMethods =
-        requestMappingHandlerMapping.getHandlerMethods();
-
-    handlerMethods.forEach(
-        (info, handlerMethod) -> {
-          // 1. Lấy URL Patterns (một method có thể có nhiều URL)
-          Set<String> patterns = info.getPatternValues();
-
-          // 2. Lấy HTTP Methods (GET, POST, etc.)
-          Set<RequestMethod> methods = info.getMethodsCondition().getMethods();
-
-          // 3. Lấy tên Resource (Tên class Controller)
-          Class<?> controllerClass = handlerMethod.getBeanType();
-          Tag tagAnnotation =
-              AnnotatedElementUtils.findMergedAnnotation(controllerClass, Tag.class);
-          String resourceName = tagAnnotation != null ? tagAnnotation.name() : "Khác";
-
-          // Loại bỏ các endpoint nội bộ của Spring (như /error)
-          if (!resourceName.startsWith("BasicErrorController")) {
-            for (String pattern : patterns) {
-              for (RequestMethod method : methods) {
-                Set<String> publicUrls = Set.of(SecurityConstant.PUBLIC_URLS);
-                Set<String> publicGetUrls = Set.of(SecurityConstant.PUBLIC_GET_URLS);
-                if (publicUrls.contains(pattern)
-                    || (method == RequestMethod.GET && publicGetUrls.contains(pattern))) {
-                  continue; // Bỏ qua các URL công khai
-                }
-                if (publicUrls.stream()
-                        .anyMatch(
-                            pubUrl ->
-                                pubUrl.endsWith("/**")
-                                    && pattern.startsWith(pubUrl.substring(0, pubUrl.length() - 3)))
-                    || (method == RequestMethod.GET
-                        && publicGetUrls.stream()
-                            .anyMatch(
-                                pubUrl ->
-                                    pubUrl.endsWith("/**")
-                                        && pattern.startsWith(
-                                            pubUrl.substring(0, pubUrl.length() - 3))))) {
-                  continue; // Bỏ qua các URL công khai dạng /**
-                }
-                if (pattern.startsWith(AppConstant.OAUTH2_AUTHORIZATION_BASE_URI)) {
-                  continue;
-                }
-                if (pattern.startsWith(AppConstant.OAUTH2_AUTHORIZATION_CALLBACK_URI)) {
-                  continue;
-                }
-                Permission permission = new Permission();
-                permission.setResource(resourceName);
-                permission.setUrlPattern(pattern);
-                permission.setMethod(Method.valueOf(method.name()));
-
-                discoveredPermissions.add(permission);
-              }
-            }
-          }
-        });
-
-    discoveredPermissions.forEach(
-        permission ->
-            System.out.println(
-                "Method: " + permission.getMethod() + ", Pattern: " + permission.getUrlPattern()));
-    Set<String> existingPermissionKeys =
-        permissionRepository.findAll().stream()
-            .map(p -> p.getMethod() + ":" + p.getUrlPattern())
-            .collect(Collectors.toSet());
-
-    List<Permission> newPermissions =
-        discoveredPermissions.stream()
-            .filter(p -> !existingPermissionKeys.contains(p.getMethod() + ":" + p.getUrlPattern()))
-            .collect(Collectors.toList());
-
-    // Tạo tên cho các permission mới
-
-    newPermissions.parallelStream()
-        .forEach(
-            permission -> {
-              System.out.println(
-                  "Generating name for Permission - Method: "
-                      + permission.getMethod()
-                      + ", Pattern: "
-                      + permission.getUrlPattern());
-              String generatedName =
-                  generateNameByLLM(permission.getMethod().name(), permission.getUrlPattern());
-              permission.setName(generatedName);
-              System.out.println(
-                  "Generated Name: "
-                      + generatedName
-                      + " for Permission - Method: "
-                      + permission.getMethod()
-                      + ", Pattern: "
-                      + permission.getUrlPattern());
-            });
-    // Lưu các permission mới vào database
-    permissionRepository.saveAll(newPermissions);
+    return; // Disable automatic permission scanning for now
+    // List<Permission> discoveredPermissions = new ArrayList<>();
+    // // Lấy tất cả các endpoints
+    // Map<RequestMappingInfo, HandlerMethod> handlerMethods =
+    //     requestMappingHandlerMapping.getHandlerMethods();
+    //
+    // handlerMethods.forEach(
+    //     (info, handlerMethod) -> {
+    //       // 1. Lấy URL Patterns (một method có thể có nhiều URL)
+    //       Set<String> patterns = info.getPatternValues();
+    //
+    //       // 2. Lấy HTTP Methods (GET, POST, etc.)
+    //       Set<RequestMethod> methods = info.getMethodsCondition().getMethods();
+    //
+    //       // 3. Lấy tên Resource (Tên class Controller)
+    //       Class<?> controllerClass = handlerMethod.getBeanType();
+    //       Tag tagAnnotation =
+    //           AnnotatedElementUtils.findMergedAnnotation(controllerClass, Tag.class);
+    //       String resourceName = tagAnnotation != null ? tagAnnotation.name() : "Khác";
+    //
+    //       // Loại bỏ các endpoint nội bộ của Spring (như /error)
+    //       if (!resourceName.startsWith("BasicErrorController")) {
+    //         for (String pattern : patterns) {
+    //           for (RequestMethod method : methods) {
+    //             Set<String> publicUrls = Set.of(SecurityConstant.PUBLIC_URLS);
+    //             Set<String> publicGetUrls = Set.of(SecurityConstant.PUBLIC_GET_URLS);
+    //             if (publicUrls.contains(pattern)
+    //                 || (method == RequestMethod.GET && publicGetUrls.contains(pattern))) {
+    //               continue; // Bỏ qua các URL công khai
+    //             }
+    //             if (publicUrls.stream()
+    //                     .anyMatch(
+    //                         pubUrl ->
+    //                             pubUrl.endsWith("/**")
+    //                                 && pattern.startsWith(pubUrl.substring(0, pubUrl.length() -
+    // 3)))
+    //                 || (method == RequestMethod.GET
+    //                     && publicGetUrls.stream()
+    //                         .anyMatch(
+    //                             pubUrl ->
+    //                                 pubUrl.endsWith("/**")
+    //                                     && pattern.startsWith(
+    //                                         pubUrl.substring(0, pubUrl.length() - 3))))) {
+    //               continue; // Bỏ qua các URL công khai dạng /**
+    //             }
+    //             if (pattern.startsWith(AppConstant.OAUTH2_AUTHORIZATION_BASE_URI)) {
+    //               continue;
+    //             }
+    //             if (pattern.startsWith(AppConstant.OAUTH2_AUTHORIZATION_CALLBACK_URI)) {
+    //               continue;
+    //             }
+    //             Permission permission = new Permission();
+    //             permission.setResource(resourceName);
+    //             permission.setUrlPattern(pattern);
+    //             permission.setMethod(Method.valueOf(method.name()));
+    //
+    //             discoveredPermissions.add(permission);
+    //           }
+    //         }
+    //       }
+    //     });
+    //
+    // discoveredPermissions.forEach(
+    //     permission ->
+    //         System.out.println(
+    //             "Method: " + permission.getMethod() + ", Pattern: " +
+    // permission.getUrlPattern()));
+    // Set<String> existingPermissionKeys =
+    //     permissionRepository.findAll().stream()
+    //         .map(p -> p.getMethod() + ":" + p.getUrlPattern())
+    //         .collect(Collectors.toSet());
+    //
+    // List<Permission> newPermissions =
+    //     discoveredPermissions.stream()
+    //         .filter(p -> !existingPermissionKeys.contains(p.getMethod() + ":" +
+    // p.getUrlPattern()))
+    //         .collect(Collectors.toList());
+    //
+    // // Tạo tên cho các permission mới
+    //
+    // newPermissions.parallelStream()
+    //     .forEach(
+    //         permission -> {
+    //           System.out.println(
+    //               "Generating name for Permission - Method: "
+    //                   + permission.getMethod()
+    //                   + ", Pattern: "
+    //                   + permission.getUrlPattern());
+    //           String generatedName =
+    //               generateNameByLLM(permission.getMethod().name(), permission.getUrlPattern());
+    //           permission.setName(generatedName);
+    //           System.out.println(
+    //               "Generated Name: "
+    //                   + generatedName
+    //                   + " for Permission - Method: "
+    //                   + permission.getMethod()
+    //                   + ", Pattern: "
+    //                   + permission.getUrlPattern());
+    //         });
+    // // Lưu các permission mới vào database
+    // permissionRepository.saveAll(newPermissions);
   }
 
   private String generateNameByLLM(String method, String path) {

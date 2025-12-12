@@ -1,7 +1,6 @@
 package com.phongdnh.se121.securities.interceptors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.phongdnh.se121.constants.SecurityConstant;
 import com.phongdnh.se121.dtos.ApiResponse;
 import com.phongdnh.se121.entities.authorization.Permission;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
@@ -10,7 +9,6 @@ import com.phongdnh.se121.securities.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -26,17 +24,8 @@ public class PermissionInterceptor implements HandlerInterceptor {
       throws Exception {
 
     String path = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
-    // String requestURI = request.getRequestURI();
     String method = request.getMethod();
-    // System.out.println("PermissionInterceptor: " + method + " " + path + " | " + requestURI);
-    // if public endpoint, allow
     // if SUPER_ADMIN bypass
-    Set<String> publicUrls = Set.of(SecurityConstant.PUBLIC_URLS);
-    Set<String> publicGetUrls = Set.of(SecurityConstant.PUBLIC_GET_URLS);
-    if (publicUrls.contains(path)
-        || (publicGetUrls.contains(path) && method.equalsIgnoreCase("GET"))) {
-      return true;
-    }
     if (!SecurityUtil.isRealAuthenticated()) {
       return true;
     }

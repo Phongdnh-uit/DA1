@@ -12,5 +12,6 @@ public class UploadSignatureResponse {
   private String apiKey;
   private String cloudName;
   private String publicId;
+  private String folder;
   private List<String> tags;
 }

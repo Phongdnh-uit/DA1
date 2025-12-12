@@ -104,7 +104,11 @@ public class RAGOrchestratorServiceImpl implements RAGOrchestratorService {
     return vectorStore
         .similaritySearch(SearchRequest.builder().topK(topK).query(query).build())
         .stream()
-        .map(doc -> Long.parseLong(doc.getMetadata().get("propertyId").toString()))
+        .map(
+            doc -> {
+              Object idObj = doc.getMetadata().get("propertyId");
+              return ((Number) idObj).longValue();
+            })
         .toList();
   }
 }

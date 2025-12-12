@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,12 @@ public class UploadServiceImpl implements UploadService {
   private final MediaRepository mediaRepository;
   private final Cloudinary cloudinary;
   private final MediaMapper mediaMapper;
+
+  @Override
+  public List<MediaResponse> findAll(Specification<Media> mediaSpecification) {
+    List<Media> medias = mediaRepository.findAll(mediaSpecification);
+    return medias.stream().map(mediaMapper::entityToResponse).toList();
+  }
 
   @Override
   public void deleteFile(Long mediaId) {
@@ -59,6 +66,7 @@ public class UploadServiceImpl implements UploadService {
       // 4. ---- Create signature ----
       Map<String, Object> paramsToSign = new HashMap<>();
       paramsToSign.put("timestamp", timestamp);
+      paramsToSign.put("folder", folder);
       paramsToSign.put("public_id", publicId);
       paramsToSign.put("tags", tags);
       paramsToSign.put("transformation", "w_1024,h_1024,c_fill,q_auto,f_auto");
@@ -72,6 +80,7 @@ public class UploadServiceImpl implements UploadService {
       response.setTimestamp(timestamp.toString());
       response.setPublicId(publicId);
       response.setCloudName(cloudinary.config.cloudName);
+      response.setFolder(folder);
       response.setSignature(signature);
       response.setTags(tags);
       return response;

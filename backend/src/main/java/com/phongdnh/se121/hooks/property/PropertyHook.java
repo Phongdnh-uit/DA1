@@ -42,6 +42,8 @@ public class PropertyHook extends DefaultHook<Property, Long, PropertyRequest, P
   private final RAGIngestionService ragIngestionService;
   private final GeometryFactory geometryFactory;
 
+  // ============================ ENRICH ============================
+
   @Override
   public void enrichFindAll(PageResponse<PropertyResponse> responses) {
     Map<Long, List<MediaResponse>> mediasMap = new HashMap<>();
@@ -80,6 +82,18 @@ public class PropertyHook extends DefaultHook<Property, Long, PropertyRequest, P
   }
 
   @Override
+  public void enrichCreate(PropertyRequest input, Property entity, Map<String, Object> context) {
+    enrich(input, entity);
+  }
+
+  @Override
+  public void enrichUpdate(PropertyRequest input, Property entity, Map<String, Object> context) {
+    enrich(input, entity);
+  }
+
+  // ============================ VALIDATE ============================
+
+  @Override
   public void validateCreate(PropertyRequest input, Map<String, Object> context) {
     validate(input);
     context.put("request", input);
@@ -91,6 +105,8 @@ public class PropertyHook extends DefaultHook<Property, Long, PropertyRequest, P
     validate(input);
     context.put("request", input);
   }
+
+  // ============================ AFTER ============================
 
   @Override
   public void afterCreate(Property entity, PropertyResponse response, Map<String, Object> context) {
@@ -152,16 +168,6 @@ public class PropertyHook extends DefaultHook<Property, Long, PropertyRequest, P
   }
 
   @Override
-  public void enrichCreate(PropertyRequest input, Property entity, Map<String, Object> context) {
-    enrich(input, entity);
-  }
-
-  @Override
-  public void enrichUpdate(PropertyRequest input, Property entity, Map<String, Object> context) {
-    enrich(input, entity);
-  }
-
-  @Override
   public void afterBulkDelete(Iterable<Long> ids) {
     for (Long propertyId : ids) {
       ragIngestionService.deletePropertyIngestion(propertyId);
@@ -174,6 +180,8 @@ public class PropertyHook extends DefaultHook<Property, Long, PropertyRequest, P
     ragIngestionService.deletePropertyIngestion(id);
     uploadService.deleteAllByEntity(MediaEntityType.PROPERTY, id);
   }
+
+  // ============================ HELPER ============================
 
   private void validate(PropertyRequest request) {
     Map<String, String> errors = new HashMap<>();

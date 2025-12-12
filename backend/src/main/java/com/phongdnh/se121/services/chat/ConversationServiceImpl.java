@@ -43,7 +43,6 @@ public class ConversationServiceImpl implements ConversationService {
 
   @Override
   public ConversationResponse getConversationById(Long conversationId) {
-
     Conversation conversation =
         conversationRepository
             .findById(conversationId)
@@ -55,6 +54,8 @@ public class ConversationServiceImpl implements ConversationService {
   @Override
   public ConversationResponse initializeChat(ChatInitilizeRequest request) {
     Long userId = SecurityUtil.getCurrentUserId();
+    // Check if there is an existing OPEN or PENDING conversation for the user, check if has current
+    // but context is null also create new
     Specification<ConversationParticipant> spec =
         (root, _, builder) ->
             builder.and(
@@ -63,6 +64,12 @@ public class ConversationServiceImpl implements ConversationService {
                     builder.equal(root.get("conversation").get("status"), ConversationStatus.OPEN),
                     builder.equal(
                         root.get("conversation").get("status"), ConversationStatus.PENDING)));
+    if (request.getContextId() != null) {
+      spec =
+          spec.and(
+              (root, _, builder) ->
+                  builder.equal(root.get("conversation").get("contextId"), request.getContextId()));
+    }
     Optional<ConversationParticipant> participantOpt =
         conversationParticipantRepository.findOne(spec);
     if (participantOpt.isPresent()) {
