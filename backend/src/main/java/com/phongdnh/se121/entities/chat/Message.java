@@ -2,12 +2,15 @@ package com.phongdnh.se121.entities.chat;
 
 import com.phongdnh.se121.entities.BaseEntity;
 import com.phongdnh.se121.entities.authentication.User;
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -30,4 +33,11 @@ public class Message extends BaseEntity {
   private User sender;
 
   private String content;
+
+  @OneToMany(
+      mappedBy = "message",
+      fetch = FetchType.LAZY,
+      cascade = CascadeType.ALL,
+      orphanRemoval = true)
+  private List<ChatAttachment> attachments = new ArrayList<>();
 }

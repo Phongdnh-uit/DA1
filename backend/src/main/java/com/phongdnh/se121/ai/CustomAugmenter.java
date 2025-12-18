@@ -23,14 +23,17 @@ public class CustomAugmenter implements QueryAugmenter {
   @Override
   public Query augment(Query query, List<Document> documents) {
     for (Document doc : documents) {
-        System.out.println("Document: " + doc.getText());
-      String propertyId = (String) doc.getMetadata().get("propertyId");
+      Long propertyId = ((Double) doc.getMetadata().get("propertyId")).longValue();
       StringBuilder urlBuilder = new StringBuilder(AppConstant.FRONTEND_URL);
       urlBuilder.append("/detail/").append(propertyId);
-      doc.getMetadata().put("url", urlBuilder.toString());
+      StringBuilder textBuilder = new StringBuilder(doc.getText());
+      textBuilder.append("\nLiên kết: ").append(urlBuilder);
+      Document updatedDoc =
+          Document.builder().text(textBuilder.toString()).metadata(doc.getMetadata()).build();
+      documents.set(documents.indexOf(doc), updatedDoc);
     }
-    System.out.println("Number of documents: " + documents.size());
-    System.out.println("Query before augmentation: " + query.text());
-    return delegate.augment(query, documents);
+    Query lastQuery = delegate.augment(query, documents);
+    System.out.println("Augmented Query: " + lastQuery.text());
+    return lastQuery;
   }
 }

@@ -14,4 +14,6 @@ public class BaseUserRequest {
   @NotBlank @Email private String email;
 
   @NotBlank @ValidPhone private String phone;
+
+  private Long avatarId;
 }

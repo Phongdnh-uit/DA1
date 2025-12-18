@@ -13,8 +13,6 @@ import com.phongdnh.se121.dtos.authentication.UserResponse;
 import com.phongdnh.se121.dtos.authentication.VerifyEmailRequest;
 import com.phongdnh.se121.dtos.authentication.VerifyOtpRequest;
 import com.phongdnh.se121.dtos.authentication.VerifyOtpResponse;
-import com.phongdnh.se121.dtos.general.MediaResponse;
-import com.phongdnh.se121.dtos.general.UploadConfirmRequest;
 import com.phongdnh.se121.entities.authentication.RefreshToken;
 import com.phongdnh.se121.entities.authentication.User;
 import com.phongdnh.se121.entities.authentication.Verification;
@@ -23,18 +21,18 @@ import com.phongdnh.se121.enums.authentication.OtpChannel;
 import com.phongdnh.se121.enums.authentication.UserStatus;
 import com.phongdnh.se121.enums.authentication.VerificationType;
 import com.phongdnh.se121.enums.general.ContactType;
-import com.phongdnh.se121.enums.general.MediaEntityType;
-import com.phongdnh.se121.enums.general.MediaPurpose;
+import com.phongdnh.se121.enums.general.FilePurpose;
+import com.phongdnh.se121.enums.general.FileUsageStatus;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
 import com.phongdnh.se121.mappers.authentication.UserMapper;
 import com.phongdnh.se121.repositories.authentication.UserRepository;
 import com.phongdnh.se121.repositories.authorization.PermissionRepository;
 import com.phongdnh.se121.repositories.authorization.RoleRepository;
+import com.phongdnh.se121.repositories.general.FileRepository;
 import com.phongdnh.se121.securities.SecurityUtil;
 import com.phongdnh.se121.securities.TokenProvider;
 import com.phongdnh.se121.services.general.MailService;
-import com.phongdnh.se121.services.general.UploadService;
 import com.phongdnh.se121.utils.OtpGenerator;
 import com.phongdnh.se121.utils.ValidationUtil;
 import java.util.HashMap;
@@ -65,8 +63,8 @@ public class AuthServiceImpl implements AuthService {
   private final MailService mailService;
   private final UserMapper userMapper;
   private final RoleRepository roleRepository;
-  private final UploadService uploadService;
   private final PermissionRepository permissionRepository;
+  private final FileRepository fileRepository;
 
   // ============================ LOGIN ============================
   @Override
@@ -301,16 +299,6 @@ public class AuthServiceImpl implements AuthService {
             .findById(userId)
             .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND));
     UserResponse userResponse = userMapper.entityToResponse(user);
-    List<MediaResponse> avatars =
-        uploadService.findAll(
-            (root, _, builder) ->
-                builder.and(
-                    builder.equal(root.get("entityType"), MediaEntityType.USER),
-                    builder.equal(root.get("entityId"), userId),
-                    builder.equal(root.get("purpose"), MediaPurpose.AVATAR)));
-    if (!avatars.isEmpty()) {
-      userResponse.setAvatar(avatars.get(0));
-    }
     return userResponse;
   }
 
@@ -362,24 +350,41 @@ public class AuthServiceImpl implements AuthService {
       throw new ApiException(ErrorCode.VALIDATION_ERROR, errors);
     }
     userMapper.partialUpdate(request, user);
+    // Handle avatar update
+    if (request.getAvatarId() != null) {
+      var currentAvatar = user.getAvatar();
+      var newAvatarId = request.getAvatarId();
+
+      if (currentAvatar != null) {
+        if (currentAvatar.getId().equals(newAvatarId)) {
+          // No change in avatar
+          user = userRepository.save(user);
+          return userMapper.entityToResponse(user);
+        }
+        currentAvatar.setUsageStatus(FileUsageStatus.NOT_IN_USE);
+        fileRepository.save(currentAvatar);
+      }
+
+      var newAvatar =
+          fileRepository
+              .findOne(
+                  (root, _, builder) ->
+                      builder.and(
+                          builder.equal(root.get("id"), newAvatarId),
+                          builder.equal(root.get("purpose"), FilePurpose.AVATAR)))
+              .orElseThrow(
+                  () -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND, "Avatar not found"));
+
+      if (newAvatar.getUsageStatus() == FileUsageStatus.IN_USE) {
+        throw new ApiException(ErrorCode.RESOURCE_EXISTS, "Avatar is already in use");
+      }
+
+      user.setAvatar(newAvatar);
+      newAvatar.setUsageStatus(FileUsageStatus.IN_USE);
+      fileRepository.save(newAvatar);
+    }
     user = userRepository.save(user);
     return userMapper.entityToResponse(user);
-  }
-
-  // ============================ UPDATE CURRENT USER AVATAR ============================
-  @Override
-  public MediaResponse updateCurrentUserAvatar(UploadConfirmRequest request) {
-    Long userId = SecurityUtil.getCurrentUserId();
-    if (request.getPurpose() != MediaPurpose.AVATAR) {
-      throw new ApiException(ErrorCode.VALIDATION_ERROR, Map.of("purpose", "Invalid purpose"));
-    }
-    uploadService.deleteAllByEntity(MediaEntityType.USER, userId);
-    List<MediaResponse> mediaResponse =
-        uploadService.confirmUpload(List.of(request), MediaEntityType.USER, userId);
-    if (mediaResponse.isEmpty()) {
-      throw new ApiException(ErrorCode.UPLOAD_FAILED);
-    }
-    return mediaResponse.get(0);
   }
 
   // ============================ GET CURRENT USER PERMISSIONS ============================

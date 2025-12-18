@@ -1,0 +1,28 @@
+ALTER TABLE files ADD COLUMN purpose VARCHAR(100);
+
+CREATE TABLE IF NOT EXISTS chat_attachments (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    attachment_id BIGINT NOT NULL,
+    message_id BIGINT NOT NULL,
+    version BIGINT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by BIGINT,
+    updated_by BIGINT,
+    FOREIGN KEY (attachment_id) REFERENCES files(id),
+    FOREIGN KEY (message_id) REFERENCES messages(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS property_files (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    property_id BIGINT NOT NULL,
+    file_id BIGINT NOT NULL,
+    version BIGINT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by BIGINT,
+    updated_by BIGINT,
+    FOREIGN KEY (file_id) REFERENCES files(id),
+    FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE
+);
+

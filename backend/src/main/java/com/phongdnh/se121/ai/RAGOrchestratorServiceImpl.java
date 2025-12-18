@@ -11,7 +11,6 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
-import org.springframework.ai.rag.generation.augmentation.ContextualQueryAugmenter;
 import org.springframework.ai.rag.preretrieval.query.transformation.CompressionQueryTransformer;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.template.st.StTemplateRenderer;
@@ -69,11 +68,12 @@ public class RAGOrchestratorServiceImpl implements RAGOrchestratorService {
                     .build())
             .documentRetriever(
                 VectorStoreDocumentRetriever.builder().vectorStore(vectorStore).build())
-            .queryAugmenter(
-                ContextualQueryAugmenter.builder()
-                    .allowEmptyContext(true)
-                    .promptTemplate(customPromtTemplate)
-                    .build())
+            // .queryAugmenter(
+            //     ContextualQueryAugmenter.builder()
+            //         .allowEmptyContext(true)
+            //         .promptTemplate(customPromtTemplate)
+            //         .build())
+            .queryAugmenter(new CustomAugmenter(customPromtTemplate))
             .build();
     this.chatClient = ChatClient.builder(chatModel).build();
   }

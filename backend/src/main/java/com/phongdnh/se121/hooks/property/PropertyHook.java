@@ -8,16 +8,22 @@ import com.phongdnh.se121.dtos.property.PropertyRequest;
 import com.phongdnh.se121.dtos.property.PropertyResponse;
 import com.phongdnh.se121.entities.general.Media;
 import com.phongdnh.se121.entities.property.Property;
+import com.phongdnh.se121.entities.property.PropertyFile;
+import com.phongdnh.se121.enums.general.FilePurpose;
+import com.phongdnh.se121.enums.general.FileUsageStatus;
 import com.phongdnh.se121.enums.general.MediaEntityType;
 import com.phongdnh.se121.enums.general.MediaPurpose;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
 import com.phongdnh.se121.hooks.DefaultHook;
 import com.phongdnh.se121.mappers.general.MediaMapper;
+import com.phongdnh.se121.repositories.general.FileRepository;
 import com.phongdnh.se121.repositories.general.MediaRepository;
+import com.phongdnh.se121.repositories.property.PropertyRepository;
 import com.phongdnh.se121.repositories.property.PropertyTypeRepository;
 import com.phongdnh.se121.repositories.property.ProvinceRepository;
 import com.phongdnh.se121.repositories.property.WardRepository;
+import com.phongdnh.se121.securities.SecurityUtil;
 import com.phongdnh.se121.services.general.UploadService;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,6 +47,8 @@ public class PropertyHook extends DefaultHook<Property, Long, PropertyRequest, P
   private final MediaMapper mediaMapper;
   private final RAGIngestionService ragIngestionService;
   private final GeometryFactory geometryFactory;
+  private final FileRepository fileRepository;
+  private final PropertyRepository propertyRepository;
 
   // ============================ ENRICH ============================
 
@@ -168,6 +176,32 @@ public class PropertyHook extends DefaultHook<Property, Long, PropertyRequest, P
   }
 
   @Override
+  public void validateBulkDelete(Iterable<Long> ids) {
+    List<Property> properties = propertyRepository.findAllById((Iterable<Long>) ids);
+    var documents =
+        properties.stream()
+            .flatMap(property -> property.getDocuments().stream())
+            .map(PropertyFile::getFile)
+            .toList();
+    documents.stream().forEach(file -> file.setUsageStatus(FileUsageStatus.NOT_IN_USE));
+    fileRepository.saveAll(documents);
+  }
+
+  @Override
+  public void validateDelete(Long id) {
+    Property property =
+        propertyRepository
+            .findById(id)
+            .orElseThrow(
+                () -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND, "Property not found"));
+    var documents = property.getDocuments().stream().map(PropertyFile::getFile).toList();
+    documents.stream().forEach(file -> file.setUsageStatus(FileUsageStatus.NOT_IN_USE));
+    fileRepository.saveAll(documents);
+  }
+
+  // ============================ AFTER ============================
+
+  @Override
   public void afterBulkDelete(Iterable<Long> ids) {
     for (Long propertyId : ids) {
       ragIngestionService.deletePropertyIngestion(propertyId);
@@ -209,6 +243,7 @@ public class PropertyHook extends DefaultHook<Property, Long, PropertyRequest, P
   }
 
   private void enrich(PropertyRequest input, Property entity) {
+    Long userId = SecurityUtil.getCurrentUserId();
     // if location is provided, set location
     if (input.getLocation() != null) {
       entity.setLocation(
@@ -220,6 +255,26 @@ public class PropertyHook extends DefaultHook<Property, Long, PropertyRequest, P
     // set other foreign keys
     entity.setType(propertyTypeRepository.getReferenceById(input.getTypeId()));
     entity.setWard(wardRepository.getReferenceById(input.getWardId()));
+    entity.getDocuments().clear();
+    // handle documents if any
+    if (input.getDocumentIds() != null && !input.getDocumentIds().isEmpty()) {
+      var documents =
+          fileRepository.findAll(
+              (root, _, builder) ->
+                  builder.and(
+                      root.get("id").in(input.getDocumentIds()),
+                      builder.equal(root.get("purpose"), FilePurpose.PROPERTY_FILE),
+                      builder.equal(root.get("createdBy"), userId)));
+      // mark all files as USED
+      documents.forEach(file -> file.setUsageStatus(FileUsageStatus.IN_USE));
+      documents.forEach(
+          file -> {
+            PropertyFile propertyFile = new PropertyFile();
+            propertyFile.setFile(file);
+            propertyFile.setProperty(entity);
+            entity.getDocuments().add(propertyFile);
+          });
+    }
   }
 
   private List<MediaResponse> saveMediasAfter(

@@ -3,6 +3,7 @@ package com.phongdnh.se121.constants;
 public interface SecurityConstant {
 
   String[] PUBLIC_URLS = {
+    "/actuator/**",
     "/swagger-ui/**",
     "/v3/api-docs/**",
     "/auth/login",
@@ -13,7 +14,8 @@ public interface SecurityConstant {
     "/auth/register",
     "/auth/reset-password",
     "/ai/chat/**",
-    "/ws/**"
+    "/ws/**",
+    "/files/storage/webhook/callback" // Use static token for webhook callback
   };
 
   String[] PUBLIC_GET_URLS = {

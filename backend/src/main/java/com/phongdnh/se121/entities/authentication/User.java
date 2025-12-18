@@ -1,11 +1,15 @@
 package com.phongdnh.se121.entities.authentication;
 
 import com.phongdnh.se121.entities.BaseEntity;
+import com.phongdnh.se121.entities.general.File;
 import com.phongdnh.se121.enums.authentication.UserStatus;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +29,9 @@ public class User extends BaseEntity {
 
   private String passwordHash;
 
-  private String avatarUrl;
+  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(name = "avatar_id")
+  private File avatar;
 
   private boolean emailVerified;
 

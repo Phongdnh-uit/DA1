@@ -1,21 +1,18 @@
 package com.phongdnh.se121.hooks.authentication;
 
-import com.phongdnh.se121.dtos.PageResponse;
 import com.phongdnh.se121.dtos.authentication.UserRequest;
 import com.phongdnh.se121.dtos.authentication.UserResponse;
-import com.phongdnh.se121.dtos.general.MediaResponse;
 import com.phongdnh.se121.entities.authentication.User;
 import com.phongdnh.se121.enums.authentication.UserStatus;
-import com.phongdnh.se121.enums.general.MediaEntityType;
-import com.phongdnh.se121.enums.general.MediaPurpose;
+import com.phongdnh.se121.enums.general.FilePurpose;
+import com.phongdnh.se121.enums.general.FileUsageStatus;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
 import com.phongdnh.se121.hooks.DefaultHook;
 import com.phongdnh.se121.repositories.authentication.UserRepository;
 import com.phongdnh.se121.repositories.authorization.RoleRepository;
-import com.phongdnh.se121.services.general.UploadService;
+import com.phongdnh.se121.repositories.general.FileRepository;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -28,30 +25,7 @@ public class UserHook extends DefaultHook<User, Long, UserRequest, UserResponse>
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final RoleRepository roleRepository;
-  private final UploadService uploadService;
-
-  @Override
-  public void enrichFindAll(PageResponse<UserResponse> responses) {
-    // Dirty code, lead to N+1 query problem
-    // TODO: Optimize later with batch query
-    for (UserResponse response : responses.getContent()) {
-      enrichFindById(response);
-    }
-  }
-
-  @Override
-  public void enrichFindById(UserResponse response) {
-    List<MediaResponse> avatars =
-        uploadService.findAll(
-            (root, _, builder) ->
-                builder.and(
-                    builder.equal(root.get("entityType"), MediaEntityType.USER),
-                    builder.equal(root.get("entityId"), response.getId()),
-                    builder.equal(root.get("purpose"), MediaPurpose.AVATAR)));
-    if (!avatars.isEmpty()) {
-      response.setAvatar(avatars.get(0));
-    }
-  }
+  private final FileRepository fileRepository;
 
   @Override
   public void validateCreate(UserRequest input, Map<String, Object> context) {
@@ -107,6 +81,37 @@ public class UserHook extends DefaultHook<User, Long, UserRequest, UserResponse>
       entity.setStatus(UserStatus.ACTIVE);
     } else {
       entity.setStatus(UserStatus.UNVERIFIED);
+    }
+
+    if (input.getAvatarId() != null) {
+      var currentAvatar = entity.getAvatar();
+      var newAvatarId = input.getAvatarId();
+
+      if (currentAvatar != null) {
+        if (currentAvatar.getId().equals(newAvatarId)) {
+          return;
+        }
+        currentAvatar.setUsageStatus(FileUsageStatus.NOT_IN_USE);
+        fileRepository.save(currentAvatar);
+      }
+
+      var newAvatar =
+          fileRepository
+              .findOne(
+                  (root, _, builder) ->
+                      builder.and(
+                          builder.equal(root.get("id"), newAvatarId),
+                          builder.equal(root.get("purpose"), FilePurpose.AVATAR)))
+              .orElseThrow(
+                  () -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND, "Avatar not found"));
+
+      if (newAvatar.getUsageStatus() == FileUsageStatus.IN_USE) {
+        throw new ApiException(ErrorCode.RESOURCE_EXISTS, "Avatar is already in use");
+      }
+
+      entity.setAvatar(newAvatar);
+      newAvatar.setUsageStatus(FileUsageStatus.IN_USE);
+      fileRepository.save(newAvatar);
     }
   }
 }

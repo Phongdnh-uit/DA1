@@ -1,6 +1,6 @@
 package com.phongdnh.se121.dtos.authentication;
 
-import com.phongdnh.se121.dtos.general.MediaResponse;
+import com.phongdnh.se121.dtos.general.FileResponse;
 import com.phongdnh.se121.entities.BaseEntity;
 import com.phongdnh.se121.enums.authentication.UserStatus;
 import lombok.Getter;
@@ -23,5 +23,5 @@ public class UserResponse extends BaseEntity {
 
   private Long roleId;
 
-  private MediaResponse avatar;
+  private FileResponse avatar;
 }

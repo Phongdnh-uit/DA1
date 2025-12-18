@@ -14,8 +14,6 @@ import com.phongdnh.se121.dtos.authentication.UserResponse;
 import com.phongdnh.se121.dtos.authentication.VerifyEmailRequest;
 import com.phongdnh.se121.dtos.authentication.VerifyOtpRequest;
 import com.phongdnh.se121.dtos.authentication.VerifyOtpResponse;
-import com.phongdnh.se121.dtos.general.MediaResponse;
-import com.phongdnh.se121.dtos.general.UploadConfirmRequest;
 import com.phongdnh.se121.services.authentication.AuthService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -102,12 +100,6 @@ public class AuthController {
   public ResponseEntity<ApiResponse<UserResponse>> updateCurrentUser(
       @Valid @RequestBody BaseUserRequest request) {
     return ResponseEntity.ok(ApiResponse.ok(authService.updateCurrentUser(request)));
-  }
-
-  @PostMapping("/me/avatar")
-  public ResponseEntity<ApiResponse<MediaResponse>> updateCurrentUserAvatar(
-      @Valid @RequestBody UploadConfirmRequest request) {
-    return ResponseEntity.ok(ApiResponse.ok(authService.updateCurrentUserAvatar(request)));
   }
 
   @GetMapping("/me/permissions")

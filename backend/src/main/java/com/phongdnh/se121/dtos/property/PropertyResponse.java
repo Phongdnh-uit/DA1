@@ -1,5 +1,6 @@
 package com.phongdnh.se121.dtos.property;
 
+import com.phongdnh.se121.dtos.general.FileResponse;
 import com.phongdnh.se121.dtos.general.MediaResponse;
 import com.phongdnh.se121.entities.BaseEntity;
 import com.phongdnh.se121.enums.property.Direction;
@@ -58,4 +59,6 @@ public class PropertyResponse extends BaseEntity {
   private List<MediaResponse> medias;
 
   private Location location;
+
+  private List<FileResponse> documents;
 }

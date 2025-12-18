@@ -42,7 +42,7 @@ public class RAGIngestionServiceImpl implements RAGIngestionService {
     try {
       FilterExpressionBuilder builder = new FilterExpressionBuilder();
 
-      Filter.Expression filterExpression = builder.eq("propertyId", propertyId.toString()).build();
+      Filter.Expression filterExpression = builder.eq("propertyId", propertyId.doubleValue()).build();
 
       vectorStore.delete(filterExpression);
 

@@ -7,6 +7,7 @@ import com.phongdnh.se121.enums.property.PropertyStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import java.util.List;
 import lombok.Getter;
@@ -21,9 +22,7 @@ public class PropertyRequest {
 
   @NotNull private Long typeId;
 
-  @Min(0)
-  @NotNull
-  private BigDecimal price;
+  @PositiveOrZero @NotNull private BigDecimal price;
 
   private String lineAddress;
 
@@ -31,23 +30,17 @@ public class PropertyRequest {
 
   @NotNull private Long wardId;
 
-  @Min(0)
-  private BigDecimal landArea;
+  @PositiveOrZero private BigDecimal landArea;
 
-  @Min(0)
-  private BigDecimal floorArea;
+  @PositiveOrZero private BigDecimal floorArea;
 
-  @Min(0)
-  private Integer floors;
+  @PositiveOrZero private Integer floors;
 
-  @Min(0)
-  private Integer floorNumber;
+  @PositiveOrZero private Integer floorNumber;
 
-  @Min(0)
-  private Integer bedrooms;
+  @PositiveOrZero private Integer bedrooms;
 
-  @Min(0)
-  private Integer bathrooms;
+  @PositiveOrZero private Integer bathrooms;
 
   private Direction direction;
 
@@ -71,4 +64,6 @@ public class PropertyRequest {
   private List<UploadConfirmRequest> medias;
 
   private Location location;
+
+  private List<Long> documentIds;
 }

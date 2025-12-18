@@ -4,12 +4,20 @@ import com.phongdnh.se121.entities.authentication.User;
 import com.phongdnh.se121.repositories.SimpleRepository;
 import java.time.Instant;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends SimpleRepository<User, Long> {
+
+  @EntityGraph(attributePaths = {"avatar"})
+  @Override
+  Page<User> findAll(Specification<User> spec, Pageable pageable);
 
   @Query(
       value =
