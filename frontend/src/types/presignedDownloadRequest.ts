@@ -5,11 +5,8 @@
  * OpenAPI spec version: v0
  */
 
-export interface BaseUserRequest {
-  fullName?: string;
+export interface PresignedDownloadRequest {
   /** @minLength 1 */
-  email: string;
-  /** @minLength 1 */
-  phone: string;
-  avatarId?: number;
+  objectKey: string;
+  options?: string;
 }

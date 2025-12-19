@@ -39,12 +39,13 @@ export function PreferencesSection() {
                     </h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        {themes.map((t) => {
+                        {themes.map((t, id) => {
                             const isActive =
                                 (t.id === "dark" && isDarkMode) ||
                                 (t.id === "light" && !isDarkMode);
                             return (
                                 <ThemeToggleButton
+                                    key={id}
                                     variant="circle-blur"
                                     onClick={() => startTransition(toggle)}
                                     asChild

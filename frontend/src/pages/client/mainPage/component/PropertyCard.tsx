@@ -2,7 +2,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Heart, Image as ImageIcon, MapPin, ScaleIcon } from "lucide-react";
-import { MediaResponsePurpose, type PropertyResponse } from "@/types";
+import { type PropertyResponse } from "@/types";
 import { useNavigate } from "@tanstack/react-router";
 import { formatCurrency, propertyStatusConverter } from "@/utils/converter";
 import { motion } from "motion/react";
@@ -11,6 +11,7 @@ import { useCreateWish } from "@/services/wish/wish";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { usePropertyComparisonStore } from "@/stores/propertyComparisonStore";
+import { useFilePreview } from "@/hooks/useFileHook";
 
 interface PropertyCardProps {
     data: PropertyResponse;
@@ -19,7 +20,9 @@ interface PropertyCardProps {
 }
 
 const PropertyCard = ({ data, isFavorite, isMini }: PropertyCardProps) => {
-    const addPropertyToCompare = usePropertyComparisonStore((state) => state.addProperty);
+    const addPropertyToCompare = usePropertyComparisonStore(
+        (state) => state.addProperty,
+    );
     const navigate = useNavigate();
 
     const [isFavorited, setIsFavorited] = useState(false);
@@ -44,6 +47,11 @@ const PropertyCard = ({ data, isFavorite, isMini }: PropertyCardProps) => {
         }
     };
 
+    const url = useFilePreview(
+        data.thumbnail?.objectName,
+        "rs:fill:300:300:0/g:sm",
+    );
+
     useEffect(() => {
         if (isFavorite) {
             setIsFavorited(isFavorite);
@@ -62,11 +70,7 @@ const PropertyCard = ({ data, isFavorite, isMini }: PropertyCardProps) => {
                     <motion.img
                         whileHover={{ scale: 1.1 }}
                         transition={{ duration: 0.6 }}
-                        src={
-                            data?.medias?.find(
-                                (m) => m.purpose === MediaResponsePurpose.THUMBNAIL,
-                            )?.secureUrl || "/placeholder-image.png"
-                        }
+                        src={url.url || "/placeholder-image.png"}
                         alt={data.title}
                         className="w-full h-[240px] object-cover"
                     />
@@ -126,7 +130,7 @@ const PropertyCard = ({ data, isFavorite, isMini }: PropertyCardProps) => {
                                 animate={{ x: [0, 3, 0] }}
                                 transition={{ repeat: Infinity, duration: 1.5 }}
                             >
-                                <ScaleIcon/>
+                                <ScaleIcon />
                             </motion.span>
                         </Button>
                     </div>
@@ -162,11 +166,7 @@ const PropertyCard = ({ data, isFavorite, isMini }: PropertyCardProps) => {
                     <motion.img
                         whileHover={{ scale: 1.1 }}
                         transition={{ duration: 0.6 }}
-                        src={
-                            data?.medias?.find(
-                                (m) => m.purpose === MediaResponsePurpose.THUMBNAIL,
-                            )?.secureUrl || "/placeholder-image.png"
-                        }
+                        src={url.url || "/placeholder-image.png"}
                         alt={data.title}
                         className="w-full h-full object-cover"
                     />

@@ -12,6 +12,7 @@ export interface UserRequest {
   email: string;
   /** @minLength 1 */
   phone: string;
+  avatarId?: number;
   password?: string;
   emailVerified?: boolean;
   phoneVerified?: boolean;

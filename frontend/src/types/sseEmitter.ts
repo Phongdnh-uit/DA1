@@ -5,4 +5,6 @@
  * OpenAPI spec version: v0
  */
 
-export type ApiResponseMediaResponseErrors = {[key: string]: string};
+export interface SseEmitter {
+  timeout?: number;
+}

@@ -5,6 +5,7 @@
  * OpenAPI spec version: v0
  */
 import type { UserResponse } from './userResponse';
+import type { FileResponse } from './fileResponse';
 
 export interface MessageResponse {
   id?: number;
@@ -15,4 +16,5 @@ export interface MessageResponse {
   updatedAt?: string;
   sender?: UserResponse;
   content?: string;
+  attachments?: FileResponse[];
 }

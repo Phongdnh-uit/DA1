@@ -5,41 +5,45 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Camera, UserIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
-import type { BaseUserRequest } from "@/types";
-import {
-    useGetCurrentUser,
-    useUpdateCurrentUser,
-    useUpdateCurrentUserAvatar,
-} from "@/services/auth/auth";
+import { PresignedUploadRequestPurpose, type BaseUserRequest } from "@/types";
+import { useGetCurrentUser, useUpdateCurrentUser } from "@/services/auth/auth";
 import { Form } from "@/components/ui/form";
 import { FormInput } from "@/utils/formUtil";
 import { motion } from "motion/react";
 import { toast } from "react-toastify";
-import { useGetUploadSignature } from "@/services/upload/upload";
-import { upload } from "@/utils/cloudinaryUpload";
-import { convertCloudinaryUploadResponse } from "@/utils/convertCloudinaryUploadResponse";
 import { useEffect, useRef, useState } from "react";
 import SpiralLoader from "@/components/ui/SpiralLoader";
+import { useFilePreview, useFileUpload } from "@/hooks/useFileHook";
+import { useFileSSE } from "@/hooks/useFileSse";
 
 const MotionButton = motion(Button);
 
 export function ProfileSection() {
     const currentUser = useGetCurrentUser();
     const [tempAvatar, setTempAvatar] = useState<string | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
+    const [uploadedFileId, setUploadedFileId] = useState<string | null>(null);
     const form = useForm<BaseUserRequest>({
         defaultValues: {
             email: currentUser?.data?.data?.email,
             fullName: currentUser?.data?.data?.fullName,
             phone: currentUser?.data?.data?.phone,
+            avatarId: currentUser?.data?.data?.avatar?.id,
         },
     });
-    const getUploadSignature = useGetUploadSignature();
+    const fileEvent = useFileSSE(uploadedFileId);
+    const { uploadFile } = useFileUpload();
+    const url = useFilePreview(
+        currentUser?.data?.data?.avatar?.objectName,
+        "rs:fill:100:100:0/g:sm",
+    );
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const handleAvatarChange = () => {
         if (fileInputRef.current) {
             fileInputRef.current.click();
         }
     };
+
     const onFileChange = async (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -48,16 +52,23 @@ export function ProfileSection() {
         }
         const url = URL.createObjectURL(file);
         setTempAvatar(url);
-
-        const signatureData = await getUploadSignature.mutateAsync();
-        if (!signatureData.data) return;
-        const cloudinaryResponse = await upload(file, signatureData.data);
-        const confirmUploadRequest = convertCloudinaryUploadResponse(
-            cloudinaryResponse,
-            "AVATAR",
+        setIsUploading(true);
+        const response = await uploadFile(
+            file,
+            PresignedUploadRequestPurpose.AVATAR,
         );
-        updateAvatarMutation.mutate({ data: confirmUploadRequest });
+        setUploadedFileId(response.file?.objectName || null);
+        form.setValue("avatarId", response.file?.id);
     };
+
+    useEffect(() => {
+        console.log("fileEvent", fileEvent);
+        if (fileEvent && fileEvent.status === "ACTIVE") {
+            const url = fileEvent.url;
+            setTempAvatar(url);
+            setIsUploading(false);
+        }
+    }, [fileEvent]);
 
     useEffect(() => {
         return () => {
@@ -72,28 +83,13 @@ export function ProfileSection() {
             onSuccess: () => {
                 toast.success("Cập nhật thông tin thành công");
                 currentUser.refetch();
+                if (tempAvatar) {
+                    URL.revokeObjectURL(tempAvatar);
+                    setTempAvatar(null);
+                }
             },
             onError: () => {
                 toast.error("Cập nhật thông tin thất bại");
-            },
-        },
-    });
-    const updateAvatarMutation = useUpdateCurrentUserAvatar({
-        mutation: {
-            onSuccess: () => {
-                toast.success("Cập nhật ảnh đại diện thành công");
-                if (tempAvatar) {
-                    URL.revokeObjectURL(tempAvatar);
-                    setTempAvatar(null);
-                }
-                currentUser.refetch();
-            },
-            onError: () => {
-                toast.error("Cập nhật ảnh đại diện thất bại");
-                if (tempAvatar) {
-                    URL.revokeObjectURL(tempAvatar);
-                    setTempAvatar(null);
-                }
             },
         },
     });
@@ -127,11 +123,14 @@ export function ProfileSection() {
                                         src={tempAvatar}
                                         alt={currentUser?.data?.data?.fullName || "User"}
                                     />
-                                    <SpiralLoader className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-10" />
+                                    {isUploading && (
+                                        <SpiralLoader className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-10" />
+                                    )}
                                 </>
                             ) : (
                                 <AvatarImage
-                                    src={currentUser?.data?.data?.avatar?.secureUrl}
+                                    src={url.url ? url.url : undefined}
+                                    loading="lazy"
                                     alt={currentUser?.data?.data?.fullName || "User"}
                                 />
                             )}

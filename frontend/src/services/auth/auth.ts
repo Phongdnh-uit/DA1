@@ -26,7 +26,6 @@ import type {
 import type {
   ApiResponseListString,
   ApiResponseLoginResponse,
-  ApiResponseMediaResponse,
   ApiResponseSendOtpResponse,
   ApiResponseUserResponse,
   ApiResponseVerifyOtpResponse,
@@ -38,7 +37,6 @@ import type {
   RegisterRequest,
   ResetPasswordRequest,
   SendOtpRequest,
-  UploadConfirmRequest,
   VerifyEmailRequest,
   VerifyOtpRequest
 } from '../../types';
@@ -540,64 +538,6 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
 
       const mutationOptions = getUpdateCurrentUserMutationOptions(options);
-
-      return useMutation(mutationOptions, queryClient);
-    }
-    export const updateCurrentUserAvatar = (
-    uploadConfirmRequest: BodyType<UploadConfirmRequest>,
- options?: SecondParameter<typeof axiosInstanceFn>,signal?: AbortSignal
-) => {
-      
-      
-      return axiosInstanceFn<ApiResponseMediaResponse>(
-      {url: `/auth/me/avatar`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: uploadConfirmRequest, signal
-    },
-      options);
-    }
-  
-
-
-export const getUpdateCurrentUserAvatarMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCurrentUserAvatar>>, TError,{data: BodyType<UploadConfirmRequest>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
-): UseMutationOptions<Awaited<ReturnType<typeof updateCurrentUserAvatar>>, TError,{data: BodyType<UploadConfirmRequest>}, TContext> => {
-
-const mutationKey = ['updateCurrentUserAvatar'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateCurrentUserAvatar>>, {data: BodyType<UploadConfirmRequest>}> = (props) => {
-          const {data} = props ?? {};
-
-          return  updateCurrentUserAvatar(data,requestOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UpdateCurrentUserAvatarMutationResult = NonNullable<Awaited<ReturnType<typeof updateCurrentUserAvatar>>>
-    export type UpdateCurrentUserAvatarMutationBody = BodyType<UploadConfirmRequest>
-    export type UpdateCurrentUserAvatarMutationError = ErrorType<unknown>
-
-    export const useUpdateCurrentUserAvatar = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCurrentUserAvatar>>, TError,{data: BodyType<UploadConfirmRequest>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof updateCurrentUserAvatar>>,
-        TError,
-        {data: BodyType<UploadConfirmRequest>},
-        TContext
-      > => {
-
-      const mutationOptions = getUpdateCurrentUserAvatarMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

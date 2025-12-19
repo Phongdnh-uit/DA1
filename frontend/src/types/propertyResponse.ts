@@ -10,8 +10,8 @@ import type { WardResponse } from './wardResponse';
 import type { PropertyResponseDirection } from './propertyResponseDirection';
 import type { PropertyResponseBalconyDirection } from './propertyResponseBalconyDirection';
 import type { PropertyResponseStatus } from './propertyResponseStatus';
-import type { MediaResponse } from './mediaResponse';
 import type { Location } from './location';
+import type { FileResponse } from './fileResponse';
 
 export interface PropertyResponse {
   id?: number;
@@ -41,6 +41,8 @@ export interface PropertyResponse {
   hasElevator?: boolean;
   status?: PropertyResponseStatus;
   interior?: string;
-  medias?: MediaResponse[];
   location?: Location;
+  documents?: FileResponse[];
+  thumbnail?: FileResponse;
+  galleries?: FileResponse[];
 }

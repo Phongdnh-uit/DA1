@@ -14,54 +14,20 @@ import { toast } from "react-toastify";
 
 interface LeadPanelProps {
     selectedConversation: number | null;
+    onLeadChange?: ({
+        conversationId,
+        change,
+    }: {
+        conversationId: number;
+        change: "accepted" | "closed";
+    }) => void;
 }
 
-const mockLeadData = {
-    "chat-1": {
-        name: "Nguyễn Văn A",
-        email: "nguyenvana@email.com",
-        phone: "+84 912 345 678",
-        property: {
-            title: "VinHomes Grand Park S-101",
-            price: "5 Tỷ VNĐ",
-            bedrooms: "2 Phòng ngủ",
-            image:
-                "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
-        },
-    },
-    "chat-2": {
-        name: "Trần Thị B",
-        email: "tranthib@email.com",
-        phone: "+84 913 456 789",
-        property: {
-            title: "The Jade A-201",
-            price: "4.5 Tỷ VNĐ",
-            bedrooms: "3 Phòng ngủ",
-            image:
-                "https://images.unsplash.com/photo-1545324418-cc1a9a6fded0?w=400&h=300&fit=crop",
-        },
-    },
-};
-
-export default function LeadPanel({ selectedConversation }: LeadPanelProps) {
-    const acceptLeadMutation = useParticipateInConversation({
-        mutation: {
-            onSuccess: () => {
-                toast.success("Bạn đã nhận lead thành công!");
-            },
-        },
-    });
-
-    const closeConversationMutation = useCloseConversation({
-        mutation: {
-            onSuccess: () => {
-                toast.success("Cuộc hội thoại đã được đóng thành công!");
-            },
-            onError: () => {
-                toast.error("Đã có lỗi xảy ra khi đóng cuộc hội thoại.");
-            }
-        },
-    });
+export default function LeadPanel({
+    selectedConversation,
+    onLeadChange,
+}: LeadPanelProps) {
+    console.log(selectedConversation);
     const conversation = useGetConversationById(selectedConversation as number, {
         query: {
             enabled: selectedConversation !== null,
@@ -75,18 +41,41 @@ export default function LeadPanel({ selectedConversation }: LeadPanelProps) {
             },
         },
     );
+    const acceptLeadMutation = useParticipateInConversation({
+        mutation: {
+            onSuccess: () => {
+                toast.success("Bạn đã nhận lead thành công!");
+                if (onLeadChange && selectedConversation) {
+                    onLeadChange({
+                        conversationId: selectedConversation,
+                        change: "accepted",
+                    });
+                }
+                conversation.refetch();
+            },
+            onError: () => {
+                toast.error("Đã có lỗi xảy ra khi nhận lead.");
+            },
+        },
+    });
 
-    const leadData = mockLeadData[`chat-1`];
-
-    if (!leadData) {
-        return (
-            <div className="w-80 border-l border-border bg-card p-6 flex items-center justify-center">
-                <p className="text-muted-foreground text-center">
-                    Chọn một cuộc hội thoại để xem thông tin chi tiết
-                </p>
-            </div>
-        );
-    }
+    const closeConversationMutation = useCloseConversation({
+        mutation: {
+            onSuccess: () => {
+                toast.success("Cuộc hội thoại đã được đóng thành công!");
+                if (onLeadChange) {
+                    onLeadChange({
+                        conversationId: selectedConversation as number,
+                        change: "closed",
+                    });
+                }
+                conversation.refetch();
+            },
+            onError: () => {
+                toast.error("Đã có lỗi xảy ra khi đóng cuộc hội thoại.");
+            },
+        },
+    });
 
     const handleAcceptLead = () => {
         if (selectedConversation) {

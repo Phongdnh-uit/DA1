@@ -1167,6 +1167,66 @@
         }
       }
     },
+    "/files/upload/signed-url": {
+      "post": {
+        "tags": [
+          "File"
+        ],
+        "operationId": "getUploadSignedUrl",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PresignedUploadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponsePresignedUploadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/files/download/signed-url": {
+      "post": {
+        "tags": [
+          "File"
+        ],
+        "operationId": "getDownloadSignedUrl",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PresignedDownloadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponsePresignedURLResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/chat/conversations/{conversationId}/participate": {
       "post": {
         "tags": [
@@ -1510,36 +1570,6 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiResponseUserResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/auth/me/avatar": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "operationId": "updateCurrentUserAvatar",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UploadConfirmRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseMediaResponse"
                 }
               }
             }
@@ -1967,6 +1997,36 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiResponseStatisticResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sse/files/notifications/{key}/subscribe": {
+      "get": {
+        "tags": [
+          "SSE - Server Sent Events"
+        ],
+        "operationId": "subscribeToFileNotifications",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SseEmitter"
                 }
               }
             }
@@ -3260,6 +3320,36 @@
         }
       }
     },
+    "/files/{objectKey}": {
+      "delete": {
+        "tags": [
+          "File"
+        ],
+        "operationId": "deleteFile_1",
+        "parameters": [
+          {
+            "name": "objectKey",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseVoid"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/chat/messages/{messageId}": {
       "delete": {
         "tags": [
@@ -3556,6 +3646,10 @@
             "type": "string",
             "minLength": 1
           },
+          "avatarId": {
+            "type": "integer",
+            "format": "int64"
+          },
           "password": {
             "type": "string"
           },
@@ -3610,66 +3704,26 @@
           }
         }
       },
-      "MediaResponse": {
+      "FileResponse": {
         "type": "object",
         "properties": {
           "id": {
             "type": "integer",
             "format": "int64"
           },
-          "version": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "createdBy": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "updatedBy": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "publicId": {
+          "originalName": {
             "type": "string"
           },
-          "secureUrl": {
+          "objectName": {
             "type": "string"
           },
-          "width": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "height": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "resourceType": {
-            "type": "string"
-          },
-          "format": {
-            "type": "string"
-          },
-          "purpose": {
+          "status": {
             "type": "string",
             "enum": [
-              "AVATAR",
-              "THUMBNAIL",
-              "BANNER",
-              "VIDEO",
-              "GALLERY"
+              "PENDING",
+              "ACTIVE",
+              "REJECTED"
             ]
-          },
-          "bytes": {
-            "type": "integer",
-            "format": "int32"
           }
         }
       },
@@ -3729,7 +3783,7 @@
             "format": "int64"
           },
           "avatar": {
-            "$ref": "#/components/schemas/MediaResponse"
+            "$ref": "#/components/schemas/FileResponse"
           }
         }
       },
@@ -3967,8 +4021,7 @@
             "format": "int64"
           },
           "price": {
-            "type": "number",
-            "minimum": 0
+            "type": "number"
           },
           "lineAddress": {
             "type": "string"
@@ -3982,32 +4035,26 @@
             "format": "int64"
           },
           "landArea": {
-            "type": "number",
-            "minimum": 0
+            "type": "number"
           },
           "floorArea": {
-            "type": "number",
-            "minimum": 0
+            "type": "number"
           },
           "floors": {
             "type": "integer",
-            "format": "int32",
-            "minimum": 0
+            "format": "int32"
           },
           "floorNumber": {
             "type": "integer",
-            "format": "int32",
-            "minimum": 0
+            "format": "int32"
           },
           "bedrooms": {
             "type": "integer",
-            "format": "int32",
-            "minimum": 0
+            "format": "int32"
           },
           "bathrooms": {
             "type": "integer",
-            "format": "int32",
-            "minimum": 0
+            "format": "int32"
           },
           "direction": {
             "type": "string",
@@ -4066,14 +4113,26 @@
               "OFF_MARKET"
             ]
           },
-          "medias": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/UploadConfirmRequest"
-            }
-          },
           "location": {
             "$ref": "#/components/schemas/Location"
+          },
+          "documentIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "thumbnailId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "galleryIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         },
         "required": [
@@ -4081,70 +4140,10 @@
           "provinceId",
           "purpose",
           "status",
+          "thumbnailId",
           "title",
           "typeId",
           "wardId"
-        ]
-      },
-      "UploadConfirmRequest": {
-        "type": "object",
-        "properties": {
-          "publicId": {
-            "type": "string",
-            "minLength": 1
-          },
-          "version": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "signature": {
-            "type": "string"
-          },
-          "secureUrl": {
-            "type": "string",
-            "minLength": 1
-          },
-          "width": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "height": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "format": {
-            "type": "string",
-            "minLength": 1
-          },
-          "resourceType": {
-            "type": "string",
-            "minLength": 1
-          },
-          "bytes": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "purpose": {
-            "type": "string",
-            "enum": [
-              "AVATAR",
-              "THUMBNAIL",
-              "BANNER",
-              "VIDEO",
-              "GALLERY"
-            ]
-          }
-        },
-        "required": [
-          "bytes",
-          "format",
-          "height",
-          "publicId",
-          "purpose",
-          "resourceType",
-          "secureUrl",
-          "version",
-          "width"
         ]
       },
       "ApiResponsePropertyResponse": {
@@ -4299,14 +4298,23 @@
           "interior": {
             "type": "string"
           },
-          "medias": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MediaResponse"
-            }
-          },
           "location": {
             "$ref": "#/components/schemas/Location"
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileResponse"
+            }
+          },
+          "thumbnail": {
+            "$ref": "#/components/schemas/FileResponse"
+          },
+          "galleries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileResponse"
+            }
           }
         }
       },
@@ -4623,6 +4631,125 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "PresignedUploadRequest": {
+        "type": "object",
+        "properties": {
+          "originalName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "contentType": {
+            "type": "string",
+            "minLength": 1
+          },
+          "purpose": {
+            "type": "string",
+            "enum": [
+              "PROPERTY_FILE",
+              "PROPERTY_THUMBNAIL",
+              "PROPERTY_GALLERY",
+              "CHAT_FILE",
+              "AVATAR"
+            ]
+          }
+        },
+        "required": [
+          "contentType",
+          "originalName",
+          "purpose"
+        ]
+      },
+      "ApiResponsePresignedUploadResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PresignedUploadResponse"
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PresignedURLResponse": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "expirationInSeconds": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "PresignedUploadResponse": {
+        "type": "object",
+        "properties": {
+          "presignedURL": {
+            "$ref": "#/components/schemas/PresignedURLResponse"
+          },
+          "file": {
+            "$ref": "#/components/schemas/FileResponse"
+          }
+        }
+      },
+      "PresignedDownloadRequest": {
+        "type": "object",
+        "properties": {
+          "objectKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "options": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "objectKey"
+        ]
+      },
+      "ApiResponsePresignedURLResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PresignedURLResponse"
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
@@ -5001,37 +5128,16 @@
           "phone": {
             "type": "string",
             "minLength": 1
+          },
+          "avatarId": {
+            "type": "integer",
+            "format": "int64"
           }
         },
         "required": [
           "email",
           "phone"
         ]
-      },
-      "ApiResponseMediaResponse": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
-          },
-          "data": {
-            "$ref": "#/components/schemas/MediaResponse"
-          },
-          "errors": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            }
-          },
-          "timestamp": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
       },
       "LoginRequest": {
         "type": "object",
@@ -5313,6 +5419,15 @@
           },
           "pendingConversations": {
             "$ref": "#/components/schemas/CountMetric"
+          }
+        }
+      },
+      "SseEmitter": {
+        "type": "object",
+        "properties": {
+          "timeout": {
+            "type": "integer",
+            "format": "int64"
           }
         }
       },
@@ -5841,6 +5956,12 @@
           },
           "content": {
             "type": "string"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileResponse"
+            }
           }
         }
       },

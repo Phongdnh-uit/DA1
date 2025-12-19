@@ -72,11 +72,12 @@ export function FormInput<K>({
                                 {...field}
                                 {...props}
                                 onChange={(e) => {
-                                    if (type === "number") {
-                                        field.onChange(Number(e.target.value));
-                                    } else {
-                                        field.onChange(e.target.value);
-                                    }
+                                    const value = e.target.value;
+                                    field.onChange(
+                                        type === "number" && value !== ""
+                                            ? Number(value)
+                                            : value || undefined,
+                                    );
                                 }}
                             />
                         </div>
@@ -187,7 +188,7 @@ export function FormSelect<K>({
                     <FormControl>
                         <Select
                             disabled={disabled}
-                            value={field.value ? String(field.value) : undefined}
+                            value={field.value != null ? String(field.value) : ""}
                             onValueChange={(value) => {
                                 if (keyType === "number") {
                                     field.onChange(Number(value));
@@ -200,7 +201,7 @@ export function FormSelect<K>({
                             <SelectTrigger
                                 id={name}
                                 className={cn(
-                                    "!h-14 w-full text-lg rounded-2xl                                 hover:border-primary",
+                                    "!h-14 w-full text-lg rounded-2xl hover:border-primary",
                                     className,
                                 )}
                                 name={name}
@@ -259,6 +260,8 @@ export function FormEditor<K>({
                     <FormControl>
                         <div className={cn("rounded-2xl", className)}>
                             <RichTextEditor
+                                key={form.formState.submitCount} // Reset editor on submit
+                                className="h-full"
                                 value={field.value || ""}
                                 placeholder={placeholder}
                                 onChange={(v) => field.onChange(v)}

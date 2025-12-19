@@ -113,7 +113,7 @@ export function RichTextEditor({
         content: content,
         editorProps: {
             attributes: {
-                class: "max-w-full focus:outline-none",
+                class: "w-full focus:outline-none max-w-none prose",
             },
         },
         onUpdate: ({ editor }) => {
@@ -137,7 +137,7 @@ export function RichTextEditor({
             <EditorContent
                 editor={editor}
                 placeholder={placeholder}
-                className=" min-h-[600px] w-full min-w-full cursor-text sm:p-6"
+                className="min-h-[600px] w-full min-w-full cursor-text sm:p-6"
             />
         </div>
     );

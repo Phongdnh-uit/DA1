@@ -13,7 +13,14 @@ import {
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { CircuitBoard, HeartIcon, LogOut, Settings, User } from "lucide-react";
+import {
+    CircuitBoard,
+    HeartIcon,
+    LogOut,
+    MessageCircleIcon,
+    Settings,
+    User,
+} from "lucide-react";
 import { useLogout } from "@/services/auth/auth";
 import {
     ACCESS_TOKEN_STORAGE_KEY,
@@ -21,11 +28,10 @@ import {
 } from "@/constant/SecurityConstant";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
+import { useFilePreview } from "@/hooks/useFileHook";
 
 const middleItems = [
     { name: "Tất cả bất động sản", href: "/properties" },
-    { name: "Nhà đất bán", href: "/" },
-    { name: "Nhà đất cho thuê", href: "/" },
     { name: "Dự án", href: "/" },
     { name: "Tin tức", href: "/" },
     { name: "Wiki BĐS", href: "/" },
@@ -59,6 +65,8 @@ export default function ClientHeader() {
     };
     const [hidden, setHidden] = useState(false);
     const [lastScroll, setLastScroll] = useState(0);
+
+    const url = useFilePreview(authStore?.user?.avatar?.objectName);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -122,7 +130,7 @@ export default function ClientHeader() {
                                 <Button variant="ghost" size="icon" className="rounded-full">
                                     <Avatar className="h-9 w-9">
                                         <AvatarImage
-                                            src={authStore?.user?.avatar?.secureUrl}
+                                            src={url.url ? url.url : undefined}
                                             alt="User"
                                         />
                                         <AvatarFallback>
@@ -144,6 +152,10 @@ export default function ClientHeader() {
                                 >
                                     <HeartIcon className="mr-2 h-4 w-4" />
                                     <span>Yêu thích</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => navigate({ to: "/chat" })}>
+                                    <MessageCircleIcon className="mr-2 h-4 w-4" />
+                                    <span>Trò chuyện</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                     onClick={() => navigate({ to: "/admin/dashboard" })}

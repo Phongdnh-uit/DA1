@@ -1,67 +1,59 @@
 import { queryClient } from "@/lib/queryClient";
 import { useFindAllPropertyType } from "@/services/property-type/property-type";
-import {
-    useFindPropertyById,
-    useUpdateProperty,
-} from "@/services/property/property";
+import { useUpdateProperty } from "@/services/property/property";
 import { updatePropertyBody } from "@/services/property/property.zod";
 import { useFindAllProvince } from "@/services/province/province";
 import { useFindAllWard } from "@/services/ward/ward";
-import type {
-    MediaResponse,
-    PropertyRequest,
-    UploadConfirmRequest,
+import {
+    FileResponseStatus,
+    PresignedUploadRequestPurpose,
+    type FileResponse,
+    type PropertyRequest,
 } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { useGetUploadSignature } from "@/services/upload/upload";
-import { upload } from "@/utils/cloudinaryUpload";
-import type { CloudinaryUploadResponse } from "@/lib/cloudinaryResponse";
-import { convertCloudinaryUploadResponse } from "@/utils/convertCloudinaryUploadResponse";
 import { Route } from "@/routes/admin/property/update.$id";
 import { type Location } from "@/types/location";
+import { useFileUpload } from "@/hooks/useFileHook";
+import { fetchEventSource } from "@microsoft/fetch-event-source";
+import { ACCESS_TOKEN_STORAGE_KEY } from "@/constant/SecurityConstant";
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const ACCESS_TOKEN = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
 
 export default function useUpdatePropertyVM() {
     const { id } = Route.useParams();
-    const property = useFindPropertyById(+id);
+    const { property, galleryUrls, thumbnailUrl } = Route.useLoaderData();
     const form = useForm<PropertyRequest>({
         defaultValues: {
-            title: property?.data?.data?.title ?? undefined,
-            balconyDirection: property?.data?.data?.balconyDirection ?? undefined,
-            bedrooms: property?.data?.data?.bedrooms ?? undefined,
-            bathrooms: property?.data?.data?.bathrooms ?? undefined,
-            landArea: property?.data?.data?.landArea ?? undefined,
-            price: property?.data?.data?.price ?? undefined,
-            description: property?.data?.data?.description ?? undefined,
-            provinceId: property?.data?.data?.ward?.province?.id ?? undefined,
-            wardId: property?.data?.data?.ward?.id ?? undefined,
-            direction: property?.data?.data?.direction ?? undefined,
-            entranceRoadWidth: property?.data?.data?.entranceRoadWidth ?? undefined,
-            floorArea: property?.data?.data?.floorArea ?? undefined,
-            floorNumber: property?.data?.data?.floorNumber ?? undefined,
-            floors: property?.data?.data?.floors ?? undefined,
-            hasBasement: property?.data?.data?.hasBasement ?? undefined,
-            hasElevator: property?.data?.data?.hasElevator ?? undefined,
-            hasMezzanine: property?.data?.data?.hasMezzanine ?? undefined,
-            interior: property?.data?.data?.interior ?? undefined,
-            lineAddress: property?.data?.data?.lineAddress ?? undefined,
-            purpose: property?.data?.data?.purpose ?? undefined,
-            status: property?.data?.data?.status ?? undefined,
-            typeId: property?.data?.data?.type?.id ?? undefined,
-            medias: property?.data?.data?.medias?.map((media) => ({
-                bytes: media.bytes,
-                format: media.format,
-                height: media.height,
-                width: media.width,
-                purpose: media.purpose,
-                publicId: media.publicId,
-                resourceType: media.resourceType,
-                secureUrl: media.secureUrl,
-                version: media.version,
-            })),
-            location: property?.data?.data?.location ?? undefined,
+            title: property?.data?.title ?? undefined,
+            balconyDirection: property?.data?.balconyDirection ?? undefined,
+            bedrooms: property?.data?.bedrooms ?? undefined,
+            bathrooms: property?.data?.bathrooms ?? undefined,
+            landArea: property?.data?.landArea ?? undefined,
+            price: property?.data?.price ?? undefined,
+            description: property?.data?.description ?? undefined,
+            provinceId: property?.data?.ward?.province?.id ?? undefined,
+            wardId: property?.data?.ward?.id ?? undefined,
+            direction: property?.data?.direction ?? undefined,
+            entranceRoadWidth: property?.data?.entranceRoadWidth ?? undefined,
+            floorArea: property?.data?.floorArea ?? undefined,
+            floorNumber: property?.data?.floorNumber ?? undefined,
+            floors: property?.data?.floors ?? undefined,
+            hasBasement: property?.data?.hasBasement ?? undefined,
+            hasElevator: property?.data?.hasElevator ?? undefined,
+            hasMezzanine: property?.data?.hasMezzanine ?? undefined,
+            interior: property?.data?.interior ?? undefined,
+            lineAddress: property?.data?.lineAddress ?? undefined,
+            purpose: property?.data?.purpose ?? undefined,
+            status: property?.data?.status ?? undefined,
+            typeId: property?.data?.type?.id ?? undefined,
+            documentIds: property?.data?.documents?.map((doc) => doc.id) ?? [],
+            thumbnailId: property?.data?.thumbnail?.id ?? undefined,
+            galleryIds: property?.data?.galleries?.map((media) => media.id) ?? [],
+            location: property?.data?.location ?? undefined,
         },
         mode: "onSubmit",
         resolver: zodResolver(updatePropertyBody),
@@ -84,9 +76,39 @@ export default function useUpdatePropertyVM() {
             },
         },
     });
-    const onSubmit = (data: PropertyRequest) => {
-        mutation.mutate({ id: +id, data: data });
-    };
+
+    // STATE
+    const [documents, setDocuments] = useState<FileResponse[]>(
+        property?.data?.documents || [],
+    );
+    const [thumbnail, setThumbnail] = useState<
+        | {
+            url?: string;
+            file?: FileResponse;
+        }
+        | undefined
+    >({
+        file: property?.data?.thumbnail,
+        url: thumbnailUrl.data?.url,
+    });
+    const [gallery, setGallery] = useState<
+        {
+            url?: string;
+            file?: FileResponse;
+        }[]
+    >(
+        property?.data?.galleries?.map((media) => ({
+            file: media,
+            url: galleryUrls.find(
+                (galleryUrl) => galleryUrl.data?.key === media.objectName,
+            )?.data?.url,
+        })) || [],
+    );
+
+    const sseControllersRef = useRef<Map<string, AbortController>>(new Map());
+
+    // HOOK
+    const { uploadFile } = useFileUpload();
 
     const { data: provinces } = useFindAllProvince({
         size: undefined,
@@ -106,141 +128,229 @@ export default function useUpdatePropertyVM() {
         },
     );
 
-    const mediaResponseToUploadConfirmRequest = (
-        data: MediaResponse,
-    ): UploadConfirmRequest => ({
-        publicId: data.publicId as string,
-        bytes: data.bytes as number,
-        format: data.format as string,
-        resourceType: data.resourceType as string,
-        height: data.height as number,
-        width: data.width as number,
-        purpose: data.purpose as "THUMBNAIL" | "GALLERY",
-        secureUrl: data.secureUrl as string,
-        version: data.version as number,
-    });
-
     const { data: propertyTypes } = useFindAllPropertyType({ size: undefined });
 
-    const [thumbnail, setThumbnail] = useState<
-        | {
-            preview?: string;
-            result?: UploadConfirmRequest;
+    // FUNCTIONS
+    const onSubmit = (data: PropertyRequest) => {
+        if (data.location?.latitude === null || data.location?.longitude === null) {
+            data.location = undefined;
         }
-        | undefined
-    >({
-        preview: undefined,
-        result: {
-            ...mediaResponseToUploadConfirmRequest(
-                property?.data?.data?.medias?.find(
-                    (media) => media.purpose === "THUMBNAIL",
-                ) as MediaResponse,
-            ),
-        },
-    });
-    const [gallery, setGallery] = useState<
-        {
-            preview?: string;
-            result?: UploadConfirmRequest;
-        }[]
-    >(
-        property?.data?.data?.medias
-            ?.filter((media) => media.purpose === "GALLERY")
-            .map((media) => ({
-                preview: undefined,
-                result: mediaResponseToUploadConfirmRequest(media),
-            })) || [],
-    );
-
-    const [cloudName, setCloudName] = useState<string | undefined>(undefined);
-
-    const { mutateAsync } = useGetUploadSignature();
+        mutation.mutate({ id: +id, data: data });
+    };
 
     const handleThumbnailChange = async (file: File) => {
         const preview = URL.createObjectURL(file);
-        setThumbnail({ preview });
+        setThumbnail({ url: preview });
         try {
-            const data = await mutateAsync();
-            if (!data.data) return;
-            if (!cloudName) setCloudName(data.data.cloudName);
-            const result: CloudinaryUploadResponse = await upload(file, data.data);
-            if (result.public_id) {
-                const converted = convertCloudinaryUploadResponse(result, "THUMBNAIL");
-                form.setValue("medias", [
-                    ...(form.getValues("medias") || []),
-                    converted,
-                ]);
-                setThumbnail({ preview: undefined, result: converted });
-                toast.success("Upload ảnh thành công");
-                console.log(thumbnail);
-            } else {
-                toast.error("Upload ảnh thất bại. Vui lòng thử lại");
-            }
+            const response = await uploadFile(
+                file,
+                PresignedUploadRequestPurpose.PROPERTY_THUMBNAIL,
+            );
+            form.setValue("thumbnailId", response.file?.id as number);
+            // TODO: Need to subscribe SSE to listen to the upload status
+            setThumbnail({
+                url: preview,
+                file: response.file,
+            });
+            subscribeFileSSE(response.file?.objectName as string);
         } catch {
-            toast.error("Upload ảnh thất bại. Vui lòng thử lại");
             setThumbnail(undefined);
-        } finally {
             URL.revokeObjectURL(preview);
         }
     };
 
     const handleGalleryChange = async (file: File) => {
         const preview = URL.createObjectURL(file);
-        setGallery((prev) => [...prev, { preview }]);
+        setGallery((prev) => [...prev, { url: preview }]);
         try {
-            const data = await mutateAsync();
-            if (!data.data) return;
-            if (!cloudName) setCloudName(data.data.cloudName);
-            const result: CloudinaryUploadResponse = await upload(file, data.data);
-            if (result.public_id) {
-                const converted = convertCloudinaryUploadResponse(result, "GALLERY");
-                form.setValue("medias", [
-                    ...(form.getValues("medias") || []),
-                    converted,
-                ]);
-                setGallery((prev) =>
-                    prev.map((item) =>
-                        item.preview === preview
-                            ? { preview: undefined, result: converted }
-                            : item,
-                    ),
-                );
-                toast.success("Upload ảnh thành công");
-            }
+            const response = await uploadFile(
+                file,
+                PresignedUploadRequestPurpose.PROPERTY_GALLERY,
+            );
+            form.setValue("galleryIds", [
+                ...(form.getValues("galleryIds") || []),
+                response.file?.id as number,
+            ]);
+            setGallery((prev) =>
+                prev.map((item) =>
+                    item.url === preview
+                        ? {
+                            url: preview,
+                            file: response.file,
+                        }
+                        : item,
+                ),
+            );
+            subscribeFileSSE(response.file?.objectName as string);
         } catch {
             toast.error("Upload ảnh thất bại. Vui lòng thử lại");
-            setGallery((prev) => prev.filter((item) => item.preview !== preview));
-        } finally {
+            setGallery((prev) => prev.filter((item) => item.url !== preview));
             URL.revokeObjectURL(preview);
         }
     };
 
     const handleRemoveThumbnail = () => {
-        form.setValue(
-            "medias",
-            (form.getValues("medias") || []).filter(
-                (media) => media.purpose !== "THUMBNAIL",
-            ),
-        );
+        form.setValue("thumbnailId", 0);
+        if (
+            thumbnail?.file &&
+            thumbnail.file.status !== FileResponseStatus.PENDING
+        ) {
+            const controller = sseControllersRef.current.get(
+                thumbnail.file.objectName as string,
+            );
+            if (controller) {
+                controller.abort();
+                sseControllersRef.current.delete(thumbnail.file.objectName as string);
+            }
+            // Revoke object URL
+            if (thumbnail.url?.startsWith("blob:"))
+                URL.revokeObjectURL(thumbnail.url as string);
+        }
         setThumbnail(undefined);
     };
 
     const handleRemoveGallery = (index: number) => {
+        form.setValue(
+            "galleryIds",
+            (form.getValues("galleryIds") || []).filter((_, idx) => idx !== index),
+        );
+        setGallery((prev) => prev.filter((_, i) => i !== index));
         const toBeRemoved = gallery.at(index);
-        if (toBeRemoved?.result) {
-            form.setValue(
-                "medias",
-                (form.getValues("medias") || []).filter(
-                    (media) => media.publicId !== toBeRemoved.result?.publicId,
-                ),
+        if (
+            toBeRemoved?.file &&
+            toBeRemoved.file.status !== FileResponseStatus.PENDING
+        ) {
+            const controller = sseControllersRef.current.get(
+                toBeRemoved.file.objectName as string,
             );
-            setGallery((prev) => prev.filter((_, i) => i !== index));
+            if (controller) {
+                controller.abort();
+                sseControllersRef.current.delete(toBeRemoved.file.objectName as string);
+            }
+            // Revoke object URL
+            if (toBeRemoved.url?.startsWith("blob:"))
+                URL.revokeObjectURL(toBeRemoved.url as string);
         }
     };
 
     const onLocationChange = (data: Location | undefined) => {
         form.setValue("location", data);
     };
+
+    const handleAddDocument = async (file: File) => {
+        const response = await uploadFile(
+            file,
+            PresignedUploadRequestPurpose.PROPERTY_FILE,
+        );
+        setDocuments((prev) => [...prev, response.file as FileResponse]);
+        form.setValue("documentIds", [
+            ...(form.getValues("documentIds") || []),
+            response.file?.id as number,
+        ]);
+        subscribeFileSSE(response.file?.objectName as string);
+    };
+
+    const handleRemoveDocument = (index: number) => {
+        const toBeRemoved = documents.at(index);
+        const controller = sseControllersRef.current.get(
+            toBeRemoved?.objectName as string,
+        );
+        if (controller) {
+            controller.abort();
+            sseControllersRef.current.delete(toBeRemoved?.objectName as string);
+        }
+        form.setValue(
+            "documentIds",
+            (form.getValues("documentIds") || []).filter((_, idx) => idx !== index),
+        );
+        setDocuments((prev) => prev.filter((_, i) => i !== index));
+    };
+
+    const subscribeFileSSE = useCallback((objectKey: string) => {
+        const controller = new AbortController();
+        if (!objectKey) return;
+
+        sseControllersRef.current.set(objectKey, controller);
+
+        let isCancelled = false;
+
+        fetchEventSource(
+            `${BACKEND_URL}/sse/files/notifications/${objectKey}/subscribe`,
+            {
+                method: "GET",
+                headers: {
+                    Accept: "text/event-stream",
+                    Authorization: `Bearer ${ACCESS_TOKEN}`,
+                },
+                onmessage(event) {
+                    try {
+                        if (event.event !== "file-process") return;
+                        console.log("SSE message received:", event);
+                        const data = JSON.parse(event.data);
+                        if (!isCancelled) {
+                            setDocuments((prev) =>
+                                prev.map((doc) =>
+                                    doc.objectName !== objectKey
+                                        ? doc
+                                        : { ...doc, status: data.status },
+                                ),
+                            );
+                            setGallery((prev) =>
+                                prev.map((item) => {
+                                    if (item.file?.objectName !== objectKey) return item;
+                                    // Revoke old URL if status changed
+                                    if (item.url?.startsWith("blob:"))
+                                        URL.revokeObjectURL(item.url as string);
+                                    return {
+                                        url: data.url,
+                                        file: {
+                                            ...item.file,
+                                            status: data.status,
+                                        },
+                                    };
+                                }),
+                            );
+                            setThumbnail((prev) => {
+                                if (prev?.file?.objectName !== objectKey) return prev;
+                                // Revoke old URL if status changed
+                                if (prev.url?.startsWith("blob:"))
+                                    URL.revokeObjectURL(prev.url as string);
+                                URL.revokeObjectURL(prev?.url as string);
+                                return {
+                                    url: data.url,
+                                    file: {
+                                        ...prev?.file,
+                                        status: data.status,
+                                    },
+                                };
+                            });
+                        }
+                    } catch (err) {
+                        console.error("Invalid JSON from SSE", err);
+                    }
+                },
+                onerror(err) {
+                    console.error("SSE error", err);
+                    if (!isCancelled) throw err;
+                },
+                signal: controller.signal,
+            },
+        );
+
+        return () => {
+            isCancelled = true;
+        };
+    }, []);
+
+    // SIDE EFFECTS && CLEANUP
+    useEffect(() => {
+        return () => {
+            sseControllersRef.current.forEach((controller) => {
+                controller.abort();
+            });
+            sseControllersRef.current.clear();
+        };
+    }, []);
 
     return {
         form,
@@ -252,9 +362,11 @@ export default function useUpdatePropertyVM() {
         gallery,
         handleThumbnailChange,
         handleGalleryChange,
-        cloudName,
         handleRemoveThumbnail,
         handleRemoveGallery,
         onLocationChange,
+        documents,
+        handleAddDocument,
+        handleRemoveDocument,
     };
 }
