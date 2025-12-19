@@ -1,6 +1,5 @@
 package com.phongdnh.se121.dtos.property;
 
-import com.phongdnh.se121.dtos.general.UploadConfirmRequest;
 import com.phongdnh.se121.enums.property.Direction;
 import com.phongdnh.se121.enums.property.PropertyPurpose;
 import com.phongdnh.se121.enums.property.PropertyStatus;
@@ -61,9 +60,11 @@ public class PropertyRequest {
 
   @NotNull private PropertyStatus status;
 
-  private List<UploadConfirmRequest> medias;
-
   private Location location;
 
   private List<Long> documentIds;
+
+  @NotNull private Long thumbnailId;
+
+  private List<Long> galleryIds;
 }

@@ -149,8 +149,7 @@ public class FileOrchestratorServiceImpl implements FileOrchestratorService {
       fileRepository.save(file);
       log.info("File {} processed and activated.", objectKey);
       // Notify other service
-      PresignedURLResponse presignedURLResponse =
-          storageProvider.generatePresignedDownloadURL(objectKey);
+      PresignedURLResponse presignedURLResponse = generatePresignedDownURL(objectKey, null);
       notifyFileProcessed(objectKey, FileStatus.ACTIVE, presignedURLResponse.getUrl());
     } catch (IOException e) {
       throw new ApiException(ErrorCode.DOWNLOAD_FAILED, Map.of("reason", e.getMessage()));

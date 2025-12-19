@@ -91,5 +91,5 @@ public class Property extends BaseEntity {
       fetch = FetchType.LAZY,
       cascade = CascadeType.ALL,
       orphanRemoval = true)
-  private List<PropertyFile> documents = new ArrayList<>();
+  private List<PropertyFile> files = new ArrayList<>();
 }

@@ -1,7 +1,6 @@
 package com.phongdnh.se121.dtos.property;
 
 import com.phongdnh.se121.dtos.general.FileResponse;
-import com.phongdnh.se121.dtos.general.MediaResponse;
 import com.phongdnh.se121.entities.BaseEntity;
 import com.phongdnh.se121.enums.property.Direction;
 import com.phongdnh.se121.enums.property.PropertyPurpose;
@@ -56,9 +55,11 @@ public class PropertyResponse extends BaseEntity {
 
   private String interior;
 
-  private List<MediaResponse> medias;
-
   private Location location;
 
   private List<FileResponse> documents;
+
+  private FileResponse thumbnail;
+
+  private List<FileResponse> galleries;
 }

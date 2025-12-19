@@ -2,7 +2,6 @@ package com.phongdnh.se121.configurations;
 
 import com.phongdnh.se121.constants.AppConstant;
 import com.phongdnh.se121.constants.SecurityConstant;
-import com.phongdnh.se121.repositories.authorization.PermissionRepository;
 import com.phongdnh.se121.securities.CustomAuthenticationEntryPoint;
 import com.phongdnh.se121.securities.interceptors.PermissionInterceptor;
 import com.phongdnh.se121.securities.jwt.CustomJwtAuthenticationConverter;
@@ -33,12 +32,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 public class SecurityConfig implements WebMvcConfigurer {
 
-  private final PermissionRepository permissionRepository;
-
-  @Bean
-  PermissionInterceptor permissionInterceptor() {
-    return new PermissionInterceptor(permissionRepository);
-  }
+  private final PermissionInterceptor permissionInterceptor;
 
   @Bean
   PasswordEncoder passwordEncoder() {
@@ -109,7 +103,7 @@ public class SecurityConfig implements WebMvcConfigurer {
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
     registry
-        .addInterceptor(permissionInterceptor())
+        .addInterceptor(permissionInterceptor)
         .excludePathPatterns(SecurityConstant.PUBLIC_URLS)
         .excludePathPatterns(SecurityConstant.PUBLIC_GET_URLS)
         .excludePathPatterns(SecurityConstant.PUBLIC_POST_URLS)
@@ -119,6 +113,11 @@ public class SecurityConfig implements WebMvcConfigurer {
             "/auth/change-password",
             "/wishes/**",
             "/chat/conversations/me",
-            "/chat/conversations/initialize");
+            "/chat/conversations/initialize")
+        .excludePathPatterns(
+                "/files/upload/signed-url",
+                "/files/download/signed-url",
+                "/sse/files/notifications/{key}/subscribe"
+            );
   }
 }

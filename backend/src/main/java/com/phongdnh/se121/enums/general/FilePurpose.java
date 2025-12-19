@@ -20,6 +20,10 @@ public enum FilePurpose {
           "video/mp4",
           "video/mov")),
 
+  PROPERTY_THUMBNAIL(Set.of("image/png", "image/jpg", "image/jpeg")),
+
+  PROPERTY_GALLERY(Set.of("image/png", "image/jpg", "image/jpeg", "video/mp4", "video/mov")),
+
   CHAT_FILE(
       Set.of(
           "image/png",
