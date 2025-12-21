@@ -14,7 +14,7 @@ import * as zod from 'zod';
 export const getUploadSignedUrlBody = zod.object({
   "originalName": zod.string().min(1),
   "contentType": zod.string().min(1),
-  "purpose": zod.enum(['PROPERTY_FILE', 'PROPERTY_THUMBNAIL', 'PROPERTY_GALLERY', 'CHAT_FILE', 'AVATAR'])
+  "purpose": zod.enum(['PROPERTY_FILE', 'PROPERTY_THUMBNAIL', 'PROPERTY_GALLERY', 'CHAT_FILE', 'AVATAR', 'CAROUSEL_IMAGE'])
 })
 
 

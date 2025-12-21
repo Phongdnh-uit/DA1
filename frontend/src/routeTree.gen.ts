@@ -22,10 +22,12 @@ import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
 import { Route as _clientWishListRouteImport } from './routes/__client/wish-list'
 import { Route as _clientSettingsRouteImport } from './routes/__client/settings'
+import { Route as _clientReportRouteImport } from './routes/__client/report'
 import { Route as _clientPropertiesRouteImport } from './routes/__client/properties'
 import { Route as _clientBookingRouteImport } from './routes/__client/booking'
 import { Route as AdminWardIndexRouteImport } from './routes/admin/ward/index'
 import { Route as AdminUserIndexRouteImport } from './routes/admin/user/index'
+import { Route as AdminSettingsIndexRouteImport } from './routes/admin/settings/index'
 import { Route as AdminRoleIndexRouteImport } from './routes/admin/role/index'
 import { Route as AdminProvinceIndexRouteImport } from './routes/admin/province/index'
 import { Route as AdminPropertyIndexRouteImport } from './routes/admin/property/index'
@@ -120,6 +122,11 @@ const _clientSettingsRoute = _clientSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => _clientRoute,
 } as any)
+const _clientReportRoute = _clientReportRouteImport.update({
+  id: '/report',
+  path: '/report',
+  getParentRoute: () => _clientRoute,
+} as any)
 const _clientPropertiesRoute = _clientPropertiesRouteImport.update({
   id: '/properties',
   path: '/properties',
@@ -138,6 +145,11 @@ const AdminWardIndexRoute = AdminWardIndexRouteImport.update({
 const AdminUserIndexRoute = AdminUserIndexRouteImport.update({
   id: '/user/',
   path: '/user/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsIndexRoute = AdminSettingsIndexRouteImport.update({
+  id: '/settings/',
+  path: '/settings/',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminRoleIndexRoute = AdminRoleIndexRouteImport.update({
@@ -294,6 +306,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteWithChildren
   '/booking': typeof _clientBookingRoute
   '/properties': typeof _clientPropertiesRoute
+  '/report': typeof _clientReportRoute
   '/settings': typeof _clientSettingsRoute
   '/wish-list': typeof _clientWishListRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -323,6 +336,7 @@ export interface FileRoutesByFullPath {
   '/admin/property': typeof AdminPropertyIndexRoute
   '/admin/province': typeof AdminProvinceIndexRoute
   '/admin/role': typeof AdminRoleIndexRoute
+  '/admin/settings': typeof AdminSettingsIndexRoute
   '/admin/user': typeof AdminUserIndexRoute
   '/admin/ward': typeof AdminWardIndexRoute
   '/admin/booking/update/$id': typeof AdminBookingUpdateIdRoute
@@ -341,6 +355,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRouteWithChildren
   '/booking': typeof _clientBookingRoute
   '/properties': typeof _clientPropertiesRoute
+  '/report': typeof _clientReportRoute
   '/settings': typeof _clientSettingsRoute
   '/wish-list': typeof _clientWishListRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -370,6 +385,7 @@ export interface FileRoutesByTo {
   '/admin/property': typeof AdminPropertyIndexRoute
   '/admin/province': typeof AdminProvinceIndexRoute
   '/admin/role': typeof AdminRoleIndexRoute
+  '/admin/settings': typeof AdminSettingsIndexRoute
   '/admin/user': typeof AdminUserIndexRoute
   '/admin/ward': typeof AdminWardIndexRoute
   '/admin/booking/update/$id': typeof AdminBookingUpdateIdRoute
@@ -390,6 +406,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRouteWithChildren
   '/__client/booking': typeof _clientBookingRoute
   '/__client/properties': typeof _clientPropertiesRoute
+  '/__client/report': typeof _clientReportRoute
   '/__client/settings': typeof _clientSettingsRoute
   '/__client/wish-list': typeof _clientWishListRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -419,6 +436,7 @@ export interface FileRoutesById {
   '/admin/property/': typeof AdminPropertyIndexRoute
   '/admin/province/': typeof AdminProvinceIndexRoute
   '/admin/role/': typeof AdminRoleIndexRoute
+  '/admin/settings/': typeof AdminSettingsIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
   '/admin/ward/': typeof AdminWardIndexRoute
   '/admin/booking/update/$id': typeof AdminBookingUpdateIdRoute
@@ -439,6 +457,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/booking'
     | '/properties'
+    | '/report'
     | '/settings'
     | '/wish-list'
     | '/auth/forgot-password'
@@ -468,6 +487,7 @@ export interface FileRouteTypes {
     | '/admin/property'
     | '/admin/province'
     | '/admin/role'
+    | '/admin/settings'
     | '/admin/user'
     | '/admin/ward'
     | '/admin/booking/update/$id'
@@ -486,6 +506,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/booking'
     | '/properties'
+    | '/report'
     | '/settings'
     | '/wish-list'
     | '/auth/forgot-password'
@@ -515,6 +536,7 @@ export interface FileRouteTypes {
     | '/admin/property'
     | '/admin/province'
     | '/admin/role'
+    | '/admin/settings'
     | '/admin/user'
     | '/admin/ward'
     | '/admin/booking/update/$id'
@@ -534,6 +556,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/__client/booking'
     | '/__client/properties'
+    | '/__client/report'
     | '/__client/settings'
     | '/__client/wish-list'
     | '/auth/forgot-password'
@@ -563,6 +586,7 @@ export interface FileRouteTypes {
     | '/admin/property/'
     | '/admin/province/'
     | '/admin/role/'
+    | '/admin/settings/'
     | '/admin/user/'
     | '/admin/ward/'
     | '/admin/booking/update/$id'
@@ -676,6 +700,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof _clientSettingsRouteImport
       parentRoute: typeof _clientRoute
     }
+    '/__client/report': {
+      id: '/__client/report'
+      path: '/report'
+      fullPath: '/report'
+      preLoaderRoute: typeof _clientReportRouteImport
+      parentRoute: typeof _clientRoute
+    }
     '/__client/properties': {
       id: '/__client/properties'
       path: '/properties'
@@ -702,6 +733,13 @@ declare module '@tanstack/react-router' {
       path: '/user'
       fullPath: '/admin/user'
       preLoaderRoute: typeof AdminUserIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings/': {
+      id: '/admin/settings/'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsIndexRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/role/': {
@@ -913,6 +951,7 @@ declare module '@tanstack/react-router' {
 interface _clientRouteChildren {
   _clientBookingRoute: typeof _clientBookingRoute
   _clientPropertiesRoute: typeof _clientPropertiesRoute
+  _clientReportRoute: typeof _clientReportRoute
   _clientSettingsRoute: typeof _clientSettingsRoute
   _clientWishListRoute: typeof _clientWishListRoute
   _clientIndexRoute: typeof _clientIndexRoute
@@ -924,6 +963,7 @@ interface _clientRouteChildren {
 const _clientRouteChildren: _clientRouteChildren = {
   _clientBookingRoute: _clientBookingRoute,
   _clientPropertiesRoute: _clientPropertiesRoute,
+  _clientReportRoute: _clientReportRoute,
   _clientSettingsRoute: _clientSettingsRoute,
   _clientWishListRoute: _clientWishListRoute,
   _clientIndexRoute: _clientIndexRoute,
@@ -953,6 +993,7 @@ interface AdminRouteChildren {
   AdminPropertyIndexRoute: typeof AdminPropertyIndexRoute
   AdminProvinceIndexRoute: typeof AdminProvinceIndexRoute
   AdminRoleIndexRoute: typeof AdminRoleIndexRoute
+  AdminSettingsIndexRoute: typeof AdminSettingsIndexRoute
   AdminUserIndexRoute: typeof AdminUserIndexRoute
   AdminWardIndexRoute: typeof AdminWardIndexRoute
   AdminBookingUpdateIdRoute: typeof AdminBookingUpdateIdRoute
@@ -984,6 +1025,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminPropertyIndexRoute: AdminPropertyIndexRoute,
   AdminProvinceIndexRoute: AdminProvinceIndexRoute,
   AdminRoleIndexRoute: AdminRoleIndexRoute,
+  AdminSettingsIndexRoute: AdminSettingsIndexRoute,
   AdminUserIndexRoute: AdminUserIndexRoute,
   AdminWardIndexRoute: AdminWardIndexRoute,
   AdminBookingUpdateIdRoute: AdminBookingUpdateIdRoute,

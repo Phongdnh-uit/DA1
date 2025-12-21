@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { useFileDownload } from "@/hooks/useFileHook";
 import type { FileResponse } from "@/types";
 import { getFileIcon } from "@/utils/renderUtil";
-import SpiralLoader from "@/components/ui/SpiralLoader";
 import { Badge } from "@/components/ui/badge";
 
 interface DocumentUploadProps {

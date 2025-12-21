@@ -1227,6 +1227,36 @@
         }
       }
     },
+    "/content-blocks/upload-carousel": {
+      "post": {
+        "tags": [
+          "Content Block"
+        ],
+        "operationId": "uploadCarousel",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadCarouselRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseVoid"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/chat/conversations/{conversationId}/participate": {
       "post": {
         "tags": [
@@ -2583,6 +2613,26 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/content-blocks/carousels": {
+      "get": {
+        "tags": [
+          "Content Block"
+        ],
+        "operationId": "getCarousels",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListContentBlockResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -4652,7 +4702,8 @@
               "PROPERTY_THUMBNAIL",
               "PROPERTY_GALLERY",
               "CHAT_FILE",
-              "AVATAR"
+              "AVATAR",
+              "CAROUSEL_IMAGE"
             ]
           }
         },
@@ -4750,6 +4801,32 @@
           "timestamp": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "ContentBlockRequest": {
+        "type": "object",
+        "properties": {
+          "fileId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/JsonNode"
+          }
+        }
+      },
+      "JsonNode": {
+
+      },
+      "UploadCarouselRequest": {
+        "type": "object",
+        "properties": {
+          "contentBlocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContentBlockRequest"
+            }
           }
         }
       },
@@ -5840,6 +5917,69 @@
             "items": {
               "$ref": "#/components/schemas/PermissionResponse"
             }
+          }
+        }
+      },
+      "ApiResponseListContentBlockResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContentBlockResponse"
+            }
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ContentBlockResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createdBy": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "updatedBy": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "file": {
+            "$ref": "#/components/schemas/FileResponse"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/JsonNode"
           }
         }
       },

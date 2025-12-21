@@ -38,7 +38,7 @@ export const UpdatePropertyPage = () => {
     } = useUpdatePropertyVM();
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="min-h-screen">
             <div className="mx-auto p-4 sm:p-6 lg:p-8">
                 <div className="flex items-center gap-3 mb-6">
                     <Button

@@ -1,10 +1,10 @@
 import { queryClient } from "@/lib/queryClient";
-import { MainPage } from "@/pages/client/mainPage/MainPage";
+import { CarouselSetting } from "@/pages/admin/settings/CarouselSetting";
 import { getGetCarouselsQueryOptions } from "@/services/content-block/content-block";
 import { getDownloadSignedUrl } from "@/services/file/file";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/__client/")({
+export const Route = createFileRoute("/admin/settings/")({
     loader: async () => {
         const carousel = await queryClient.ensureQueryData(
             getGetCarouselsQueryOptions(),
@@ -17,15 +17,15 @@ export const Route = createFileRoute("/__client/")({
                 }),
             ),
         );
-
-        return {
-            carousel,
-            imageUrls,
-        };
+        return { carousel, imageUrls };
     },
     component: RouteComponent,
 });
 
 function RouteComponent() {
-    return <MainPage />;
+    return (
+        <div>
+            <CarouselSetting />
+        </div>
+    );
 }

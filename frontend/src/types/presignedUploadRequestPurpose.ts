@@ -15,4 +15,5 @@ export const PresignedUploadRequestPurpose = {
   PROPERTY_GALLERY: 'PROPERTY_GALLERY',
   CHAT_FILE: 'CHAT_FILE',
   AVATAR: 'AVATAR',
+  CAROUSEL_IMAGE: 'CAROUSEL_IMAGE',
 } as const;

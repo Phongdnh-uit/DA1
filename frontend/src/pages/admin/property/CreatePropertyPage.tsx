@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ArrowLeft, XIcon } from "lucide-react";
 import Upload from "@/components/general/Upload";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
-import SpiralLoader, { BounceLoader } from "@/components/ui/SpiralLoader";
+import { BounceLoader } from "@/components/ui/SpiralLoader";
 import { LocationPicker } from "@/components/general/LocationPicker";
 import { Separator } from "@/components/ui/separator";
 import { type Location } from "@/types/location";
@@ -38,7 +38,7 @@ export const CreatePropertyPage = () => {
     } = useCreatePropertyVM();
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="min-h-screen">
             <div className="mx-auto p-4 sm:p-6 lg:p-8">
                 <div className="flex items-center gap-3 mb-6">
                     <Button
@@ -360,10 +360,10 @@ export const CreatePropertyPage = () => {
                                                     { key: "SOUTH", render: "Nam" },
                                                     { key: "EAST", render: "Đông" },
                                                     { key: "WEST", render: "Tây" },
-                                                    { key: "NORTHEAST", render: "ĐB" },
-                                                    { key: "NORTHWEST", render: "TB" },
-                                                    { key: "SOUTHEAST", render: "ĐN" },
-                                                    { key: "SOUTHWEST", render: "TN" },
+                                                    { key: "NORTHEAST", render: "Đông - Bắc" },
+                                                    { key: "NORTHWEST", render: "Tây - Bắc" },
+                                                    { key: "SOUTHEAST", render: "Đông - Nam" },
+                                                    { key: "SOUTHWEST", render: "Tây - Nam" },
                                                 ]}
                                                 name="direction"
                                             />
@@ -374,10 +374,10 @@ export const CreatePropertyPage = () => {
                                                     { key: "SOUTH", render: "Nam" },
                                                     { key: "EAST", render: "Đông" },
                                                     { key: "WEST", render: "Tây" },
-                                                    { key: "NORTHEAST", render: "ĐB" },
-                                                    { key: "NORTHWEST", render: "TB" },
-                                                    { key: "SOUTHEAST", render: "ĐN" },
-                                                    { key: "SOUTHWEST", render: "TN" },
+                                                    { key: "NORTHEAST", render: "Đông - Bắc" },
+                                                    { key: "NORTHWEST", render: "Tây - Bắc" },
+                                                    { key: "SOUTHEAST", render: "Đông - Nam" },
+                                                    { key: "SOUTHWEST", render: "Tây - Nam" },
                                                 ]}
                                                 name="balconyDirection"
                                             />
