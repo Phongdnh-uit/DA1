@@ -1,6 +1,7 @@
 package com.phongdnh.se121.hooks.property;
 
 import com.phongdnh.se121.ai.RAGIngestionService;
+import com.phongdnh.se121.dtos.PageResponse;
 import com.phongdnh.se121.dtos.property.PropertyRequest;
 import com.phongdnh.se121.dtos.property.PropertyResponse;
 import com.phongdnh.se121.entities.general.File;
@@ -8,17 +9,15 @@ import com.phongdnh.se121.entities.property.Property;
 import com.phongdnh.se121.entities.property.PropertyFile;
 import com.phongdnh.se121.enums.general.FilePurpose;
 import com.phongdnh.se121.enums.general.FileUsageStatus;
-import com.phongdnh.se121.enums.general.MediaEntityType;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
-import com.phongdnh.se121.hooks.DefaultHook;
+import com.phongdnh.se121.hooks.GenericHook;
 import com.phongdnh.se121.repositories.general.FileRepository;
 import com.phongdnh.se121.repositories.property.PropertyRepository;
 import com.phongdnh.se121.repositories.property.PropertyTypeRepository;
 import com.phongdnh.se121.repositories.property.ProvinceRepository;
 import com.phongdnh.se121.repositories.property.WardRepository;
 import com.phongdnh.se121.securities.SecurityUtil;
-import com.phongdnh.se121.services.general.UploadService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,17 +30,32 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Component
-public class PropertyHook extends DefaultHook<Property, Long, PropertyRequest, PropertyResponse> {
+public class PropertyHook
+    implements GenericHook<Property, Long, PropertyRequest, PropertyResponse> {
   private final PropertyTypeRepository propertyTypeRepository;
   private final WardRepository wardRepository;
   private final ProvinceRepository provinceRepository;
-  private final UploadService uploadService;
   private final RAGIngestionService ragIngestionService;
   private final GeometryFactory geometryFactory;
   private final FileRepository fileRepository;
   private final PropertyRepository propertyRepository;
 
   // ============================ ENRICH ============================
+
+  @Override
+  public void enrichFindAll(PageResponse<PropertyResponse> responses) {
+    // Drop description field to reduce payload and image and document files
+    // Not encouraged to use: this action is temp and this is the consequence of root design of
+    // CrudService
+    responses
+        .getContent()
+        .forEach(
+            response -> {
+              response.setDescription(null);
+              response.setDocuments(null);
+              response.setGalleries(null);
+            });
+  }
 
   @Override
   @Transactional

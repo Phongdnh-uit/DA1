@@ -40,7 +40,9 @@ public enum FilePurpose {
           "video/mpeg",
           "audio/mpeg",
           "audio/wav")),
-  AVATAR(Set.of("image/png", "image/jpg", "image/jpeg"));
+  AVATAR(Set.of("image/png", "image/jpg", "image/jpeg")),
+
+  CAROUSEL_IMAGE(Set.of("image/png", "image/jpg", "image/jpeg"));
 
   private final Set<String> allowedTypes;
 

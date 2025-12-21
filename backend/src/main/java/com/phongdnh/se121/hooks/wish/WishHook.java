@@ -5,7 +5,7 @@ import com.phongdnh.se121.dtos.wish.WishResponse;
 import com.phongdnh.se121.entities.wish.Wish;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
-import com.phongdnh.se121.hooks.DefaultHook;
+import com.phongdnh.se121.hooks.GenericHook;
 import com.phongdnh.se121.repositories.authentication.UserRepository;
 import com.phongdnh.se121.repositories.wish.WishRepository;
 import com.phongdnh.se121.securities.SecurityUtil;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class WishHook extends DefaultHook<Wish, Long, WishRequest, WishResponse> {
+public class WishHook implements GenericHook<Wish, Long, WishRequest, WishResponse> {
 
   private final WishRepository wishRepository;
   private final UserRepository userRepository;

@@ -4,12 +4,12 @@ import com.phongdnh.se121.dtos.booking.BookingRequest;
 import com.phongdnh.se121.dtos.booking.BookingResponse;
 import com.phongdnh.se121.entities.booking.Booking;
 import com.phongdnh.se121.enums.booking.BookingStatus;
-import com.phongdnh.se121.hooks.DefaultHook;
+import com.phongdnh.se121.hooks.GenericHook;
 import java.util.Map;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BookingHook extends DefaultHook<Booking, Long, BookingRequest, BookingResponse> {
+public class BookingHook implements GenericHook<Booking, Long, BookingRequest, BookingResponse> {
 
   @Override
   public void enrichCreate(BookingRequest input, Booking entity, Map<String, Object> context) {

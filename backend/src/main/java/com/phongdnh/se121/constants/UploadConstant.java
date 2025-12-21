@@ -3,7 +3,7 @@ package com.phongdnh.se121.constants;
 import java.util.Map;
 
 public interface UploadConstant {
-  Long MAX_FILE_SIZE = 5L * 1024 * 1024; // 5 MB
+  Long MAX_FILE_SIZE = 30L * 1024 * 1024; // 30 MB
   Map<String, byte[]> MAGIC_BYTES =
       Map.of(
           "PDF", new byte[] {0x25, 0x50, 0x44, 0x46}, // %PDF

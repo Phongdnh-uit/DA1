@@ -5,7 +5,7 @@ import com.phongdnh.se121.dtos.property.ProvinceResponse;
 import com.phongdnh.se121.entities.property.Province;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
-import com.phongdnh.se121.hooks.DefaultHook;
+import com.phongdnh.se121.hooks.GenericHook;
 import com.phongdnh.se121.repositories.property.ProvinceRepository;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +15,8 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class ProvinceHook extends DefaultHook<Province, Long, ProvinceRequest, ProvinceResponse> {
+public class ProvinceHook
+    implements GenericHook<Province, Long, ProvinceRequest, ProvinceResponse> {
   private final ProvinceRepository provinceRepository;
 
   @Override
@@ -32,8 +33,7 @@ public class ProvinceHook extends DefaultHook<Province, Long, ProvinceRequest, P
   private void validate(ProvinceRequest request, Long id) {
     Map<String, String> errors = new HashMap<>();
     Specification<Province> codeSpec =
-        (root, _, criteriaBuilder) ->
-            criteriaBuilder.equal(root.get("code"), request.getCode());
+        (root, _, criteriaBuilder) -> criteriaBuilder.equal(root.get("code"), request.getCode());
     if (id != null) {
       codeSpec =
           codeSpec.and((root, _, criteriaBuilder) -> criteriaBuilder.notEqual(root.get("id"), id));

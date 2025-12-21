@@ -8,7 +8,7 @@ import com.phongdnh.se121.enums.general.FilePurpose;
 import com.phongdnh.se121.enums.general.FileUsageStatus;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
-import com.phongdnh.se121.hooks.DefaultHook;
+import com.phongdnh.se121.hooks.GenericHook;
 import com.phongdnh.se121.repositories.authentication.UserRepository;
 import com.phongdnh.se121.repositories.authorization.RoleRepository;
 import com.phongdnh.se121.repositories.general.FileRepository;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class UserHook extends DefaultHook<User, Long, UserRequest, UserResponse> {
+public class UserHook implements GenericHook<User, Long, UserRequest, UserResponse> {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final RoleRepository roleRepository;

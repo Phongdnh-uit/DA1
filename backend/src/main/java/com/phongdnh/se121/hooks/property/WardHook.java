@@ -5,7 +5,7 @@ import com.phongdnh.se121.dtos.property.WardResponse;
 import com.phongdnh.se121.entities.property.Ward;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
-import com.phongdnh.se121.hooks.DefaultHook;
+import com.phongdnh.se121.hooks.GenericHook;
 import com.phongdnh.se121.repositories.property.ProvinceRepository;
 import com.phongdnh.se121.repositories.property.WardRepository;
 import java.util.Map;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class WardHook extends DefaultHook<Ward, Long, WardRequest, WardResponse> {
+public class WardHook implements GenericHook<Ward, Long, WardRequest, WardResponse> {
   private final ProvinceRepository provinceRepository;
   private final WardRepository wardRepository;
 
@@ -50,8 +50,7 @@ public class WardHook extends DefaultHook<Ward, Long, WardRequest, WardResponse>
       codeNameSpec = codeNameSpec.and((root, _, builder) -> builder.notEqual(root.get("id"), id));
     }
     if (wardRepository.exists(codeNameSpec)) {
-      throw new ApiException(
-          ErrorCode.RESOURCE_EXISTS, Map.of("code", "Code already exists"));
+      throw new ApiException(ErrorCode.RESOURCE_EXISTS, Map.of("code", "Code already exists"));
     }
   }
 

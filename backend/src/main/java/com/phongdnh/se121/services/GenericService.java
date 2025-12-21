@@ -19,9 +19,9 @@ import org.springframework.data.jpa.domain.Specification;
 @Scope("prototype")
 public class GenericService<E, ID, I, O> implements CrudService<E, ID, I, O> {
 
-  private final SimpleRepository<E, ID> repository;
-  private final GenericMapper<E, I, O> mapper;
-  private final GenericHook<E, ID, I, O> hook;
+  protected final SimpleRepository<E, ID> repository;
+  protected final GenericMapper<E, I, O> mapper;
+  protected final GenericHook<E, ID, I, O> hook;
 
   @Override
   public PageResponse<O> findAll(Pageable pageable, Specification<E> specification) {

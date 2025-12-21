@@ -3,6 +3,8 @@ package com.phongdnh.se121.services.file;
 import com.phongdnh.se121.dtos.general.PresignedURLResponse;
 import com.phongdnh.se121.dtos.general.PresignedUploadRequest;
 import com.phongdnh.se121.dtos.general.PresignedUploadResponse;
+import com.phongdnh.se121.entities.chat.ConversationParticipant;
+import com.phongdnh.se121.entities.chat.Message;
 import com.phongdnh.se121.entities.general.File;
 import com.phongdnh.se121.enums.general.FileStatus;
 import com.phongdnh.se121.enums.general.FileUsageStatus;
@@ -10,7 +12,9 @@ import com.phongdnh.se121.events.FileProcessedEvent;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
 import com.phongdnh.se121.mappers.general.FileMapper;
+import com.phongdnh.se121.repositories.chat.MessageRepository;
 import com.phongdnh.se121.repositories.general.FileRepository;
+import com.phongdnh.se121.securities.SecurityUtil;
 import com.phongdnh.se121.services.file.processor.FileSizeProcessor;
 import com.phongdnh.se121.services.file.processor.MagicByteProcessor;
 import com.phongdnh.se121.services.file.processor.VirusScanProcessor;
@@ -43,6 +47,7 @@ public class FileOrchestratorServiceImpl implements FileOrchestratorService {
   private List<FileProcessor> fileProcessors = new ArrayList<>();
   private final ImgproxyService imgproxyService;
   private final FileNotificationService fileNotificationService;
+  private final MessageRepository messageRepository;
 
   // file processor here
   private final VirusScanProcessor virusScanProcessor;
@@ -197,5 +202,60 @@ public class FileOrchestratorServiceImpl implements FileOrchestratorService {
     fileProcessedEvent.setObjectName(objectKey);
     fileProcessedEvent.setUrl(url);
     fileNotificationService.notifyFileProcessed(objectKey, fileProcessedEvent);
+  }
+
+  private void checkFileAccessible(File file) {
+    Long userId = SecurityUtil.getCurrentUserId();
+    boolean isRealAuthenticatd = SecurityUtil.isRealAuthenticated();
+    if (file.getStatus() != FileStatus.ACTIVE) {
+      throw new ApiException(
+          ErrorCode.DOWNLOAD_FAILED, Map.of("objectKey", "File is not available for download"));
+    }
+
+    // Additional checks based on file purpose
+    switch (file.getPurpose()) {
+      case AVATAR:
+        // public
+        break;
+      case PROPERTY_GALLERY:
+        // public
+        break;
+      case PROPERTY_THUMBNAIL:
+        // public
+        break;
+      case PROPERTY_FILE:
+        // login, owner or admin
+        if (!isRealAuthenticatd) {
+          throw new ApiException(
+              ErrorCode.AUTHENTICATION_REQUIRED,
+              Map.of("authentication", "User must be logged in"));
+        }
+        break;
+      case CHAT_FILE:
+        // login and must be among
+        if (!isRealAuthenticatd) {
+          throw new ApiException(
+              ErrorCode.AUTHENTICATION_REQUIRED,
+              Map.of("authentication", "User must be logged in"));
+        }
+        // only chat participants
+        Message message =
+            messageRepository
+                .findOne((root, _, cb) -> cb.equal(root.get("attachments").get("id"), file.getId()))
+                .orElseThrow(
+                    () ->
+                        new ApiException(
+                            ErrorCode.RESOURCE_NOT_FOUND, Map.of("fileId", "" + file.getId())));
+        List<ConversationParticipant> participants = message.getConversation().getParticipants();
+        boolean isParticipant =
+            participants.stream().anyMatch(p -> p.getUser().getId().equals(userId));
+        if (!isParticipant) {
+          throw new ApiException(
+              ErrorCode.FORBIDDEN, Map.of("access", "User is not a participant of the chat"));
+        }
+        break;
+      default:
+        break;
+    }
   }
 }

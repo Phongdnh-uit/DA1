@@ -15,7 +15,9 @@ public interface SecurityConstant {
     "/auth/reset-password",
     "/ai/chat/**",
     "/ws/**",
-    "/files/storage/webhook/callback" // Use static token for webhook callback
+    "/files/storage/webhook/callback", // Use static token for webhook callback
+    "/files/download/signed-url",
+    "/content-blocks/carousels"
   };
 
   String[] PUBLIC_GET_URLS = {

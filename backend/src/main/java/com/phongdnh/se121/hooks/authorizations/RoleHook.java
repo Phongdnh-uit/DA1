@@ -6,7 +6,7 @@ import com.phongdnh.se121.entities.authorization.Permission;
 import com.phongdnh.se121.entities.authorization.Role;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
-import com.phongdnh.se121.hooks.DefaultHook;
+import com.phongdnh.se121.hooks.GenericHook;
 import com.phongdnh.se121.repositories.authorization.PermissionRepository;
 import com.phongdnh.se121.repositories.authorization.RoleRepository;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Component
-public class RoleHook extends DefaultHook<Role, Long, RoleRequest, RoleResponse> {
+public class RoleHook implements GenericHook<Role, Long, RoleRequest, RoleResponse> {
 
   private final RoleRepository roleRepository;
   private final PermissionRepository permissionRepository;
