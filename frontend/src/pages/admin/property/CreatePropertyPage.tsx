@@ -11,12 +11,12 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ArrowLeft, XIcon } from "lucide-react";
 import Upload from "@/components/general/Upload";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
-import { BounceLoader } from "@/components/ui/SpiralLoader";
 import { LocationPicker } from "@/components/general/LocationPicker";
 import { Separator } from "@/components/ui/separator";
 import { type Location } from "@/types/location";
 import { DocumentUpload } from "./DocumentUpload";
 import useCreatePropertyVM from "./CreateProperty.vm";
+import { Badge } from "@/components/ui/badge";
 
 export const CreatePropertyPage = () => {
     const {
@@ -80,14 +80,23 @@ export const CreatePropertyPage = () => {
                                         </h3>
                                         {thumbnail ? (
                                             <div className="relative w-full h-full lg:w-80 lg:h-80">
-                                                {thumbnail.file?.status === "PENDING" && (
-                                                    <div className="absolute inset-0 bg-opacity-70 flex flex-col items-center justify-center rounded-xl z-10">
-                                                        <BounceLoader />
-                                                        <p className="text-sm text-gray-800 font-medium mt-2">
-                                                            Đang kiểm tra hợp lệ!
-                                                        </p>
-                                                    </div>
-                                                )}
+                                                <div className="absolute top-0 -left-2 z-20">
+                                                    <Badge
+                                                        className={
+                                                            thumbnail?.file?.status === "PENDING"
+                                                                ? "bg-yellow-100 text-yellow-800"
+                                                                : thumbnail?.file?.status === "REJECTED"
+                                                                    ? "bg-red-100 text-red-800"
+                                                                    : "bg-green-100 text-green-800"
+                                                        }
+                                                    >
+                                                        {thumbnail.file?.status === "PENDING"
+                                                            ? "Đang chờ hệ thống kiểm tra"
+                                                            : thumbnail.file?.status === "REJECTED"
+                                                                ? "Không được chấp nhận!"
+                                                                : "An toàn và được chấp nhận"}
+                                                    </Badge>
+                                                </div>
                                                 <button
                                                     onClick={() => handleRemoveThumbnail()}
                                                     className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 rounded-full z-20 p-1 transition-colors"
@@ -134,14 +143,23 @@ export const CreatePropertyPage = () => {
                                             {gallery.length > 0 &&
                                                 gallery.map((imageSrc, index) => (
                                                     <div key={index} className="relative size-32">
-                                                        {imageSrc.file?.status === "PENDING" && (
-                                                            <div className="absolute inset-0 bg-opacity-70 flex flex-col items-center justify-center rounded-lg z-10">
-                                                                <BounceLoader />
-                                                                <p className="text-sm text-gray-800 font-medium">
-                                                                    Đang kiểm tra hợp lệ!
-                                                                </p>
-                                                            </div>
-                                                        )}
+                                                        <div className="absolute top-0 -left-2 z-20">
+                                                            <Badge
+                                                                className={
+                                                                    imageSrc?.file?.status === "PENDING"
+                                                                        ? "bg-yellow-100 text-yellow-800"
+                                                                        : imageSrc?.file?.status === "REJECTED"
+                                                                            ? "bg-red-100 text-red-800"
+                                                                            : "bg-green-100 text-green-800"
+                                                                }
+                                                            >
+                                                                {imageSrc.file?.status === "PENDING"
+                                                                    ? "Đang kiểm tra"
+                                                                    : imageSrc.file?.status === "REJECTED"
+                                                                        ? "Không được chấp nhận!"
+                                                                        : "Được chấp nhận"}
+                                                            </Badge>
+                                                        </div>
                                                         <button
                                                             onClick={() => handleRemoveGallery(index)}
                                                             className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 rounded-full z-20 p-1 transition-colors"

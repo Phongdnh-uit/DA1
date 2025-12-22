@@ -14,11 +14,10 @@ import { toast } from "react-toastify";
 import { motion } from "motion/react";
 import { FormInput } from "@/utils/formUtil";
 import z from "zod";
+import { omit } from "lodash";
 
 export function SecuritySection() {
     const [showPasswordForm, setShowPasswordForm] = useState(false);
-
-    const [confirmPassword, setConfirmPassword] = useState("");
 
     const changePasswordForm = useForm<
         ChangePasswordRequest & {
@@ -47,22 +46,19 @@ export function SecuritySection() {
             onSuccess: () => {
                 toast.success("Đổi mật khẩu thành công!");
                 changePasswordForm.reset();
-                setConfirmPassword("");
                 setShowPasswordForm(false);
             },
         },
     });
 
-    const onSubmit = (data: ChangePasswordRequest) => {
-        console.log(data);
-        console.log(confirmPassword);
-        console.log(data.newPassword);
-        if (data.newPassword !== data.confirmPassword) {
-            alert("Mật khẩu xác nhận không khớp!");
-            return;
-        }
+    const onSubmit = (
+        data: ChangePasswordRequest & {
+            confirmPassword: string;
+        },
+    ) => {
+        const sendDate = omit(data, ["confirmPassword"]);
         changePasswordMutation.mutate({
-            data,
+            data: sendDate,
         });
     };
 

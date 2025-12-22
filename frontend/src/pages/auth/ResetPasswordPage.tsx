@@ -20,6 +20,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import BannerImage from "@/assets/banner.jpg";
 import { useAuthSessionStore } from "@/stores/useAuthSessionStore";
+import z from "zod";
 
 export default function ResetPasswordPage() {
     const { verificationToken } = useAuthSessionStore();
@@ -29,7 +30,16 @@ export default function ResetPasswordPage() {
             newPassword: "",
         },
         mode: "onSubmit",
-        resolver: zodResolver(resetPasswordBody),
+        resolver: zodResolver(
+            z
+                .object({
+                    ...resetPasswordBody.shape,
+                    confirmPassword: z.string().min(1, "Vui lòng xác nhận mật khẩu mới"),
+                })
+                .refine((data) => data.newPassword === data.confirmPassword, {
+                    message: "Mật khẩu xác nhận không khớp",
+                }),
+        ),
     });
     const navigate = useNavigate();
     const mutation = useResetPassword({

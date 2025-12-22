@@ -24,6 +24,7 @@ import { Route as _clientWishListRouteImport } from './routes/__client/wish-list
 import { Route as _clientSettingsRouteImport } from './routes/__client/settings'
 import { Route as _clientReportRouteImport } from './routes/__client/report'
 import { Route as _clientPropertiesRouteImport } from './routes/__client/properties'
+import { Route as _clientChatRouteImport } from './routes/__client/chat'
 import { Route as _clientBookingRouteImport } from './routes/__client/booking'
 import { Route as AdminWardIndexRouteImport } from './routes/admin/ward/index'
 import { Route as AdminUserIndexRouteImport } from './routes/admin/user/index'
@@ -46,7 +47,6 @@ import { Route as AdminPropertyTypeCreateRouteImport } from './routes/admin/prop
 import { Route as AdminPermissionCreateRouteImport } from './routes/admin/permission/create'
 import { Route as AdminBookingCreateRouteImport } from './routes/admin/booking/create'
 import { Route as _clientDetailIdRouteImport } from './routes/__client/detail.$id'
-import { Route as _clientChatIdRouteImport } from './routes/__client/chat.$id'
 import { Route as AdminWardUpdateIdRouteImport } from './routes/admin/ward/update.$id'
 import { Route as AdminUserUpdateIdRouteImport } from './routes/admin/user/update.$id'
 import { Route as AdminRoleUpdateIdRouteImport } from './routes/admin/role/update.$id'
@@ -130,6 +130,11 @@ const _clientReportRoute = _clientReportRouteImport.update({
 const _clientPropertiesRoute = _clientPropertiesRouteImport.update({
   id: '/properties',
   path: '/properties',
+  getParentRoute: () => _clientRoute,
+} as any)
+const _clientChatRoute = _clientChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
   getParentRoute: () => _clientRoute,
 } as any)
 const _clientBookingRoute = _clientBookingRouteImport.update({
@@ -243,11 +248,6 @@ const _clientDetailIdRoute = _clientDetailIdRouteImport.update({
   path: '/detail/$id',
   getParentRoute: () => _clientRoute,
 } as any)
-const _clientChatIdRoute = _clientChatIdRouteImport.update({
-  id: '/chat/$id',
-  path: '/chat/$id',
-  getParentRoute: () => _clientRoute,
-} as any)
 const AdminWardUpdateIdRoute = AdminWardUpdateIdRouteImport.update({
   id: '/ward/update/$id',
   path: '/ward/update/$id',
@@ -305,6 +305,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/booking': typeof _clientBookingRoute
+  '/chat': typeof _clientChatRoute
   '/properties': typeof _clientPropertiesRoute
   '/report': typeof _clientReportRoute
   '/settings': typeof _clientSettingsRoute
@@ -317,7 +318,6 @@ export interface FileRoutesByFullPath {
   '/auth/sign-up-addition': typeof AuthSignUpAdditionRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/': typeof _clientIndexRoute
-  '/chat/$id': typeof _clientChatIdRoute
   '/detail/$id': typeof _clientDetailIdRoute
   '/admin/booking/create': typeof AdminBookingCreateRoute
   '/admin/permission/create': typeof AdminPermissionCreateRoute
@@ -354,6 +354,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/booking': typeof _clientBookingRoute
+  '/chat': typeof _clientChatRoute
   '/properties': typeof _clientPropertiesRoute
   '/report': typeof _clientReportRoute
   '/settings': typeof _clientSettingsRoute
@@ -366,7 +367,6 @@ export interface FileRoutesByTo {
   '/auth/sign-up-addition': typeof AuthSignUpAdditionRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/': typeof _clientIndexRoute
-  '/chat/$id': typeof _clientChatIdRoute
   '/detail/$id': typeof _clientDetailIdRoute
   '/admin/booking/create': typeof AdminBookingCreateRoute
   '/admin/permission/create': typeof AdminPermissionCreateRoute
@@ -405,6 +405,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/__client/booking': typeof _clientBookingRoute
+  '/__client/chat': typeof _clientChatRoute
   '/__client/properties': typeof _clientPropertiesRoute
   '/__client/report': typeof _clientReportRoute
   '/__client/settings': typeof _clientSettingsRoute
@@ -417,7 +418,6 @@ export interface FileRoutesById {
   '/auth/sign-up-addition': typeof AuthSignUpAdditionRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/__client/': typeof _clientIndexRoute
-  '/__client/chat/$id': typeof _clientChatIdRoute
   '/__client/detail/$id': typeof _clientDetailIdRoute
   '/admin/booking/create': typeof AdminBookingCreateRoute
   '/admin/permission/create': typeof AdminPermissionCreateRoute
@@ -456,6 +456,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/booking'
+    | '/chat'
     | '/properties'
     | '/report'
     | '/settings'
@@ -468,7 +469,6 @@ export interface FileRouteTypes {
     | '/auth/sign-up-addition'
     | '/auth/verify-email'
     | '/'
-    | '/chat/$id'
     | '/detail/$id'
     | '/admin/booking/create'
     | '/admin/permission/create'
@@ -505,6 +505,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/booking'
+    | '/chat'
     | '/properties'
     | '/report'
     | '/settings'
@@ -517,7 +518,6 @@ export interface FileRouteTypes {
     | '/auth/sign-up-addition'
     | '/auth/verify-email'
     | '/'
-    | '/chat/$id'
     | '/detail/$id'
     | '/admin/booking/create'
     | '/admin/permission/create'
@@ -555,6 +555,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/__client/booking'
+    | '/__client/chat'
     | '/__client/properties'
     | '/__client/report'
     | '/__client/settings'
@@ -567,7 +568,6 @@ export interface FileRouteTypes {
     | '/auth/sign-up-addition'
     | '/auth/verify-email'
     | '/__client/'
-    | '/__client/chat/$id'
     | '/__client/detail/$id'
     | '/admin/booking/create'
     | '/admin/permission/create'
@@ -712,6 +712,13 @@ declare module '@tanstack/react-router' {
       path: '/properties'
       fullPath: '/properties'
       preLoaderRoute: typeof _clientPropertiesRouteImport
+      parentRoute: typeof _clientRoute
+    }
+    '/__client/chat': {
+      id: '/__client/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof _clientChatRouteImport
       parentRoute: typeof _clientRoute
     }
     '/__client/booking': {
@@ -868,13 +875,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof _clientDetailIdRouteImport
       parentRoute: typeof _clientRoute
     }
-    '/__client/chat/$id': {
-      id: '/__client/chat/$id'
-      path: '/chat/$id'
-      fullPath: '/chat/$id'
-      preLoaderRoute: typeof _clientChatIdRouteImport
-      parentRoute: typeof _clientRoute
-    }
     '/admin/ward/update/$id': {
       id: '/admin/ward/update/$id'
       path: '/ward/update/$id'
@@ -950,24 +950,24 @@ declare module '@tanstack/react-router' {
 
 interface _clientRouteChildren {
   _clientBookingRoute: typeof _clientBookingRoute
+  _clientChatRoute: typeof _clientChatRoute
   _clientPropertiesRoute: typeof _clientPropertiesRoute
   _clientReportRoute: typeof _clientReportRoute
   _clientSettingsRoute: typeof _clientSettingsRoute
   _clientWishListRoute: typeof _clientWishListRoute
   _clientIndexRoute: typeof _clientIndexRoute
-  _clientChatIdRoute: typeof _clientChatIdRoute
   _clientDetailIdRoute: typeof _clientDetailIdRoute
   _clientCompareId1ToId2Route: typeof _clientCompareId1ToId2Route
 }
 
 const _clientRouteChildren: _clientRouteChildren = {
   _clientBookingRoute: _clientBookingRoute,
+  _clientChatRoute: _clientChatRoute,
   _clientPropertiesRoute: _clientPropertiesRoute,
   _clientReportRoute: _clientReportRoute,
   _clientSettingsRoute: _clientSettingsRoute,
   _clientWishListRoute: _clientWishListRoute,
   _clientIndexRoute: _clientIndexRoute,
-  _clientChatIdRoute: _clientChatIdRoute,
   _clientDetailIdRoute: _clientDetailIdRoute,
   _clientCompareId1ToId2Route: _clientCompareId1ToId2Route,
 }

@@ -75,8 +75,8 @@ export default function ChatList({
                                     .map((participant) => (
                                         <>
                                             <AvatarImage
-                                                key={participant.user.id}
-                                                src={participant.user?.avatarUrl}
+                                                key={participant.user?.id}
+                                                src={participant.user?.avatar?.objectName}
                                                 alt={participant.user?.fullName}
                                             />
                                             <AvatarFallback>

@@ -32,10 +32,10 @@ export function CTASection() {
     const navigate = useNavigate();
     const chatInitializeMutation = useInitializeChat({
         mutation: {
-            onSuccess: (data) => {
+            onSuccess: () => {
                 toast.success("Xin chờ một chút, đang chuyển bạn đến phòng chat...");
                 navigate({
-                    to: `/chat/${data.data?.id}`,
+                    to: `/chat`,
                 });
             },
         },

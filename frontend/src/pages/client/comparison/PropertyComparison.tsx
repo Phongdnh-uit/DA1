@@ -5,15 +5,11 @@ import {
     Bed,
     Bath,
     Calendar,
-    Star,
-    Eye,
-    Check,
-    X,
     TrendingUp,
     DollarSign,
+    type LucideIcon,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { type PropertyResponse } from "@/types/propertyResponse";
 import { Route } from "@/routes/__client/compare.$id1.to.$id2";
@@ -68,7 +64,7 @@ export const PropertyComparison = () => {
         unit = "",
         higherIsBetter = true,
     }: {
-        icon: any;
+        icon: LucideIcon;
         label: string;
         value1: string | number;
         value2: string | number;
@@ -126,9 +122,11 @@ export const PropertyComparison = () => {
     const PropertyCard = ({
         property,
         side,
+        thumbnailUrl,
     }: {
         property: PropertyResponse;
         side: "left" | "right";
+        thumbnailUrl: string;
     }) => (
         <motion.div
             initial={{ opacity: 0, x: side === "left" ? -50 : 50 }}
@@ -140,10 +138,7 @@ export const PropertyComparison = () => {
             <Card className="overflow-hidden h-full border-2 hover:border-primary/50 transition-colors">
                 <div className="relative h-64 overflow-hidden group">
                     <motion.img
-                        src={
-                            property?.medias?.find((media) => media.purpose === "THUMBNAIL")
-                                ?.secureUrl
-                        }
+                        src={thumbnailUrl}
                         alt={property.title}
                         className="w-full h-full object-cover"
                         whileHover={{ scale: 1.1 }}
@@ -252,8 +247,16 @@ export const PropertyComparison = () => {
                 </div>
 
                 <div className="grid lg:grid-cols-2 gap-8">
-                    <PropertyCard property={property1.data as PropertyResponse} side="left" />
-                    <PropertyCard property={property2.data as PropertyResponse} side="right" />
+                    <PropertyCard
+                        property={property1.data as PropertyResponse}
+                        thumbnailUrl={property1.thumbnailUrl.data?.url || ""}
+                        side="left"
+                    />
+                    <PropertyCard
+                        property={property2.data as PropertyResponse}
+                        thumbnailUrl={property2.thumbnailUrl.data?.url || ""}
+                        side="right"
+                    />
                 </div>
 
                 <motion.div

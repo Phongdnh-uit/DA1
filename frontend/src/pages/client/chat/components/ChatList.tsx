@@ -58,7 +58,7 @@ export default function ChatList({
                                         <>
                                             <AvatarImage
                                                 key={participant.user?.id}
-                                                src={participant.user?.avatar?.secureUrl}
+                                                src={participant.user?.avatar?.objectName}
                                                 alt={participant.user?.fullName}
                                             />
                                             <AvatarFallback>

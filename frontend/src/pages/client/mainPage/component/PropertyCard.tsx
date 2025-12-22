@@ -11,7 +11,6 @@ import { useCreateWish } from "@/services/wish/wish";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { usePropertyComparisonStore } from "@/stores/propertyComparisonStore";
-import { useFilePreview } from "@/hooks/useFileHook";
 
 interface PropertyCardProps {
     data: PropertyResponse;
@@ -47,11 +46,6 @@ const PropertyCard = ({ data, isFavorite, isMini }: PropertyCardProps) => {
         }
     };
 
-    const url = useFilePreview(
-        data.thumbnail?.objectName,
-        "rs:fill:300:300:0/g:sm",
-    );
-
     useEffect(() => {
         if (isFavorite) {
             setIsFavorited(isFavorite);
@@ -70,7 +64,7 @@ const PropertyCard = ({ data, isFavorite, isMini }: PropertyCardProps) => {
                     <motion.img
                         whileHover={{ scale: 1.1 }}
                         transition={{ duration: 0.6 }}
-                        src={url.url || "/placeholder-image.png"}
+                        src={data.thumbnail?.url || "/placeholder-image.png"}
                         alt={data.title}
                         className="w-full h-[240px] object-cover"
                     />
@@ -166,7 +160,7 @@ const PropertyCard = ({ data, isFavorite, isMini }: PropertyCardProps) => {
                     <motion.img
                         whileHover={{ scale: 1.1 }}
                         transition={{ duration: 0.6 }}
-                        src={url.url || "/placeholder-image.png"}
+                        src={data.thumbnail?.url || "/placeholder-image.png"}
                         alt={data.title}
                         className="w-full h-full object-cover"
                     />
@@ -185,7 +179,7 @@ const PropertyCard = ({ data, isFavorite, isMini }: PropertyCardProps) => {
                         variant="secondary"
                         className="absolute bottom-3 left-3 bg-black/20 text-white flex items-center gap-1.5 backdrop-blur-lg"
                     >
-                        <ImageIcon className="h-4 w-4" /> {data.medias?.length || 0}
+                        <ImageIcon className="h-4 w-4" /> {data.galleries?.length || 0}
                     </Badge>
 
                     {!isFavorited && (

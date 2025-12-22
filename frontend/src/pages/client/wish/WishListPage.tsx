@@ -35,7 +35,7 @@ export default function WishListPage() {
     });
     const [deleteIds, setDeleteIds] = useState<number[]>([]);
     const handleDeleteSelected = () => {
-        const wishIds = wishList.data?.data?.content
+        const wishIds = (wishList.data?.data?.content || [])
             .filter((wish) => deleteIds.includes(wish.identifier as number))
             .map((wish) => wish.id);
         if (!wishIds || wishIds.length === 0) {

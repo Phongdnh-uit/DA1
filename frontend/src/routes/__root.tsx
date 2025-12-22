@@ -30,7 +30,9 @@ function RootComponent() {
                 <Outlet />
                 <ReactQueryDevtools initialIsOpen={false} />
                 <TanStackRouterDevtools />
-                <ToastContainer />
+                <ToastContainer 
+                    position="bottom-right"
+                />
                 <DeleteDialogGlobal />
             </QueryClientProvider>
         </React.Fragment>

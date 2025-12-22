@@ -38,11 +38,7 @@ import LocationView from "@/components/general/LocationView";
 
 export default function PropertyDetailPage() {
     const { id } = Route.useParams();
-    const {
-        property: product,
-        galleryUrls,
-        thumbnailUrl,
-    } = Route.useLoaderData();
+    const { property: product } = Route.useLoaderData();
     const productData = product.data;
     const similarProperties = useFindSimilarProperties(+id);
     const getAddress = () => {
@@ -154,23 +150,22 @@ export default function PropertyDetailPage() {
         extensions,
     );
 
-    // Convert to Image type
-    const galleryImages: Image[] = thumbnailUrl
-        ? [
-            {
-                url: thumbnailUrl.data?.url,
-                alt: productData?.title || "Thumbnail",
-            } as Image,
-        ]
-        : [];
-    if (galleryUrls && galleryUrls.length > 0) {
-        galleryUrls.forEach((url) => {
-            galleryImages.push({
-                url: url.data?.url,
-                alt: productData?.title || "Gallery Image",
-            } as Image);
+    const mergeImages = (): Image[] => {
+        const images: Image[] = [];
+        productData?.galleries?.forEach((imgUrl) => {
+            images.push({
+                url: imgUrl.url || "",
+                alt: productData.title || "Property Image",
+            });
         });
-    }
+        if (productData?.thumbnail) {
+            images.unshift({
+                url: productData.thumbnail.url || "",
+                alt: productData.title || "Property Thumbnail",
+            });
+        }
+        return images;
+    };
 
     return (
         <motion.div
@@ -185,7 +180,7 @@ export default function PropertyDetailPage() {
                 variants={fadeInUp.item}
             >
                 <Card className="p-6 md:p-8">
-                    <ImageGallery images={galleryImages} />
+                    <ImageGallery images={mergeImages()} />
                 </Card>
 
                 <Separator />

@@ -1,13 +1,8 @@
 import { ProtectedRoute } from "@/components/general/ProtectedRoute";
 import ChatPage from "@/pages/client/chat/ChatPage";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/__client/chat/$id")({
-    beforeLoad: async ({ params }) => {
-        if (isNaN(+params.id)) {
-            throw notFound();
-        }
-    },
+export const Route = createFileRoute("/__client/chat")({
     component: RouteComponent,
 });
 

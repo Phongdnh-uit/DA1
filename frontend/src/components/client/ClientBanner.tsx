@@ -5,13 +5,11 @@ import { ImagesSlider } from "@/components/ui/images-slider";
 import { Route } from "@/routes/__client/index";
 
 export default function ClientBanner() {
-    const { carousel, imageUrls } = Route.useLoaderData();
+    const { carousel } = Route.useLoaderData();
 
     const slides =
         carousel?.data?.map((item) => ({
             carousel: item,
-            url: imageUrls?.find((img) => img.data?.key === item.file?.objectName)
-                ?.data?.url,
         })) || [];
 
     const [current, setCurrent] = useState(0);
@@ -39,7 +37,7 @@ export default function ClientBanner() {
             ) : (
                 <ImagesSlider
                     className="h-[35rem] md:h-[40rem]"
-                    images={slides.map((s) => s.url as string)}
+                    images={slides.map((s) => s.carousel.file?.url || "")}
                 >
                     <div className="z-50 flex flex-col items-center justify-center text-center px-6">
                         <AnimatePresence mode="sync">
@@ -52,10 +50,10 @@ export default function ClientBanner() {
                                 className="flex flex-col items-center justify-center mt-8"
                             >
                                 <h2 className="font-extrabold text-3xl md:text-6xl text-transparent bg-clip-text bg-gradient-to-b from-white to-neutral-400 leading-tight drop-shadow-md">
-                                    {slides[current].carousel.metadata.caption}
+                                    {slides[current]?.carousel?.metadata?.caption}
                                 </h2>
                                 <p className="text-lg md:text-2xl text-neutral-200 mt-4 mb-6 max-w-2xl">
-                                    {slides[current].carousel.metadata.subcaption}
+                                    {slides[current]?.carousel?.metadata?.subcaption}
                                 </p>
                             </motion.div>
                         </AnimatePresence>

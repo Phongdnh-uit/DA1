@@ -11,12 +11,12 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ArrowLeft, XIcon } from "lucide-react";
 import Upload from "@/components/general/Upload";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
-import SpiralLoader from "@/components/ui/SpiralLoader";
 import { LocationPicker } from "@/components/general/LocationPicker";
 import { Separator } from "@/components/ui/separator";
 import { type Location } from "@/types/location";
 import { DocumentUpload } from "./DocumentUpload";
 import useUpdatePropertyVM from "./UpdateProperty.vm";
+import { Badge } from "@/components/ui/badge";
 
 export const UpdatePropertyPage = () => {
     const {
@@ -78,9 +78,23 @@ export const UpdatePropertyPage = () => {
                                     </h3>
                                     {thumbnail ? (
                                         <div className="relative w-full h-full lg:w-80 lg:h-80">
-                                            {thumbnail.file?.status === "PENDING" && (
-                                                <SpiralLoader className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-10 z-10" />
-                                            )}
+                                            <div className="absolute top-0 -left-2 z-20">
+                                                <Badge
+                                                    className={
+                                                        thumbnail?.file?.status === "PENDING"
+                                                            ? "bg-yellow-100 text-yellow-800"
+                                                            : thumbnail?.file?.status === "REJECTED"
+                                                                ? "bg-red-100 text-red-800"
+                                                                : "bg-green-100 text-green-800"
+                                                    }
+                                                >
+                                                    {thumbnail.file?.status === "PENDING"
+                                                        ? "Đang chờ hệ thống kiểm tra"
+                                                        : thumbnail.file?.status === "REJECTED"
+                                                            ? "Không được chấp nhận!"
+                                                            : "An toàn và được chấp nhận"}
+                                                </Badge>
+                                            </div>
                                             <button
                                                 onClick={() => handleRemoveThumbnail()}
                                                 className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 rounded-full z-20 p-1 transition-colors"
@@ -90,7 +104,7 @@ export const UpdatePropertyPage = () => {
                                             <ImageZoom>
                                                 <img
                                                     className={
-                                                        "w-full h-full object-cover rounded-xl cursor-pointer border-2 border-blue-300 shadow-lg " +
+                                                        "size-full lg:size-80 object-cover rounded-xl cursor-pointer border-2 border-blue-300 shadow-lg " +
                                                         (thumbnail.file?.status === "PENDING"
                                                             ? " opacity-50"
                                                             : "")
@@ -127,9 +141,23 @@ export const UpdatePropertyPage = () => {
                                         {gallery.length > 0 &&
                                             gallery.map((imageSrc, index) => (
                                                 <div key={index} className="relative size-32">
-                                                    {imageSrc.file?.status === "PENDING" && (
-                                                        <SpiralLoader className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-8 z-10" />
-                                                    )}
+                                                    <div className="absolute top-0 -left-2 z-20">
+                                                        <Badge
+                                                            className={
+                                                                imageSrc?.file?.status === "PENDING"
+                                                                    ? "bg-yellow-100 text-yellow-800"
+                                                                    : thumbnail?.file?.status === "REJECTED"
+                                                                        ? "bg-red-100 text-red-800"
+                                                                        : "bg-green-100 text-green-800"
+                                                            }
+                                                        >
+                                                            {imageSrc.file?.status === "PENDING"
+                                                                ? "Đang kiểm tra"
+                                                                : imageSrc.file?.status === "REJECTED"
+                                                                    ? "Không được chấp nhận!"
+                                                                    : "Được chấp nhận"}
+                                                        </Badge>
+                                                    </div>
                                                     <button
                                                         onClick={() => handleRemoveGallery(index)}
                                                         className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 rounded-full z-20 p-1 transition-colors"
@@ -139,7 +167,7 @@ export const UpdatePropertyPage = () => {
                                                     <ImageZoom>
                                                         <img
                                                             className={
-                                                                "w-full h-full object-cover rounded-lg cursor-pointer border-2 border-blue-300 shadow " +
+                                                                "size-32 object-cover rounded-lg cursor-pointer border-2 border-blue-300 shadow " +
                                                                 (imageSrc.file?.status === "PENDING"
                                                                     ? " opacity-50"
                                                                     : "")

@@ -18,14 +18,11 @@ import { Route } from "@/routes/admin/property/update.$id";
 import { type Location } from "@/types/location";
 import { useFileUpload } from "@/hooks/useFileHook";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
-import { ACCESS_TOKEN_STORAGE_KEY } from "@/constant/SecurityConstant";
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-const ACCESS_TOKEN = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
+import { config } from "@/lib/config";
 
 export default function useUpdatePropertyVM() {
     const { id } = Route.useParams();
-    const { property, galleryUrls, thumbnailUrl } = Route.useLoaderData();
+    const { property } = Route.useLoaderData();
     const form = useForm<PropertyRequest>({
         defaultValues: {
             title: property?.data?.title ?? undefined,
@@ -67,9 +64,6 @@ export default function useUpdatePropertyVM() {
                     queryKey: ["/properties/all"],
                     exact: false,
                 });
-                form.reset();
-                setThumbnail(undefined);
-                setGallery([]);
             },
             onError: () => {
                 toast.error("Lỗi xảy ra, vui lòng thử lại");
@@ -89,7 +83,7 @@ export default function useUpdatePropertyVM() {
         | undefined
     >({
         file: property?.data?.thumbnail,
-        url: thumbnailUrl.data?.url,
+        url: property.data?.thumbnail?.url
     });
     const [gallery, setGallery] = useState<
         {
@@ -99,9 +93,7 @@ export default function useUpdatePropertyVM() {
     >(
         property?.data?.galleries?.map((media) => ({
             file: media,
-            url: galleryUrls.find(
-                (galleryUrl) => galleryUrl.data?.key === media.objectName,
-            )?.data?.url,
+            url: media.url,
         })) || [],
     );
 
@@ -275,12 +267,12 @@ export default function useUpdatePropertyVM() {
         let isCancelled = false;
 
         fetchEventSource(
-            `${BACKEND_URL}/sse/files/notifications/${objectKey}/subscribe`,
+            `${config.backendUrl}/sse/files/notifications/${objectKey}/subscribe`,
             {
                 method: "GET",
                 headers: {
                     Accept: "text/event-stream",
-                    Authorization: `Bearer ${ACCESS_TOKEN}`,
+                    Authorization: `Bearer ${config.accessToken}`,
                 },
                 onmessage(event) {
                     try {

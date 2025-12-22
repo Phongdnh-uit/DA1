@@ -72,7 +72,7 @@ export function useCreateRoleVM() {
         let updatedPermissionIds: number[];
         if (!allCategorySelected) {
             updatedPermissionIds = [
-                ...new Set([...currentPermissionIds, ...resourcePermissionIds]),
+                ...new Set([...currentPermissionIds, ...resourcePermissionIds] as number[]),
             ];
         } else {
             updatedPermissionIds = currentPermissionIds.filter(

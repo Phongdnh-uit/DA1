@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useFilePreview } from "@/hooks/useFileHook";
 import {
     useCloseConversation,
     useGetConversationById,
@@ -93,6 +94,10 @@ export default function LeadPanel({
         }
     };
 
+    const thumbnailPreview = useFilePreview(
+        property.data?.data?.thumbnail?.objectName,
+    );
+
     const userInfo = conversation.data?.data?.participants?.find(
         (participant) => participant.user?.id === conversation.data.data?.createdBy,
     )?.user;
@@ -129,11 +134,7 @@ export default function LeadPanel({
                     <Card className="overflow-hidden">
                         <div className="relative h-40 w-full overflow-hidden bg-gray-200">
                             <img
-                                src={
-                                    property.data?.data.medias?.find(
-                                        (media) => media.purpose === "THUMBNAIL",
-                                    )?.secureUrl
-                                }
+                                src={thumbnailPreview.url || ""}
                                 alt={property.data?.data.title}
                                 className="h-full w-full object-cover"
                             />

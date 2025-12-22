@@ -13,7 +13,7 @@ import { motion } from "motion/react";
 import { toast } from "react-toastify";
 import { useEffect, useRef, useState } from "react";
 import SpiralLoader from "@/components/ui/SpiralLoader";
-import { useFilePreview, useFileUpload } from "@/hooks/useFileHook";
+import { useFileUpload } from "@/hooks/useFileHook";
 import { useFileSSE } from "@/hooks/useFileSse";
 
 const MotionButton = motion(Button);
@@ -33,10 +33,6 @@ export function ProfileSection() {
     });
     const fileEvent = useFileSSE(uploadedFileId);
     const { uploadFile } = useFileUpload();
-    const url = useFilePreview(
-        currentUser?.data?.data?.avatar?.objectName,
-        "rs:fill:100:100:0/g:sm",
-    );
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const handleAvatarChange = () => {
         if (fileInputRef.current) {
@@ -44,7 +40,7 @@ export function ProfileSection() {
         }
     };
 
-    const onFileChange = async (e) => {
+    const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
         if (tempAvatar) {
@@ -129,7 +125,7 @@ export function ProfileSection() {
                                 </>
                             ) : (
                                 <AvatarImage
-                                    src={url.url ? url.url : undefined}
+                                    src={currentUser?.data?.data?.avatar?.url || ""}
                                     loading="lazy"
                                     alt={currentUser?.data?.data?.fullName || "User"}
                                 />
