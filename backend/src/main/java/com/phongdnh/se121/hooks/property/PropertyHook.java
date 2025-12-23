@@ -163,9 +163,7 @@ public class PropertyHook
                     new ApiException(
                         ErrorCode.RESOURCE_NOT_FOUND,
                         Map.of("thumbnailId", "Thumbnail file not found")));
-    Long userId = SecurityUtil.getCurrentUserId();
-    if (!thumbnailFile.getCreatedBy().equals(userId)
-        || thumbnailFile.getPurpose() != FilePurpose.PROPERTY_THUMBNAIL) {
+    if (thumbnailFile.getPurpose() != FilePurpose.PROPERTY_THUMBNAIL) {
       errors.put("thumbnailId", "Invalid thumbnail file");
     }
 

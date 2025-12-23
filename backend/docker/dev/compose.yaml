@@ -158,6 +158,7 @@ services:
       - kafka
     networks:
       - uitland-network
+
   # ClamAV service
   clamav:
     image: clamav/clamav:latest
