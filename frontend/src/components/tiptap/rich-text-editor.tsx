@@ -80,6 +80,7 @@ interface RichTextEditorProps {
     onChange?: (content: string) => void;
     placeholder?: string;
     value: string;
+    disable?: boolean;
 }
 
 export function RichTextEditor({
@@ -87,6 +88,7 @@ export function RichTextEditor({
     placeholder,
     onChange,
     value,
+    disable,
 }: RichTextEditorProps) {
     let content = null;
     try {
@@ -111,6 +113,7 @@ export function RichTextEditor({
         immediatelyRender: false,
         extensions: extensions as Extension[],
         content: content,
+        editable: !disable,
         editorProps: {
             attributes: {
                 class: "w-full focus:outline-none max-w-none prose",
@@ -131,7 +134,7 @@ export function RichTextEditor({
                 className,
             )}
         >
-            <EditorToolbar editor={editor} />
+            {!disable && <EditorToolbar editor={editor} />}
             <FloatingToolbar editor={editor} />
             {/* <TipTapFloatingMenu editor={editor} /> */}
             <EditorContent

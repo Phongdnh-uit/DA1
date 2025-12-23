@@ -21,8 +21,8 @@ import { Route as AuthOtpVerificationRouteImport } from './routes/auth/otp-verif
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
 import { Route as _clientWishListRouteImport } from './routes/__client/wish-list'
+import { Route as _clientSupportRouteImport } from './routes/__client/support'
 import { Route as _clientSettingsRouteImport } from './routes/__client/settings'
-import { Route as _clientReportRouteImport } from './routes/__client/report'
 import { Route as _clientPropertiesRouteImport } from './routes/__client/properties'
 import { Route as _clientChatRouteImport } from './routes/__client/chat'
 import { Route as _clientBookingRouteImport } from './routes/__client/booking'
@@ -52,6 +52,7 @@ import { Route as AdminUserUpdateIdRouteImport } from './routes/admin/user/updat
 import { Route as AdminRoleUpdateIdRouteImport } from './routes/admin/role/update.$id'
 import { Route as AdminProvinceUpdateIdRouteImport } from './routes/admin/province/update.$id'
 import { Route as AdminPropertyUpdateIdRouteImport } from './routes/admin/property/update.$id'
+import { Route as AdminPropertyDetailIdRouteImport } from './routes/admin/property/detail.$id'
 import { Route as AdminPropertyTypeUpdateIdRouteImport } from './routes/admin/property-type/update.$id'
 import { Route as AdminPriceReferenceDetailIdRouteImport } from './routes/admin/price-reference/detail.$id'
 import { Route as AdminPermissionUpdateIdRouteImport } from './routes/admin/permission/update.$id'
@@ -117,14 +118,14 @@ const _clientWishListRoute = _clientWishListRouteImport.update({
   path: '/wish-list',
   getParentRoute: () => _clientRoute,
 } as any)
+const _clientSupportRoute = _clientSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => _clientRoute,
+} as any)
 const _clientSettingsRoute = _clientSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => _clientRoute,
-} as any)
-const _clientReportRoute = _clientReportRouteImport.update({
-  id: '/report',
-  path: '/report',
   getParentRoute: () => _clientRoute,
 } as any)
 const _clientPropertiesRoute = _clientPropertiesRouteImport.update({
@@ -273,6 +274,11 @@ const AdminPropertyUpdateIdRoute = AdminPropertyUpdateIdRouteImport.update({
   path: '/property/update/$id',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminPropertyDetailIdRoute = AdminPropertyDetailIdRouteImport.update({
+  id: '/property/detail/$id',
+  path: '/property/detail/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPropertyTypeUpdateIdRoute =
   AdminPropertyTypeUpdateIdRouteImport.update({
     id: '/property-type/update/$id',
@@ -307,8 +313,8 @@ export interface FileRoutesByFullPath {
   '/booking': typeof _clientBookingRoute
   '/chat': typeof _clientChatRoute
   '/properties': typeof _clientPropertiesRoute
-  '/report': typeof _clientReportRoute
   '/settings': typeof _clientSettingsRoute
+  '/support': typeof _clientSupportRoute
   '/wish-list': typeof _clientWishListRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -343,6 +349,7 @@ export interface FileRoutesByFullPath {
   '/admin/permission/update/$id': typeof AdminPermissionUpdateIdRoute
   '/admin/price-reference/detail/$id': typeof AdminPriceReferenceDetailIdRoute
   '/admin/property-type/update/$id': typeof AdminPropertyTypeUpdateIdRoute
+  '/admin/property/detail/$id': typeof AdminPropertyDetailIdRoute
   '/admin/property/update/$id': typeof AdminPropertyUpdateIdRoute
   '/admin/province/update/$id': typeof AdminProvinceUpdateIdRoute
   '/admin/role/update/$id': typeof AdminRoleUpdateIdRoute
@@ -356,8 +363,8 @@ export interface FileRoutesByTo {
   '/booking': typeof _clientBookingRoute
   '/chat': typeof _clientChatRoute
   '/properties': typeof _clientPropertiesRoute
-  '/report': typeof _clientReportRoute
   '/settings': typeof _clientSettingsRoute
+  '/support': typeof _clientSupportRoute
   '/wish-list': typeof _clientWishListRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -392,6 +399,7 @@ export interface FileRoutesByTo {
   '/admin/permission/update/$id': typeof AdminPermissionUpdateIdRoute
   '/admin/price-reference/detail/$id': typeof AdminPriceReferenceDetailIdRoute
   '/admin/property-type/update/$id': typeof AdminPropertyTypeUpdateIdRoute
+  '/admin/property/detail/$id': typeof AdminPropertyDetailIdRoute
   '/admin/property/update/$id': typeof AdminPropertyUpdateIdRoute
   '/admin/province/update/$id': typeof AdminProvinceUpdateIdRoute
   '/admin/role/update/$id': typeof AdminRoleUpdateIdRoute
@@ -407,8 +415,8 @@ export interface FileRoutesById {
   '/__client/booking': typeof _clientBookingRoute
   '/__client/chat': typeof _clientChatRoute
   '/__client/properties': typeof _clientPropertiesRoute
-  '/__client/report': typeof _clientReportRoute
   '/__client/settings': typeof _clientSettingsRoute
+  '/__client/support': typeof _clientSupportRoute
   '/__client/wish-list': typeof _clientWishListRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -443,6 +451,7 @@ export interface FileRoutesById {
   '/admin/permission/update/$id': typeof AdminPermissionUpdateIdRoute
   '/admin/price-reference/detail/$id': typeof AdminPriceReferenceDetailIdRoute
   '/admin/property-type/update/$id': typeof AdminPropertyTypeUpdateIdRoute
+  '/admin/property/detail/$id': typeof AdminPropertyDetailIdRoute
   '/admin/property/update/$id': typeof AdminPropertyUpdateIdRoute
   '/admin/province/update/$id': typeof AdminProvinceUpdateIdRoute
   '/admin/role/update/$id': typeof AdminRoleUpdateIdRoute
@@ -458,8 +467,8 @@ export interface FileRouteTypes {
     | '/booking'
     | '/chat'
     | '/properties'
-    | '/report'
     | '/settings'
+    | '/support'
     | '/wish-list'
     | '/auth/forgot-password'
     | '/auth/login'
@@ -494,6 +503,7 @@ export interface FileRouteTypes {
     | '/admin/permission/update/$id'
     | '/admin/price-reference/detail/$id'
     | '/admin/property-type/update/$id'
+    | '/admin/property/detail/$id'
     | '/admin/property/update/$id'
     | '/admin/province/update/$id'
     | '/admin/role/update/$id'
@@ -507,8 +517,8 @@ export interface FileRouteTypes {
     | '/booking'
     | '/chat'
     | '/properties'
-    | '/report'
     | '/settings'
+    | '/support'
     | '/wish-list'
     | '/auth/forgot-password'
     | '/auth/login'
@@ -543,6 +553,7 @@ export interface FileRouteTypes {
     | '/admin/permission/update/$id'
     | '/admin/price-reference/detail/$id'
     | '/admin/property-type/update/$id'
+    | '/admin/property/detail/$id'
     | '/admin/property/update/$id'
     | '/admin/province/update/$id'
     | '/admin/role/update/$id'
@@ -557,8 +568,8 @@ export interface FileRouteTypes {
     | '/__client/booking'
     | '/__client/chat'
     | '/__client/properties'
-    | '/__client/report'
     | '/__client/settings'
+    | '/__client/support'
     | '/__client/wish-list'
     | '/auth/forgot-password'
     | '/auth/login'
@@ -593,6 +604,7 @@ export interface FileRouteTypes {
     | '/admin/permission/update/$id'
     | '/admin/price-reference/detail/$id'
     | '/admin/property-type/update/$id'
+    | '/admin/property/detail/$id'
     | '/admin/property/update/$id'
     | '/admin/province/update/$id'
     | '/admin/role/update/$id'
@@ -693,18 +705,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof _clientWishListRouteImport
       parentRoute: typeof _clientRoute
     }
+    '/__client/support': {
+      id: '/__client/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof _clientSupportRouteImport
+      parentRoute: typeof _clientRoute
+    }
     '/__client/settings': {
       id: '/__client/settings'
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof _clientSettingsRouteImport
-      parentRoute: typeof _clientRoute
-    }
-    '/__client/report': {
-      id: '/__client/report'
-      path: '/report'
-      fullPath: '/report'
-      preLoaderRoute: typeof _clientReportRouteImport
       parentRoute: typeof _clientRoute
     }
     '/__client/properties': {
@@ -910,6 +922,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPropertyUpdateIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/property/detail/$id': {
+      id: '/admin/property/detail/$id'
+      path: '/property/detail/$id'
+      fullPath: '/admin/property/detail/$id'
+      preLoaderRoute: typeof AdminPropertyDetailIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/property-type/update/$id': {
       id: '/admin/property-type/update/$id'
       path: '/property-type/update/$id'
@@ -952,8 +971,8 @@ interface _clientRouteChildren {
   _clientBookingRoute: typeof _clientBookingRoute
   _clientChatRoute: typeof _clientChatRoute
   _clientPropertiesRoute: typeof _clientPropertiesRoute
-  _clientReportRoute: typeof _clientReportRoute
   _clientSettingsRoute: typeof _clientSettingsRoute
+  _clientSupportRoute: typeof _clientSupportRoute
   _clientWishListRoute: typeof _clientWishListRoute
   _clientIndexRoute: typeof _clientIndexRoute
   _clientDetailIdRoute: typeof _clientDetailIdRoute
@@ -964,8 +983,8 @@ const _clientRouteChildren: _clientRouteChildren = {
   _clientBookingRoute: _clientBookingRoute,
   _clientChatRoute: _clientChatRoute,
   _clientPropertiesRoute: _clientPropertiesRoute,
-  _clientReportRoute: _clientReportRoute,
   _clientSettingsRoute: _clientSettingsRoute,
+  _clientSupportRoute: _clientSupportRoute,
   _clientWishListRoute: _clientWishListRoute,
   _clientIndexRoute: _clientIndexRoute,
   _clientDetailIdRoute: _clientDetailIdRoute,
@@ -1000,6 +1019,7 @@ interface AdminRouteChildren {
   AdminPermissionUpdateIdRoute: typeof AdminPermissionUpdateIdRoute
   AdminPriceReferenceDetailIdRoute: typeof AdminPriceReferenceDetailIdRoute
   AdminPropertyTypeUpdateIdRoute: typeof AdminPropertyTypeUpdateIdRoute
+  AdminPropertyDetailIdRoute: typeof AdminPropertyDetailIdRoute
   AdminPropertyUpdateIdRoute: typeof AdminPropertyUpdateIdRoute
   AdminProvinceUpdateIdRoute: typeof AdminProvinceUpdateIdRoute
   AdminRoleUpdateIdRoute: typeof AdminRoleUpdateIdRoute
@@ -1032,6 +1052,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminPermissionUpdateIdRoute: AdminPermissionUpdateIdRoute,
   AdminPriceReferenceDetailIdRoute: AdminPriceReferenceDetailIdRoute,
   AdminPropertyTypeUpdateIdRoute: AdminPropertyTypeUpdateIdRoute,
+  AdminPropertyDetailIdRoute: AdminPropertyDetailIdRoute,
   AdminPropertyUpdateIdRoute: AdminPropertyUpdateIdRoute,
   AdminProvinceUpdateIdRoute: AdminProvinceUpdateIdRoute,
   AdminRoleUpdateIdRoute: AdminRoleUpdateIdRoute,

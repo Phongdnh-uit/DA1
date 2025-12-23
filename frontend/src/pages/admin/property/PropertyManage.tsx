@@ -66,6 +66,9 @@ export const PropertyManage = () => {
                             },
                         });
                     },
+                    onView: (row) => {
+                        navigate({ to: `/admin/property/detail/${row.id}` });
+                    }
                 },
                 {
                     deleteCode: "PROPERTY_DELETE",

@@ -9,8 +9,8 @@ import { Badge } from "@/components/ui/badge";
 
 interface DocumentUploadProps {
     documents: FileResponse[];
-    onDocumentAdd: (file: File) => void;
-    onDocumentRemove: (index: number) => void;
+    onDocumentAdd?: (file: File) => void;
+    onDocumentRemove?: (index: number) => void;
 }
 
 export const DocumentUpload = ({
@@ -86,29 +86,33 @@ export const DocumentUpload = ({
                                     <Download className="size-5 text-gray-600" />
                                 </Button>
 
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => onDocumentRemove(index)}
-                                    className="flex-shrink-0 hover:bg-red-100 hover:text-red-600"
-                                >
-                                    <X className="size-5" />
-                                </Button>
+                                {onDocumentRemove && (
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => onDocumentRemove(index)}
+                                        className="flex-shrink-0 hover:bg-red-100 hover:text-red-600"
+                                    >
+                                        <X className="size-5" />
+                                    </Button>
+                                )}
                             </div>
                         ))}
                     </div>
                 )}
 
-                <Upload
-                    name="documents"
-                    onUpload={(files) => onDocumentAdd(files[0])}
-                    isSingle={true}
-                    accept={{
-                        "application/*": [".pdf", ".doc", ".docx", ".txt", ".csv"],
-                        "image/*": [".jpg", ".jpeg", ".png"],
-                        "video/*": [".mp4", ".mov"],
-                    }}
-                />
+                {onDocumentAdd && (
+                    <Upload
+                        name="documents"
+                        onUpload={(files) => onDocumentAdd(files[0])}
+                        isSingle={true}
+                        accept={{
+                            "application/*": [".pdf", ".doc", ".docx", ".txt", ".csv"],
+                            "image/*": [".jpg", ".jpeg", ".png"],
+                            "video/*": [".mp4", ".mov"],
+                        }}
+                    />
+                )}
 
                 <p className="text-sm text-gray-500 text-center">
                     Hỗ trợ: PDF, DOC, DOCX, TXT, CSV, JPG, PNG, MP4, MOV (Tối đa 10MB)

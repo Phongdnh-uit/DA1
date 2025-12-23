@@ -1,4 +1,5 @@
 import { RichTextEditor } from "@/components/tiptap/rich-text-editor";
+import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
     FormControl,
@@ -107,7 +108,7 @@ export function FormCheckbox<K>({
     direction,
     description,
     ...props
-}: FormCheckboxProps<K>) {
+}: FormCheckboxProps<K> & React.ComponentProps<typeof CheckboxPrimitive.Root>) {
     const form = useFormContext();
     return (
         <FormField
@@ -236,6 +237,7 @@ interface FormEditorProps<K> {
     required?: boolean;
     description?: string;
     className?: string;
+    disabled?: boolean;
 }
 
 export function FormEditor<K>({
@@ -245,6 +247,7 @@ export function FormEditor<K>({
     description,
     placeholder,
     className,
+    disabled,
 }: FormEditorProps<K>) {
     const form = useFormContext();
     return (
@@ -261,6 +264,7 @@ export function FormEditor<K>({
                         <div className={cn("rounded-2xl", className)}>
                             <RichTextEditor
                                 key={form.formState.submitCount} // Reset editor on submit
+                                disable={disabled}
                                 className="h-full"
                                 value={field.value || ""}
                                 placeholder={placeholder}

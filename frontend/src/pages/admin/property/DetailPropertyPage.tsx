@@ -8,34 +8,24 @@ import {
 import { PropertyRequestStatus, type PropertyRequest } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { ArrowLeft, XIcon } from "lucide-react";
-import Upload from "@/components/general/Upload";
+import { ArrowLeft } from "lucide-react";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 import { LocationPicker } from "@/components/general/LocationPicker";
 import { Separator } from "@/components/ui/separator";
-import { type Location } from "@/types/location";
 import { DocumentUpload } from "./DocumentUpload";
-import useUpdatePropertyVM from "./UpdateProperty.vm";
 import { Badge } from "@/components/ui/badge";
+import useDetailPropertyVM from "./DetailProperty.vm";
 
-export const UpdatePropertyPage = () => {
+export const DetailPropertyPage = () => {
     const {
         form,
-        onSubmit,
         wards,
         propertyTypes,
         provinces,
         thumbnail,
-        handleThumbnailChange,
-        gallery,
-        handleGalleryChange,
-        handleRemoveGallery,
-        handleRemoveThumbnail,
+        galleries,
         documents,
-        handleAddDocument,
-        handleRemoveDocument,
-        onLocationChange,
-    } = useUpdatePropertyVM();
+    } = useDetailPropertyVM();
 
     return (
         <div className="min-h-screen">
@@ -50,7 +40,7 @@ export const UpdatePropertyPage = () => {
                         <ArrowLeft className="size-6" />
                     </Button>
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                        Cập nhật thông tin bất động sản
+                        Thông tin bất động sản
                     </h1>
                 </div>
 
@@ -81,31 +71,25 @@ export const UpdatePropertyPage = () => {
                                             <div className="absolute top-0 -left-2 z-20">
                                                 <Badge
                                                     className={
-                                                        thumbnail?.file?.status === "PENDING"
+                                                        thumbnail?.status === "PENDING"
                                                             ? "bg-yellow-100 text-yellow-800"
-                                                            : thumbnail?.file?.status === "REJECTED"
+                                                            : thumbnail?.status === "REJECTED"
                                                                 ? "bg-red-100 text-red-800"
                                                                 : "bg-green-100 text-green-800"
                                                     }
                                                 >
-                                                    {thumbnail.file?.status === "PENDING"
+                                                    {thumbnail?.status === "PENDING"
                                                         ? "Đang chờ hệ thống kiểm tra"
-                                                        : thumbnail.file?.status === "REJECTED"
+                                                        : thumbnail?.status === "REJECTED"
                                                             ? "Không được chấp nhận!"
                                                             : "An toàn và được chấp nhận"}
                                                 </Badge>
                                             </div>
-                                            <button
-                                                onClick={() => handleRemoveThumbnail()}
-                                                className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 rounded-full z-20 p-1 transition-colors"
-                                            >
-                                                <XIcon className="size-4 text-white" />
-                                            </button>
                                             <ImageZoom>
                                                 <img
                                                     className={
                                                         "size-full lg:size-80 object-cover rounded-xl cursor-pointer border-2 border-blue-300 shadow-lg " +
-                                                        (thumbnail.file?.status === "PENDING"
+                                                        (thumbnail?.status === "PENDING"
                                                             ? " opacity-50"
                                                             : "")
                                                     }
@@ -114,15 +98,7 @@ export const UpdatePropertyPage = () => {
                                                 />
                                             </ImageZoom>
                                         </div>
-                                    ) : (
-                                        <div className="w-full lg:w-80 h-80">
-                                            <Upload
-                                                name="thumbnail"
-                                                onUpload={(files) => handleThumbnailChange(files[0])}
-                                                isSingle={true}
-                                            />
-                                        </div>
-                                    )}
+                                    ) : null}
                                 </div>
 
                                 {/* Gallery - Right/Bottom */}
@@ -131,44 +107,31 @@ export const UpdatePropertyPage = () => {
                                         Gallery
                                     </h3>
                                     <div className="flex flex-wrap gap-4">
-                                        <Upload
-                                            className="size-32"
-                                            name="gallery"
-                                            isMinimal
-                                            onUpload={(files) => handleGalleryChange(files[0])}
-                                            isSingle={true}
-                                        />
-                                        {gallery.length > 0 &&
-                                            gallery.map((imageSrc, index) => (
+                                        {galleries.length > 0 &&
+                                            galleries.map((imageSrc, index) => (
                                                 <div key={index} className="relative size-32">
                                                     <div className="absolute top-0 -left-2 z-20">
                                                         <Badge
                                                             className={
-                                                                imageSrc?.file?.status === "PENDING"
+                                                                imageSrc?.status === "PENDING"
                                                                     ? "bg-yellow-100 text-yellow-800"
-                                                                    : thumbnail?.file?.status === "REJECTED"
+                                                                    : thumbnail?.status === "REJECTED"
                                                                         ? "bg-red-100 text-red-800"
                                                                         : "bg-green-100 text-green-800"
                                                             }
                                                         >
-                                                            {imageSrc.file?.status === "PENDING"
+                                                            {imageSrc.status === "PENDING"
                                                                 ? "Đang kiểm tra"
-                                                                : imageSrc.file?.status === "REJECTED"
+                                                                : imageSrc?.status === "REJECTED"
                                                                     ? "Không được chấp nhận!"
                                                                     : "Được chấp nhận"}
                                                         </Badge>
                                                     </div>
-                                                    <button
-                                                        onClick={() => handleRemoveGallery(index)}
-                                                        className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 rounded-full z-20 p-1 transition-colors"
-                                                    >
-                                                        <XIcon className="size-4 text-white" />
-                                                    </button>
                                                     <ImageZoom>
                                                         <img
                                                             className={
                                                                 "size-32 object-cover rounded-lg cursor-pointer border-2 border-blue-300 shadow " +
-                                                                (imageSrc.file?.status === "PENDING"
+                                                                (imageSrc?.status === "PENDING"
                                                                     ? " opacity-50"
                                                                     : "")
                                                             }
@@ -205,9 +168,7 @@ export const UpdatePropertyPage = () => {
                                         }
                                         : undefined
                                 }
-                                onChange={(data) =>
-                                    onLocationChange(data ? (data as Location) : undefined)
-                                }
+                                interactive={false}
                             />
                         </Card>
                     </div>
@@ -230,6 +191,7 @@ export const UpdatePropertyPage = () => {
                                         <FormInput<PropertyRequest>
                                             title="Tên bất động sản"
                                             placeholder="Nhập tên bất động sản"
+                                            disabled={true}
                                             name="title"
                                         />
 
@@ -247,17 +209,20 @@ export const UpdatePropertyPage = () => {
                                                         render: "Cho thuê",
                                                     },
                                                 ]}
+                                                disabled={true}
                                             />
                                             <FormInput<PropertyRequest>
                                                 title="Giá (VNĐ)"
                                                 placeholder="Nhập giá"
                                                 type="number"
                                                 name="price"
+                                                disabled={true}
                                             />
                                         </div>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <FormSelect<PropertyRequest>
+                                                disabled={true}
                                                 title="Loại bất động sản"
                                                 name="typeId"
                                                 keyType="number"
@@ -269,6 +234,7 @@ export const UpdatePropertyPage = () => {
                                                 }
                                             />
                                             <FormSelect<PropertyRequest>
+                                                disabled={true}
                                                 title="Trạng thái"
                                                 name="status"
                                                 options={Object.keys(PropertyRequestStatus).map(
@@ -294,7 +260,7 @@ export const UpdatePropertyPage = () => {
                                                 title="Tỉnh/Thành phố"
                                                 name="provinceId"
                                                 keyType="number"
-                                                disabled={provinces?.data?.content?.length === 0}
+                                                disabled={true}
                                                 options={
                                                     provinces?.data?.content?.map((province) => ({
                                                         key: "" + province.id,
@@ -306,7 +272,7 @@ export const UpdatePropertyPage = () => {
                                                 title="Phường/Xã"
                                                 name="wardId"
                                                 keyType="number"
-                                                disabled={!form.getValues("provinceId")}
+                                                disabled={true}
                                                 options={
                                                     wards?.data?.content?.map((ward) => ({
                                                         key: "" + ward.id,
@@ -319,7 +285,7 @@ export const UpdatePropertyPage = () => {
                                         <FormInput<PropertyRequest>
                                             title="Địa chỉ"
                                             placeholder="Nhập địa chỉ cụ thể"
-                                            disabled={!form.getValues("wardId")}
+                                            disabled={true}
                                             name="lineAddress"
                                         />
 
@@ -335,14 +301,17 @@ export const UpdatePropertyPage = () => {
                                                 placeholder="Nhập diện tích"
                                                 type="number"
                                                 name="landArea"
+                                                disabled={true}
                                             />
                                             <FormInput<PropertyRequest>
+                                                disabled={true}
                                                 title="Diện tích sàn (m²)"
                                                 placeholder="Nhập diện tích"
                                                 type="number"
                                                 name="floorArea"
                                             />
                                             <FormInput<PropertyRequest>
+                                                disabled={true}
                                                 title="Chiều rộng đường (m)"
                                                 placeholder="Chiều rộng"
                                                 type="number"
@@ -358,30 +327,35 @@ export const UpdatePropertyPage = () => {
 
                                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                                             <FormInput<PropertyRequest>
+                                                disabled={true}
                                                 title="Số tầng"
                                                 placeholder="Số tầng"
                                                 type="number"
                                                 name="floors"
                                             />
                                             <FormInput<PropertyRequest>
+                                                disabled={true}
                                                 title="Tầng hiện tại"
                                                 placeholder="Tầng"
                                                 type="number"
                                                 name="floorNumber"
                                             />
                                             <FormInput<PropertyRequest>
+                                                disabled={true}
                                                 title="Phòng ngủ"
                                                 placeholder="Số phòng"
                                                 type="number"
                                                 name="bedrooms"
                                             />
                                             <FormInput<PropertyRequest>
+                                                disabled={true}
                                                 title="Phòng tắm"
                                                 placeholder="Số phòng"
                                                 type="number"
                                                 name="bathrooms"
                                             />
                                             <FormSelect<PropertyRequest>
+                                                disabled={true}
                                                 title="Hướng nhà"
                                                 options={[
                                                     { key: "NORTH", render: "Bắc" },
@@ -396,6 +370,7 @@ export const UpdatePropertyPage = () => {
                                                 name="direction"
                                             />
                                             <FormSelect<PropertyRequest>
+                                                disabled={true}
                                                 title="Hướng ban công"
                                                 options={[
                                                     { key: "NORTH", render: "Bắc" },
@@ -412,6 +387,7 @@ export const UpdatePropertyPage = () => {
                                         </div>
 
                                         <FormInput<PropertyRequest>
+                                            disabled={true}
                                             title="Nội thất"
                                             placeholder="Mô tả nội thất (VD: Đầy đủ, cơ bản...)"
                                             name="interior"
@@ -419,16 +395,19 @@ export const UpdatePropertyPage = () => {
 
                                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
                                             <FormCheckbox<PropertyRequest>
+                                                disabled={true}
                                                 title="Có tầng hầm"
                                                 direction="row"
                                                 name="hasBasement"
                                             />
                                             <FormCheckbox<PropertyRequest>
+                                                disabled={true}
                                                 title="Có thang máy"
                                                 direction="row"
                                                 name="hasElevator"
                                             />
                                             <FormCheckbox<PropertyRequest>
+                                                disabled={true}
                                                 title="Có gác lửng"
                                                 direction="row"
                                                 name="hasMezzanine"
@@ -443,11 +422,7 @@ export const UpdatePropertyPage = () => {
 
                 {/* Document Upload Section */}
                 <div className="mb-6">
-                    <DocumentUpload
-                        documents={documents}
-                        onDocumentAdd={handleAddDocument}
-                        onDocumentRemove={handleRemoveDocument}
-                    />
+                    <DocumentUpload documents={documents} />
                 </div>
 
                 {/* Description Editor */}
@@ -460,25 +435,12 @@ export const UpdatePropertyPage = () => {
                     </div>
                     <Form {...form}>
                         <FormEditor<PropertyRequest>
+                            disabled={true}
                             name="description"
                             className="h-[600px] overflow-hidden"
                         />
                     </Form>
                 </Card>
-                {/* Submit Button - Full Width at Bottom */}
-                <div className="flex justify-center mt-8">
-                    <Button
-                        onClick={() =>
-                            form.handleSubmit(onSubmit, (errors) => {
-                                console.log(errors);
-                            })()
-                        }
-                        className="w-full sm:w-auto px-12 py-6 bg-blue-600 hover:bg-blue-700 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
-                        name="confirm-button"
-                    >
-                        Cập nhật Bất động sản
-                    </Button>
-                </div>
             </div>
         </div>
     );

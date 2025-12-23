@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-export const ReportPage = () => {
+export const SupportPage = () => {
     const [formData, setFormData] = useState({
         requestType: "",
         priority: "normal",
@@ -327,82 +327,53 @@ export const ReportPage = () => {
                         </Card>
 
                         {/* FAQ Mini Card */}
-                        <Card className="shadow-lg">
-                            <CardHeader>
-                                <CardTitle className="text-lg flex items-center gap-2">
-                                    <HelpCircle className="h-5 w-5 text-orange-500" />
-                                    Câu hỏi thường gặp
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <ul className="space-y-2">
-                                    <li>
-                                        <a
-                                            className="text-sm text-muted-foreground hover:text-primary hover:underline transition-colors block"
-                                            href="#"
-                                        >
-                                            Làm sao để sửa tin đã đăng?
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a
-                                            className="text-sm text-muted-foreground hover:text-primary hover:underline transition-colors block"
-                                            href="#"
-                                        >
-                                            Quy định về duyệt tin đăng mới
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a
-                                            className="text-sm text-muted-foreground hover:text-primary hover:underline transition-colors block"
-                                            href="#"
-                                        >
-                                            Hướng dẫn nạp tiền vào tài khoản
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a
-                                            className="text-sm text-muted-foreground hover:text-primary hover:underline transition-colors block"
-                                            href="#"
-                                        >
-                                            Chính sách bảo mật thông tin
-                                        </a>
-                                    </li>
-                                </ul>
-                                <Button variant="outline" className="w-full">
-                                    Xem tất cả câu hỏi
-                                </Button>
-                            </CardContent>
-                        </Card>
-
-                        {/* Promo Card */}
-                        <Card className="overflow-hidden shadow-lg bg-gradient-to-br from-blue-600 to-blue-800 text-white border-0">
-                            <CardContent className="p-6 space-y-3">
-                                <div className="flex items-center gap-2">
-                                    <Sparkles className="h-5 w-5" />
-                                    <Badge
-                                        variant="secondary"
-                                        className="bg-white/20 text-white border-0"
-                                    >
-                                        Khuyến mãi
-                                    </Badge>
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-xl mb-2">
-                                        Nâng cấp tài khoản VIP
-                                    </h3>
-                                    <p className="text-blue-100 text-sm">
-                                        Tiếp cận khách hàng nhanh gấp 5 lần với gói VIP đặc biệt
-                                    </p>
-                                </div>
-                                <Button
-                                    variant="secondary"
-                                    className="w-full bg-white text-blue-600 hover:bg-blue-50"
-                                >
-                                    Tìm hiểu thêm
-                                </Button>
-                            </CardContent>
-                        </Card>
+                        {/* <Card className="shadow-lg"> */}
+                        {/*     <CardHeader> */}
+                        {/*         <CardTitle className="text-lg flex items-center gap-2"> */}
+                        {/*             <HelpCircle className="h-5 w-5 text-orange-500" /> */}
+                        {/*             Câu hỏi thường gặp */}
+                        {/*         </CardTitle> */}
+                        {/*     </CardHeader> */}
+                        {/*     <CardContent className="space-y-4"> */}
+                        {/*         <ul className="space-y-2"> */}
+                        {/*             <li> */}
+                        {/*                 <a */}
+                        {/*                     className="text-sm text-muted-foreground hover:text-primary hover:underline transition-colors block" */}
+                        {/*                     href="#" */}
+                        {/*                 > */}
+                        {/*                     Làm sao để sửa tin đã đăng? */}
+                        {/*                 </a> */}
+                        {/*             </li> */}
+                        {/*             <li> */}
+                        {/*                 <a */}
+                        {/*                     className="text-sm text-muted-foreground hover:text-primary hover:underline transition-colors block" */}
+                        {/*                     href="#" */}
+                        {/*                 > */}
+                        {/*                     Quy định về duyệt tin đăng mới */}
+                        {/*                 </a> */}
+                        {/*             </li> */}
+                        {/*             <li> */}
+                        {/*                 <a */}
+                        {/*                     className="text-sm text-muted-foreground hover:text-primary hover:underline transition-colors block" */}
+                        {/*                     href="#" */}
+                        {/*                 > */}
+                        {/*                     Hướng dẫn nạp tiền vào tài khoản */}
+                        {/*                 </a> */}
+                        {/*             </li> */}
+                        {/*             <li> */}
+                        {/*                 <a */}
+                        {/*                     className="text-sm text-muted-foreground hover:text-primary hover:underline transition-colors block" */}
+                        {/*                     href="#" */}
+                        {/*                 > */}
+                        {/*                     Chính sách bảo mật thông tin */}
+                        {/*                 </a> */}
+                        {/*             </li> */}
+                        {/*         </ul> */}
+                        {/*         <Button variant="outline" className="w-full"> */}
+                        {/*             Xem tất cả câu hỏi */}
+                        {/*         </Button> */}
+                        {/*     </CardContent> */}
+                        {/* </Card> */}
                     </div>
                 </div>
             </main>
