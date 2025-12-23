@@ -97,10 +97,7 @@ const LocationView: React.FC<LocationViewProps> = ({
             if (!loc.longitude || !loc.latitude) return;
 
             if (loc.data) {
-                const thumbnail =
-                    loc.data.medias?.find((m) => m.purpose === "THUMBNAIL")?.secureUrl ||
-                    "/placeholder.jpg";
-
+                const thumbnail = loc.data.thumbnail?.url || "/no-image.jpg";
                 const price = formatCurrency(loc.data.price as number);
 
                 const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(

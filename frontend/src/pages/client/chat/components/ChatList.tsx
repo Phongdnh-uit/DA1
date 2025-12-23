@@ -53,13 +53,13 @@ export default function ChatList({
                         <div className="flex gap-3">
                             <Avatar className="h-10 w-10 flex-shrink-0">
                                 {conversation.participants
-                                    ?.filter((participant) => participant.userId !== user?.id)
+                                    ?.filter((participant) => participant?.user?.id !== user?.id)
                                     .map((participant) => (
                                         <>
                                             <AvatarImage
-                                                key={participant.userId}
-                                                src={participant.avatarUrl}
-                                                alt={participant.fullName}
+                                                key={participant.user?.id}
+                                                src={participant.user?.avatar?.objectName}
+                                                alt={participant.user?.fullName}
                                             />
                                             <AvatarFallback>
                                                 <User />
@@ -71,7 +71,7 @@ export default function ChatList({
                                 <div className="flex items-center justify-between gap-2">
                                     <h3 className="font-semibold text-foreground truncate">
                                         {conversation.participants
-                                            ?.map((p) => p.fullName)
+                                            ?.map((p) => p.user?.fullName)
                                             .join(", ")}
                                     </h3>
                                 </div>

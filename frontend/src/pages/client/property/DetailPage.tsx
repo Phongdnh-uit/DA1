@@ -28,10 +28,7 @@ import {
     IconTransferIn,
 } from "@tabler/icons-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import {
-    useFindPropertyById,
-    useFindSimilarProperties,
-} from "@/services/property/property";
+import { useFindSimilarProperties } from "@/services/property/property";
 import { Route } from "@/routes/__client/detail.$id";
 import { extensions } from "@/components/tiptap/rich-text-editor";
 import { directionConverter, formatCurrency } from "@/utils/converter";
@@ -41,8 +38,8 @@ import LocationView from "@/components/general/LocationView";
 
 export default function PropertyDetailPage() {
     const { id } = Route.useParams();
-    const product = useFindPropertyById(+id);
-    const productData = product.data?.data;
+    const { property: product } = Route.useLoaderData();
+    const productData = product.data;
     const similarProperties = useFindSimilarProperties(+id);
     const getAddress = () => {
         let address = "";
@@ -153,6 +150,23 @@ export default function PropertyDetailPage() {
         extensions,
     );
 
+    const mergeImages = (): Image[] => {
+        const images: Image[] = [];
+        productData?.galleries?.forEach((imgUrl) => {
+            images.push({
+                url: imgUrl.url || "",
+                alt: productData.title || "Property Image",
+            });
+        });
+        if (productData?.thumbnail) {
+            images.unshift({
+                url: productData.thumbnail.url || "",
+                alt: productData.title || "Property Thumbnail",
+            });
+        }
+        return images;
+    };
+
     return (
         <motion.div
             className="h-full container mx-auto py-8 grid grid-cols-1 md:grid-cols-6 gap-2"
@@ -166,18 +180,7 @@ export default function PropertyDetailPage() {
                 variants={fadeInUp.item}
             >
                 <Card className="p-6 md:p-8">
-                    <ImageGallery
-                        images={
-                            productData?.medias?.map(
-                                (media) =>
-                                    ({
-                                        alt: productData.title || "Property Image",
-                                        largeUrl: media.secureUrl,
-                                        thumbnailUrl: media.secureUrl,
-                                    }) as Image,
-                            ) || []
-                        }
-                    />
+                    <ImageGallery images={mergeImages()} />
                 </Card>
 
                 <Separator />

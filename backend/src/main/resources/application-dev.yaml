@@ -50,6 +50,32 @@ spring:
     chat:
       client:
         enabled: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    listener:
+      ack-mode: manual
+    consumer:
+      auto-offset-reset: latest
+      enable-auto-commit: false
+      # properties:
+      # spring:
+      #   json:
+      #     trusted:
+      #       packages: "*"
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.value.default.type: java.util.HashMap
+        spring.json.use.type.headers: false
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  threads:
+    virtual:
+      enabled: true
 
 logging:
   level:
@@ -63,8 +89,21 @@ jwt:
     expiration: 18000
 
 minio:
-  host: localhost
+  host: http://localhost
   port: 9000
   credentials:
     username: minioadmin
     password: minioadmin
+    webhook-token: webhook-token-uitland
+
+clamav:
+  host: localhost
+  port: 3310
+
+server:
+  address: 0.0.0.0
+
+imgproxy:
+  base-url: http://localhost:8081
+  key: 3b36d1b62634689b28636a633eeb42b39aae91d40fb3bf1e53dd4d48abbf2166
+  salt: f94a17684703c3a7f3aec1dad5ad1f37b8a5fa07bd19843704070b46eb10580a

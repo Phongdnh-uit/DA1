@@ -9,7 +9,7 @@ import FireWork from "@/assets/firework.png";
 
 export default function VerifyEmailPage() {
     const { code } = Route.useSearch();
-    const { mutate, isSuccess, isPending, isError } = useVerifyEmail();
+    const { mutate  } = useVerifyEmail();
     useEffect(() => {
         if (code) {
             mutate({ data: { code } });

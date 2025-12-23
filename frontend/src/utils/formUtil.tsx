@@ -1,4 +1,5 @@
 import { RichTextEditor } from "@/components/tiptap/rich-text-editor";
+import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
     FormControl,
@@ -72,11 +73,12 @@ export function FormInput<K>({
                                 {...field}
                                 {...props}
                                 onChange={(e) => {
-                                    if (type === "number") {
-                                        field.onChange(Number(e.target.value));
-                                    } else {
-                                        field.onChange(e.target.value);
-                                    }
+                                    const value = e.target.value;
+                                    field.onChange(
+                                        type === "number" && value !== ""
+                                            ? Number(value)
+                                            : value || undefined,
+                                    );
                                 }}
                             />
                         </div>
@@ -106,7 +108,7 @@ export function FormCheckbox<K>({
     direction,
     description,
     ...props
-}: FormCheckboxProps<K>) {
+}: FormCheckboxProps<K> & React.ComponentProps<typeof CheckboxPrimitive.Root>) {
     const form = useFormContext();
     return (
         <FormField
@@ -187,7 +189,7 @@ export function FormSelect<K>({
                     <FormControl>
                         <Select
                             disabled={disabled}
-                            value={field.value ? String(field.value) : undefined}
+                            value={field.value != null ? String(field.value) : ""}
                             onValueChange={(value) => {
                                 if (keyType === "number") {
                                     field.onChange(Number(value));
@@ -200,7 +202,7 @@ export function FormSelect<K>({
                             <SelectTrigger
                                 id={name}
                                 className={cn(
-                                    "!h-14 w-full text-lg rounded-2xl                                 hover:border-primary",
+                                    "!h-14 w-full text-lg rounded-2xl hover:border-primary",
                                     className,
                                 )}
                                 name={name}
@@ -235,6 +237,7 @@ interface FormEditorProps<K> {
     required?: boolean;
     description?: string;
     className?: string;
+    disabled?: boolean;
 }
 
 export function FormEditor<K>({
@@ -244,6 +247,7 @@ export function FormEditor<K>({
     description,
     placeholder,
     className,
+    disabled,
 }: FormEditorProps<K>) {
     const form = useFormContext();
     return (
@@ -259,6 +263,9 @@ export function FormEditor<K>({
                     <FormControl>
                         <div className={cn("rounded-2xl", className)}>
                             <RichTextEditor
+                                key={form.formState.submitCount} // Reset editor on submit
+                                disable={disabled}
+                                className="h-full"
                                 value={field.value || ""}
                                 placeholder={placeholder}
                                 onChange={(v) => field.onChange(v)}

@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS content_blocks (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    file_id BIGINT,
+    metadata JSON,
+    version BIGINT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by BIGINT,
+    updated_by BIGINT,
+
+    FOREIGN KEY (file_id) REFERENCES files(id)
+);

@@ -18,6 +18,7 @@ import org.springframework.web.servlet.HandlerMapping;
 @RequiredArgsConstructor
 public class PermissionInterceptor implements HandlerInterceptor {
   private final PermissionRepository permissionRepository;
+  private final ObjectMapper objectMapper;
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -50,7 +51,6 @@ public class PermissionInterceptor implements HandlerInterceptor {
       response.setStatus(HttpServletResponse.SC_FORBIDDEN);
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");
-      ObjectMapper objectMapper = new ObjectMapper();
       objectMapper.writeValue(response.getWriter(), apiResponse);
       return false;
     }

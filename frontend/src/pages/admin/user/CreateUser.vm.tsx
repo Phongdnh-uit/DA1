@@ -26,7 +26,7 @@ export const useCreateUserVM = () => {
     const mutation = useCreateUser({
         mutation: {
             onSuccess: () => {
-                toast.success("User created successfully");
+                toast.success("Tạo người dùng thành công");
                 form.reset();
             },
             onError: (error) => {

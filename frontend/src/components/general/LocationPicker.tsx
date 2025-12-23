@@ -45,25 +45,22 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
     const mapRef = useRef<Map | null>(null);
     const markerRef = useRef<Marker | null>(null);
 
+    // Dùng Ref để lưu onChange tránh re-render map khi hàm này thay đổi ở cha
+    const onChangeRef = useRef(onChange);
+    useEffect(() => {
+        onChangeRef.current = onChange;
+    }, [onChange]);
+
     const [currentCoords, setCurrentCoords] = useState<Coordinates | null>(
         initialLocation || null,
     );
 
-    const onDragEnd = useCallback(() => {
-        if (markerRef.current) {
-            const { lng, lat } = markerRef.current.getLngLat();
-            const newCoords = { longitude: lng, latitude: lat };
-            setCurrentCoords(newCoords);
-            onChange?.(newCoords);
-        }
-    }, [onChange]);
-
-    const updateMarkerPosition = useCallback(
+    // Hàm cập nhật vị trí Marker (không khởi tạo lại map)
+    const updateMarker = useCallback(
         (lng: number, lat: number) => {
             if (!mapRef.current) return;
 
-            const newCoords = { longitude: lng, latitude: lat };
-            setCurrentCoords(newCoords);
+            setCurrentCoords({ longitude: lng, latitude: lat });
 
             if (markerRef.current) {
                 markerRef.current.setLngLat([lng, lat]);
@@ -75,39 +72,45 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
                     .setLngLat([lng, lat])
                     .addTo(mapRef.current);
 
-                if (interactive && isMarkerEditable) {
-                    markerRef.current.on("dragend", onDragEnd);
-                }
+                // Gán sự kiện kéo thả cho marker mới tạo
+                markerRef.current.on("dragend", () => {
+                    const { lng: newLng, lat: newLat } = markerRef.current!.getLngLat();
+                    const coords = { longitude: newLng, latitude: newLat };
+                    setCurrentCoords(coords);
+                    onChangeRef.current?.(coords);
+                });
             }
         },
-        [interactive, isMarkerEditable, onDragEnd],
+        [interactive, isMarkerEditable],
     );
 
+    // 1. KHỞI TẠO BẢN ĐỒ (CHỈ CHẠY 1 LẦN)
     useEffect(() => {
-        if (mapRef.current || !mapContainerRef.current) return;
+        if (!mapContainerRef.current) return;
 
-        mapRef.current = new mapboxgl.Map({
+        const map = new mapboxgl.Map({
             container: mapContainerRef.current,
             style: "mapbox://styles/mapbox/standard",
-            center: DEFAULT_CENTER,
+            center: initialLocation
+                ? [initialLocation.longitude, initialLocation.latitude]
+                : DEFAULT_CENTER,
             zoom: 15,
             interactive: interactive,
         });
 
-        mapRef.current.on("load", () => {
+        mapRef.current = map;
+
+        map.on("load", () => {
             if (initialLocation) {
-                updateMarkerPosition(
-                    initialLocation.longitude,
-                    initialLocation.latitude,
-                );
+                updateMarker(initialLocation.longitude, initialLocation.latitude);
             }
         });
 
-        mapRef.current.on("click", (e) => {
+        map.on("click", (e) => {
             if (!(interactive && isMarkerEditable)) return;
             const { lng, lat } = e.lngLat;
-            updateMarkerPosition(lng, lat);
-            onChange?.({ longitude: lng, latitude: lat });
+            updateMarker(lng, lat);
+            onChangeRef.current?.({ longitude: lng, latitude: lat });
         });
 
         if (showGeocoder) {
@@ -116,53 +119,61 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
                 mapboxgl,
                 marker: false,
                 placeholder: "Tìm kiếm vị trí...",
-                autocomplete: true,
                 language: "vi",
                 zoom: 17,
             });
 
             if (geocoderContainerRef.current) {
                 geocoderContainerRef.current.innerHTML = "";
-                geocoderContainerRef.current.appendChild(
-                    geocoder.onAdd(mapRef.current),
-                );
+                geocoderContainerRef.current.appendChild(geocoder.onAdd(map));
             }
 
             geocoder.on("result", (e) => {
                 const [lng, lat] = e.result.center;
-                updateMarkerPosition(lng, lat);
-                onChange?.({ longitude: lng, latitude: lat });
-                mapRef.current?.flyTo({ center: [lng, lat], zoom: 15 });
+                updateMarker(lng, lat);
+                onChangeRef.current?.({ longitude: lng, latitude: lat });
             });
         }
 
         return () => {
-            mapRef.current?.remove();
+            map.remove();
             mapRef.current = null;
             markerRef.current = null;
         };
-    }, [interactive, showGeocoder, onChange, updateMarkerPosition, initialLocation, isMarkerEditable]);
+        // Mảng phụ thuộc rỗng để không bao giờ khởi tạo lại map
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
+    // 2. ĐỒNG BỘ TỪ BÊN NGOÀI (Khi initialLocation thay đổi, vd: Reset Form)
+    useEffect(() => {
+        if (initialLocation && mapRef.current) {
+            const { longitude, latitude } = initialLocation;
+            // Chỉ cập nhật nếu tọa độ thực sự khác với state hiện tại
+            if (
+                longitude !== currentCoords?.longitude ||
+                latitude !== currentCoords?.latitude
+            ) {
+                updateMarker(longitude, latitude);
+                mapRef.current.flyTo({ center: [longitude, latitude], zoom: 15 });
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [initialLocation?.longitude, initialLocation?.latitude]);
+
+    // 3. XỬ LÝ RESIZE
     useEffect(() => {
         if (!mapContainerRef.current) return;
-
-        const observer = new ResizeObserver(() => {
-            mapRef.current?.resize();
-        });
-
+        const observer = new ResizeObserver(() => mapRef.current?.resize());
         observer.observe(mapContainerRef.current);
-
-        return () => {
-            observer.disconnect();
-        };
+        return () => observer.disconnect();
     }, []);
 
     const handleClearLocation = useCallback(() => {
         setCurrentCoords(null);
         markerRef.current?.remove();
         markerRef.current = null;
-        onChange?.(null);
-    }, [onChange]);
+        onChangeRef.current?.(null);
+    }, []);
 
     return (
         <Card className="w-full shadow-lg">
@@ -204,15 +215,17 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
                                 {`Long: ${currentCoords.longitude.toFixed(6)}, Lat: ${currentCoords.latitude.toFixed(6)}`}
                             </pre>
                         </div>
-                        <MotionButton
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="transition-none"
-                            onClick={handleClearLocation}
-                        >
-                            <TrashIcon className="h-4 w-4 mr-2" />
-                            Xóa vị trí
-                        </MotionButton>
+                        {interactive && (
+                            <MotionButton
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="transition-none"
+                                onClick={handleClearLocation}
+                            >
+                                <TrashIcon className="h-4 w-4 mr-2" />
+                                Xóa vị trí
+                            </MotionButton>
+                        )}
                     </div>
                 </CardFooter>
             )}

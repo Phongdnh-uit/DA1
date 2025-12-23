@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
 
 export interface Image {
-    largeUrl: string;
-    thumbnailUrl: string;
+    url: string;
     alt: string;
 }
 
@@ -78,7 +77,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
                         >
                             <ImageZoom>
                                 <img
-                                    src={images[currentIndex].largeUrl || "/placeholder.svg"}
+                                    src={images[currentIndex].url || "/placeholder.svg"}
                                     alt={images[currentIndex].alt}
                                     className="h-full w-full object-cover"
                                 />
@@ -168,7 +167,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
                                 transition={{ type: "spring", stiffness: 300 }}
                             >
                                 <img
-                                    src={image.thumbnailUrl || "/placeholder.svg"}
+                                    src={image.url || "/placeholder.svg"}
                                     alt={image.alt}
                                     className="w-full h-full object-cover"
                                 />
@@ -194,7 +193,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
                                 transition={{ type: "spring", stiffness: 300 }}
                             >
                                 <img
-                                    src={image.thumbnailUrl || "/placeholder.svg"}
+                                    src={image.url || "/placeholder.svg"}
                                     alt={image.alt}
                                     className="w-full h-full object-cover"
                                 />

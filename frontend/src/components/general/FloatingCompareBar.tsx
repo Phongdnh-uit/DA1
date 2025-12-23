@@ -13,6 +13,13 @@ export const FloatingCompareBar = () => {
 
     const canCompare = selectedProperties.length === 2;
 
+    const compareClickHandler = () => {
+        navigate({
+            to: `/compare/${selectedProperties[0]}/to/${selectedProperties[1]}`,
+        });
+        reset();
+    };
+
     return (
         <AnimatePresence>
             {selectedProperties.length > 0 && (
@@ -56,7 +63,7 @@ export const FloatingCompareBar = () => {
                                 }}
                             >
                                 <Button
-                                    onClick={() => navigate({ to: `/compare/${selectedProperties[0]}/to/${selectedProperties[1]}` })}
+                                    onClick={compareClickHandler}
                                     disabled={!canCompare}
                                     className="rounded-full shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                                     size="sm"

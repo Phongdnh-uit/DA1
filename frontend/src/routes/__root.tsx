@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { DeleteDialogGlobal } from "@/components/general/DeleteDialogGlobal";
 import { AuthInitializer } from "@/components/general/AuthInitializer";
 import { useDarkMode } from "@/hooks/use-dark-mode";
+import { RouterProgressBar } from "@/components/general/RouterProgressBar";
 
 export const Route = createRootRoute({
     component: RootComponent,
@@ -24,11 +25,14 @@ function RootComponent() {
     return (
         <React.Fragment>
             <QueryClientProvider client={queryClient}>
+                <RouterProgressBar />
                 <AuthInitializer />
                 <Outlet />
                 <ReactQueryDevtools initialIsOpen={false} />
                 <TanStackRouterDevtools />
-                <ToastContainer />
+                <ToastContainer 
+                    position="bottom-right"
+                />
                 <DeleteDialogGlobal />
             </QueryClientProvider>
         </React.Fragment>

@@ -8,7 +8,14 @@ export const Route = createFileRoute("/admin/property/update/$id")({
         if (isNaN(Number(params.id))) {
             throw notFound();
         }
-        queryClient.ensureQueryData(getFindPropertyByIdQueryOptions(+params.id));
+    },
+    loader: async ({ params }) => {
+        const property = await queryClient.ensureQueryData(
+            getFindPropertyByIdQueryOptions(+params.id),
+        );
+        return {
+            property,
+        };
     },
     component: RouteComponent,
 });

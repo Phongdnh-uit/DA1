@@ -25,6 +25,7 @@ export default function SearchMap() {
             },
         },
     );
+    
 
     const onRegionChange = (params: {
         latitude: number;

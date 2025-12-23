@@ -35,6 +35,7 @@ public class RAGIngestionServiceImpl implements RAGIngestionService {
     log.info("Ingestion completed for property with ID: {}", property.getId());
   }
 
+  @Async
   @Override
   public void deletePropertyIngestion(Long propertyId) {
     log.info("Deleting ingested vectors for property ID: {}", propertyId);
@@ -42,7 +43,8 @@ public class RAGIngestionServiceImpl implements RAGIngestionService {
     try {
       FilterExpressionBuilder builder = new FilterExpressionBuilder();
 
-      Filter.Expression filterExpression = builder.eq("propertyId", propertyId.toString()).build();
+      Filter.Expression filterExpression =
+          builder.eq("propertyId", propertyId.doubleValue()).build();
 
       vectorStore.delete(filterExpression);
 

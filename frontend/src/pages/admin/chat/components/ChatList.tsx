@@ -7,7 +7,6 @@ import { timeAgo } from "@/utils/formatDate";
 import { User } from "lucide-react";
 import { ConversationResponseStatus } from "@/types/conversationResponseStatus";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { useEffect } from "react";
 
 interface ChatListProps {
     selectedConversation: number | null;
@@ -27,17 +26,6 @@ export default function ChatList({
         sort: ["lastMessageAt,desc"],
         filter: `status==${tab}`,
     });
-
-    useEffect(() => {
-        const firstConversationId = conversations.data?.data?.content?.[0]?.id;
-        if (firstConversationId && !selectedConversation) {
-            onSelectConversation(firstConversationId);
-        }
-    }, [
-        conversations.data?.data?.content,
-        onSelectConversation,
-        selectedConversation,
-    ]);
 
     return (
         <div className="w-80 border-r border-border bg-card flex flex-col">
@@ -87,8 +75,8 @@ export default function ChatList({
                                     .map((participant) => (
                                         <>
                                             <AvatarImage
-                                                key={participant.user.id}
-                                                src={participant.user?.avatarUrl}
+                                                key={participant.user?.id}
+                                                src={participant.user?.avatar?.objectName}
                                                 alt={participant.user?.fullName}
                                             />
                                             <AvatarFallback>

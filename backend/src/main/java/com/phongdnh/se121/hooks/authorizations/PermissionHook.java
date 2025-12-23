@@ -5,7 +5,7 @@ import com.phongdnh.se121.dtos.authorization.PermissionResponse;
 import com.phongdnh.se121.entities.authorization.Permission;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
-import com.phongdnh.se121.hooks.DefaultHook;
+import com.phongdnh.se121.hooks.GenericHook;
 import com.phongdnh.se121.repositories.authorization.PermissionRepository;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 public class PermissionHook
-    extends DefaultHook<Permission, Long, PermissionRequest, PermissionResponse> {
+    implements GenericHook<Permission, Long, PermissionRequest, PermissionResponse> {
   private final PermissionRepository permissionRepository;
 
   @Override
