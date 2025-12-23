@@ -2,11 +2,9 @@ name: CI for Frontend and Backend
 
 on:
   push:
-    branches:
-      - main,develop
+    branches: ["main", "develop"]
   pull_request:
-    branches:
-      - main,develop
+    branches: ["main", "develop"]
 
 jobs:
   # Workflow để phát hiện thay đổi trong các thư mục frontend và backend
