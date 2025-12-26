@@ -5,6 +5,7 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @SpringBootTest(
@@ -23,7 +24,11 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
       "spring.ai.vectorstore.enabled=false",
       "spring.ai.chat.enabled=false",
       "spring.ai.vectorstore.milvus.enabled=false",
-      "spring.ai.ollama.enabled=false"
+      "spring.ai.ollama.enabled=false",
+      "spring.mail.host=localhost",
+      "app.bootstrap.admin.phone=0123456789",
+      "app.bootstrap.admin.password=password",
+      "app.bootstrap.admin.email=test@gmail.com"
     })
 @EnableAutoConfiguration(
     exclude = {
@@ -37,6 +42,8 @@ class Se121ApplicationTests {
   @MockitoBean private VectorStore vectorStore;
 
   @MockitoBean private ChatModel chatModel;
+
+  @MockitoBean private ClientRegistrationRepository clientRegistrationRepository;
 
   @Test
   void contextLoads() {}

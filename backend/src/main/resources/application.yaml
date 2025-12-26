@@ -2,4 +2,4 @@ spring:
   application:
     name: se121
   profiles:
-    active: dev,imp
+    active: ${SPRING_PROFILES_ACTIVE:dev,imp}
