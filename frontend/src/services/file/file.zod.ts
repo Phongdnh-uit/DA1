@@ -14,7 +14,7 @@ import * as zod from 'zod';
 export const getUploadSignedUrlBody = zod.object({
   "originalName": zod.string().min(1),
   "contentType": zod.string().min(1),
-  "purpose": zod.enum(['PROPERTY_FILE', 'PROPERTY_THUMBNAIL', 'PROPERTY_GALLERY', 'CHAT_FILE', 'AVATAR', 'CAROUSEL_IMAGE'])
+  "purpose": zod.enum(['PROPERTY_FILE', 'PROPERTY_THUMBNAIL', 'PROPERTY_GALLERY', 'CHAT_FILE', 'AVATAR', 'CAROUSEL_IMAGE', 'SUPPORT_TICKET_ATTACHMENT'])
 })
 
 
@@ -25,7 +25,7 @@ export const getDownloadSignedUrlBody = zod.object({
   "options": zod.string().optional()
 })
 
-export const deleteFile1Params = zod.object({
+export const deleteFileParams = zod.object({
   "objectKey": zod.string()
 })
 

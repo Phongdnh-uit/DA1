@@ -90,7 +90,7 @@ export const SlashCommandList = forwardRef(
                             >
                                 {group.items.map((item, itemIndex) => {
                                     const flatIndex =
-                                       groupedItems 
+                                        groupedItems
                                             .slice(0, groupIndex)
                                             .reduce((acc, g) => acc + g.items.length, 0) + itemIndex;
 

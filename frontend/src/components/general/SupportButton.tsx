@@ -3,15 +3,17 @@ import { Button } from "../ui/button";
 import { motion } from "motion/react";
 import { useNavigate } from "@tanstack/react-router";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const MotionButton = motion(Button);
 
 export const SupportButton = () => {
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
     const navigate = useNavigate();
     const onClick = () => {
         navigate({ to: "/support" });
     };
-    return (
+    return isAuthenticated ? (
         <Tooltip>
             <TooltipTrigger asChild>
                 <MotionButton
@@ -27,5 +29,5 @@ export const SupportButton = () => {
             </TooltipTrigger>
             <TooltipContent side={"left"}>Hỗ trợ</TooltipContent>
         </Tooltip>
-    );
+    ) : null;
 };

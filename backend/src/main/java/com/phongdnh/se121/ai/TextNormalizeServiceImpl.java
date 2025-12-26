@@ -6,6 +6,7 @@ import com.phongdnh.se121.constants.AIConstant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,8 @@ public class TextNormalizeServiceImpl implements TextNormalizeService {
 
   private final ChatClient chatClient;
 
-  public TextNormalizeServiceImpl(ChatClient.Builder chatClientBuilder) {
-    this.chatClient = chatClientBuilder.build();
+  public TextNormalizeServiceImpl(ChatModel chatModel) {
+    this.chatClient = ChatClient.builder(chatModel).build();
   }
 
   @Override

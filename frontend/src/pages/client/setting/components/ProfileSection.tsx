@@ -15,6 +15,7 @@ import { useEffect, useRef, useState } from "react";
 import SpiralLoader from "@/components/ui/SpiralLoader";
 import { useFileUpload } from "@/hooks/useFileHook";
 import { useFileSSE } from "@/hooks/useFileSse";
+import type { FileEvent } from "@/no-gen/types/fileEvent";
 
 const MotionButton = motion(Button);
 
@@ -58,10 +59,10 @@ export function ProfileSection() {
     };
 
     useEffect(() => {
-        console.log("fileEvent", fileEvent);
-        if (fileEvent && fileEvent.status === "ACTIVE") {
-            const url = fileEvent.url;
-            setTempAvatar(url);
+        const event = fileEvent as FileEvent | null;
+        if (event && event.status === "ACTIVE") {
+            const url = event.url;
+            setTempAvatar(url as string);
             setIsUploading(false);
         }
     }, [fileEvent]);

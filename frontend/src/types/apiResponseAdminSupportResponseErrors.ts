@@ -5,4 +5,4 @@
  * OpenAPI spec version: v0
  */
 
-export type ApiResponseUploadSignatureResponseErrors = {[key: string]: string};
+export type ApiResponseAdminSupportResponseErrors = {[key: string]: string};

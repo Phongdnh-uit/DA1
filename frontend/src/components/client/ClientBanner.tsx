@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ImagesSlider } from "@/components/ui/images-slider";
 import { Route } from "@/routes/__client/index";
+import type { CarouselMetadata } from "@/no-gen/types/carouselMetadata";
 
 export default function ClientBanner() {
     const { carousel } = Route.useLoaderData();
@@ -50,10 +51,16 @@ export default function ClientBanner() {
                                 className="flex flex-col items-center justify-center mt-8"
                             >
                                 <h2 className="font-extrabold text-3xl md:text-6xl text-transparent bg-clip-text bg-gradient-to-b from-white to-neutral-400 leading-tight drop-shadow-md">
-                                    {slides[current]?.carousel?.metadata?.caption}
+                                    {
+                                        (slides[current]?.carousel?.metadata as CarouselMetadata)
+                                            .caption
+                                    }
                                 </h2>
                                 <p className="text-lg md:text-2xl text-neutral-200 mt-4 mb-6 max-w-2xl">
-                                    {slides[current]?.carousel?.metadata?.subcaption}
+                                    {
+                                        (slides[current]?.carousel?.metadata as CarouselMetadata)
+                                            .subcaption
+                                    }
                                 </p>
                             </motion.div>
                         </AnimatePresence>

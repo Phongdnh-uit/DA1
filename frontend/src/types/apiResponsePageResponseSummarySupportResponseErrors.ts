@@ -4,10 +4,5 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import * as zod from 'zod';
 
-
-export const deleteFileParams = zod.object({
-  "id": zod.number()
-})
-
+export type ApiResponsePageResponseSummarySupportResponseErrors = {[key: string]: string};

@@ -17,10 +17,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useFileUpload } from "@/hooks/useFileHook";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
-import { ACCESS_TOKEN_STORAGE_KEY } from "@/constant/SecurityConstant";
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-const ACCESS_TOKEN = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
+import { config } from "@/lib/config";
 
 export default function useCreatePropertyVM() {
     const form = useForm<PropertyRequest>({
@@ -262,12 +259,12 @@ export default function useCreatePropertyVM() {
         let isCancelled = false;
 
         fetchEventSource(
-            `${BACKEND_URL}/sse/files/notifications/${objectKey}/subscribe`,
+            `${config.backendUrl}/sse/files/notifications/${objectKey}/subscribe`,
             {
                 method: "GET",
                 headers: {
                     Accept: "text/event-stream",
-                    Authorization: `Bearer ${ACCESS_TOKEN}`,
+                    Authorization: `Bearer ${config.accessToken}`,
                 },
                 onmessage(event) {
                     try {

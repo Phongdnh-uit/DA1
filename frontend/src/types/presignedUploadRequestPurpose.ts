@@ -16,4 +16,5 @@ export const PresignedUploadRequestPurpose = {
   CHAT_FILE: 'CHAT_FILE',
   AVATAR: 'AVATAR',
   CAROUSEL_IMAGE: 'CAROUSEL_IMAGE',
+  SUPPORT_TICKET_ATTACHMENT: 'SUPPORT_TICKET_ATTACHMENT',
 } as const;

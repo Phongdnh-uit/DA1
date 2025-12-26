@@ -1,4 +1,7 @@
-import type { PropertyRequestStatus } from "@/types";
+import type {
+    BookingRequestStatus,
+    PropertyRequestStatus,
+} from "@/types";
 
 export const directionConverter = (direction: string): string => {
     const directions = [
@@ -48,7 +51,40 @@ export const bookingStatusConverter = (status: string): string => {
         { key: "CONFIRMED", value: "Đã xác nhận" },
         { key: "CANCELLED", value: "Đã hủy" },
         { key: "COMPLETED", value: "Hoàn thành" },
-    ];
+    ] as { key: BookingRequestStatus; value: string }[];
     const found = statuses.find((stat) => stat.key === status.toUpperCase());
     return found ? found.value : status;
-}
+};
+
+export const supportTypeConverter = (type: string): string => {
+    const types = [
+        { key: "TECHNICAL_SUPPORT", value: "Hỗ trợ kỹ thuật" },
+        { key: "COMPLAINT", value: "Khiếu nại" },
+        { key: "BUG_REPORT", value: "Báo cáo lỗi" },
+        { key: "FEATURE_REQUEST", value: "Yêu cầu tính năng" },
+        { key: "OTHER", value: "Khác" },
+    ] as { key: string; value: string }[];
+    const found = types.find((t) => t.key === type.toUpperCase());
+    return found ? found.value : type;
+};
+
+export const supportSeverityConverter = (severity: string): string => {
+    const severities = [
+        { key: "LOW", value: "Thấp" },
+        { key: "MEDIUM", value: "Bình thường" },
+        { key: "HIGH", value: "Cao" },
+        { key: "URGENT", value: "Khẩn cấp" },
+    ] as { key: string; value: string }[];
+    const found = severities.find((s) => s.key === severity.toUpperCase());
+    return found ? found.value : severity;
+};
+
+export const supportStatusConverter = (status: string): string => {
+    const statuses = [
+        { key: "OPEN", value: "Đang mở" },
+        { key: "RESOLVED", value: "Đã giải quyết" },
+        { key: "CLOSED", value: "Đóng" },
+    ] as { key: string; value: string }[];
+    const found = statuses.find((s) => s.key === status.toUpperCase());
+    return found ? found.value : status;
+};

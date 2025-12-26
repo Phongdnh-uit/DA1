@@ -12,7 +12,7 @@ export const streamBody = zod.object({
   "conversationId": zod.string().optional()
 })
 
-export const queryBody = zod.object({
+export const chatBody = zod.object({
   "message": zod.string().optional(),
   "conversationId": zod.string().optional()
 })

@@ -5,8 +5,7 @@
  * OpenAPI spec version: v0
  */
 import {
-  useMutation,
-  useQuery
+  useMutation
 } from '@tanstack/react-query';
 import type {
   MutationFunction,
@@ -85,14 +84,14 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
       return useMutation(mutationOptions, queryClient);
     }
-    export const query = (
+    export const chat = (
     aiChatRequest: BodyType<AiChatRequest>,
  options?: SecondParameter<typeof axiosInstanceFn>,signal?: AbortSignal
 ) => {
       
       
       return axiosInstanceFn<string>(
-      {url: `/ai/chat/query`, method: 'POST',
+      {url: `/ai/chat/chat`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: aiChatRequest, signal
     },
@@ -101,11 +100,11 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   
 
 
-export const getQueryMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof query>>, TError,{data: BodyType<AiChatRequest>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
-): UseMutationOptions<Awaited<ReturnType<typeof query>>, TError,{data: BodyType<AiChatRequest>}, TContext> => {
+export const getChatMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof chat>>, TError,{data: BodyType<AiChatRequest>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
+): UseMutationOptions<Awaited<ReturnType<typeof chat>>, TError,{data: BodyType<AiChatRequest>}, TContext> => {
 
-const mutationKey = ['query'];
+const mutationKey = ['chat'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -115,10 +114,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof query>>, {data: BodyType<AiChatRequest>}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof chat>>, {data: BodyType<AiChatRequest>}> = (props) => {
           const {data} = props ?? {};
 
-          return  query(data,requestOptions)
+          return  chat(data,requestOptions)
         }
 
         
@@ -126,20 +125,20 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type QueryMutationResult = NonNullable<Awaited<ReturnType<typeof query>>>
-    export type QueryMutationBody = BodyType<AiChatRequest>
-    export type QueryMutationError = ErrorType<unknown>
+    export type ChatMutationResult = NonNullable<Awaited<ReturnType<typeof chat>>>
+    export type ChatMutationBody = BodyType<AiChatRequest>
+    export type ChatMutationError = ErrorType<unknown>
 
-    export const useQuery = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof query>>, TError,{data: BodyType<AiChatRequest>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
+    export const useChat = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof chat>>, TError,{data: BodyType<AiChatRequest>}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof query>>,
+        Awaited<ReturnType<typeof chat>>,
         TError,
         {data: BodyType<AiChatRequest>},
         TContext
       > => {
 
-      const mutationOptions = getQueryMutationOptions(options);
+      const mutationOptions = getChatMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

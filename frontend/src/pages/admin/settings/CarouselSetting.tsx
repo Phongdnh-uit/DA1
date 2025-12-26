@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import type { CarouselMetadata } from "@/no-gen/types/carouselMetadata";
 
 interface CarouselImage {
     url?: string;
@@ -321,7 +322,10 @@ export const CarouselSetting = () => {
                                                             placeholder="Nhập tiêu đề hình ảnh..."
                                                             className="border-0 focus-visible:ring-0 shadow-none w-full rounded-[24px] h-14 placeholder:text-lg !text-lg"
                                                             value={
-                                                                image.contentBlock?.metadata?.caption || ""
+                                                                (
+                                                                    image.contentBlock
+                                                                        ?.metadata as CarouselMetadata
+                                                                ).caption || ""
                                                             }
                                                             onChange={(e) =>
                                                                 handleUpdateContentBlockMetadata(
@@ -355,7 +359,10 @@ export const CarouselSetting = () => {
                                                             id={`subcaption-${idx}`}
                                                             placeholder="Nhập phụ đề hình ảnh..."
                                                             value={
-                                                                image.contentBlock?.metadata?.subcaption || ""
+                                                                (
+                                                                    image.contentBlock
+                                                                        ?.metadata as CarouselMetadata
+                                                                ).subcaption || ""
                                                             }
                                                             onChange={(e) =>
                                                                 handleUpdateContentBlockMetadata(

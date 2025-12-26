@@ -20,8 +20,8 @@ import reactor.core.publisher.Flux;
 public class AiChatController {
   private final RAGOrchestratorService ragOrchestratorService;
 
-  @PostMapping("/query")
-  public ResponseEntity<String> query(@Valid @RequestBody AiChatRequest request) {
+  @PostMapping("/chat")
+  public ResponseEntity<String> chat(@Valid @RequestBody AiChatRequest request) {
     return ResponseEntity.ok(
         ragOrchestratorService.query(request.getMessage(), request.getConversationId()));
   }
