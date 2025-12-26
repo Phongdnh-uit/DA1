@@ -75,4 +75,4 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build and Test with Gradle
-        run: ./gradlew build
+        run: ./gradlew build --stacktrace --debug
