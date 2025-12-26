@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { useFormContext } from "react-hook-form";
+import { Textarea } from "@/components/ui/textarea";
 
 interface FormInputProps<K> {
     title?: string;
@@ -269,6 +270,57 @@ export function FormEditor<K>({
                                 value={field.value || ""}
                                 placeholder={placeholder}
                                 onChange={(v) => field.onChange(v)}
+                            />
+                        </div>
+                    </FormControl>
+                    <FormDescription className="text-base">{description}</FormDescription>
+                    <FormMessage />
+                </FormItem>
+            )}
+        />
+    );
+}
+
+export function FormTextArea<K>({
+    title,
+    name,
+    placeholder,
+    className,
+    description,
+    required,
+    ...props
+}: FormInputProps<K> & React.InputHTMLAttributes<HTMLTextAreaElement>) {
+    const form = useFormContext();
+    return (
+        <FormField
+            control={form.control}
+            name={name}
+            render={({ field }) => (
+                <FormItem className="flex flex-col gap-2">
+                    <FormLabel
+                        htmlFor={name}
+                        className={"text-xl flex tems-center gap-1"}
+                    >
+                        {title}
+                        {required && <span className="text-red-500">*</span>}
+                    </FormLabel>
+                    <FormControl>
+                        <div
+                            className={cn(
+                                "relative flex items-center rounded-2xl border backdrop-blur-sm",
+                                "focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30",
+                                "focus-within:scale-102 transition-all",
+                                "hover:border-primary",
+                                "has-[:disabled]:opacity-50 has-[:disabled]:cursor-not-allowed error-display",
+                                className,
+                            )}
+                        >
+                            <Textarea
+                                id={name}
+                                placeholder={placeholder}
+                                className="border-0 focus-visible:ring-0 shadow-none w-full rounded-[24px] h-full placeholder:text-lg !text-lg resize-none"
+                                {...field}
+                                {...props}
                             />
                         </div>
                     </FormControl>

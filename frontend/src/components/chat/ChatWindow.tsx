@@ -267,7 +267,7 @@ export default function ChatWindow({
                         {msg.sender?.id !== user?.id && (
                             <Avatar className="h-8 w-8 flex-shrink-0 mr-3">
                                 <AvatarImage
-                                    src={msg.sender?.avatar?.secureUrl || "/placeholder.svg"}
+                                    src={msg.sender?.avatar?.url || "/placeholder.svg"}
                                     alt={msg.sender?.fullName}
                                 />
                                 <AvatarFallback>

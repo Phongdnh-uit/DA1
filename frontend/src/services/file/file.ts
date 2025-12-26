@@ -146,7 +146,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
       return useMutation(mutationOptions, queryClient);
     }
-    export const deleteFile1 = (
+    export const deleteFile = (
     objectKey: string,
  options?: SecondParameter<typeof axiosInstanceFn>,) => {
       
@@ -159,11 +159,11 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   
 
 
-export const getDeleteFile1MutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteFile1>>, TError,{objectKey: string}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteFile1>>, TError,{objectKey: string}, TContext> => {
+export const getDeleteFileMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteFile>>, TError,{objectKey: string}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteFile>>, TError,{objectKey: string}, TContext> => {
 
-const mutationKey = ['deleteFile1'];
+const mutationKey = ['deleteFile'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -173,10 +173,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteFile1>>, {objectKey: string}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteFile>>, {objectKey: string}> = (props) => {
           const {objectKey} = props ?? {};
 
-          return  deleteFile1(objectKey,requestOptions)
+          return  deleteFile(objectKey,requestOptions)
         }
 
         
@@ -184,20 +184,20 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type DeleteFile1MutationResult = NonNullable<Awaited<ReturnType<typeof deleteFile1>>>
+    export type DeleteFileMutationResult = NonNullable<Awaited<ReturnType<typeof deleteFile>>>
     
-    export type DeleteFile1MutationError = ErrorType<unknown>
+    export type DeleteFileMutationError = ErrorType<unknown>
 
-    export const useDeleteFile1 = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteFile1>>, TError,{objectKey: string}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
+    export const useDeleteFile = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteFile>>, TError,{objectKey: string}, TContext>, request?: SecondParameter<typeof axiosInstanceFn>}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteFile1>>,
+        Awaited<ReturnType<typeof deleteFile>>,
         TError,
         {objectKey: string},
         TContext
       > => {
 
-      const mutationOptions = getDeleteFile1MutationOptions(options);
+      const mutationOptions = getDeleteFileMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

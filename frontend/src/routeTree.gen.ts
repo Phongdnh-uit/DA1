@@ -21,7 +21,6 @@ import { Route as AuthOtpVerificationRouteImport } from './routes/auth/otp-verif
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
 import { Route as _clientWishListRouteImport } from './routes/__client/wish-list'
-import { Route as _clientSupportRouteImport } from './routes/__client/support'
 import { Route as _clientSettingsRouteImport } from './routes/__client/settings'
 import { Route as _clientPropertiesRouteImport } from './routes/__client/properties'
 import { Route as _clientChatRouteImport } from './routes/__client/chat'
@@ -38,6 +37,7 @@ import { Route as AdminPermissionIndexRouteImport } from './routes/admin/permiss
 import { Route as AdminDashboardIndexRouteImport } from './routes/admin/dashboard/index'
 import { Route as AdminChatIndexRouteImport } from './routes/admin/chat/index'
 import { Route as AdminBookingIndexRouteImport } from './routes/admin/booking/index'
+import { Route as _clientSupportIndexRouteImport } from './routes/__client/support/index'
 import { Route as AdminWardCreateRouteImport } from './routes/admin/ward/create'
 import { Route as AdminUserCreateRouteImport } from './routes/admin/user/create'
 import { Route as AdminRoleCreateRouteImport } from './routes/admin/role/create'
@@ -46,6 +46,7 @@ import { Route as AdminPropertyCreateRouteImport } from './routes/admin/property
 import { Route as AdminPropertyTypeCreateRouteImport } from './routes/admin/property-type/create'
 import { Route as AdminPermissionCreateRouteImport } from './routes/admin/permission/create'
 import { Route as AdminBookingCreateRouteImport } from './routes/admin/booking/create'
+import { Route as _clientSupportHistoryRouteImport } from './routes/__client/support/history'
 import { Route as _clientDetailIdRouteImport } from './routes/__client/detail.$id'
 import { Route as AdminWardUpdateIdRouteImport } from './routes/admin/ward/update.$id'
 import { Route as AdminUserUpdateIdRouteImport } from './routes/admin/user/update.$id'
@@ -57,6 +58,7 @@ import { Route as AdminPropertyTypeUpdateIdRouteImport } from './routes/admin/pr
 import { Route as AdminPriceReferenceDetailIdRouteImport } from './routes/admin/price-reference/detail.$id'
 import { Route as AdminPermissionUpdateIdRouteImport } from './routes/admin/permission/update.$id'
 import { Route as AdminBookingUpdateIdRouteImport } from './routes/admin/booking/update.$id'
+import { Route as _clientSupportDetailIdRouteImport } from './routes/__client/support/detail.$id'
 import { Route as _clientCompareId1ToId2RouteImport } from './routes/__client/compare.$id1.to.$id2'
 
 const AuthRoute = AuthRouteImport.update({
@@ -116,11 +118,6 @@ const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
 const _clientWishListRoute = _clientWishListRouteImport.update({
   id: '/wish-list',
   path: '/wish-list',
-  getParentRoute: () => _clientRoute,
-} as any)
-const _clientSupportRoute = _clientSupportRouteImport.update({
-  id: '/support',
-  path: '/support',
   getParentRoute: () => _clientRoute,
 } as any)
 const _clientSettingsRoute = _clientSettingsRouteImport.update({
@@ -204,6 +201,11 @@ const AdminBookingIndexRoute = AdminBookingIndexRouteImport.update({
   path: '/booking/',
   getParentRoute: () => AdminRoute,
 } as any)
+const _clientSupportIndexRoute = _clientSupportIndexRouteImport.update({
+  id: '/support/',
+  path: '/support/',
+  getParentRoute: () => _clientRoute,
+} as any)
 const AdminWardCreateRoute = AdminWardCreateRouteImport.update({
   id: '/ward/create',
   path: '/ward/create',
@@ -243,6 +245,11 @@ const AdminBookingCreateRoute = AdminBookingCreateRouteImport.update({
   id: '/booking/create',
   path: '/booking/create',
   getParentRoute: () => AdminRoute,
+} as any)
+const _clientSupportHistoryRoute = _clientSupportHistoryRouteImport.update({
+  id: '/support/history',
+  path: '/support/history',
+  getParentRoute: () => _clientRoute,
 } as any)
 const _clientDetailIdRoute = _clientDetailIdRouteImport.update({
   id: '/detail/$id',
@@ -301,6 +308,11 @@ const AdminBookingUpdateIdRoute = AdminBookingUpdateIdRouteImport.update({
   path: '/booking/update/$id',
   getParentRoute: () => AdminRoute,
 } as any)
+const _clientSupportDetailIdRoute = _clientSupportDetailIdRouteImport.update({
+  id: '/support/detail/$id',
+  path: '/support/detail/$id',
+  getParentRoute: () => _clientRoute,
+} as any)
 const _clientCompareId1ToId2Route = _clientCompareId1ToId2RouteImport.update({
   id: '/compare/$id1/to/$id2',
   path: '/compare/$id1/to/$id2',
@@ -314,7 +326,6 @@ export interface FileRoutesByFullPath {
   '/chat': typeof _clientChatRoute
   '/properties': typeof _clientPropertiesRoute
   '/settings': typeof _clientSettingsRoute
-  '/support': typeof _clientSupportRoute
   '/wish-list': typeof _clientWishListRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -325,6 +336,7 @@ export interface FileRoutesByFullPath {
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/': typeof _clientIndexRoute
   '/detail/$id': typeof _clientDetailIdRoute
+  '/support/history': typeof _clientSupportHistoryRoute
   '/admin/booking/create': typeof AdminBookingCreateRoute
   '/admin/permission/create': typeof AdminPermissionCreateRoute
   '/admin/property-type/create': typeof AdminPropertyTypeCreateRoute
@@ -333,6 +345,7 @@ export interface FileRoutesByFullPath {
   '/admin/role/create': typeof AdminRoleCreateRoute
   '/admin/user/create': typeof AdminUserCreateRoute
   '/admin/ward/create': typeof AdminWardCreateRoute
+  '/support': typeof _clientSupportIndexRoute
   '/admin/booking': typeof AdminBookingIndexRoute
   '/admin/chat': typeof AdminChatIndexRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
@@ -345,6 +358,7 @@ export interface FileRoutesByFullPath {
   '/admin/settings': typeof AdminSettingsIndexRoute
   '/admin/user': typeof AdminUserIndexRoute
   '/admin/ward': typeof AdminWardIndexRoute
+  '/support/detail/$id': typeof _clientSupportDetailIdRoute
   '/admin/booking/update/$id': typeof AdminBookingUpdateIdRoute
   '/admin/permission/update/$id': typeof AdminPermissionUpdateIdRoute
   '/admin/price-reference/detail/$id': typeof AdminPriceReferenceDetailIdRoute
@@ -364,7 +378,6 @@ export interface FileRoutesByTo {
   '/chat': typeof _clientChatRoute
   '/properties': typeof _clientPropertiesRoute
   '/settings': typeof _clientSettingsRoute
-  '/support': typeof _clientSupportRoute
   '/wish-list': typeof _clientWishListRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -375,6 +388,7 @@ export interface FileRoutesByTo {
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/': typeof _clientIndexRoute
   '/detail/$id': typeof _clientDetailIdRoute
+  '/support/history': typeof _clientSupportHistoryRoute
   '/admin/booking/create': typeof AdminBookingCreateRoute
   '/admin/permission/create': typeof AdminPermissionCreateRoute
   '/admin/property-type/create': typeof AdminPropertyTypeCreateRoute
@@ -383,6 +397,7 @@ export interface FileRoutesByTo {
   '/admin/role/create': typeof AdminRoleCreateRoute
   '/admin/user/create': typeof AdminUserCreateRoute
   '/admin/ward/create': typeof AdminWardCreateRoute
+  '/support': typeof _clientSupportIndexRoute
   '/admin/booking': typeof AdminBookingIndexRoute
   '/admin/chat': typeof AdminChatIndexRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
@@ -395,6 +410,7 @@ export interface FileRoutesByTo {
   '/admin/settings': typeof AdminSettingsIndexRoute
   '/admin/user': typeof AdminUserIndexRoute
   '/admin/ward': typeof AdminWardIndexRoute
+  '/support/detail/$id': typeof _clientSupportDetailIdRoute
   '/admin/booking/update/$id': typeof AdminBookingUpdateIdRoute
   '/admin/permission/update/$id': typeof AdminPermissionUpdateIdRoute
   '/admin/price-reference/detail/$id': typeof AdminPriceReferenceDetailIdRoute
@@ -416,7 +432,6 @@ export interface FileRoutesById {
   '/__client/chat': typeof _clientChatRoute
   '/__client/properties': typeof _clientPropertiesRoute
   '/__client/settings': typeof _clientSettingsRoute
-  '/__client/support': typeof _clientSupportRoute
   '/__client/wish-list': typeof _clientWishListRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -427,6 +442,7 @@ export interface FileRoutesById {
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/__client/': typeof _clientIndexRoute
   '/__client/detail/$id': typeof _clientDetailIdRoute
+  '/__client/support/history': typeof _clientSupportHistoryRoute
   '/admin/booking/create': typeof AdminBookingCreateRoute
   '/admin/permission/create': typeof AdminPermissionCreateRoute
   '/admin/property-type/create': typeof AdminPropertyTypeCreateRoute
@@ -435,6 +451,7 @@ export interface FileRoutesById {
   '/admin/role/create': typeof AdminRoleCreateRoute
   '/admin/user/create': typeof AdminUserCreateRoute
   '/admin/ward/create': typeof AdminWardCreateRoute
+  '/__client/support/': typeof _clientSupportIndexRoute
   '/admin/booking/': typeof AdminBookingIndexRoute
   '/admin/chat/': typeof AdminChatIndexRoute
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
@@ -447,6 +464,7 @@ export interface FileRoutesById {
   '/admin/settings/': typeof AdminSettingsIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
   '/admin/ward/': typeof AdminWardIndexRoute
+  '/__client/support/detail/$id': typeof _clientSupportDetailIdRoute
   '/admin/booking/update/$id': typeof AdminBookingUpdateIdRoute
   '/admin/permission/update/$id': typeof AdminPermissionUpdateIdRoute
   '/admin/price-reference/detail/$id': typeof AdminPriceReferenceDetailIdRoute
@@ -468,7 +486,6 @@ export interface FileRouteTypes {
     | '/chat'
     | '/properties'
     | '/settings'
-    | '/support'
     | '/wish-list'
     | '/auth/forgot-password'
     | '/auth/login'
@@ -479,6 +496,7 @@ export interface FileRouteTypes {
     | '/auth/verify-email'
     | '/'
     | '/detail/$id'
+    | '/support/history'
     | '/admin/booking/create'
     | '/admin/permission/create'
     | '/admin/property-type/create'
@@ -487,6 +505,7 @@ export interface FileRouteTypes {
     | '/admin/role/create'
     | '/admin/user/create'
     | '/admin/ward/create'
+    | '/support'
     | '/admin/booking'
     | '/admin/chat'
     | '/admin/dashboard'
@@ -499,6 +518,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/user'
     | '/admin/ward'
+    | '/support/detail/$id'
     | '/admin/booking/update/$id'
     | '/admin/permission/update/$id'
     | '/admin/price-reference/detail/$id'
@@ -518,7 +538,6 @@ export interface FileRouteTypes {
     | '/chat'
     | '/properties'
     | '/settings'
-    | '/support'
     | '/wish-list'
     | '/auth/forgot-password'
     | '/auth/login'
@@ -529,6 +548,7 @@ export interface FileRouteTypes {
     | '/auth/verify-email'
     | '/'
     | '/detail/$id'
+    | '/support/history'
     | '/admin/booking/create'
     | '/admin/permission/create'
     | '/admin/property-type/create'
@@ -537,6 +557,7 @@ export interface FileRouteTypes {
     | '/admin/role/create'
     | '/admin/user/create'
     | '/admin/ward/create'
+    | '/support'
     | '/admin/booking'
     | '/admin/chat'
     | '/admin/dashboard'
@@ -549,6 +570,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/user'
     | '/admin/ward'
+    | '/support/detail/$id'
     | '/admin/booking/update/$id'
     | '/admin/permission/update/$id'
     | '/admin/price-reference/detail/$id'
@@ -569,7 +591,6 @@ export interface FileRouteTypes {
     | '/__client/chat'
     | '/__client/properties'
     | '/__client/settings'
-    | '/__client/support'
     | '/__client/wish-list'
     | '/auth/forgot-password'
     | '/auth/login'
@@ -580,6 +601,7 @@ export interface FileRouteTypes {
     | '/auth/verify-email'
     | '/__client/'
     | '/__client/detail/$id'
+    | '/__client/support/history'
     | '/admin/booking/create'
     | '/admin/permission/create'
     | '/admin/property-type/create'
@@ -588,6 +610,7 @@ export interface FileRouteTypes {
     | '/admin/role/create'
     | '/admin/user/create'
     | '/admin/ward/create'
+    | '/__client/support/'
     | '/admin/booking/'
     | '/admin/chat/'
     | '/admin/dashboard/'
@@ -600,6 +623,7 @@ export interface FileRouteTypes {
     | '/admin/settings/'
     | '/admin/user/'
     | '/admin/ward/'
+    | '/__client/support/detail/$id'
     | '/admin/booking/update/$id'
     | '/admin/permission/update/$id'
     | '/admin/price-reference/detail/$id'
@@ -703,13 +727,6 @@ declare module '@tanstack/react-router' {
       path: '/wish-list'
       fullPath: '/wish-list'
       preLoaderRoute: typeof _clientWishListRouteImport
-      parentRoute: typeof _clientRoute
-    }
-    '/__client/support': {
-      id: '/__client/support'
-      path: '/support'
-      fullPath: '/support'
-      preLoaderRoute: typeof _clientSupportRouteImport
       parentRoute: typeof _clientRoute
     }
     '/__client/settings': {
@@ -824,6 +841,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBookingIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/__client/support/': {
+      id: '/__client/support/'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof _clientSupportIndexRouteImport
+      parentRoute: typeof _clientRoute
+    }
     '/admin/ward/create': {
       id: '/admin/ward/create'
       path: '/ward/create'
@@ -879,6 +903,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/booking/create'
       preLoaderRoute: typeof AdminBookingCreateRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/__client/support/history': {
+      id: '/__client/support/history'
+      path: '/support/history'
+      fullPath: '/support/history'
+      preLoaderRoute: typeof _clientSupportHistoryRouteImport
+      parentRoute: typeof _clientRoute
     }
     '/__client/detail/$id': {
       id: '/__client/detail/$id'
@@ -957,6 +988,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBookingUpdateIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/__client/support/detail/$id': {
+      id: '/__client/support/detail/$id'
+      path: '/support/detail/$id'
+      fullPath: '/support/detail/$id'
+      preLoaderRoute: typeof _clientSupportDetailIdRouteImport
+      parentRoute: typeof _clientRoute
+    }
     '/__client/compare/$id1/to/$id2': {
       id: '/__client/compare/$id1/to/$id2'
       path: '/compare/$id1/to/$id2'
@@ -972,10 +1010,12 @@ interface _clientRouteChildren {
   _clientChatRoute: typeof _clientChatRoute
   _clientPropertiesRoute: typeof _clientPropertiesRoute
   _clientSettingsRoute: typeof _clientSettingsRoute
-  _clientSupportRoute: typeof _clientSupportRoute
   _clientWishListRoute: typeof _clientWishListRoute
   _clientIndexRoute: typeof _clientIndexRoute
   _clientDetailIdRoute: typeof _clientDetailIdRoute
+  _clientSupportHistoryRoute: typeof _clientSupportHistoryRoute
+  _clientSupportIndexRoute: typeof _clientSupportIndexRoute
+  _clientSupportDetailIdRoute: typeof _clientSupportDetailIdRoute
   _clientCompareId1ToId2Route: typeof _clientCompareId1ToId2Route
 }
 
@@ -984,10 +1024,12 @@ const _clientRouteChildren: _clientRouteChildren = {
   _clientChatRoute: _clientChatRoute,
   _clientPropertiesRoute: _clientPropertiesRoute,
   _clientSettingsRoute: _clientSettingsRoute,
-  _clientSupportRoute: _clientSupportRoute,
   _clientWishListRoute: _clientWishListRoute,
   _clientIndexRoute: _clientIndexRoute,
   _clientDetailIdRoute: _clientDetailIdRoute,
+  _clientSupportHistoryRoute: _clientSupportHistoryRoute,
+  _clientSupportIndexRoute: _clientSupportIndexRoute,
+  _clientSupportDetailIdRoute: _clientSupportDetailIdRoute,
   _clientCompareId1ToId2Route: _clientCompareId1ToId2Route,
 }
 

@@ -1,26 +1,17 @@
-import { useState } from "react";
 import {
     Home,
     Send,
     Phone,
     Mail,
     MessageSquare,
-    HelpCircle,
     Upload,
     AlertCircle,
-    Sparkles,
+    X,
+    Eye,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import {
     Card,
     CardContent,
@@ -28,35 +19,31 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { useSupportVM } from "./SupportPage.vm";
+import { Form } from "@/components/ui/form";
+import { FormInput, FormSelect, FormTextArea } from "@/utils/formUtil";
+import {
+    SupportRequestSeverity,
+    SupportRequestType,
+    type SupportRequest,
+} from "@/types";
+import { supportTypeConverter } from "@/utils/converter";
+import { getFileIcon } from "@/utils/renderUtil";
 import { Badge } from "@/components/ui/badge";
 
 export const SupportPage = () => {
-    const [formData, setFormData] = useState({
-        requestType: "",
-        priority: "normal",
-        subject: "",
-        description: "",
-    });
-
-    const [charCount, setCharCount] = useState(0);
-
-    const handleDescriptionChange = (
-        e: React.ChangeEvent<HTMLTextAreaElement>,
-    ) => {
-        const value = e.target.value;
-        if (value.length <= 2000) {
-            setFormData({ ...formData, description: value });
-            setCharCount(value.length);
-        }
-    };
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log("Form submitted:", formData);
-    };
-
+    const {
+        form,
+        onSubmit,
+        userName,
+        userEmail,
+        handleUpload,
+        attachments,
+        onAttachmentRemove,
+        download,
+    } = useSupportVM();
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
+        <div className="min-h-screen">
             <main className="container mx-auto py-8 px-4 sm:px-6 lg:px-8 max-w-7xl">
                 {/* Breadcrumbs */}
                 <nav className="flex items-center gap-2 text-sm mb-8">
@@ -121,149 +108,172 @@ export const SupportPage = () => {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <form onSubmit={handleSubmit} className="space-y-6">
-                                    {/* Request Type & Priority */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="request-type">
-                                                Loại yêu cầu <span className="text-destructive">*</span>
-                                            </Label>
-                                            <Select
-                                                value={formData.requestType}
-                                                onValueChange={(value) =>
-                                                    setFormData({ ...formData, requestType: value })
-                                                }
-                                            >
-                                                <SelectTrigger id="request-type">
-                                                    <SelectValue placeholder="Chọn loại yêu cầu" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="complaint_post">
-                                                        Khiếu nại tin đăng sai sự thật
-                                                    </SelectItem>
-                                                    <SelectItem value="complaint_service">
-                                                        Khiếu nại dịch vụ/tài khoản
-                                                    </SelectItem>
-                                                    <SelectItem value="feature_request">
-                                                        Đề xuất tính năng mới
-                                                    </SelectItem>
-                                                    <SelectItem value="bug_report">
-                                                        Báo lỗi hệ thống
-                                                    </SelectItem>
-                                                    <SelectItem value="other">Khác</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
+                                <Form {...form}>
+                                    <div className="space-y-6">
+                                        {/* Request Type & Priority */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <FormSelect<SupportRequest>
+                                                title="Loại yêu cầu"
+                                                name="type"
+                                                options={Object.values(SupportRequestType).map(
+                                                    (type) => ({
+                                                        key: type,
+                                                        render: supportTypeConverter(type),
+                                                    }),
+                                                )}
+                                            />
 
-                                        <div className="space-y-2">
-                                            <Label htmlFor="priority">Mức độ ưu tiên</Label>
-                                            <Select
-                                                value={formData.priority}
-                                                onValueChange={(value) =>
-                                                    setFormData({ ...formData, priority: value })
-                                                }
-                                            >
-                                                <SelectTrigger id="priority">
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="normal">Bình thường</SelectItem>
-                                                    <SelectItem value="high">Cao</SelectItem>
-                                                    <SelectItem value="urgent">Khẩn cấp</SelectItem>
-                                                </SelectContent>
-                                            </Select>
+                                            <FormSelect<SupportRequest>
+                                                title="Mức độ ưu tiên"
+                                                name="severity"
+                                                options={Object.values(SupportRequestSeverity).map(
+                                                    (type) => ({
+                                                        key: type,
+                                                        render: supportTypeConverter(type),
+                                                    }),
+                                                )}
+                                            />
                                         </div>
-                                    </div>
-
-                                    {/* Subject */}
-                                    <div className="space-y-2">
-                                        <Label htmlFor="subject">
-                                            Tiêu đề <span className="text-destructive">*</span>
-                                        </Label>
-                                        <Input
-                                            id="subject"
+                                        <FormInput<SupportRequest>
                                             placeholder="Tóm tắt ngắn gọn vấn đề của bạn"
-                                            value={formData.subject}
-                                            onChange={(e) =>
-                                                setFormData({ ...formData, subject: e.target.value })
-                                            }
+                                            title="Tiêu đề"
+                                            name="title"
                                         />
-                                    </div>
 
-                                    {/* Description */}
-                                    <div className="space-y-2">
-                                        <Label htmlFor="description">
-                                            Mô tả chi tiết <span className="text-destructive">*</span>
-                                        </Label>
-                                        <Textarea
-                                            id="description"
+                                        <FormTextArea<SupportRequest>
                                             placeholder="Vui lòng mô tả chi tiết vấn đề bạn đang gặp phải. Bao gồm các bước để tái hiện lỗi nếu có."
-                                            rows={6}
-                                            value={formData.description}
-                                            onChange={handleDescriptionChange}
+                                            title="Mô tả chi tiết"
+                                            name="description"
+                                            className="h-40"
                                         />
-                                        <p className="text-xs text-muted-foreground text-right">
-                                            {charCount}/2000 ký tự
-                                        </p>
-                                    </div>
 
-                                    {/* Attachment Upload */}
-                                    <div className="space-y-2">
-                                        <Label>Đính kèm tệp tin</Label>
-                                        <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 flex flex-col items-center justify-center bg-muted/30 hover:bg-muted/50 hover:border-primary/50 transition-all cursor-pointer group">
-                                            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                                                <Upload className="h-5 w-5 text-primary" />
+                                        {/* Attachment Upload */}
+                                        <div className="space-y-2">
+                                            <Label>Đính kèm tệp tin</Label>
+
+                                            {/* Hidden file input */}
+                                            <input
+                                                type="file"
+                                                id="attachment-upload"
+                                                hidden
+                                                accept=".jpg,.jpeg,.png,.pdf"
+                                                onChange={handleUpload}
+                                            />
+
+                                            {/* Clickable upload area */}
+                                            <label
+                                                htmlFor="attachment-upload"
+                                                className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 flex flex-col items-center justify-center bg-muted/30 hover:bg-muted/50 hover:border-primary/50 transition-all cursor-pointer group"
+                                            >
+                                                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                                    <Upload className="h-5 w-5 text-primary" />
+                                                </div>
+                                                <p className="text-sm font-medium">
+                                                    Kéo thả tệp vào đây hoặc{" "}
+                                                    <span className="text-primary">chọn từ máy tính</span>
+                                                </p>
+                                                <p className="text-xs text-muted-foreground mt-1">
+                                                    Hỗ trợ: JPG, PNG, PDF (Tối đa 10MB)
+                                                </p>
+                                            </label>
+                                            {attachments.map((doc, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="relative flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-300 transition-colors"
+                                                >
+                                                    <div className="flex-shrink-0 p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
+                                                        {getFileIcon(doc.originalName || "")}
+                                                    </div>
+
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="font-medium text-gray-900 dark:text-gray-100 truncate">
+                                                            {doc.originalName || "Tài liệu"}
+                                                        </p>
+                                                        <Badge
+                                                            className={
+                                                                doc.status === "PENDING"
+                                                                    ? "bg-yellow-100 text-yellow-800"
+                                                                    : doc.status === "REJECTED"
+                                                                        ? "bg-red-100 text-red-800"
+                                                                        : "bg-green-100 text-green-800"
+                                                            }
+                                                        >
+                                                            {doc.status === "PENDING"
+                                                                ? "Đang chờ hệ thống kiểm tra"
+                                                                : doc.status === "REJECTED"
+                                                                    ? "Bị từ chối do tiềm ẩn rủi ro"
+                                                                    : "An toàn và được chấp nhận"}
+                                                        </Badge>
+                                                    </div>
+
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() => download(doc.objectName as string)}
+                                                        className="flex-shrink-0"
+                                                    >
+                                                        <Eye className="size-5 text-gray-600" />
+                                                    </Button>
+
+                                                    {onAttachmentRemove && (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            onClick={() => onAttachmentRemove(index)}
+                                                            className="flex-shrink-0 hover:bg-red-100 hover:text-red-600"
+                                                        >
+                                                            <X className="size-5" />
+                                                        </Button>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        {/* Contact Info Section */}
+                                        <div className="border-t pt-6 space-y-4">
+                                            <h3 className="text-base font-semibold">
+                                                Thông tin liên hệ của bạn
+                                            </h3>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div className="space-y-2">
+                                                    <Label className="text-xs text-muted-foreground uppercase">
+                                                        Họ và tên
+                                                    </Label>
+                                                    <Input
+                                                        disabled
+                                                        value={userName}
+                                                        className="bg-muted h-12"
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <Label className="text-xs text-muted-foreground uppercase">
+                                                        Email
+                                                    </Label>
+                                                    <Input
+                                                        disabled
+                                                        value={userEmail}
+                                                        className="bg-muted h-12"
+                                                    />
+                                                </div>
                                             </div>
-                                            <p className="text-sm font-medium">
-                                                Kéo thả tệp vào đây hoặc{" "}
-                                                <span className="text-primary">chọn từ máy tính</span>
-                                            </p>
-                                            <p className="text-xs text-muted-foreground mt-1">
-                                                Hỗ trợ: JPG, PNG, PDF (Tối đa 10MB)
-                                            </p>
+                                        </div>
+
+                                        {/* Actions */}
+                                        <div className="flex items-center justify-end gap-3 pt-4">
+                                            <Button variant="outline" type="button">
+                                                Hủy bỏ
+                                            </Button>
+                                            <Button
+                                                onClick={() => form.handleSubmit(onSubmit)()}
+                                                size="lg"
+                                                className="gap-2"
+                                            >
+                                                <span>Gửi Yêu Cầu</span>
+                                                <Send className="h-4 w-4" />
+                                            </Button>
                                         </div>
                                     </div>
-
-                                    {/* Contact Info Section */}
-                                    <div className="border-t pt-6 space-y-4">
-                                        <h3 className="text-base font-semibold">
-                                            Thông tin liên hệ của bạn
-                                        </h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <Label className="text-xs text-muted-foreground uppercase">
-                                                    Họ và tên
-                                                </Label>
-                                                <Input
-                                                    disabled
-                                                    value="Nguyễn Văn A"
-                                                    className="bg-muted"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label className="text-xs text-muted-foreground uppercase">
-                                                    Email
-                                                </Label>
-                                                <Input
-                                                    disabled
-                                                    value="nguyenvana@example.com"
-                                                    className="bg-muted"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Actions */}
-                                    <div className="flex items-center justify-end gap-3 pt-4">
-                                        <Button variant="outline" type="button">
-                                            Hủy bỏ
-                                        </Button>
-                                        <Button type="submit" size="lg" className="gap-2">
-                                            <span>Gửi Yêu Cầu</span>
-                                            <Send className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                </form>
+                                </Form>
                             </CardContent>
                         </Card>
                     </div>
@@ -325,55 +335,6 @@ export const SupportPage = () => {
                                 </a>
                             </CardContent>
                         </Card>
-
-                        {/* FAQ Mini Card */}
-                        {/* <Card className="shadow-lg"> */}
-                        {/*     <CardHeader> */}
-                        {/*         <CardTitle className="text-lg flex items-center gap-2"> */}
-                        {/*             <HelpCircle className="h-5 w-5 text-orange-500" /> */}
-                        {/*             Câu hỏi thường gặp */}
-                        {/*         </CardTitle> */}
-                        {/*     </CardHeader> */}
-                        {/*     <CardContent className="space-y-4"> */}
-                        {/*         <ul className="space-y-2"> */}
-                        {/*             <li> */}
-                        {/*                 <a */}
-                        {/*                     className="text-sm text-muted-foreground hover:text-primary hover:underline transition-colors block" */}
-                        {/*                     href="#" */}
-                        {/*                 > */}
-                        {/*                     Làm sao để sửa tin đã đăng? */}
-                        {/*                 </a> */}
-                        {/*             </li> */}
-                        {/*             <li> */}
-                        {/*                 <a */}
-                        {/*                     className="text-sm text-muted-foreground hover:text-primary hover:underline transition-colors block" */}
-                        {/*                     href="#" */}
-                        {/*                 > */}
-                        {/*                     Quy định về duyệt tin đăng mới */}
-                        {/*                 </a> */}
-                        {/*             </li> */}
-                        {/*             <li> */}
-                        {/*                 <a */}
-                        {/*                     className="text-sm text-muted-foreground hover:text-primary hover:underline transition-colors block" */}
-                        {/*                     href="#" */}
-                        {/*                 > */}
-                        {/*                     Hướng dẫn nạp tiền vào tài khoản */}
-                        {/*                 </a> */}
-                        {/*             </li> */}
-                        {/*             <li> */}
-                        {/*                 <a */}
-                        {/*                     className="text-sm text-muted-foreground hover:text-primary hover:underline transition-colors block" */}
-                        {/*                     href="#" */}
-                        {/*                 > */}
-                        {/*                     Chính sách bảo mật thông tin */}
-                        {/*                 </a> */}
-                        {/*             </li> */}
-                        {/*         </ul> */}
-                        {/*         <Button variant="outline" className="w-full"> */}
-                        {/*             Xem tất cả câu hỏi */}
-                        {/*         </Button> */}
-                        {/*     </CardContent> */}
-                        {/* </Card> */}
                     </div>
                 </div>
             </main>

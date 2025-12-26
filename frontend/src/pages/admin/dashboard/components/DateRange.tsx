@@ -28,15 +28,6 @@ export function DateRangeFilter() {
     const [startDate, setStartDate] = useState<Date | undefined>(new Date());
     const [endDate, setEndDate] = useState<Date | undefined>(new Date());
     const [groupBy, setGroupBy] = useState<GroupBy>("DAILY");
-    const [isApplying, setIsApplying] = useState(false);
-
-    const handleApply = async () => {
-        setIsApplying(true);
-        console.log("[v0] Filter applied:", { startDate, endDate, groupBy });
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        setIsApplying(false);
-    };
 
     return (
         <motion.div

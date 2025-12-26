@@ -10,6 +10,7 @@ import {
     Eye,
     HelpCircle,
     Phone,
+    Bug,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,127 +23,60 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { SupportRequestType, SupportResponseStatus } from "@/types";
+import { formatDate } from "@/utils/formatDate";
+import {
+    supportStatusConverter,
+    supportTypeConverter,
+} from "@/utils/converter";
+import { useNavigate } from "@tanstack/react-router";
+import { useGetClientSupportTickets } from "@/services/support-controller/support-controller";
 
-interface Request {
-    id: string;
-    code: string;
-    type: "support" | "complaint" | "technical" | "billing";
-    title: string;
-    createdDate: string;
-    lastUpdate: string;
-    status: "pending" | "in_progress" | "resolved" | "closed";
-}
-
-const mockRequests: Request[] = [
-    {
-        id: "1",
-        code: "REQ-2023-001",
-        type: "support",
-        title: "Vấn đề về sổ đỏ căn hộ A1",
-        createdDate: "10/10/2023",
-        lastUpdate: "12/10/2023",
-        status: "in_progress",
-    },
-    {
-        id: "2",
-        code: "CMP-2023-089",
-        type: "complaint",
-        title: "Thái độ phục vụ của môi giới khu vực Cầu Giấy",
-        createdDate: "05/10/2023",
-        lastUpdate: "07/10/2023",
-        status: "resolved",
-    },
-    {
-        id: "3",
-        code: "REQ-2023-003",
-        type: "technical",
-        title: "Lỗi không upload được ảnh lên tin đăng",
-        createdDate: "01/10/2023",
-        lastUpdate: "01/10/2023",
-        status: "pending",
-    },
-    {
-        id: "4",
-        code: "REQ-2023-002",
-        type: "support",
-        title: "Thủ tục sang tên sổ đỏ",
-        createdDate: "28/09/2023",
-        lastUpdate: "30/09/2023",
-        status: "closed",
-    },
-    {
-        id: "5",
-        code: "CMP-2023-012",
-        type: "complaint",
-        title: "Tin đăng không chính xác về diện tích",
-        createdDate: "15/09/2023",
-        lastUpdate: "18/09/2023",
-        status: "resolved",
-    },
-];
-
-const getTypeIcon = (type: Request["type"]) => {
+const getTypeIcon = (type: SupportRequestType) => {
     switch (type) {
-        case "support":
+        case "TECHNICAL_SUPPORT":
             return <HeadphonesIcon className="h-4 w-4" />;
-        case "complaint":
+        case "COMPLAINT":
             return <AlertCircle className="h-4 w-4" />;
-        case "technical":
+        case "BUG_REPORT":
+            return <Bug className="h-4 w-4" />;
+        case "FEATURE_REQUEST":
             return <Wrench className="h-4 w-4" />;
         default:
             return <HeadphonesIcon className="h-4 w-4" />;
     }
 };
 
-const getTypeLabel = (type: Request["type"]) => {
+const getTypeColor = (type: SupportRequestType) => {
     switch (type) {
-        case "support":
-            return "Hỗ trợ";
-        case "complaint":
-            return "Khiếu nại";
-        case "technical":
-            return "Kỹ thuật";
-        case "billing":
-            return "Thanh toán";
-        default:
-            return "Hỗ trợ";
-    }
-};
-
-const getTypeColor = (type: Request["type"]) => {
-    switch (type) {
-        case "support":
+        case "TECHNICAL_SUPPORT":
             return "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400";
-        case "complaint":
+        case "BUG_REPORT":
             return "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400";
-        case "technical":
+        case "COMPLAINT":
             return "bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400";
+        case "FEATURE_REQUEST":
+            return "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400";
         default:
             return "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400";
     }
 };
 
-const getStatusBadge = (status: Request["status"]) => {
+const getStatusBadge = (status: SupportResponseStatus) => {
     switch (status) {
-        case "pending":
-            return (
-                <Badge className="bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
-                    Chờ tiếp nhận
-                </Badge>
-            );
-        case "in_progress":
+        case "OPEN":
             return (
                 <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300">
-                    Đang xử lý
+                    Đang chờ xử lý
                 </Badge>
             );
-        case "resolved":
+        case "RESOLVED":
             return (
                 <Badge className="bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300">
                     Đã giải quyết
                 </Badge>
             );
-        case "closed":
+        case "CLOSED":
             return (
                 <Badge className="bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-300">
                     Đã đóng
@@ -155,19 +89,26 @@ export const SupportHistoryPage = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [typeFilter, setTypeFilter] = useState("all");
     const [statusFilter, setStatusFilter] = useState("all");
+    const buildQuery = () => {
+        if (searchQuery || typeFilter !== "all" || statusFilter !== "all") {
+            const queryList = [];
+            if (searchQuery) {
+                queryList.push(`title=like='${searchQuery}'`);
+            }
+            if (typeFilter !== "all") {
+                queryList.push(`type==${typeFilter}`);
+            }
+            if (statusFilter !== "all") {
+                queryList.push(`status==${statusFilter}`);
+            }
+            return `${queryList.join(";")}`;
+        }
+        return "";
+    };
+    const clientTicket = useGetClientSupportTickets({ filter: buildQuery() });
+    const navigate = useNavigate();
 
-    const filteredRequests = mockRequests.filter((request) => {
-        const matchesSearch =
-            searchQuery === "" ||
-            request.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            request.title.toLowerCase().includes(searchQuery.toLowerCase());
-
-        const matchesType = typeFilter === "all" || request.type === typeFilter;
-        const matchesStatus =
-            statusFilter === "all" || request.status === statusFilter;
-
-        return matchesSearch && matchesType && matchesStatus;
-    });
+    const history = clientTicket.data;
 
     return (
         <div className="min-h-screen bg-[#f6f7f8] dark:bg-[#101922]">
@@ -205,7 +146,10 @@ export const SupportHistoryPage = () => {
                                 với đội ngũ CSKH.
                             </p>
                         </div>
-                        <Button className="bg-[#137fec] hover:bg-blue-600 gap-2 h-11 shadow-sm">
+                        <Button
+                            onClick={() => navigate({ to: "/support" })}
+                            className="bg-[#137fec] hover:bg-blue-600 gap-2 h-11 shadow-sm"
+                        >
                             <Plus className="h-5 w-5" />
                             <span>Tạo yêu cầu mới</span>
                         </Button>
@@ -230,10 +174,11 @@ export const SupportHistoryPage = () => {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="all">Tất cả loại</SelectItem>
-                                        <SelectItem value="support">Hỗ trợ kỹ thuật</SelectItem>
-                                        <SelectItem value="complaint">Khiếu nại</SelectItem>
-                                        <SelectItem value="technical">Kỹ thuật</SelectItem>
-                                        <SelectItem value="billing">Thanh toán</SelectItem>
+                                        {Object.values(SupportRequestType).map((type, idx) => (
+                                            <SelectItem key={idx} value={type}>
+                                                {supportTypeConverter(type)}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                                 <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -242,10 +187,11 @@ export const SupportHistoryPage = () => {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                                        <SelectItem value="pending">Đang chờ xử lý</SelectItem>
-                                        <SelectItem value="in_progress">Đang xử lý</SelectItem>
-                                        <SelectItem value="resolved">Đã giải quyết</SelectItem>
-                                        <SelectItem value="closed">Đã đóng</SelectItem>
+                                        {Object.values(SupportResponseStatus).map((status, idx) => (
+                                            <SelectItem key={idx} value={status}>
+                                                {supportStatusConverter(status)}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -282,7 +228,7 @@ export const SupportHistoryPage = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200 dark:divide-[#374151]">
-                                    {filteredRequests.map((request) => (
+                                    {history?.data?.content?.map((request) => (
                                         <tr
                                             key={request.id}
                                             className="group hover:bg-[#f8f9fa] dark:hover:bg-[#212e3b] transition-colors"
@@ -292,20 +238,22 @@ export const SupportHistoryPage = () => {
                                                     className="text-[#137fec] font-medium hover:underline"
                                                     href="#"
                                                 >
-                                                    {request.code}
+                                                    {request.id}
                                                 </a>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center gap-2">
                                                     <div
                                                         className={`size-8 rounded-full flex items-center justify-center ${getTypeColor(
-                                                            request.type,
+                                                            request.type as SupportRequestType,
                                                         )}`}
                                                     >
-                                                        {getTypeIcon(request.type)}
+                                                        {getTypeIcon(request.type as SupportRequestType)}
                                                     </div>
                                                     <span className="text-sm font-medium">
-                                                        {getTypeLabel(request.type)}
+                                                        {supportTypeConverter(
+                                                            request.type as SupportRequestType,
+                                                        )}
                                                     </span>
                                                 </div>
                                             </td>
@@ -315,17 +263,24 @@ export const SupportHistoryPage = () => {
                                                 </p>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
-                                                {request.createdDate}
+                                                {formatDate(new Date(request.createdAt as string))}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
-                                                {request.lastUpdate}
+                                                {formatDate(new Date(request.updatedAt as string))}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                {getStatusBadge(request.status)}
+                                                {getStatusBadge(
+                                                    request.status as SupportResponseStatus,
+                                                )}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-right">
                                                 <button className="text-gray-500 hover:text-[#137fec] dark:text-gray-400 dark:hover:text-[#137fec] transition-colors">
-                                                    <Eye className="h-5 w-5" />
+                                                    <Eye
+                                                        onClick={() =>
+                                                            navigate({ to: `/support/detail/${request.id}` })
+                                                        }
+                                                        className="h-5 w-5"
+                                                    />
                                                 </button>
                                             </td>
                                         </tr>

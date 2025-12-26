@@ -10,9 +10,11 @@ import { DeleteDialogGlobal } from "@/components/general/DeleteDialogGlobal";
 import { AuthInitializer } from "@/components/general/AuthInitializer";
 import { useDarkMode } from "@/hooks/use-dark-mode";
 import { RouterProgressBar } from "@/components/general/RouterProgressBar";
+import { NotFoundPage } from "@/components/general/NotFoundPage";
 
 export const Route = createRootRoute({
     component: RootComponent,
+    notFoundComponent: () => <NotFoundPage />
 });
 
 function RootComponent() {
