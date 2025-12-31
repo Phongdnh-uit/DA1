@@ -1,5 +1,6 @@
 package com.phongdnh.se121;
 
+import io.minio.MinioClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -44,6 +45,8 @@ class Se121ApplicationTests {
   @MockitoBean private ChatModel chatModel;
 
   @MockitoBean private ClientRegistrationRepository clientRegistrationRepository;
+
+  @MockitoBean private MinioClient minioClient;
 
   @Test
   void contextLoads() {}
