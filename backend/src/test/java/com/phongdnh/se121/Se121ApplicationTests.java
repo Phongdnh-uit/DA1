@@ -29,7 +29,19 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
       "spring.mail.host=localhost",
       "app.bootstrap.admin.phone=0123456789",
       "app.bootstrap.admin.password=password",
-      "app.bootstrap.admin.email=test@gmail.com"
+      "app.bootstrap.admin.email=test@gmail.com",
+      "spring.redis.host=localhost",
+      "spring.redis.port=6379",
+      "clamav.host=localhost",
+      "clamav.port=3310",
+      "imgproxy.base-url=http://localhost:8081",
+      "imgproxy.key=3b36d1b62634689b28636a633eeb42b39aae91d40fb3bf1e53dd4d48abbf2166",
+      "imgproxy.salt=f94a17684703c3a7f3aec1dad5ad1f37b8a5fa07bd19843704070b46eb10580a",
+      "minio.endpoint=http://localhost:9000",
+      "minio.credentials.username=minioadmin",
+      "minio.credentials.password=minioadmin",
+      "spring.mail.sender-address=dangnguyenhuyphong@gmail.com",
+      "minio.credentials.webhook-token=se121_minio_webhook_token"
     })
 @EnableAutoConfiguration(
     exclude = {
