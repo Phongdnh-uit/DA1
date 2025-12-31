@@ -89,7 +89,6 @@ public class FileOrchestratorServiceImpl implements FileOrchestratorService {
             .orElseThrow(
                 () ->
                     new ApiException(ErrorCode.RESOURCE_NOT_FOUND, Map.of("objectKey", objectKey)));
-    System.out.println("Generating download URL for file status: " + file.getStatus());
     if (file.getStatus() != FileStatus.ACTIVE) {
       throw new ApiException(
           ErrorCode.DOWNLOAD_FAILED, Map.of("objectKey", "File is not available for download"));

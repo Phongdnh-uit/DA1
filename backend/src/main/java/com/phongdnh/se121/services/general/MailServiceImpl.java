@@ -6,6 +6,7 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -18,6 +19,9 @@ import org.thymeleaf.context.Context;
 public class MailServiceImpl implements MailService {
   private final JavaMailSender mailSender;
   private final TemplateEngine templateEngine;
+
+  @Value("${spring.mail.sender-address}")
+  private String senderAddress;
 
   /**
    * @param to : recipient of the email
@@ -34,7 +38,7 @@ public class MailServiceImpl implements MailService {
     try {
       MimeMessageHelper helper = new MimeMessageHelper(message, isMultipart, "UTF-8");
       helper.setTo(to);
-      helper.setFrom(AppConstant.FROM_EMAIL);
+      helper.setFrom(senderAddress);
       helper.setSubject(subject);
       helper.setText(content, isHtml);
       mailSender.send(message);

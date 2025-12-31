@@ -89,8 +89,7 @@ jwt:
     expiration: 18000
 
 minio:
-  host: http://localhost
-  port: 9000
+  endpoint: http://localhost:9000
   credentials:
     username: minioadmin
     password: minioadmin

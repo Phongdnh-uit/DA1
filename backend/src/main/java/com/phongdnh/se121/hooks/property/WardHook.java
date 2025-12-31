@@ -8,6 +8,7 @@ import com.phongdnh.se121.exceptions.errors.ErrorCode;
 import com.phongdnh.se121.hooks.GenericHook;
 import com.phongdnh.se121.repositories.property.ProvinceRepository;
 import com.phongdnh.se121.repositories.property.WardRepository;
+import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -41,8 +42,9 @@ public class WardHook implements GenericHook<Ward, Long, WardRequest, WardRespon
   }
 
   private void validate(WardRequest input, Long id) {
+    Map<String, String> errors = new HashMap<>();
     if (!provinceRepository.existsById(input.getProvinceId())) {
-      throw new ApiException(ErrorCode.RESOURCE_NOT_FOUND);
+      errors.put("provinceId", "Province does not exist");
     }
     Specification<Ward> codeNameSpec =
         (root, _, builder) -> builder.equal(root.get("code"), input.getCode());
@@ -50,7 +52,10 @@ public class WardHook implements GenericHook<Ward, Long, WardRequest, WardRespon
       codeNameSpec = codeNameSpec.and((root, _, builder) -> builder.notEqual(root.get("id"), id));
     }
     if (wardRepository.exists(codeNameSpec)) {
-      throw new ApiException(ErrorCode.RESOURCE_EXISTS, Map.of("code", "Code already exists"));
+      errors.put("code", "Ward code already exists");
+    }
+    if (!errors.isEmpty()) {
+      throw new ApiException(ErrorCode.VALIDATION_ERROR, errors);
     }
   }
 

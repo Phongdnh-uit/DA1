@@ -18,7 +18,7 @@ public class FileMapperDecorator implements FileMapper {
   @Override
   public FileResponse entityToResponse(File file) {
     FileResponse response = delegate.entityToResponse(file);
-    if (file.getStatus() == FileStatus.ACTIVE) {
+    if (file != null && file.getStatus() == FileStatus.ACTIVE) {
       String presignedUrl =
           storageProvider.generatePresignedDownloadURL(file.getObjectName()).getUrl();
       response.setUrl(presignedUrl);

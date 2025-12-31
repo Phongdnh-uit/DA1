@@ -27,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -69,6 +70,7 @@ public class MessageServiceImpl implements MessageService {
   }
 
   @Override
+  @Transactional
   public void sendMessage(Long conversationId, Long userId, MessageRequest request) {
     // Validate conversation
     Conversation conversation =
@@ -93,7 +95,6 @@ public class MessageServiceImpl implements MessageService {
                     new ApiException(
                         ErrorCode.FORBIDDEN,
                         Map.of("participant", "User is not a participant in this conversation")));
-    participant.getUser().getId();
 
     // Create and save message
     Message message = new Message();

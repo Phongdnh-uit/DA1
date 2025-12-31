@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ConversationParticipantRepository
-    extends SimpleRepository<com.phongdnh.se121.entities.chat.ConversationParticipant, Long> {
+    extends SimpleRepository<ConversationParticipant, Long> {
 
-  @EntityGraph(attributePaths = {"conversation", "user"})
+  @EntityGraph(attributePaths = {"conversation", "user", "user.avatar"})
   @Override
   Optional<ConversationParticipant> findOne(Specification<ConversationParticipant> spec);
 }

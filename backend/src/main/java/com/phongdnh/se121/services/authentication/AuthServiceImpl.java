@@ -99,6 +99,31 @@ public class AuthServiceImpl implements AuthService {
       throw new ApiException(
           ErrorCode.VALIDATION_ERROR, Map.of("destination", "Invalid email or phone number"));
     }
+    // Additional validations based on purpose can be added here
+    switch (request.getPurpose()) {
+      case REGISTRATION:
+        // Check if user already exists
+        boolean exists =
+            switch (type) {
+              case EMAIL ->
+                  userRepository.exists(
+                      (root, _, builder) ->
+                          builder.equal(root.get("email"), request.getDestination()));
+              case PHONE ->
+                  userRepository.exists(
+                      (root, _, builder) ->
+                          builder.equal(root.get("phone"), request.getDestination()));
+              default -> false;
+            };
+        if (exists) {
+          throw new ApiException(
+              ErrorCode.VALIDATION_ERROR,
+              Map.of("destination", "User with this contact already exists"));
+        }
+        break;
+      default:
+        // No additional checks for other purposes
+    }
 
     // 2. ---- Generate OTP ----
     String otp = OtpGenerator.generateNumericOtp(6);
@@ -217,6 +242,14 @@ public class AuthServiceImpl implements AuthService {
         (String) redisTemplate.opsForValue().get("REGISTRATION_" + request.getVerificationToken());
     if (cachedPhone == null) {
       throw new ApiException(ErrorCode.VERIFICATION_CODE_INVALID);
+    }
+    // Validate if email
+    boolean emailExists =
+        userRepository.exists(
+            (root, _, builder) -> builder.equal(root.get("email"), request.getEmail()));
+    if (emailExists) {
+      throw new ApiException(
+          ErrorCode.VALIDATION_ERROR, Map.of("email", "Email is already in use"));
     }
     User user = new User();
     user.setFullName(request.getFullName());
