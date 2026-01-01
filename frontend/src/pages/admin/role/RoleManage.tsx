@@ -49,7 +49,32 @@ export const RoleManage = () => {
     const columns = useMemo(
         () => [
             createSelectionColumn<RoleResponse>(),
-            ...createColumnsFromType<RoleResponse>(keys),
+            ...createColumnsFromType<RoleResponse>(keys, [
+                {
+                    key: "id",
+                    header: "Mã vai trò",
+                },
+                {
+                    key: "name",
+                    header: "Tên vai trò",
+                },
+                {
+                    key: "createdAt",
+                    header: "Ngày tạo",
+                },
+                {
+                    key: "updatedAt",
+                    header: "Ngày cập nhật",
+                },
+                {
+                    key: "createdBy",
+                    header: "Người tạo (ID)",
+                },
+                {
+                    key: "updatedBy",
+                    header: "Người cập nhật (ID)",
+                },
+            ]),
             createActionColumn<RoleResponse>(
                 {
                     onEdit: (row) => {
@@ -66,7 +91,7 @@ export const RoleManage = () => {
                     onView: (row) => {
                         setDetailRole(row);
                         setOpenedDetail(true);
-                    }
+                    },
                 },
                 {
                     viewCode: "ROLE_VIEW_DETAIL",
@@ -144,19 +169,25 @@ export const RoleManage = () => {
             </div>
             <Filter
                 sortAttributes={[
-                    { key: "id", label: "ID" },
-                    { key: "name", label: "Tên" },
+                    { key: "id", label: "Mã vai trò" },
+                    { key: "name", label: "Tên vai trò" },
+                    { key: "createdBy", label: "Người tạo (ID)" },
+                    { key: "updatedBy", label: "Người cập nhật (ID)" },
                     { key: "createdAt", label: "Ngày tạo" },
                     { key: "updatedAt", label: "Ngày cập nhật" },
                 ]}
                 filterAttributes={[
-                    { name: "name", label: "Name", type: "text" },
-                    { name: "id", label: "Id", type: "number" },
-                    { name: "createdBy", label: "Created By", type: "number" },
-                    { name: "updatedBy", label: "Updated By", type: "number" },
-                    { name: "createdAt", label: "Created At", type: "date" },
-                    { name: "updatedAt", label: "Updated At", type: "date" },
+                    { name: "id", label: "Mã vai trò", type: "number" },
+                    { name: "name", label: "Tên vai trò", type: "text" },
+                    { name: "description", label: "Mô tả", type: "text" },
+
+                    { name: "createdBy", label: "Người tạo (ID)", type: "number" },
+                    { name: "updatedBy", label: "Người cập nhật (ID)", type: "number" },
+
+                    { name: "createdAt", label: "Ngày tạo", type: "date" },
+                    { name: "updatedAt", label: "Ngày cập nhật", type: "date" },
                 ]}
+                searchField={["name"]}
                 onApply={onApplyFilter}
             />
             <DataTable

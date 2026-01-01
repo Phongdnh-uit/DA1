@@ -10,6 +10,7 @@ import {
 } from "@/services/property/property";
 import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
 import type { PropertyResponse } from "@/types";
+import { formatCurrency } from "@/utils/converter";
 import {
     createActionColumn,
     createColumnsFromType,
@@ -48,7 +49,54 @@ export const PropertyManage = () => {
     const columns = useMemo(
         () => [
             createSelectionColumn<PropertyResponse>(),
-            ...createColumnsFromType<PropertyResponse>(keys),
+            ...createColumnsFromType<PropertyResponse>(keys, [
+                {
+                    key: "title",
+                    header: "Tiêu đề",
+                    cell: (info) => {
+                        return (
+                            <span className="font-medium max-w-lg truncate block">
+                                {info.getValue()}
+                            </span>
+                        );
+                    },
+                },
+                {
+                    key: "id",
+                    header: "Mã BĐS",
+                },
+                {
+                    key: "price",
+                    header: "Giá",
+                    cell: (info) => {
+                        return (
+                            <span>
+                                {formatCurrency(info.getValue() as number)}
+                            </span>
+                        );
+                    }
+                },
+                {
+                    key: "purpose",
+                    header: "Mục đích",
+                },
+                {
+                    key: "createdAt",
+                    header: "Ngày tạo",
+                },
+                {
+                    key: "updatedAt",
+                    header: "Ngày cập nhật",
+                },
+                {
+                    key: "createdBy",
+                    header: "Người tạo (ID)",
+                },
+                {
+                    key: "updatedBy",
+                    header: "Người cập nhật (ID)",
+                },
+            ]),
             createActionColumn<PropertyResponse>(
                 {
                     onEdit: (row) => {
@@ -68,7 +116,7 @@ export const PropertyManage = () => {
                     },
                     onView: (row) => {
                         navigate({ to: `/admin/property/detail/${row.id}` });
-                    }
+                    },
                 },
                 {
                     deleteCode: "PROPERTY_DELETE",
@@ -146,71 +194,69 @@ export const PropertyManage = () => {
                         onClick={() => navigate({ to: "/admin/property/create" })}
                         className="h-12 bg-blue-700 text-white hover:bg-blue-700"
                     >
-                        <IconSparkles className="size-5" />Thêm mới
+                        <IconSparkles className="size-5" />
+                        Thêm mới
                     </RippleButton>
                 </PermissionGate>
             </div>
             <Filter
                 sortAttributes={[
-                    { key: "id", label: "Mã tin" },
+                    { key: "id", label: "Mã BĐS" },
+
                     { key: "createdAt", label: "Ngày tạo" },
                     { key: "updatedAt", label: "Ngày cập nhật" },
+
                     { key: "price", label: "Giá" },
-                    { key: "landArea", label: "Diện tích đất" },
-                    { key: "floorArea", label: "Diện tích sàn" },
+                    { key: "landArea", label: "Diện tích đất (m²)" },
+                    { key: "floorArea", label: "Diện tích sàn (m²)" },
+
                     { key: "bedrooms", label: "Số phòng ngủ" },
                     { key: "bathrooms", label: "Số phòng tắm" },
                     { key: "floors", label: "Số tầng" },
-                    { key: "entranceRoadWidth", label: "Lộ giới" },
+
+                    { key: "entranceRoadWidth", label: "Lộ giới (m)" },
                 ]}
                 filterAttributes={[
-                    { name: "id", label: "Mã tin", type: "number" },
+                    { name: "id", label: "Mã BĐS", type: "number" },
                     { name: "title", label: "Tiêu đề", type: "text" },
-                    {
-                        name: "purpose",
-                        label: "Mục đích",
-                        type: "text",
-                    },
-                    { name: "type.name", label: "Loại hình", type: "text" },
+                    { name: "description", label: "Mô tả", type: "text" },
+                    { name: "purpose", label: "Mục đích", type: "text" },
+                    { name: "status", label: "Trạng thái", type: "text" },
+                    { name: "type.id", label: "Loại hình (ID)", type: "number" },
+                    { name: "type.name", label: "Loại hình BĐS", type: "text" },
                     { name: "price", label: "Giá", type: "number" },
-                    { name: "lineAddress", label: "Địa chỉ", type: "text" },
-                    { name: "ward.name", label: "Tên phường", type: "text" },
-                    { name: "ward.code", label: "Mã phường", type: "text" },
-                    { name: "ward.type", label: "Loại phường", type: "text" },
-                    { name: "ward.province.name", label: "Tên tỉnh/thành", type: "text" },
-                    { name: "ward.province.code", label: "Mã tỉnh/thành", type: "text" },
-                    {
-                        name: "ward.province.type",
-                        label: "Loại tỉnh/thành",
-                        type: "text",
-                    },
+
                     { name: "landArea", label: "Diện tích đất (m²)", type: "number" },
                     { name: "floorArea", label: "Diện tích sàn (m²)", type: "number" },
+                    { name: "lineAddress", label: "Địa chỉ chi tiết", type: "text" },
+                    { name: "ward.name", label: "Phường / xã", type: "text" },
+                    { name: "ward.code", label: "Mã phường / xã", type: "text" },
+                    { name: "ward.type", label: "Loại phường / xã", type: "text" },
+                    { name: "ward.province.name", label: "Tỉnh / thành", type: "text" },
+                    {
+                        name: "ward.province.code",
+                        label: "Mã tỉnh / thành",
+                        type: "text",
+                    },
+                    {
+                        name: "ward.province.type",
+                        label: "Loại tỉnh / thành",
+                        type: "text",
+                    },
                     { name: "floors", label: "Tổng số tầng", type: "number" },
                     { name: "floorNumber", label: "Số tầng hiện hữu", type: "number" },
                     { name: "bedrooms", label: "Số phòng ngủ", type: "number" },
                     { name: "bathrooms", label: "Số phòng tắm", type: "number" },
-                    {
-                        name: "direction",
-                        label: "Hướng nhà",
-                        type: "text",
-                    },
-                    {
-                        name: "balconyDirection",
-                        label: "Hướng ban công",
-                        type: "text",
-                    },
+                    { name: "direction", label: "Hướng nhà", type: "text" },
+                    { name: "balconyDirection", label: "Hướng ban công", type: "text" },
                     { name: "entranceRoadWidth", label: "Lộ giới (m)", type: "number" },
                     { name: "hasMezzanine", label: "Có gác lửng", type: "text" },
-                    { name: "hasBasement", label: "Có hầm", type: "text" },
+                    { name: "hasBasement", label: "Có tầng hầm", type: "text" },
                     { name: "hasElevator", label: "Có thang máy", type: "text" },
-                    {
-                        name: "status",
-                        label: "Trạng thái",
-                        type: "text",
-                    },
-                    { name: "createdBy", label: "Người tạo", type: "number" },
-                    { name: "updatedBy", label: "Người cập nhật", type: "number" },
+
+                    { name: "interior", label: "Nội thất", type: "text" },
+                    { name: "createdBy", label: "Người tạo (ID)", type: "number" },
+                    { name: "updatedBy", label: "Người cập nhật (ID)", type: "number" },
                     { name: "createdAt", label: "Ngày tạo", type: "date" },
                     { name: "updatedAt", label: "Ngày cập nhật", type: "date" },
                 ]}

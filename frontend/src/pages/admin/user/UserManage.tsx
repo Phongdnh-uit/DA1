@@ -48,7 +48,40 @@ export const UserManage = () => {
     const columns = useMemo(
         () => [
             createSelectionColumn<UserResponse>(),
-            ...createColumnsFromType<UserResponse>(keys),
+            ...createColumnsFromType<UserResponse>(keys, [
+                {
+                    key: "id",
+                    header: "Mã người dùng",
+                },
+                {
+                    key: "fullName",
+                    header: "Họ và tên",
+                },
+                {
+                    key: "email",
+                    header: "Email",
+                },
+                {
+                    key: "phone",
+                    header: "Số điện thoại",
+                },
+                {
+                    key: "createdAt",
+                    header: "Ngày tạo",
+                },
+                {
+                    key: "updatedAt",
+                    header: "Ngày cập nhật",
+                },
+                {
+                    key: "createdBy",
+                    header: "Người tạo (ID)",
+                },
+                {
+                    key: "updatedBy",
+                    header: "Người cập nhật (ID)",
+                },
+            ]),
             createActionColumn<UserResponse>(
                 {
                     onEdit: (row) => {
@@ -145,22 +178,32 @@ export const UserManage = () => {
             </div>
             <Filter
                 sortAttributes={[
-                    { key: "id", label: "Id" },
+                    { key: "id", label: "Mã người dùng" },
+                    { key: "fullName", label: "Họ và tên" },
                     { key: "email", label: "Email" },
-                    { key: "phone", label: "Phone" },
-                    { key: "createdAt", label: "Created At" },
-                    { key: "updatedAt", label: "Updated At" },
+                    { key: "phone", label: "Số điện thoại" },
+                    { key: "status", label: "Trạng thái" },
+                    { key: "createdAt", label: "Ngày tạo" },
+                    { key: "updatedAt", label: "Ngày cập nhật" },
+                    { key: "createdBy", label: "Người tạo" },
+                    { key: "updatedBy", label: "Người cập nhật" },
                 ]}
                 filterAttributes={[
-                    { name: "id", label: "Id", type: "number" },
+                    { name: "id", label: "Mã người dùng", type: "number" },
+                    { name: "fullName", label: "Họ và tên", type: "text" },
                     { name: "email", label: "Email", type: "text" },
-                    { name: "phone", label: "Phone", type: "text" },
-                    { name: "fullName", label: "Full name", type: "text" },
-                    { name: "createdBy", label: "Created By", type: "number" },
-                    { name: "updatedBy", label: "Updated By", type: "number" },
-                    { name: "createdAt", label: "Created At", type: "date" },
-                    { name: "updatedAt", label: "Updated At", type: "date" },
+                    { name: "phone", label: "Số điện thoại", type: "text" },
+
+                    { name: "status", label: "Trạng thái", type: "text" },
+                    { name: "roleId", label: "Vai trò (ID)", type: "number" },
+
+                    { name: "createdBy", label: "Người tạo (ID)", type: "number" },
+                    { name: "updatedBy", label: "Người cập nhật (ID)", type: "number" },
+
+                    { name: "createdAt", label: "Ngày tạo", type: "date" },
+                    { name: "updatedAt", label: "Ngày cập nhật", type: "date" },
                 ]}
+                searchField={["fullName", "email", "phone"]}
                 onApply={onApplyFilter}
             />
             <DataTable

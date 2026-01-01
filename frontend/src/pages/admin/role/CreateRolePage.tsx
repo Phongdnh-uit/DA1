@@ -8,7 +8,7 @@ import { Form } from "@/components/ui/form";
 import { FormInput } from "@/utils/formUtil";
 import type { RoleRequest } from "@/types";
 import { BackButton } from "@/components/general/BackButton";
-import { MotionButton } from "@/components/general/MotionShadcn";
+import { MotionButton } from "@/components/customs/MotionButton";
 
 export function CreateRolePage() {
     const {
@@ -22,6 +22,7 @@ export function CreateRolePage() {
         expandedResource,
         setExpandedResource,
     } = useCreateRoleVM();
+    const selectedIds = form.watch("permissionIds") || [];
     return (
         <main>
             <BackButton />
@@ -29,14 +30,14 @@ export function CreateRolePage() {
                 <Card className="p-6 md:p-8 border border-border/50 shadow-lg">
                     <div>
                         <h2 className="text-2xl font-bold text-foreground mb-2">
-                            Tạo Quyền Hạn Mới
+                            Thiết Lập Vai Trò Mới
                         </h2>
                         <p className="text-base text-muted-foreground">
-                            Định nghĩa quyền hạn mới cho ứng dụng của bạn
+                            Cấp phát quyền hạn cho các nhóm người dùng.
                         </p>
                     </div>
                     <Form {...form}>
-                        <div className="space-y-3 mb-8">
+                        <div className="space-y-3">
                             {/* Role Name Input */}
                             <FormInput<RoleRequest>
                                 title="Tên vai trò"
@@ -54,185 +55,189 @@ export function CreateRolePage() {
 
                     {/* Permissions Section */}
                     <div className="space-y-4">
-                        <div className="flex items-start justify-between">
-                            <div>
-                                <Label className="text-sm font-semibold">
-                                    Quyền truy cập <span className="text-destructive">*</span>
+                        <div className="space-y-4 pt-4 border-t">
+                            <div className="flex items-center justify-between">
+                                <Label className="text-sm font-bold uppercase tracking-wider text-foreground/70">
+                                    Danh sách quyền hạn{" "}
+                                    <span className="text-destructive">*</span>
                                 </Label>
-                                <p className="text-xs text-muted-foreground mt-1">
-                                    Chọn quyền mà vai trò này sẽ có (
-                                    {form.getValues().permissionIds?.length} đã chọn)
-                                </p>
                             </div>
-                            {Array.isArray(form.watch("permissionIds")) &&
-                                form.watch("permissionIds")!.length > 0 && (
-                                    <div className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium">
-                                        {form.getValues().permissionIds?.length} quyền
+
+                            <div className="relative input-field">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                                <Input
+                                    placeholder="Tìm kiếm quyền (Ví dụ: xem, tạo, xóa...)"
+                                    onChange={(e) => searchDebounced(e.target.value)}
+                                    className="pl-10 h-11 bg-muted/30 border-none outline-none focus-visible:ring-0 w-full"
+                                />
+                            </div>
+
+                            {/* Permissions List with Custom Scrollbar */}
+                            <div className="space-y-3 overflow-y-auto pr-2 custom-scrollbar">
+                                {Object.entries(groupedPermissions).length === 0 ? (
+                                    <div className="text-center py-12 border-2 border-dashed rounded-xl italic text-muted-foreground">
+                                        Không tìm thấy quyền nào phù hợp
                                     </div>
-                                )}
-                        </div>
+                                ) : (
+                                    Object.entries(groupedPermissions).map(
+                                        ([resource, permissions]) => {
+                                            const isExpanded = expandedResource[resource] !== false;
+                                            const allCategorySelected = permissions.every((p) =>
+                                                selectedIds.includes(p.id as number),
+                                            );
 
-                        <div className="relative overflow-hidden input-field">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input
-                                placeholder="Tìm kiếm quyền..."
-                                onChange={(e) => searchDebounced(e.target.value)}
-                                className="pl-10 h-10"
-                            />
-                        </div>
-
-                        {/* Permissions List */}
-                        <div className="space-y-3 max-h-[500px] overflow-y-auto pr-3 border rounded-lg p-4 bg-muted/20">
-                            {Object.entries(groupedPermissions).length === 0 ? (
-                                <p className="text-center text-sm text-muted-foreground py-8">
-                                    Không tìm thấy quyền nào
-                                </p>
-                            ) : (
-                                Object.entries(groupedPermissions).map(
-                                    ([resource, permissions]) => {
-                                        const selectedPermissions =
-                                            form.watch("permissionIds") || [];
-                                        const isExpanded = expandedResource[resource] !== false;
-                                        const allCategorySelected = permissions.every((p) =>
-                                            selectedPermissions.includes(p.id as number),
-                                        );
-                                        {
-                                            /* const someCategorySelected = permissions.some((p) => */
-                                        }
-                                        {
-                                            /*     selectedPermissions.includes(p.id as number), */
-                                        }
-                                        {
-                                            /* ); */
-                                        }
-
-                                        return (
-                                            <div
-                                                key={resource}
-                                                className="border rounded-lg overflow-hidden bg-background"
-                                            >
+                                            return (
                                                 <div
-                                                    onClick={() =>
-                                                        setExpandedResource((prev) => ({
-                                                            ...prev,
-                                                            [resource]: !isExpanded,
-                                                        }))
-                                                    }
-                                                    className="w-full flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors border-b group"
+                                                    key={resource}
+                                                    className="border border-border/40 rounded-xl overflow-hidden bg-background/50 shadow-sm transition-all hover:shadow-md"
                                                 >
-                                                    <div className="flex items-center gap-3">
-                                                        <ChevronDown
-                                                            className={`w-4 h-4 transition-transform ${isExpanded ? "" : "-rotate-90"}`}
-                                                        />
-                                                        <span className="font-semibold text-sm text-foreground">
-                                                            {resource}
-                                                        </span>
-                                                        <span className="text-xs bg-muted px-2 py-1 rounded text-muted-foreground">
-                                                            {permissions.length} quyền
-                                                        </span>
-                                                    </div>
-                                                    <Checkbox
-                                                        onClick={(e) => e.stopPropagation()}
-                                                        onCheckedChange={() => {
-                                                            toggleResourcePermission(
-                                                                resource,
-                                                                allCategorySelected,
-                                                            );
-                                                        }}
-                                                        checked={allCategorySelected}
-                                                    />
-                                                </div>
-
-                                                {isExpanded && (
-                                                    <div className="space-y-2 p-3 bg-muted/10">
-                                                        {permissions.map((permission) => (
+                                                    <div
+                                                        onClick={() =>
+                                                            setExpandedResource((prev) => ({
+                                                                ...prev,
+                                                                [resource]: !isExpanded,
+                                                            }))
+                                                        }
+                                                        className="flex items-center justify-between px-4 py-3 cursor-pointer bg-muted/20 hover:bg-muted/40 transition-colors"
+                                                    >
+                                                        <div className="flex items-center gap-3">
                                                             <div
-                                                                key={permission.id}
-                                                                className="flex items-center gap-3 p-3 rounded-md hover:bg-accent/20 transition-colors cursor-pointer group"
+                                                                className={`p-1 rounded-md transition-transform ${isExpanded ? "rotate-0" : "-rotate-90"}`}
                                                             >
-                                                                <Checkbox
-                                                                    onClick={(e) => e.stopPropagation()}
-                                                                    id={permission.id?.toString()}
-                                                                    checked={form
-                                                                        .watch("permissionIds")
-                                                                        ?.includes(permission.id as number)}
-                                                                    onCheckedChange={() =>
+                                                                <ChevronDown className="w-4 h-4" />
+                                                            </div>
+                                                            <span className="font-bold text-sm uppercase tracking-tight">
+                                                                {resource}
+                                                            </span>
+                                                            <span className="text-[10px] font-bold bg-background px-2 py-0.5 rounded-full border">
+                                                                {permissions.length}
+                                                            </span>
+                                                        </div>
+                                                        <Checkbox
+                                                            checked={allCategorySelected}
+                                                            onClick={(e) => e.stopPropagation()}
+                                                            onCheckedChange={() =>
+                                                                toggleResourcePermission(
+                                                                    resource,
+                                                                    allCategorySelected,
+                                                                )
+                                                            }
+                                                            className="h-5 w-5 rounded-md"
+                                                        />
+                                                    </div>
+
+                                                    {isExpanded && (
+                                                        <div className="p-2 grid grid-cols-1 gap-1 animate-in fade-in slide-in-from-top-2">
+                                                            {permissions.map((permission) => (
+                                                                <div
+                                                                    key={permission.id}
+                                                                    onClick={() =>
                                                                         togglePermission(permission.id as number)
                                                                     }
-                                                                />
-
-                                                                <Label
-                                                                    htmlFor={permission.id?.toString()}
-                                                                    className="text-sm font-normal cursor-pointer flex-1"
+                                                                    className="flex items-center justify-between p-3 rounded-lg hover:bg-primary/5 cursor-pointer group transition-all"
                                                                 >
-                                                                    {permission.name}
-                                                                </Label>
-                                                                <span className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                                                                    {permission.urlPattern}
-                                                                </span>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        );
-                                    },
-                                )
-                            )}
+                                                                    <div className="flex items-center gap-3">
+                                                                        <Checkbox
+                                                                            checked={selectedIds.includes(
+                                                                                permission.id as number,
+                                                                            )}
+                                                                        />
+                                                                        <span className="text-sm font-medium">
+                                                                            {permission.name}
+                                                                        </span>
+                                                                    </div>
+                                                                    <code className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                        {permission.urlPattern}
+                                                                    </code>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            );
+                                        },
+                                    )
+                                )}
+                            </div>
                         </div>
-
-                        {/* Permissions Summary */}
-                        {Array.isArray(form.watch("permissionIds")) &&
-                            form.watch("permissionIds")!.length > 0 && (
-                                <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
-                                    <p className="text-sm text-primary font-medium mb-2">
-                                        Đã chọn {form.getValues().permissionIds?.length} quyền
-                                    </p>
-                                    <div className="flex flex-wrap gap-2">
-                                        {flattenedPermissions
-                                            .filter((perm) =>
-                                                form
-                                                    .getValues()
-                                                    .permissionIds?.includes(perm.id as number),
-                                            )
-                                            .map((perm) => (
-                                                <span
-                                                    key={perm.id}
-                                                    className="bg-primary/10 text-primary text-xs px-3 py-1 rounded-full font-medium"
-                                                >
-                                                    {perm?.name}
-                                                </span>
-                                            ))}
-                                    </div>
-                                </div>
-                            )}
-                    </div>
-
-                    {/* Submit Buttons */}
-                    <div className="flex gap-3 pt-4">
-                        <MotionButton
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                            onClick={() => form.handleSubmit(onSubmit)()}
-                            className="flex-1 text-xl h-12 rounded-2xl transition-none"
-                            size="lg"
-                        >
-                            Tạo Vai Trò Mới
-                        </MotionButton>
-                        <MotionButton
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                            variant="outline"
-                            className="flex-1 text-xl h-12 rounded-2xl transition-none"
-                            size="lg"
-                            onClick={() => form.reset()}
-                        >
-                            Hủy Bỏ
-                        </MotionButton>
                     </div>
                 </Card>
+                <div className="relative">
+                    <div className="space-y-6 sticky top-8 w-lg">
+                        {/* Summary Card */}
+                        <Card className="p-6 border-primary/20 bg-primary/[0.02] rounded-2xl overflow-hidden relative">
+                            <div className="absolute top-0 right-0 p-4 opacity-5">
+                                <Search size={100} />
+                            </div>
+
+                            <div className="relative z-10 space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="font-bold text-lg flex items-center gap-2">
+                                        Quyền đã chọn
+                                        <span className="bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full">
+                                            {selectedIds.length}
+                                        </span>
+                                    </h3>
+                                    {selectedIds.length > 0 && (
+                                        <button
+                                            onClick={() => form.setValue("permissionIds", [])}
+                                            className="text-xs text-destructive hover:underline font-medium"
+                                        >
+                                            Xóa tất cả
+                                        </button>
+                                    )}
+                                </div>
+
+                                <div className="flex flex-wrap gap-2 max-h-[300px] overflow-y-auto pt-2">
+                                    {selectedIds.length === 0 ? (
+                                        <p className="text-sm text-muted-foreground italic">
+                                            Chưa có quyền nào được chọn...
+                                        </p>
+                                    ) : (
+                                        flattenedPermissions
+                                            .filter((p) => selectedIds.includes(p.id as number))
+                                            .map((p) => (
+                                                <span
+                                                    key={p.id}
+                                                    className="bg-background border border-primary/20 text-primary text-[11px] px-3 py-1 rounded-full font-bold shadow-sm animate-in zoom-in-95"
+                                                >
+                                                    {p.name}
+                                                </span>
+                                            ))
+                                    )}
+                                </div>
+
+                                <div className="pt-6 space-y-3 space-x-4">
+                                    <MotionButton
+                                        onClick={() => form.handleSubmit(onSubmit)()}
+                                        className="w-full h-10 text-base font-bold shadow-lg shadow-primary/20 rounded-xl"
+                                    >
+                                        Tạo Vai Trò Ngay
+                                    </MotionButton>
+                                    <MotionButton
+                                        variant="outline"
+                                        className="w-full h-10 text-base font-medium border-dashed rounded-xl"
+                                        onClick={() => form.reset()}
+                                    >
+                                        Hủy bỏ & Làm lại
+                                    </MotionButton>
+                                </div>
+                            </div>
+                        </Card>
+
+                        {/* Quick Tip */}
+                        <div className="p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl flex gap-3 items-start">
+                            <div className="p-2 bg-amber-500/10 rounded-lg text-amber-600">
+                                <Search size={16} />
+                            </div>
+                            <p className="text-xs leading-relaxed text-amber-800 dark:text-amber-200/70">
+                                <strong>Lưu ý:</strong> Vai trò mới sẽ có hiệu lực ngay lập tức
+                                sau khi được gán cho người dùng. Hãy kiểm tra kỹ danh sách quyền
+                                hạn trước khi tạo.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     );

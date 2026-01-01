@@ -57,6 +57,7 @@ export const PermissionManage = () => {
             ...createColumnsFromType<PermissionResponse>(keys, [
                 {
                     key: "method",
+                    header: "Phương thức",
                     cell: ({ row }) => {
                         const method = row.original.method as string;
 
@@ -73,6 +74,34 @@ export const PermissionManage = () => {
 
                         return <Badge className={badgeClass}>{method}</Badge>;
                     },
+                },
+                {
+                    key: "id",
+                    header: "Mã quyền",
+                },
+                {
+                    key: "name",
+                    header: "Tên quyền",
+                },
+                {
+                    key: "code",
+                    header: "Mã quyền hệ thống",
+                },
+                {
+                    key: "createdAt",
+                    header: "Ngày tạo",
+                },
+                {
+                    key: "updatedAt",
+                    header: "Ngày cập nhật",
+                },
+                {
+                    key: "createdBy",
+                    header: "Người tạo (ID)",
+                },
+                {
+                    key: "updatedBy",
+                    header: "Người cập nhật (ID)",
                 },
             ]),
             createActionColumn<PermissionResponse>(
@@ -91,7 +120,7 @@ export const PermissionManage = () => {
                     onView: (permission) => {
                         setViewDetailPermission(permission);
                         setOpenedPermissionDetail(true);
-                    }
+                    },
                 },
                 {
                     deleteCode: "PERMISSION_DELETE",
@@ -102,14 +131,14 @@ export const PermissionManage = () => {
         ],
         [deletePermission, navigate, openDeleteDialog],
     );
-    const [pagination, setPagination] = useState<{
-        page: number;
-        size: number;
-    }>({ page: 0, size: 10 });
     const [filterParam, setFilterParam] = useState<{
         filter: string;
         sort: string[];
     }>({ filter: "", sort: [] });
+    const [pagination, setPagination] = useState<{
+        page: number;
+        size: number;
+    }>({ page: 0, size: 10 });
     const list = useFindAllPermission({
         page: pagination.page,
         size: pagination.size,
@@ -172,22 +201,34 @@ export const PermissionManage = () => {
             </div>
             <Filter
                 sortAttributes={[
-                    { key: "name", label: "Tên" },
-                    { key: "code", label: "Mã" },
+                    { key: "id", label: "Mã quyền" },
+                    { key: "name", label: "Tên quyền" },
+                    { key: "code", label: "Mã quyền hệ thống" },
                     { key: "resource", label: "Tài nguyên" },
                     { key: "method", label: "Phương thức" },
-                    { key: "urlPattern", label: "Mẫu URL" },
+                    { key: "urlPattern", label: "Đường dẫn API" },
+
+                    { key: "createdBy", label: "Người tạo (ID)" },
+                    { key: "updatedBy", label: "Người cập nhật (ID)" },
+
                     { key: "createdAt", label: "Ngày tạo" },
                     { key: "updatedAt", label: "Ngày cập nhật" },
                 ]}
                 filterAttributes={[
-                    { name: "id", label: "Id", type: "number" },
-                    { name: "name", label: "Name", type: "text" },
-                    { name: "resource", label: "Resource", type: "text" },
-                    { name: "action", label: "Action", type: "text" },
-                    { name: "createdAt", label: "Created At", type: "date" },
-                    { name: "updatedAt", label: "Updated At", type: "date" },
+                    { name: "id", label: "Mã quyền", type: "number" },
+                    { name: "name", label: "Tên quyền", type: "text" },
+                    { name: "code", label: "Mã quyền hệ thống", type: "text" },
+                    { name: "resource", label: "Tài nguyên", type: "text" },
+                    { name: "urlPattern", label: "Đường dẫn API", type: "text" },
+                    { name: "method", label: "Phương thức", type: "text" },
+
+                    { name: "createdBy", label: "Người tạo (ID)", type: "number" },
+                    { name: "updatedBy", label: "Người cập nhật (ID)", type: "number" },
+
+                    { name: "createdAt", label: "Ngày tạo", type: "date" },
+                    { name: "updatedAt", label: "Ngày cập nhật", type: "date" },
                 ]}
+                searchField={["name", "code"]}
                 onApply={onApplyFilter}
             />
             <DataTable

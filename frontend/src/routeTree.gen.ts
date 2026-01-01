@@ -27,6 +27,7 @@ import { Route as _clientChatRouteImport } from './routes/__client/chat'
 import { Route as _clientBookingRouteImport } from './routes/__client/booking'
 import { Route as AdminWardIndexRouteImport } from './routes/admin/ward/index'
 import { Route as AdminUserIndexRouteImport } from './routes/admin/user/index'
+import { Route as AdminSupportIndexRouteImport } from './routes/admin/support/index'
 import { Route as AdminSettingsIndexRouteImport } from './routes/admin/settings/index'
 import { Route as AdminRoleIndexRouteImport } from './routes/admin/role/index'
 import { Route as AdminProvinceIndexRouteImport } from './routes/admin/province/index'
@@ -50,6 +51,7 @@ import { Route as _clientSupportHistoryRouteImport } from './routes/__client/sup
 import { Route as _clientDetailIdRouteImport } from './routes/__client/detail.$id'
 import { Route as AdminWardUpdateIdRouteImport } from './routes/admin/ward/update.$id'
 import { Route as AdminUserUpdateIdRouteImport } from './routes/admin/user/update.$id'
+import { Route as AdminSupportProcessIdRouteImport } from './routes/admin/support/process.$id'
 import { Route as AdminRoleUpdateIdRouteImport } from './routes/admin/role/update.$id'
 import { Route as AdminProvinceUpdateIdRouteImport } from './routes/admin/province/update.$id'
 import { Route as AdminPropertyUpdateIdRouteImport } from './routes/admin/property/update.$id'
@@ -148,6 +150,11 @@ const AdminWardIndexRoute = AdminWardIndexRouteImport.update({
 const AdminUserIndexRoute = AdminUserIndexRouteImport.update({
   id: '/user/',
   path: '/user/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSupportIndexRoute = AdminSupportIndexRouteImport.update({
+  id: '/support/',
+  path: '/support/',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminSettingsIndexRoute = AdminSettingsIndexRouteImport.update({
@@ -266,6 +273,11 @@ const AdminUserUpdateIdRoute = AdminUserUpdateIdRouteImport.update({
   path: '/user/update/$id',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSupportProcessIdRoute = AdminSupportProcessIdRouteImport.update({
+  id: '/support/process/$id',
+  path: '/support/process/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminRoleUpdateIdRoute = AdminRoleUpdateIdRouteImport.update({
   id: '/role/update/$id',
   path: '/role/update/$id',
@@ -356,6 +368,7 @@ export interface FileRoutesByFullPath {
   '/admin/province': typeof AdminProvinceIndexRoute
   '/admin/role': typeof AdminRoleIndexRoute
   '/admin/settings': typeof AdminSettingsIndexRoute
+  '/admin/support': typeof AdminSupportIndexRoute
   '/admin/user': typeof AdminUserIndexRoute
   '/admin/ward': typeof AdminWardIndexRoute
   '/support/detail/$id': typeof _clientSupportDetailIdRoute
@@ -367,6 +380,7 @@ export interface FileRoutesByFullPath {
   '/admin/property/update/$id': typeof AdminPropertyUpdateIdRoute
   '/admin/province/update/$id': typeof AdminProvinceUpdateIdRoute
   '/admin/role/update/$id': typeof AdminRoleUpdateIdRoute
+  '/admin/support/process/$id': typeof AdminSupportProcessIdRoute
   '/admin/user/update/$id': typeof AdminUserUpdateIdRoute
   '/admin/ward/update/$id': typeof AdminWardUpdateIdRoute
   '/compare/$id1/to/$id2': typeof _clientCompareId1ToId2Route
@@ -408,6 +422,7 @@ export interface FileRoutesByTo {
   '/admin/province': typeof AdminProvinceIndexRoute
   '/admin/role': typeof AdminRoleIndexRoute
   '/admin/settings': typeof AdminSettingsIndexRoute
+  '/admin/support': typeof AdminSupportIndexRoute
   '/admin/user': typeof AdminUserIndexRoute
   '/admin/ward': typeof AdminWardIndexRoute
   '/support/detail/$id': typeof _clientSupportDetailIdRoute
@@ -419,6 +434,7 @@ export interface FileRoutesByTo {
   '/admin/property/update/$id': typeof AdminPropertyUpdateIdRoute
   '/admin/province/update/$id': typeof AdminProvinceUpdateIdRoute
   '/admin/role/update/$id': typeof AdminRoleUpdateIdRoute
+  '/admin/support/process/$id': typeof AdminSupportProcessIdRoute
   '/admin/user/update/$id': typeof AdminUserUpdateIdRoute
   '/admin/ward/update/$id': typeof AdminWardUpdateIdRoute
   '/compare/$id1/to/$id2': typeof _clientCompareId1ToId2Route
@@ -462,6 +478,7 @@ export interface FileRoutesById {
   '/admin/province/': typeof AdminProvinceIndexRoute
   '/admin/role/': typeof AdminRoleIndexRoute
   '/admin/settings/': typeof AdminSettingsIndexRoute
+  '/admin/support/': typeof AdminSupportIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
   '/admin/ward/': typeof AdminWardIndexRoute
   '/__client/support/detail/$id': typeof _clientSupportDetailIdRoute
@@ -473,6 +490,7 @@ export interface FileRoutesById {
   '/admin/property/update/$id': typeof AdminPropertyUpdateIdRoute
   '/admin/province/update/$id': typeof AdminProvinceUpdateIdRoute
   '/admin/role/update/$id': typeof AdminRoleUpdateIdRoute
+  '/admin/support/process/$id': typeof AdminSupportProcessIdRoute
   '/admin/user/update/$id': typeof AdminUserUpdateIdRoute
   '/admin/ward/update/$id': typeof AdminWardUpdateIdRoute
   '/__client/compare/$id1/to/$id2': typeof _clientCompareId1ToId2Route
@@ -516,6 +534,7 @@ export interface FileRouteTypes {
     | '/admin/province'
     | '/admin/role'
     | '/admin/settings'
+    | '/admin/support'
     | '/admin/user'
     | '/admin/ward'
     | '/support/detail/$id'
@@ -527,6 +546,7 @@ export interface FileRouteTypes {
     | '/admin/property/update/$id'
     | '/admin/province/update/$id'
     | '/admin/role/update/$id'
+    | '/admin/support/process/$id'
     | '/admin/user/update/$id'
     | '/admin/ward/update/$id'
     | '/compare/$id1/to/$id2'
@@ -568,6 +588,7 @@ export interface FileRouteTypes {
     | '/admin/province'
     | '/admin/role'
     | '/admin/settings'
+    | '/admin/support'
     | '/admin/user'
     | '/admin/ward'
     | '/support/detail/$id'
@@ -579,6 +600,7 @@ export interface FileRouteTypes {
     | '/admin/property/update/$id'
     | '/admin/province/update/$id'
     | '/admin/role/update/$id'
+    | '/admin/support/process/$id'
     | '/admin/user/update/$id'
     | '/admin/ward/update/$id'
     | '/compare/$id1/to/$id2'
@@ -621,6 +643,7 @@ export interface FileRouteTypes {
     | '/admin/province/'
     | '/admin/role/'
     | '/admin/settings/'
+    | '/admin/support/'
     | '/admin/user/'
     | '/admin/ward/'
     | '/__client/support/detail/$id'
@@ -632,6 +655,7 @@ export interface FileRouteTypes {
     | '/admin/property/update/$id'
     | '/admin/province/update/$id'
     | '/admin/role/update/$id'
+    | '/admin/support/process/$id'
     | '/admin/user/update/$id'
     | '/admin/ward/update/$id'
     | '/__client/compare/$id1/to/$id2'
@@ -769,6 +793,13 @@ declare module '@tanstack/react-router' {
       path: '/user'
       fullPath: '/admin/user'
       preLoaderRoute: typeof AdminUserIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/support/': {
+      id: '/admin/support/'
+      path: '/support'
+      fullPath: '/admin/support'
+      preLoaderRoute: typeof AdminSupportIndexRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/settings/': {
@@ -932,6 +963,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUserUpdateIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/support/process/$id': {
+      id: '/admin/support/process/$id'
+      path: '/support/process/$id'
+      fullPath: '/admin/support/process/$id'
+      preLoaderRoute: typeof AdminSupportProcessIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/role/update/$id': {
       id: '/admin/role/update/$id'
       path: '/role/update/$id'
@@ -1055,6 +1093,7 @@ interface AdminRouteChildren {
   AdminProvinceIndexRoute: typeof AdminProvinceIndexRoute
   AdminRoleIndexRoute: typeof AdminRoleIndexRoute
   AdminSettingsIndexRoute: typeof AdminSettingsIndexRoute
+  AdminSupportIndexRoute: typeof AdminSupportIndexRoute
   AdminUserIndexRoute: typeof AdminUserIndexRoute
   AdminWardIndexRoute: typeof AdminWardIndexRoute
   AdminBookingUpdateIdRoute: typeof AdminBookingUpdateIdRoute
@@ -1065,6 +1104,7 @@ interface AdminRouteChildren {
   AdminPropertyUpdateIdRoute: typeof AdminPropertyUpdateIdRoute
   AdminProvinceUpdateIdRoute: typeof AdminProvinceUpdateIdRoute
   AdminRoleUpdateIdRoute: typeof AdminRoleUpdateIdRoute
+  AdminSupportProcessIdRoute: typeof AdminSupportProcessIdRoute
   AdminUserUpdateIdRoute: typeof AdminUserUpdateIdRoute
   AdminWardUpdateIdRoute: typeof AdminWardUpdateIdRoute
 }
@@ -1088,6 +1128,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminProvinceIndexRoute: AdminProvinceIndexRoute,
   AdminRoleIndexRoute: AdminRoleIndexRoute,
   AdminSettingsIndexRoute: AdminSettingsIndexRoute,
+  AdminSupportIndexRoute: AdminSupportIndexRoute,
   AdminUserIndexRoute: AdminUserIndexRoute,
   AdminWardIndexRoute: AdminWardIndexRoute,
   AdminBookingUpdateIdRoute: AdminBookingUpdateIdRoute,
@@ -1098,6 +1139,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminPropertyUpdateIdRoute: AdminPropertyUpdateIdRoute,
   AdminProvinceUpdateIdRoute: AdminProvinceUpdateIdRoute,
   AdminRoleUpdateIdRoute: AdminRoleUpdateIdRoute,
+  AdminSupportProcessIdRoute: AdminSupportProcessIdRoute,
   AdminUserUpdateIdRoute: AdminUserUpdateIdRoute,
   AdminWardUpdateIdRoute: AdminWardUpdateIdRoute,
 }

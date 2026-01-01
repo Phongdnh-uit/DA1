@@ -28,7 +28,6 @@ export default function LeadPanel({
     selectedConversation,
     onLeadChange,
 }: LeadPanelProps) {
-    console.log(selectedConversation);
     const conversation = useGetConversationById(selectedConversation as number, {
         query: {
             enabled: selectedConversation !== null,

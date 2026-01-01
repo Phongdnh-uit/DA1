@@ -322,9 +322,10 @@ export const CarouselSetting = () => {
                                                             placeholder="Nhập tiêu đề hình ảnh..."
                                                             className="border-0 focus-visible:ring-0 shadow-none w-full rounded-[24px] h-14 placeholder:text-lg !text-lg"
                                                             value={
-                                                                (
-                                                                    image.contentBlock
-                                                                        ?.metadata as CarouselMetadata
+                                                                (image.contentBlock?.metadata
+                                                                    ? (image.contentBlock
+                                                                        .metadata as CarouselMetadata)
+                                                                    : {}
                                                                 ).caption || ""
                                                             }
                                                             onChange={(e) =>
@@ -359,9 +360,10 @@ export const CarouselSetting = () => {
                                                             id={`subcaption-${idx}`}
                                                             placeholder="Nhập phụ đề hình ảnh..."
                                                             value={
-                                                                (
-                                                                    image.contentBlock
-                                                                        ?.metadata as CarouselMetadata
+                                                                (image.contentBlock?.metadata
+                                                                    ? (image.contentBlock
+                                                                        .metadata as CarouselMetadata)
+                                                                    : {}
                                                                 ).subcaption || ""
                                                             }
                                                             onChange={(e) =>

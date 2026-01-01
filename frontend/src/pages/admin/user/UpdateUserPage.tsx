@@ -3,8 +3,8 @@ import { FormCheckbox, FormInput, FormSelect } from "@/utils/formUtil";
 import { UserRequestStatus, type UserRequest } from "@/types";
 import { Card } from "@/components/ui/card";
 import { BackButton } from "@/components/general/BackButton";
-import { MotionButton } from "@/components/general/MotionShadcn";
 import { useUpdateUserVM } from "./UpdateUser.vm";
+import { MotionButton } from "@/components/customs/MotionButton";
 
 export const UpdateUserPage = () => {
     const { form, roles, onSubmit } = useUpdateUserVM();
@@ -79,9 +79,6 @@ export const UpdateUserPage = () => {
                         />
                         <div className="flex gap-3 pt-4">
                             <MotionButton
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                transition={{ type: "spring", stiffness: 400, damping: 20 }}
                                 onClick={() => form.handleSubmit(onSubmit)()}
                                 className="flex-1 text-xl h-12 rounded-2xl transition-none"
                                 size="lg"
@@ -89,9 +86,6 @@ export const UpdateUserPage = () => {
                                 Cập Nhật Người Dùng
                             </MotionButton>
                             <MotionButton
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                transition={{ type: "spring", stiffness: 400, damping: 20 }}
                                 variant="outline"
                                 className="flex-1 text-xl h-12 rounded-2xl transition-none"
                                 size="lg"

@@ -6,10 +6,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { MapPinIcon, TrashIcon } from "lucide-react";
-import { motion } from "motion/react";
-import { Button } from "../ui/button";
-
-const MotionButton = motion(Button);
+import { MotionButton } from "../customs/MotionButton";
 
 const MAPBOX_ACCESS_TOKEN = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
@@ -27,6 +24,7 @@ interface LocationPickerProps {
     interactive?: boolean;
     height?: string;
     borderRadius?: string;
+    searchText?: string;
 }
 
 const DEFAULT_CENTER: [number, number] = [106.8019, 10.8712]; // UIT
@@ -39,11 +37,54 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
     interactive = true,
     height = "400px",
     borderRadius = "0.5rem",
+    searchText,
 }) => {
     const mapContainerRef = useRef<HTMLDivElement | null>(null);
     const geocoderContainerRef = useRef<HTMLDivElement | null>(null);
     const mapRef = useRef<Map | null>(null);
     const markerRef = useRef<Marker | null>(null);
+
+    useEffect(() => {
+        if (!searchText || !mapRef || !mapRef.current) return;
+
+        const controller = new AbortController();
+
+        (async () => {
+            const res = await fetch(
+                `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+                    searchText,
+                )}.json` +
+                `?access_token=${mapboxgl.accessToken}` +
+                `&country=vn` +
+                `&types=region,place` +
+                `&limit=1` +
+                `&bbox=102.1449,8.4095,109.4698,23.3925`,
+                { signal: controller.signal },
+            );
+
+            const data = await res.json();
+            if (!data.features?.length) return;
+
+            const feature = data.features[0];
+
+            if (feature.bbox && mapRef.current) {
+                mapRef.current.fitBounds(
+                    [
+                        [feature.bbox[0], feature.bbox[1]],
+                        [feature.bbox[2], feature.bbox[3]],
+                    ],
+                );
+            } else {
+                if (!mapRef.current) return;
+                mapRef.current.flyTo({
+                    center: DEFAULT_CENTER,
+                    zoom: 12,
+                });
+            }
+        })();
+
+        return () => controller.abort();
+    }, [searchText]);
 
     // Dùng Ref để lưu onChange tránh re-render map khi hàm này thay đổi ở cha
     const onChangeRef = useRef(onChange);
@@ -91,6 +132,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
         const map = new mapboxgl.Map({
             container: mapContainerRef.current,
             style: "mapbox://styles/mapbox/standard",
+            // style: "mapbox://styles/mapbox/standard-satellite",
             center: initialLocation
                 ? [initialLocation.longitude, initialLocation.latitude]
                 : DEFAULT_CENTER,
@@ -120,6 +162,9 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
                 marker: false,
                 placeholder: "Tìm kiếm vị trí...",
                 language: "vi",
+                bbox: [102.1449, 8.4095, 109.4698, 23.3925], // Giới hạn trong Việt Nam
+                autocomplete: true,
+                countries: "vn",
                 zoom: 17,
             });
 
@@ -217,8 +262,6 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
                         </div>
                         {interactive && (
                             <MotionButton
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
                                 className="transition-none"
                                 onClick={handleClearLocation}
                             >

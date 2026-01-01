@@ -20,12 +20,18 @@ import { Route } from "@/routes/admin/price-reference/detail.$id";
 import { useGetPriceReferences } from "@/services/price-reference/price-reference";
 import { BackButton } from "@/components/general/BackButton";
 import { formatCurrency } from "@/utils/converter";
+import { useMemo } from "react";
 
 export const PriceReferenceDetail = () => {
     const { id } = Route.useParams();
+    const createdAt = useMemo(() => {
+        const d = new Date();
+        d.setDate(d.getDate() - 1);
+        return d.toISOString();
+    }, []);
     const priceReferenceData = useGetPriceReferences(
         {
-            filter: `ward.id==${id}`,
+            filter: `ward.id==${id};createdAt>${createdAt}`,
         },
         {
             query: {
@@ -72,9 +78,7 @@ export const PriceReferenceDetail = () => {
                         <DollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">
-                            {formatCurrency(avgPrice)}
-                        </div>
+                        <div className="text-2xl font-bold">{formatCurrency(avgPrice)}</div>
                         <p className="text-xs text-muted-foreground">
                             Trung bình toàn khu vực
                         </p>

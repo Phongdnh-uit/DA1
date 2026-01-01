@@ -1,38 +1,52 @@
 import { queryClient } from "@/lib/queryClient";
 import { Route } from "@/routes/admin/ward/update.$id";
-import { useFindWardById, useUpdateWard } from "@/services/ward/ward";
+import { useUpdateWard } from "@/services/ward/ward";
 import { updateWardBody } from "@/services/ward/ward.zod";
-import type { WardRequest } from "@/types";
+import type { ApiResponseVoid, WardRequest } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 export default function useUpdateWardVM() {
-    const { id } = Route.useParams();
-    const ward = useFindWardById(+id);
+    const { ward } = Route.useLoaderData();
     const form = useForm<WardRequest>({
         defaultValues: {
-            code: ward.data?.data?.code,
-            type: ward.data?.data?.type,
-            name: ward.data?.data?.name,
-            provinceId: ward.data?.data?.province?.id,
+            ...ward.data,
+            provinceId: ward.data?.province?.id,
         },
         mode: "onSubmit",
         resolver: zodResolver(updateWardBody),
     });
     const mutation = useUpdateWard({
         mutation: {
-            onSuccess: () => {
-                toast.success("Create province successfully");
+            onSuccess: (data) => {
+                toast.success("Cập nhật phường/xã thành công");
                 queryClient.invalidateQueries({
                     queryKey: ["/provinces/all"],
                     exact: false,
                 });
+                form.reset({
+                    ...data.data,
+                    provinceId: data.data?.province?.id,
+                });
+            },
+            onError: (data) => {
+                toast.error("Cập nhật phường/xã thất bại");
+                const errorResponse = data.response?.data as ApiResponseVoid;
+                if (errorResponse.errors) {
+                    Object.entries(errorResponse.errors).forEach(([key, value]) => {
+                        form.setError(key as keyof WardRequest, {
+                            type: "server",
+                            message: value as string,
+                        });
+                    });
+                }
             },
         },
     });
     const onSubmit = (data: WardRequest) => {
-        mutation.mutate({ id: +id, data: data });
+        if (!ward.data?.id) return;
+        mutation.mutate({ id: ward.data?.id, data: data });
     };
 
     return { form, onSubmit };

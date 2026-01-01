@@ -4,7 +4,7 @@ import type { WardRequest } from "@/types";
 import useCreateWardVM from "./CreateWard.vm";
 import { BackButton } from "@/components/general/BackButton";
 import { Card } from "@/components/ui/card";
-import { MotionButton } from "@/components/general/MotionShadcn";
+import { MotionButton } from "@/components/customs/MotionButton";
 
 export default function CreateWardPage() {
     const { form, onSubmit } = useCreateWardVM();
@@ -41,25 +41,21 @@ export default function CreateWardPage() {
                             <FormInput<WardRequest>
                                 name="provinceId"
                                 placeholder="Nhập mã tỉnh/thành phố"
+                                type="number"
                                 title="Mã Tỉnh/Thành Phố"
                             />
                             {/* Submit Button */}
                             <div className="flex gap-3 pt-4">
                                 {" "}
                                 <MotionButton
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
                                     onClick={() => form.handleSubmit(onSubmit)()}
                                     className="flex-1 text-xl h-12 rounded-2xl transition-none"
                                     size="lg"
+                                    disabled={!form.formState.isDirty}
                                 >
                                     Tạo Phường/Xã Mới
                                 </MotionButton>
                                 <MotionButton
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
                                     variant="outline"
                                     className="flex-1 text-xl h-12 rounded-2xl transition-none"
                                     size="lg"

@@ -1,28 +1,40 @@
 import { Route } from "@/routes/admin/province/update.$id";
-import {
-    useFindProvinceById,
-    useUpdateProvince,
-} from "@/services/province/province";
+import { useUpdateProvince } from "@/services/province/province";
 import { updateProvinceBody } from "@/services/province/province.zod";
-import type { ProvinceRequest } from "@/types";
+import type { ApiResponseVoid, ProvinceRequest } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 export default function useUpdateProvinceVM() {
-    const { id } = Route.useParams();
-    const province = useFindProvinceById(+id);
+    const { province } = Route.useLoaderData();
     const form = useForm<ProvinceRequest>({
-        defaultValues: {
-            code: province.data?.data?.code,
-            name: province.data?.data?.name,
-            type: province.data?.data?.type,
-        },
+        defaultValues: province.data,
         mode: "onSubmit",
         resolver: zodResolver(updateProvinceBody),
     });
-    const mutation = useUpdateProvince();
+    const mutation = useUpdateProvince({
+        mutation: {
+            onSuccess: (data) => {
+                toast.success("Cập nhật tỉnh/thành công");
+                form.reset(data.data);
+            },
+            onError: (data) => {
+                const errorResponse = data.response?.data as ApiResponseVoid;
+                if (errorResponse.errors) {
+                    Object.entries(errorResponse.errors).forEach(([key, value]) => {
+                        form.setError(key as keyof ProvinceRequest, {
+                            type: "server",
+                            message: value as string,
+                        });
+                    });
+                }
+            },
+        },
+    });
     const onSubmit = (data: ProvinceRequest) => {
-        mutation.mutate({ id: +id, data: data });
+        if (!province.data?.id) return;
+        mutation.mutate({ id: province.data.id, data: data });
     };
 
     return { form, onSubmit };

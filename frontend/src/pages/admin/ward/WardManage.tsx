@@ -51,7 +51,40 @@ export const WardManage = () => {
     const columns = useMemo(
         () => [
             createSelectionColumn<WardResponse>(),
-            ...createColumnsFromType<WardResponse>(keys),
+            ...createColumnsFromType<WardResponse>(keys, [
+                {
+                    key: "id",
+                    header: "Mã phường / xã",
+                },
+                {
+                    key: "name",
+                    header: "Tên phường / xã",
+                },
+                {
+                    key: "type",
+                    header: "Loại đơn vị hành chính",
+                },
+                {
+                    key: "code",
+                    header: "Mã hành chính",
+                },
+                {
+                    key: "createdAt",
+                    header: "Ngày tạo",
+                },
+                {
+                    key: "updatedAt",
+                    header: "Ngày cập nhật",
+                },
+                {
+                    key: "createdBy",
+                    header: "Người tạo (ID)",
+                },
+                {
+                    key: "updatedBy",
+                    header: "Người cập nhật (ID)",
+                },
+            ]),
             createActionColumn<WardResponse>(
                 {
                     onEdit: (row) => {
@@ -68,7 +101,7 @@ export const WardManage = () => {
                     onView: (row) => {
                         setDetailWard(row);
                         setOpenedDetail(true);
-                    }
+                    },
                 },
                 {
                     deleteCode: "WARD_DELETE",
@@ -145,24 +178,37 @@ export const WardManage = () => {
             </div>
             <Filter
                 sortAttributes={[
-                    { key: "id", label: "Id" },
-                    { key: "name", label: "Name" },
-                    { key: "code", label: "Code" },
-                    { key: "province.id", label: "Province Id" },
-                    { key: "createdBy", label: "Created By" },
-                    { key: "updatedBy", label: "Updated By" },
-                    { key: "createdAt", label: "Created At" },
-                    { key: "updatedAt", label: "Updated At" },
+                    { key: "id", label: "Mã phường / xã" },
+                    { key: "name", label: "Tên phường / xã" },
+                    { key: "code", label: "Mã hành chính" },
+                    { key: "type", label: "Loại đơn vị hành chính" },
+
+                    { key: "province.id", label: "Mã tỉnh / thành" },
+                    { key: "province.name", label: "Tên tỉnh / thành" },
+
+                    { key: "createdAt", label: "Ngày tạo" },
+                    { key: "updatedAt", label: "Ngày cập nhật" },
                 ]}
                 filterAttributes={[
-                    { name: "id", label: "Id", type: "number" },
-                    { name: "name", label: "Name", type: "text" },
-                    { name: "codeName", label: "Code Name", type: "text" },
-                    { name: "province.id", label: "Province Id", type: "number" },
-                    { name: "createdBy", label: "Created By", type: "number" },
-                    { name: "updatedBy", label: "Updated By", type: "number" },
-                    { name: "createdAt", label: "Created At", type: "date" },
-                    { name: "updatedAt", label: "Updated At", type: "date" },
+                    { name: "id", label: "Mã phường / xã", type: "number" },
+                    { name: "name", label: "Tên phường / xã", type: "text" },
+                    { name: "code", label: "Mã hành chính", type: "text" },
+                    { name: "type", label: "Loại đơn vị hành chính", type: "text" },
+
+                    { name: "province.id", label: "Mã tỉnh / thành", type: "number" },
+                    { name: "province.name", label: "Tên tỉnh / thành", type: "text" },
+                    { name: "province.code", label: "Mã hành chính tỉnh", type: "text" },
+                    {
+                        name: "province.type",
+                        label: "Loại đơn vị hành chính tỉnh",
+                        type: "text",
+                    },
+
+                    { name: "createdBy", label: "Người tạo (ID)", type: "number" },
+                    { name: "updatedBy", label: "Người cập nhật (ID)", type: "number" },
+
+                    { name: "createdAt", label: "Ngày tạo", type: "date" },
+                    { name: "updatedAt", label: "Ngày cập nhật", type: "date" },
                 ]}
                 onApply={onApplyFilter}
             />

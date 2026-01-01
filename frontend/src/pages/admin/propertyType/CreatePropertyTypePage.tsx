@@ -4,7 +4,7 @@ import { FormInput } from "@/utils/formUtil";
 import type { PropertyTypeRequest } from "@/types";
 import { BackButton } from "@/components/general/BackButton";
 import { Card } from "@/components/ui/card";
-import { MotionButton } from "@/components/general/MotionShadcn";
+import { MotionButton } from "@/components/customs/MotionButton";
 
 export default function CreatePropertyTypePage() {
     const { form, onSubmit } = useCreatePropertyTypeVM();
@@ -32,19 +32,14 @@ export default function CreatePropertyTypePage() {
                             <div className="flex gap-3 pt-4">
                                 {" "}
                                 <MotionButton
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
                                     onClick={() => form.handleSubmit(onSubmit)()}
                                     className="flex-1 text-xl h-12 rounded-2xl transition-none"
                                     size="lg"
+                                    disabled={!form.formState.isDirty}
                                 >
                                     Tạo Loại Hình Mới
                                 </MotionButton>
                                 <MotionButton
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
                                     variant="outline"
                                     className="flex-1 text-xl h-12 rounded-2xl transition-none"
                                     size="lg"

@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useSendOtp } from "@/services/auth/auth";
 import { sendOtpBody } from "@/services/auth/auth.zod";
-import type { SendOtpRequest } from "@/types";
+import type { ApiResponseVoid, SendOtpRequest } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IconBrandGoogle } from "@tabler/icons-react";
 import { Link, useNavigate } from "@tanstack/react-router";
@@ -51,6 +51,17 @@ export default function RegisterFirstPage() {
                     navigate({
                         to: `/auth/otp-verification?purpose=${form.getValues("purpose")}`,
                     });
+                },
+                onError: (data) => {
+                    const errorResponse = data.response?.data as ApiResponseVoid;
+                    if (errorResponse.errors) {
+                        Object.entries(errorResponse.errors).forEach(([key, value]) => {
+                            form.setError(key as keyof SendOtpRequest, {
+                                type: "server",
+                                message: value as string,
+                            });
+                        });
+                    }
                 },
             },
         );
@@ -106,8 +117,8 @@ export default function RegisterFirstPage() {
                                             <div className="relative flex items-center rounded-[24px] border focus-within:ring-1 focus-within:ring-ring pl-4 error-display">
                                                 <PhoneIcon className="h-7 w-7 text-muted-foreground" />
                                                 <Input
-                                                    type="email"
-                                                    placeholder="Nhập số điện thoại hoặc email"
+                                                    type="text"
+                                                    placeholder="Nhập số điện thoại"
                                                     className="border-0 focus-visible:ring-0 shadow-none w-full  h-16 placeholder:text-lg !text-lg"
                                                     {...field}
                                                 />

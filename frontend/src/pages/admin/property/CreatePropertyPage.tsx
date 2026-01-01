@@ -199,6 +199,11 @@ export const CreatePropertyPage = () => {
                                     onChange={(data) =>
                                         onLocationChange(data ? (data as Location) : undefined)
                                     }
+                                    searchText={
+                                        provinces?.data?.content?.find(
+                                            (p) => p.id === form.getValues("provinceId"),
+                                        )?.name || ""
+                                    }
                                 />
                             </Card>
                         </div>
@@ -287,10 +292,12 @@ export const CreatePropertyPage = () => {
                                                 disabled={provinces?.data?.content?.length === 0}
                                                 options={
                                                     provinces?.data?.content?.map((province) => ({
+                                                        searchKey:"" + province.type + " " + province.name,
                                                         key: "" + province.id,
                                                         render: "" + province.type + " " + province.name,
                                                     })) || []
                                                 }
+                                                searchable={true}
                                             />
                                             <FormSelect<PropertyRequest>
                                                 title="Phường/Xã"
@@ -299,10 +306,12 @@ export const CreatePropertyPage = () => {
                                                 disabled={!form.getValues("provinceId")}
                                                 options={
                                                     wards?.data?.content?.map((ward) => ({
+                                                        searchKey:"" + ward.type + " " + ward.name,
                                                         key: "" + ward.id,
                                                         render: "" + ward.type + " " + ward.name,
                                                     })) || []
                                                 }
+                                                searchable={true}
                                             />
                                         </div>
 

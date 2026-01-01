@@ -15,6 +15,7 @@ import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
     CircuitBoard,
+    Flag,
     HeartIcon,
     LogOut,
     MessageCircleIcon,
@@ -36,6 +37,37 @@ const middleItems = [
     { name: "Tin tức", href: "/" },
     { name: "Wiki BĐS", href: "/" },
 ] as { name: string; href: string }[];
+const MenuActionItem = ({
+    icon,
+    label,
+    onClick,
+}: {
+    icon: React.ReactNode;
+    label: string;
+    onClick: () => void;
+}) => (
+    <DropdownMenuItem
+        onClick={onClick}
+        className="
+      flex items-center justify-between px-3 py-2.5 my-0.5 
+      cursor-pointer rounded-md transition-all duration-200
+      /* Hiệu ứng hover: nền xanh dương cực nhẹ, chữ xanh dương đậm */
+      hover:bg-blue-50 focus:bg-blue-50 
+      hover:text-blue-700 focus:text-blue-700
+      group
+    "
+    >
+        <div className="flex items-center">
+            {/* Icon chỉ đổi màu khi hover, không còn box nền */}
+            <div className="mr-3 text-slate-500 group-hover:text-blue-600 transition-colors duration-200">
+                {icon}
+            </div>
+            <span className="font-medium text-sm tracking-tight transition-colors duration-200">
+                {label}
+            </span>
+        </div>
+    </DropdownMenuItem>
+);
 
 export default function ClientHeader() {
     const authStore = useAuthStore();
@@ -124,49 +156,77 @@ export default function ClientHeader() {
                 </nav>
 
                 {authStore.user ? (
-                    <div>
+                    <div className="flex items-center">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="rounded-full">
-                                    <Avatar className="h-9 w-9">
-                                        <AvatarImage
-                                            src={url.url ? url.url : undefined}
-                                            alt="User"
-                                        />
-                                        <AvatarFallback>
-                                            <User className="h-5 w-5" />
-                                        </AvatarFallback>
-                                    </Avatar>
-                                </Button>
+                                <motion.div
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="rounded-full ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                    >
+                                        <Avatar className="h-9 w-9 border-2 border-transparent hover:border-primary/50 transition-all">
+                                            <AvatarImage src={url.url || undefined} alt="User" />
+                                            <AvatarFallback className="bg-secondary">
+                                                <User className="h-5 w-5 text-muted-foreground" />
+                                            </AvatarFallback>
+                                        </Avatar>
+                                    </Button>
+                                </motion.div>
                             </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                align="end"
+                                className="w-60 p-2 shadow-xl border-muted/40 bg-popover/95 backdrop-blur-md"
+                            >
+                                <DropdownMenuLabel className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                                    Tài khoản của tôi
+                                </DropdownMenuLabel>
 
-                            <DropdownMenuContent align="end" className="w-56">
-                                <DropdownMenuLabel>Tài khoản</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => navigate({ to: "/settings" })}>
-                                    <Settings className="mr-2 h-4 w-4" />
-                                    <span>Cài đặt</span>
-                                </DropdownMenuItem>
+                                <DropdownMenuSeparator className="mx-1" />
+
+                                <div className="space-y-1">
+                                    <MenuActionItem
+                                        icon={<Settings className="group-hover:text-blue-500" />}
+                                        label="Cài đặt"
+                                        onClick={() => navigate({ to: "/settings" })}
+                                    />
+                                    <MenuActionItem
+                                        icon={<HeartIcon className="group-hover:text-blue-500" />}
+                                        label="Yêu thích"
+                                        onClick={() => navigate({ to: "/wish-list" })}
+                                    />
+                                    <MenuActionItem
+                                        icon={
+                                            <MessageCircleIcon className="group-hover:text-blue-500" />
+                                        }
+                                        label="Trò chuyện"
+                                        onClick={() => navigate({ to: "/chat" })}
+                                    />
+                                    <MenuActionItem
+                                        icon={<Flag className="group-hover:text-blue-500" />}
+                                        label="Lịch sử hỗ trợ"
+                                        onClick={() => navigate({ to: "/support/history" })}
+                                    />
+                                    <MenuActionItem
+                                        icon={
+                                            <CircuitBoard className="group-hover:text-blue-500" />
+                                        }
+                                        label="Trang quản trị"
+                                        onClick={() => navigate({ to: "/admin/dashboard" })}
+                                    />
+                                </div>
+
+                                <DropdownMenuSeparator className="mx-1" />
+
                                 <DropdownMenuItem
-                                    onClick={() => navigate({ to: "/wish-list" })}
+                                    onClick={handleLogout}
+                                    className="focus:bg-destructive/10 focus:text-destructive text-destructive cursor-pointer rounded-md transition-colors"
                                 >
-                                    <HeartIcon className="mr-2 h-4 w-4" />
-                                    <span>Yêu thích</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => navigate({ to: "/chat" })}>
-                                    <MessageCircleIcon className="mr-2 h-4 w-4" />
-                                    <span>Trò chuyện</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                    onClick={() => navigate({ to: "/admin/dashboard" })}
-                                >
-                                    <CircuitBoard className="mr-2 h-4 w-4" />
-                                    <span>Trang quản trị</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => handleLogout()}>
-                                    <LogOut className="mr-2 h-4 w-4 text-destructive" />
-                                    <span className="text-destructive">Đăng xuất</span>
+                                    <LogOut className="mr-3 h-4 w-4" />
+                                    <span className="font-medium">Đăng xuất</span>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

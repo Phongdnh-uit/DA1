@@ -8,7 +8,12 @@ export const Route = createFileRoute("/admin/ward/update/$id")({
         if (isNaN(Number(params.id))) {
             throw notFound();
         }
-        await queryClient.ensureQueryData(getFindWardByIdQueryOptions(+params.id));
+    },
+    loader: async ({ params }) => {
+        const ward = await queryClient.ensureQueryData(
+            getFindWardByIdQueryOptions(+params.id),
+        );
+        return { ward };
     },
     component: RouteComponent,
 });

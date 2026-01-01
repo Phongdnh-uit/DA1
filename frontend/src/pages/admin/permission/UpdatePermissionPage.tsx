@@ -3,9 +3,9 @@ import { PermissionRequestMethod, type PermissionRequest } from "@/types";
 import { Card } from "@/components/ui/card";
 import { FormInput, FormSelect } from "@/utils/formUtil";
 import { Info } from "lucide-react";
-import { MotionButton } from "@/components/general/MotionShadcn";
 import { BackButton } from "@/components/general/BackButton";
 import useUpdatePermissionVM from "./UpdatePermission.vm";
+import { MotionButton } from "@/components/customs/MotionButton";
 
 export default function UpdatePermissionPage() {
     const { form, onSubmit } = useUpdatePermissionVM();
@@ -16,10 +16,10 @@ export default function UpdatePermissionPage() {
                 <Card className="p-6 md:p-8 border border-border/50 shadow-lg">
                     <div>
                         <h2 className="text-2xl font-bold text-foreground mb-2">
-                            Cập Nhật Quyền Hạn
+                            Chỉnh Sửa Quyền Hạn
                         </h2>
                         <p className="text-base text-muted-foreground">
-                            Vui lòng điền vào biểu mẫu bên dưới để cập nhật quyền hạn mới.
+                            Cập nhật thông tin quyền hạn trong hệ thống của bạn.
                         </p>
                     </div>
                     <Form {...form}>
@@ -30,12 +30,22 @@ export default function UpdatePermissionPage() {
                                 placeholder="Nhập tên quyền"
                                 required={true}
                             />
-                            <FormInput<PermissionRequest>
-                                name="resource"
-                                title="Tài Nguyên"
-                                placeholder="Nhập tài nguyên"
-                                required={true}
-                            />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <FormInput<PermissionRequest>
+                                    name="code"
+                                    title="Mã Code"
+                                    placeholder="Nhập mã code"
+                                    description="Mã định danh duy nhất cho quyền hạn, ví dụ: 'USER_VIEW_DETAIL'"
+                                    required={true}
+                                />
+                                <FormInput<PermissionRequest>
+                                    name="resource"
+                                    title="Tài Nguyên"
+                                    placeholder="Nhập tài nguyên"
+                                    required={true}
+                                    description="Tên tài nguyên mà quyền hạn này áp dụng, ví dụ: 'Bất Động Sản', 'Người Dùng'"
+                                />
+                            </div>
                             <FormInput<PermissionRequest>
                                 name="urlPattern"
                                 title="Mẫu URL"
@@ -54,27 +64,21 @@ export default function UpdatePermissionPage() {
                                 )}
                             />
                             {/* Submit Button */}
-                            <div className="flex gap-3 pt-4">
+                            <div className="flex gap-3 pt-4 justify-end">
                                 <MotionButton
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
                                     onClick={() => form.handleSubmit(onSubmit)()}
-                                    className="flex-1 text-xl h-12 rounded-2xl transition-none"
+                                    className="flex-1 text-xl h-10 rounded-md transition-none"
                                     size="lg"
                                 >
-                                    Tạo Quyền Mới
+                                    Cập Nhật
                                 </MotionButton>
                                 <MotionButton
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
                                     variant="outline"
-                                    className="flex-1 text-xl h-12 rounded-2xl transition-none"
+                                    className="flex-1 text-xl h-10 rounded-md transition-none"
                                     size="lg"
                                     onClick={() => form.reset()}
                                 >
-                                    Hủy Bỏ
+                                    Đặt Lại
                                 </MotionButton>
                             </div>
                         </div>
@@ -110,6 +114,10 @@ export default function UpdatePermissionPage() {
                                             Dùng
                                         </p>
                                         <p className="font-mono text-muted-foreground">
+                                            <span className="text-foreground">code:</span>{" "}
+                                            USER_VIEW_DETAIL
+                                        </p>
+                                        <p className="font-mono text-muted-foreground">
                                             <span className="text-foreground">Resource:</span> users
                                         </p>
                                         <p className="font-mono text-muted-foreground">
@@ -117,21 +125,6 @@ export default function UpdatePermissionPage() {
                                         </p>
                                         <p className="font-mono text-muted-foreground">
                                             <span className="text-foreground">Method:</span> GET
-                                        </p>
-                                    </div>
-
-                                    <div className="p-3 bg-muted rounded-lg">
-                                        <p className="font-mono text-muted-foreground">
-                                            <span className="text-foreground">Tên:</span> Tạo Bài Viết
-                                        </p>
-                                        <p className="font-mono text-muted-foreground">
-                                            <span className="text-foreground">Resource:</span> posts
-                                        </p>
-                                        <p className="font-mono text-muted-foreground">
-                                            <span className="text-foreground">URL:</span> /api/posts
-                                        </p>
-                                        <p className="font-mono text-muted-foreground">
-                                            <span className="text-foreground">Method:</span> POST
                                         </p>
                                     </div>
                                 </div>

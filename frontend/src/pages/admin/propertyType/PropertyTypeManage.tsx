@@ -31,7 +31,8 @@ const keys: (keyof PropertyTypeResponse)[] = [
 ];
 
 export const PropertyTypeManage = () => {
-    const [propertyTypeDetail, setPropertyTypeDetail] = useState<PropertyTypeResponse | null>(null);
+    const [propertyTypeDetail, setPropertyTypeDetail] =
+        useState<PropertyTypeResponse | null>(null);
     const [openedDetail, setOpenedDetail] = useState<boolean>(false);
     const navigate = useNavigate();
     const openDeleteDialog = useDeleteDialogStore((state) => state.openDialog);
@@ -49,7 +50,32 @@ export const PropertyTypeManage = () => {
     const columns = useMemo(
         () => [
             createSelectionColumn<PropertyTypeResponse>(),
-            ...createColumnsFromType<PropertyTypeResponse>(keys),
+            ...createColumnsFromType<PropertyTypeResponse>(keys, [
+                {
+                    key: "id",
+                    header: "Mã loại bất động sản",
+                },
+                {
+                    key: "name",
+                    header: "Tên loại bất động sản",
+                },
+                {
+                    key: "createdAt",
+                    header: "Ngày tạo",
+                },
+                {
+                    key: "updatedAt",
+                    header: "Ngày cập nhật",
+                },
+                {
+                    key: "createdBy",
+                    header: "Người tạo (ID)",
+                },
+                {
+                    key: "updatedBy",
+                    header: "Người cập nhật (ID)",
+                },
+            ]),
             createActionColumn<PropertyTypeResponse>(
                 {
                     onEdit: (row) => {
@@ -68,7 +94,7 @@ export const PropertyTypeManage = () => {
                     onView: (row) => {
                         setPropertyTypeDetail(row);
                         setOpenedDetail(true);
-                    }
+                    },
                 },
                 {
                     deleteCode: "PROPERTY_TYPE_DELETE",
@@ -138,32 +164,34 @@ export const PropertyTypeManage = () => {
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-end p-2">
-                <PermissionGate
-                    permission="PROPERTY_TYPE_CREATE"
-                >
+                <PermissionGate permission="PROPERTY_TYPE_CREATE">
                     <RippleButton
                         onClick={() => navigate({ to: "/admin/property-type/create" })}
                         className="h-12 bg-blue-700 text-white hover:bg-blue-700"
                     >
-                        <IconSparkles className="size-5" />Thêm mới
+                        <IconSparkles className="size-5" />
+                        Thêm mới
                     </RippleButton>
                 </PermissionGate>
             </div>
             <Filter
                 sortAttributes={[
-                    { key: "id", label: "Id" },
-                    { key: "name", label: "Name" },
-                    { key: "createdAt", label: "Created At" },
-                    { key: "updatedAt", label: "Updated At" },
+                    { key: "id", label: "Mã loại bất động sản" },
+                    { key: "name", label: "Tên loại bất động sản" },
+                    { key: "createdAt", label: "Ngày tạo" },
+                    { key: "updatedAt", label: "Ngày cập nhật" },
                 ]}
                 filterAttributes={[
-                    { name: "id", label: "Id", type: "number" },
-                    { name: "name", label: "Name", type: "text" },
-                    { name: "createdBy", label: "Created By", type: "number" },
-                    { name: "updatedBy", label: "Updated By", type: "number" },
-                    { name: "createdAt", label: "Created At", type: "date" },
-                    { name: "updatedAt", label: "Updated At", type: "date" },
+                    { name: "id", label: "Mã loại bất động sản", type: "number" },
+                    { name: "name", label: "Tên loại bất động sản", type: "text" },
+
+                    { name: "createdBy", label: "Người tạo (ID)", type: "number" },
+                    { name: "updatedBy", label: "Người cập nhật (ID)", type: "number" },
+
+                    { name: "createdAt", label: "Ngày tạo", type: "date" },
+                    { name: "updatedAt", label: "Ngày cập nhật", type: "date" },
                 ]}
+                searchField={["name"]}
                 onApply={onApplyFilter}
             />
             <DataTable
@@ -178,7 +206,7 @@ export const PropertyTypeManage = () => {
                 totalElements={list.data?.data?.totalElements || 0}
                 numberOfElements={list.data?.data?.numberOfElements || 0}
             />
-            <PropertyTypeDetailSheet 
+            <PropertyTypeDetailSheet
                 open={openedDetail}
                 onOpenChange={setOpenedDetail}
                 propertyType={propertyTypeDetail}

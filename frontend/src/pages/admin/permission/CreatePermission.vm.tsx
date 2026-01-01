@@ -5,6 +5,7 @@ import { createPermissionBody } from "@/services/permission/permission.zod";
 import { useCreatePermission } from "@/services/permission/permission";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
+import type { ApiResponseVoid } from "@/types";
 
 export function useCreatePermissionVM() {
     const queryClient = useQueryClient();
@@ -29,9 +30,17 @@ export function useCreatePermissionVM() {
                     exact: false,
                 });
             },
-            onError: (error) => {
+            onError: (data) => {
                 toast.error("Tạo quyền thất bại");
-                console.error(error);
+                const errorResponse = data.response?.data as ApiResponseVoid;
+                if (errorResponse.errors) {
+                    Object.entries(errorResponse.errors).forEach(([key, value]) => {
+                        form.setError(key as keyof PermissionRequest, {
+                            type: "server",
+                            message: value as string,
+                        });
+                    });
+                }
             },
         },
     });

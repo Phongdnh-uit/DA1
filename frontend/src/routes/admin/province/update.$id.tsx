@@ -8,9 +8,12 @@ export const Route = createFileRoute("/admin/province/update/$id")({
         if (isNaN(Number(params.id))) {
             throw notFound();
         }
-        await queryClient.ensureQueryData(
+    },
+    loader: async ({ params }) => {
+        const province = await queryClient.ensureQueryData(
             getFindProvinceByIdQueryOptions(Number(params.id)),
         );
+        return { province };
     },
     component: RouteComponent,
 });

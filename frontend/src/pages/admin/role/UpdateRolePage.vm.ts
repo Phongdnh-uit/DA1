@@ -1,6 +1,6 @@
 import { Route } from "@/routes/admin/role/update.$id";
 import { useFindAllPermission } from "@/services/permission/permission";
-import { useFindRoleById, useUpdateRole } from "@/services/role/role";
+import { useUpdateRole } from "@/services/role/role";
 import { createRoleBody } from "@/services/role/role.zod";
 import { type PermissionResponse, type RoleRequest } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,25 +10,30 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 export function useUpdateRoleVM() {
-    const { id } = Route.useParams();
-
     const [search, setSearch] = useState("");
 
     const [expandedResource, setExpandedResource] = useState<
         Record<string, boolean>
     >({});
 
-    const { data: role, refetch } = useFindRoleById(+id);
+    const { role } = Route.useLoaderData();
 
     const { data: permissions } = useFindAllPermission({
         all: true,
     });
 
     const permissionIds =
-        useFindAllPermission({
-            all: true,
-            filter: `roles.id==${id}`,
-        }).data?.data?.content?.map((p) => p.id) ?? [];
+        useFindAllPermission(
+            {
+                all: true,
+                filter: `roles.id==${role.data?.id}`,
+            },
+            {
+                query: {
+                    enabled: !!role.data?.id,
+                },
+            },
+        ).data?.data?.content?.map((p) => p.id) ?? [];
 
     const form = useForm<RoleRequest>({
         defaultValues: {
@@ -43,7 +48,6 @@ export function useUpdateRoleVM() {
     const mutation = useUpdateRole({
         mutation: {
             onSuccess: () => {
-                refetch();
                 toast.success("Cập nhật vai trò thành công");
             },
             onError: (error) => {
@@ -63,7 +67,8 @@ export function useUpdateRoleVM() {
             }, {}) ?? {};
 
     const onSubmit = (data: RoleRequest) => {
-        mutation.mutate({ id: +id, data });
+        if (!role?.data?.id) return;
+        mutation.mutate({ id: role.data.id, data });
     };
 
     const togglePermission = (permissionId: number) => {
@@ -85,7 +90,10 @@ export function useUpdateRoleVM() {
         let updatedPermissionIds: number[];
         if (!allCategorySelected) {
             updatedPermissionIds = [
-                ...new Set([...currentPermissionIds, ...resourcePermissionIds as number[]]),
+                ...new Set([
+                    ...currentPermissionIds,
+                    ...(resourcePermissionIds as number[]),
+                ]),
             ];
         } else {
             updatedPermissionIds = currentPermissionIds.filter(

@@ -1,7 +1,7 @@
 import { queryClient } from "@/lib/queryClient";
 import { useCreateProvince } from "@/services/province/province";
 import { createProvinceBody } from "@/services/province/province.zod";
-import type { ProvinceRequest } from "@/types";
+import type { ApiResponseVoid, ProvinceRequest } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -19,11 +19,23 @@ export default function useCreateProvinceVM() {
     const mutation = useCreateProvince({
         mutation: {
             onSuccess: () => {
-                toast.success("Create province successfully");
+                toast.success("Tạo tỉnh/thành phố thành công");
                 queryClient.invalidateQueries({
                     queryKey: ["/provinces/all"],
                     exact: false,
                 });
+                form.reset();
+            },
+            onError: (data) => {
+                const errorResponse = data.response?.data as ApiResponseVoid;
+                if (errorResponse.errors) {
+                    Object.entries(errorResponse.errors).forEach(([key, value]) => {
+                        form.setError(key as keyof ProvinceRequest, {
+                            type: "server",
+                            message: value as string,
+                        });
+                    });
+                }
             },
         },
     });

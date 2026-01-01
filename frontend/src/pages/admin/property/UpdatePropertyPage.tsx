@@ -208,6 +208,11 @@ export const UpdatePropertyPage = () => {
                                 onChange={(data) =>
                                     onLocationChange(data ? (data as Location) : undefined)
                                 }
+                                searchText={
+                                    provinces?.data?.content?.find(
+                                        (p) => p.id === form.getValues("provinceId"),
+                                    )?.name || ""
+                                }
                             />
                         </Card>
                     </div>
