@@ -1,5 +1,6 @@
 package com.phongdnh.se121.services.authentication;
 
+import com.phongdnh.se121.constants.ErrorMessageConstants;
 import com.phongdnh.se121.dtos.authentication.BaseUserRequest;
 import com.phongdnh.se121.dtos.authentication.ChangePasswordRequest;
 import com.phongdnh.se121.dtos.authentication.LoginRequest;
@@ -179,7 +180,7 @@ public class AuthServiceImpl implements AuthService {
     ContactType type = ValidationUtil.detectContact(request.getDestination());
     if (type == ContactType.UNKNOWN) {
       throw new ApiException(
-          ErrorCode.VALIDATION_ERROR, Map.of("destination", "Invalid email or phone number"));
+          ErrorCode.VALIDATION_ERROR, Map.of("destination", ErrorMessageConstants.VALIDATION_EMAIL_OR_PHONE_INVALID));
     }
 
     // 2. ---- Validate OTP ----
@@ -345,7 +346,7 @@ public class AuthServiceImpl implements AuthService {
             .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND));
     if (!passwordEncoder.matches(request.getOldPassword(), user.getPasswordHash())) {
       throw new ApiException(
-          ErrorCode.VALIDATION_ERROR, Map.of("oldPassword", "Invalid current password"));
+          ErrorCode.VALIDATION_ERROR, Map.of("oldPassword", ErrorMessageConstants.VALIDATION_CURRENT_PASSWORD_INVALID));
     }
     user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
     userRepository.save(user);
@@ -367,7 +368,7 @@ public class AuthServiceImpl implements AuthService {
             builder.and(
                 builder.equal(root.get("email"), request.getEmail()),
                 builder.notEqual(root.get("id"), userId)))) {
-      errors.put("email", "Email is already in use");
+      errors.put("email", ErrorMessageConstants.AUTH_EMAIL_ALREADY_EXISTS);
     }
 
     // Check if phone is existing
@@ -376,7 +377,7 @@ public class AuthServiceImpl implements AuthService {
             builder.and(
                 builder.equal(root.get("phone"), request.getPhone()),
                 builder.notEqual(root.get("id"), userId)))) {
-      errors.put("phone", "Phone number is already in use");
+      errors.put("phone", ErrorMessageConstants.AUTH_PHONE_ALREADY_EXISTS);
     }
 
     if (!errors.isEmpty()) {
@@ -406,10 +407,10 @@ public class AuthServiceImpl implements AuthService {
                           builder.equal(root.get("id"), newAvatarId),
                           builder.equal(root.get("purpose"), FilePurpose.AVATAR)))
               .orElseThrow(
-                  () -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND, "Avatar not found"));
+                  () -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND, ErrorMessageConstants.RESOURCE_AVATAR_NOT_FOUND));
 
       if (newAvatar.getUsageStatus() == FileUsageStatus.IN_USE) {
-        throw new ApiException(ErrorCode.RESOURCE_EXISTS, "Avatar is already in use");
+        throw new ApiException(ErrorCode.RESOURCE_EXISTS, ErrorMessageConstants.RESOURCE_AVATAR_IN_USE);
       }
 
       user.setAvatar(newAvatar);

@@ -1,5 +1,6 @@
 package com.phongdnh.se121.hooks.authorizations;
 
+import com.phongdnh.se121.constants.ErrorMessageConstants;
 import com.phongdnh.se121.dtos.authorization.RoleRequest;
 import com.phongdnh.se121.dtos.authorization.RoleResponse;
 import com.phongdnh.se121.entities.authorization.Permission;
@@ -90,7 +91,7 @@ public class RoleHook implements GenericHook<Role, Long, RoleRequest, RoleRespon
         permissionRepository.count((root, _, _) -> root.get("id").in(input.getPermissionIds()));
     if (count != input.getPermissionIds().size()) {
       throw new ApiException(
-          ErrorCode.RESOURCE_NOT_FOUND, Map.of("permissions", "Some permissions are not found"));
+          ErrorCode.RESOURCE_NOT_FOUND, Map.of("permissions", ErrorMessageConstants.AUTH_PERMISSION_NOT_FOUND));
     }
     List<Permission> allPermissions =
         permissionRepository.findAll((root, _, _) -> root.get("id").in(input.getPermissionIds()));

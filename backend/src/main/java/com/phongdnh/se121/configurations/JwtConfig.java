@@ -2,6 +2,7 @@ package com.phongdnh.se121.configurations;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.util.Base64;
+import com.phongdnh.se121.constants.ErrorMessageConstants;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +39,7 @@ public class JwtConfig {
   private SecretKey getSecretKey() {
     byte[] keyBytes = Base64.from(secret).decode();
     if (keyBytes.length < 64) {
-      throw new IllegalArgumentException("HS512 requires secret key >= 512 bits (64 bytes)");
+      throw new IllegalArgumentException(ErrorMessageConstants.SYSTEM_HS512_SECRET_KEY_TOO_SHORT);
     }
     return new SecretKeySpec(keyBytes, 0, keyBytes.length, JWT_ALGORITHM.getName());
   }

@@ -1,72 +1,70 @@
 package com.phongdnh.se121.constants;
 
-/**
- * Constants for error messages used across the application.
- * Grouped by category for better organization.
- */
+/** Thông báo lỗi dùng chung cho toàn hệ thống. Đã chuẩn hóa tiếng Việt, loại bỏ trùng ngữ nghĩa. */
 public interface ErrorMessageConstants {
 
-  // ======================== VALIDATION - General ========================
-  String VALIDATION_INVALID_EMAIL_OR_PHONE = "Invalid email or phone number";
-  String VALIDATION_INVALID_PHONE_NUMBER = "Invalid phone number";
-  String VALIDATION_INVALID_CURRENT_PASSWORD = "Invalid current password";
-  String VALIDATION_CODE_ALREADY_EXISTS = "Code already exists";
-  String VALIDATION_ALREADY_EXISTS = "Already exists";
-  String VALIDATION_ONE_OR_MORE_ATTACHMENTS_INVALID = "One or more attachments are invalid";
+  // ======================== VALIDATION ========================
+  String VALIDATION_EMAIL_OR_PHONE_INVALID = "Email hoặc số điện thoại không hợp lệ";
+  String VALIDATION_PHONE_INVALID = "Số điện thoại không hợp lệ";
+  String VALIDATION_CURRENT_PASSWORD_INVALID = "Mật khẩu hiện tại không đúng";
+  String VALIDATION_VALUE_ALREADY_EXISTS = "Giá trị đã tồn tại";
+  String VALIDATION_ATTACHMENTS_INVALID = "Một hoặc nhiều tệp đính kèm không hợp lệ";
 
-  // ======================== VALIDATION - Property ========================
-  String VALIDATION_INVALID_PROPERTY_TYPE = "Invalid property type";
-  String VALIDATION_INVALID_PROVINCE = "Invalid province";
-  String VALIDATION_INVALID_WARD = "Invalid ward";
-  String VALIDATION_INVALID_THUMBNAIL_FILE = "Invalid thumbnail file";
-  String VALIDATION_PROVINCE_DOES_NOT_EXIST = "Province does not exist";
-  String VALIDATION_WARD_CODE_ALREADY_EXISTS = "Ward code already exists";
+  // ======================== VALIDATION - PROPERTY ========================
+  String VALIDATION_PROPERTY_TYPE_INVALID = "Loại bất động sản không hợp lệ";
+  String VALIDATION_PROVINCE_INVALID = "Tỉnh/Thành không hợp lệ";
+  String VALIDATION_WARD_INVALID = "Phường/Xã không hợp lệ";
+  String VALIDATION_THUMBNAIL_INVALID = "Ảnh đại diện không hợp lệ";
+  String VALIDATION_PROVINCE_NOT_EXISTS = "Tỉnh/Thành không tồn tại";
 
-  // ======================== VALIDATION - Conversation ========================
-  String VALIDATION_CONVERSATION_NOT_PENDING = "Conversation is not in PENDING state";
-  String VALIDATION_CONVERSATION_NOT_OPEN = "Conversation is not in OPEN state";
+  // ======================== VALIDATION - CONVERSATION ========================
+  String VALIDATION_CONVERSATION_NOT_PENDING = "Cuộc trò chuyện không ở trạng thái chờ xử lý";
+  String VALIDATION_CONVERSATION_NOT_OPEN = "Cuộc trò chuyện chưa được mở";
 
-  // ======================== AUTH - User ========================
-  String AUTH_EMAIL_ALREADY_TAKEN = "Email is already taken";
-  String AUTH_PHONE_ALREADY_TAKEN = "Phone is already taken";
-  String AUTH_EMAIL_ALREADY_IN_USE = "Email is already in use";
-  String AUTH_PHONE_ALREADY_IN_USE = "Phone number is already in use";
-  String AUTH_USER_CONTACT_ALREADY_EXISTS = "User with this contact already exists";
-  String AUTH_PHONE_NOT_VERIFIED = "Phone is not verified";
-  String AUTH_USER_MUST_BE_LOGGED_IN = "User must be logged in";
+  // ======================== AUTH ========================
+  String AUTH_EMAIL_ALREADY_EXISTS = "Email đã tồn tại";
+  String AUTH_PHONE_ALREADY_EXISTS = "Số điện thoại đã tồn tại";
+  String AUTH_USER_CONTACT_ALREADY_EXISTS = "Thông tin liên hệ đã tồn tại";
+  String AUTH_PHONE_NOT_VERIFIED = "Số điện thoại chưa được xác thực";
+  String AUTH_LOGIN_REQUIRED = "Người dùng chưa đăng nhập";
 
-  // ======================== AUTH - Role/Permission ========================
-  String AUTH_ROLE_NOT_FOUND = "Role not found";
-  String AUTH_CANNOT_DELETE_ADMIN_ROLE = "Cannot delete the administrator role";
-  String AUTH_SOME_PERMISSIONS_NOT_FOUND = "Some permissions are not found";
-  String AUTH_PERMISSION_ALREADY_EXISTS = "Permission with the same method and url already exists";
+  // ======================== AUTH - ROLE / PERMISSION ========================
+  String AUTH_ROLE_NOT_FOUND = "Vai trò không tồn tại";
+  String AUTH_CANNOT_DELETE_ADMIN_ROLE = "Không thể xóa vai trò quản trị";
+  String AUTH_PERMISSION_NOT_FOUND = "Quyền không tồn tại";
+  String AUTH_PERMISSION_ALREADY_EXISTS = "Quyền đã tồn tại";
 
-  // ======================== AUTH - Participant ========================
-  String AUTH_USER_ALREADY_PARTICIPANT = "User is already a participant in this conversation";
-  String AUTH_USER_NOT_PARTICIPANT = "User is not a participant in this conversation";
-  String AUTH_USER_NOT_SENDER = "User is not the sender of this message";
-  String AUTH_USER_NOT_CHAT_PARTICIPANT = "User is not a participant of the chat";
+  // ======================== AUTH - PARTICIPANT ========================
+  String AUTH_USER_ALREADY_PARTICIPANT = "Người dùng đã tham gia cuộc trò chuyện";
+  String AUTH_USER_NOT_PARTICIPANT = "Người dùng không tham gia cuộc trò chuyện";
+  String AUTH_USER_NOT_MESSAGE_SENDER = "Người dùng không phải người gửi tin nhắn";
 
-  // ======================== RESOURCE - Not Found ========================
-  String RESOURCE_AVATAR_NOT_FOUND = "Avatar not found";
-  String RESOURCE_PROPERTY_NOT_FOUND = "Property not found";
-  String RESOURCE_THUMBNAIL_FILE_NOT_FOUND = "Thumbnail file not found";
-  String RESOURCE_USER_NOT_FOUND = "User not found";
-
-  // ======================== RESOURCE - Already In Use ========================
-  String RESOURCE_AVATAR_ALREADY_IN_USE = "Avatar is already in use";
+  // ======================== RESOURCE ========================
+  String RESOURCE_NOT_FOUND = "Tài nguyên không tồn tại";
+  String RESOURCE_USER_NOT_FOUND = "Người dùng không tồn tại";
+  String RESOURCE_PROPERTY_NOT_FOUND = "Bất động sản không tồn tại";
+  String RESOURCE_FILE_NOT_FOUND = "Tệp không tồn tại";
+  String RESOURCE_AVATAR_IN_USE = "Ảnh đại diện đang được sử dụng";
+  String RESOURCE_AVATAR_NOT_FOUND = "Ảnh đại diện không tồn tại";
 
   // ======================== FILE ========================
-  String FILE_NOT_AVAILABLE_FOR_DOWNLOAD = "File is not available for download";
-  String FILE_FAILED_TO_SIGN_IMGPROXY_URL = "Failed to sign imgproxy URL";
+  String FILE_NOT_AVAILABLE = "Tệp không khả dụng để tải xuống";
+  String FILE_SIGN_URL_FAILED = "Không thể tạo liên kết truy cập tệp";
 
-  // ======================== SYSTEM - Internal ========================
-  String SYSTEM_FAILED_TO_PARSE_AI_RESPONSE = "Failed to parse metadata from AI response";
-  String SYSTEM_FAILED_TO_SEND_EMAIL = "Failed to send email";
-  String SYSTEM_ERROR_CREATING_BUCKET = "Error while creating bucket: ";
-  String SYSTEM_HS512_SECRET_KEY_TOO_SHORT = "HS512 requires secret key >= 512 bits (64 bytes)";
-  String SYSTEM_INVALID_USER_ID_IN_JWT = "Invalid user ID in JWT subject";
-  String SYSTEM_UNSUPPORTED_CONTACT_TYPE = "Unsupported contact type";
-  String SYSTEM_UNSUPPORTED_VERIFICATION_PURPOSE = "Unsupported verification purpose";
+  // ======================== SYSTEM ========================
+  String SYSTEM_INTERNAL_ERROR = "Lỗi hệ thống";
+  String SYSTEM_EMAIL_SEND_FAILED = "Gửi email thất bại";
+  String SYSTEM_AI_RESPONSE_PARSE_FAILED = "Không thể xử lý dữ liệu từ AI";
+  String SYSTEM_INVALID_JWT_SUBJECT = "Thông tin người dùng trong JWT không hợp lệ";
+  String SYSTEM_UNSUPPORTED_CONTACT_TYPE = "Loại liên hệ không được hỗ trợ";
+  String SYSTEM_UNSUPPORTED_VERIFICATION_PURPOSE = "Mục đích xác thực không được hỗ trợ";
+  String SYSTEM_HS512_SECRET_KEY_TOO_SHORT = "Khóa bí mật HS512 quá ngắn, cần ít nhất 64 byte";
+  String SYSTEM_ERROR_CREATING_BUCKET = "Tạo bucket lưu trữ thất bại";
+
+  // ======================== AI ========================
+  String AI_RESPONSE_PARSE_FAILED = "Không thể xử lý dữ liệu từ AI";
+
+  // ======================== PROPERTY - PROVINCE ========================
+  String PROVINCE_CODE_EXISTS = "Mã tỉnh/thành đã tồn tại";
+  String VALIDATION_WARD_CODE_EXISTS = "Mã phường/xã đã tồn tại";
 }
-

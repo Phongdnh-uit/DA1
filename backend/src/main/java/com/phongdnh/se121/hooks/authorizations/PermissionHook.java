@@ -1,5 +1,6 @@
 package com.phongdnh.se121.hooks.authorizations;
 
+import com.phongdnh.se121.constants.ErrorMessageConstants;
 import com.phongdnh.se121.dtos.authorization.PermissionRequest;
 import com.phongdnh.se121.dtos.authorization.PermissionResponse;
 import com.phongdnh.se121.entities.authorization.Permission;
@@ -41,7 +42,7 @@ public class PermissionHook
     }
     if (permissionRepository.exists(validateSpec)) {
       throw new ApiException(
-          ErrorCode.RESOURCE_EXISTS, "Permission with the same method and url already exists");
+          ErrorCode.RESOURCE_EXISTS, ErrorMessageConstants.AUTH_PERMISSION_ALREADY_EXISTS);
     }
   }
 }

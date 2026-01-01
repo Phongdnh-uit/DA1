@@ -1,5 +1,6 @@
 package com.phongdnh.se121.securities.jwt;
 
+import com.phongdnh.se121.constants.ErrorMessageConstants;
 import com.phongdnh.se121.entities.authentication.User;
 import com.phongdnh.se121.repositories.authentication.UserRepository;
 import com.phongdnh.se121.securities.CustomUserDetails;
@@ -34,16 +35,19 @@ public class CustomJwtAuthenticationConverter
     try {
       userId = Long.parseLong(jwt.getSubject());
     } catch (NumberFormatException e) {
-      throw new JwtException("Invalid user ID in JWT subject", e);
+      throw new JwtException(ErrorMessageConstants.SYSTEM_INVALID_JWT_SUBJECT, e);
     }
     User user =
-        userRepository.findById(userId).orElseThrow(() -> new JwtException("User not found"));
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new JwtException(ErrorMessageConstants.RESOURCE_USER_NOT_FOUND));
 
     CustomUserDetails principal =
         CustomUserDetails.builder()
             .id(user.getId())
             .email(user.getEmail())
             .phone(user.getPhone())
+            .fullName(user.getFullName())
             .password(user.getPasswordHash())
             .roleId(user.getRoleId())
             .authorities(Set.of())

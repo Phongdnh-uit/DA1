@@ -1,5 +1,6 @@
 package com.phongdnh.se121.hooks.property;
 
+import com.phongdnh.se121.constants.ErrorMessageConstants;
 import com.phongdnh.se121.dtos.property.WardRequest;
 import com.phongdnh.se121.dtos.property.WardResponse;
 import com.phongdnh.se121.entities.property.Ward;
@@ -52,7 +53,7 @@ public class WardHook implements GenericHook<Ward, Long, WardRequest, WardRespon
       codeNameSpec = codeNameSpec.and((root, _, builder) -> builder.notEqual(root.get("id"), id));
     }
     if (wardRepository.exists(codeNameSpec)) {
-      errors.put("code", "Ward code already exists");
+      errors.put("code", ErrorMessageConstants.VALIDATION_WARD_CODE_EXISTS);
     }
     if (!errors.isEmpty()) {
       throw new ApiException(ErrorCode.VALIDATION_ERROR, errors);

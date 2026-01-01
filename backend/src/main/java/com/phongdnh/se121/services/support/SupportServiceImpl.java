@@ -77,7 +77,7 @@ public class SupportServiceImpl implements SupportService {
     var userDetail = SecurityUtil.getCurrentUserDetails();
     SupportTicket supportTicket = supportTicketMapper.requestToEntity(request);
     supportTicket.setUserId(userDetail.getId());
-    supportTicket.setUserName(userDetail.getName());
+    supportTicket.setUserName(userDetail.getFullName());
     supportTicket.setUserEmail(userDetail.getEmail());
     supportTicket.setStatus(SupportTicketStatus.OPEN);
     // Handle attachments if any

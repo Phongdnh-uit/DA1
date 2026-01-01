@@ -1,11 +1,15 @@
 package com.phongdnh.se121.services.general;
 
 import com.phongdnh.se121.constants.AppConstant;
+import com.phongdnh.se121.constants.ErrorMessageConstants;
+import com.phongdnh.se121.exceptions.errors.ApiException;
+import com.phongdnh.se121.exceptions.errors.ErrorCode;
 import jakarta.mail.internet.MimeMessage;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class MailServiceImpl implements MailService {
@@ -43,7 +48,9 @@ public class MailServiceImpl implements MailService {
       helper.setText(content, isHtml);
       mailSender.send(message);
     } catch (Exception e) {
-      throw new RuntimeException("Failed to send email", e);
+      log.error("Failed to send email to {} with subject {}: {}", to, subject, e.getMessage(), e);
+      throw new ApiException(
+          ErrorCode.INTERNAL_SERVER_ERROR, ErrorMessageConstants.SYSTEM_EMAIL_SEND_FAILED);
     }
   }
 
@@ -73,6 +80,6 @@ public class MailServiceImpl implements MailService {
     Map<String, Object> model = new HashMap<>();
     model.put("activationLink", activationLink);
     sendEmailFromTemplate(to, subject, templateName, model);
-    System.out.println("Sent activation email to: " + to + " with code: " + code);
+    log.info("Sent activation email to {}", to);
   }
 }

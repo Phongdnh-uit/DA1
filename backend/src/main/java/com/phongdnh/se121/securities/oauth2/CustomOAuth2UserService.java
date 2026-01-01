@@ -1,5 +1,6 @@
 package com.phongdnh.se121.securities.oauth2;
 
+import com.phongdnh.se121.constants.ErrorMessageConstants;
 import com.phongdnh.se121.entities.authentication.LinkedAccount;
 import com.phongdnh.se121.entities.authentication.User;
 import com.phongdnh.se121.enums.authentication.UserStatus;
@@ -63,8 +64,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
     HttpSession session = request.getSession(false);
     if (session == null || session.getAttribute("verifiedPhone") == null) {
-      Throwable cause = new ApiException(ErrorCode.OAUTH2_ERROR, "Phone is not verified");
-      throw new OAuth2AuthenticationException(new OAuth2Error("Phone is not verified"), cause);
+      Throwable cause = new ApiException(ErrorCode.OAUTH2_ERROR, ErrorMessageConstants.AUTH_PHONE_NOT_VERIFIED);
+      throw new OAuth2AuthenticationException(new OAuth2Error(ErrorMessageConstants.AUTH_PHONE_NOT_VERIFIED), cause);
     }
 
     String verifiedPhone = (String) session.getAttribute("verifiedPhone");

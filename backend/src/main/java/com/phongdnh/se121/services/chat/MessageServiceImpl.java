@@ -1,5 +1,6 @@
 package com.phongdnh.se121.services.chat;
 
+import com.phongdnh.se121.constants.ErrorMessageConstants;
 import com.phongdnh.se121.dtos.PageResponse;
 import com.phongdnh.se121.dtos.chat.MessageRequest;
 import com.phongdnh.se121.dtos.chat.MessageResponse;
@@ -149,7 +150,7 @@ public class MessageServiceImpl implements MessageService {
             .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND));
     if (!message.getSender().getId().equals(userId)) {
       throw new ApiException(
-          ErrorCode.FORBIDDEN, Map.of("sender", "User is not the sender of this message"));
+          ErrorCode.FORBIDDEN, Map.of("sender", ErrorMessageConstants.AUTH_USER_NOT_MESSAGE_SENDER));
     }
     // Delete attachments if any
     if (message.getAttachments() != null && !message.getAttachments().isEmpty()) {
