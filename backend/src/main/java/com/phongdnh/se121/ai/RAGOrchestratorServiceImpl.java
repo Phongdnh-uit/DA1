@@ -3,7 +3,9 @@ package com.phongdnh.se121.ai;
 import static org.springframework.ai.chat.memory.ChatMemory.CONVERSATION_ID;
 
 import com.phongdnh.se121.constants.AIConstant;
+import jakarta.annotation.PostConstruct;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
@@ -19,6 +21,7 @@ import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+@Slf4j
 @Service
 public class RAGOrchestratorServiceImpl implements RAGOrchestratorService {
 
@@ -76,6 +79,11 @@ public class RAGOrchestratorServiceImpl implements RAGOrchestratorService {
             .queryAugmenter(new CustomAugmenter(customPromtTemplate))
             .build();
     this.chatClient = ChatClient.builder(chatModel).build();
+  }
+
+  @PostConstruct
+  public void inspect() {
+    log.info("RAGOrchestratorServiceImpl initialized with: {}", chatClient.getClass().getName());
   }
 
   @Override

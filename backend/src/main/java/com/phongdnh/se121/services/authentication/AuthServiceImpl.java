@@ -14,6 +14,7 @@ import com.phongdnh.se121.dtos.authentication.UserResponse;
 import com.phongdnh.se121.dtos.authentication.VerifyEmailRequest;
 import com.phongdnh.se121.dtos.authentication.VerifyOtpRequest;
 import com.phongdnh.se121.dtos.authentication.VerifyOtpResponse;
+import com.phongdnh.se121.dtos.general.SMSRequest;
 import com.phongdnh.se121.entities.authentication.RefreshToken;
 import com.phongdnh.se121.entities.authentication.User;
 import com.phongdnh.se121.entities.authentication.Verification;
@@ -34,6 +35,7 @@ import com.phongdnh.se121.repositories.general.FileRepository;
 import com.phongdnh.se121.securities.SecurityUtil;
 import com.phongdnh.se121.securities.TokenProvider;
 import com.phongdnh.se121.services.general.MailService;
+import com.phongdnh.se121.services.general.SMSService;
 import com.phongdnh.se121.utils.OtpGenerator;
 import com.phongdnh.se121.utils.ValidationUtil;
 import java.util.HashMap;
@@ -66,6 +68,7 @@ public class AuthServiceImpl implements AuthService {
   private final RoleRepository roleRepository;
   private final PermissionRepository permissionRepository;
   private final FileRepository fileRepository;
+  private final SMSService smsService;
 
   // ============================ LOGIN ============================
   @Override
@@ -169,6 +172,19 @@ public class AuthServiceImpl implements AuthService {
 
     // 4. ---- Send OTP via channel ----
     // In real-world application, you should send the OTP to user's email or phone number
+    switch (response.getChannel()) {
+      case EMAIL:
+        mailService.sendOTPCodeEmail(request.getDestination(), otp);
+        break;
+      case SMS:
+        SMSRequest smsRequest = new SMSRequest();
+        smsRequest.setPhoneNumber(request.getDestination());
+        smsRequest.setMessage("Ma OTP cho UITLAND là: " + otp + ". Ma co hieu luc trong 5 phut.");
+        smsService.sendSMS(smsRequest);
+        break;
+      default:
+        throw new UnsupportedOperationException("Unsupported OTP channel");
+    }
     System.out.println("OTP for " + request.getDestination() + " is: " + otp);
     return response;
   }
@@ -180,7 +196,8 @@ public class AuthServiceImpl implements AuthService {
     ContactType type = ValidationUtil.detectContact(request.getDestination());
     if (type == ContactType.UNKNOWN) {
       throw new ApiException(
-          ErrorCode.VALIDATION_ERROR, Map.of("destination", ErrorMessageConstants.VALIDATION_EMAIL_OR_PHONE_INVALID));
+          ErrorCode.VALIDATION_ERROR,
+          Map.of("destination", ErrorMessageConstants.VALIDATION_EMAIL_OR_PHONE_INVALID));
     }
 
     // 2. ---- Validate OTP ----
@@ -346,7 +363,8 @@ public class AuthServiceImpl implements AuthService {
             .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND));
     if (!passwordEncoder.matches(request.getOldPassword(), user.getPasswordHash())) {
       throw new ApiException(
-          ErrorCode.VALIDATION_ERROR, Map.of("oldPassword", ErrorMessageConstants.VALIDATION_CURRENT_PASSWORD_INVALID));
+          ErrorCode.VALIDATION_ERROR,
+          Map.of("oldPassword", ErrorMessageConstants.VALIDATION_CURRENT_PASSWORD_INVALID));
     }
     user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
     userRepository.save(user);
@@ -407,10 +425,14 @@ public class AuthServiceImpl implements AuthService {
                           builder.equal(root.get("id"), newAvatarId),
                           builder.equal(root.get("purpose"), FilePurpose.AVATAR)))
               .orElseThrow(
-                  () -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND, ErrorMessageConstants.RESOURCE_AVATAR_NOT_FOUND));
+                  () ->
+                      new ApiException(
+                          ErrorCode.RESOURCE_NOT_FOUND,
+                          ErrorMessageConstants.RESOURCE_AVATAR_NOT_FOUND));
 
       if (newAvatar.getUsageStatus() == FileUsageStatus.IN_USE) {
-        throw new ApiException(ErrorCode.RESOURCE_EXISTS, ErrorMessageConstants.RESOURCE_AVATAR_IN_USE);
+        throw new ApiException(
+            ErrorCode.RESOURCE_EXISTS, ErrorMessageConstants.RESOURCE_AVATAR_IN_USE);
       }
 
       user.setAvatar(newAvatar);

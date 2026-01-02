@@ -10,10 +10,10 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
-@Component
+@Service
 public class VerificationServiceImpl implements VerificationService {
   private final UserRepository userRepository;
   private final VerificationRepository verificationRepository;

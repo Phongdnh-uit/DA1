@@ -82,4 +82,15 @@ public class MailServiceImpl implements MailService {
     sendEmailFromTemplate(to, subject, templateName, model);
     log.info("Sent activation email to {}", to);
   }
+
+  @Async
+  @Override
+  public void sendOTPCodeEmail(String to, String code) {
+    String subject = "Mã OTP của bạn";
+    String templateName = "otpEmail";
+    Map<String, Object> model = new HashMap<>();
+    model.put("otpCode", code);
+    sendEmailFromTemplate(to, subject, templateName, model);
+    log.info("Sent OTP code email to {}", to);
+  }
 }
