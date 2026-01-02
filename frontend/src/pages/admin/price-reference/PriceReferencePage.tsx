@@ -5,20 +5,14 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button"; 
+import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useGetPriceReferences } from "@/services/price-reference/price-reference";
 import { useFindAllProvince } from "@/services/province/province";
 import { useState } from "react";
 import { formatCurrency } from "@/utils/converter";
 import { useNavigate } from "@tanstack/react-router";
+import { Combobox } from "@/components/customs/Combobox";
 
 export const PriceReferencePage = () => {
     const [selectedProvinceId, setSelectedProvinceId] = useState<
@@ -78,39 +72,29 @@ export const PriceReferencePage = () => {
             <Card className="w-full bg-slate-50 border-slate-200">
                 <CardContent className="p-6">
                     <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
-                        <div className="w-full sm:w-1/3">
-                            <Select
-                                value={
-                                    selectedProvinceId ? selectedProvinceId.toString() : undefined
-                                }
-                                onValueChange={(value) => setSelectedProvinceId(+value)}
-                            >
-                                <SelectTrigger className="!h-14 w-full text-lg rounded-2xl hover:border-primary">
-                                    <SelectValue
-                                        className="!text-lg"
-                                        placeholder={<span className="text-lg">Chọn một mục</span>}
-                                    />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {provinces.data?.data?.content?.map((option) => (
-                                        <SelectItem
-                                            key={option.id}
-                                            value={option.id?.toString() as string}
-                                        >
-                                            {option.type} {option.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="pb-2 text-sm text-muted-foreground">
+                        <Combobox
+                            options={
+                                provinces.data?.data?.content?.map((option) => ({
+                                    key: option.id?.toString() as string,
+                                    render: `${option.type} ${option.name}`,
+                                    searchKey: `${option.type} ${option.name}`,
+                                })) || []
+                            }
+                            value={selectedProvinceId ? selectedProvinceId.toString() : null}
+                            onChange={(value) => {
+                                setSelectedProvinceId(value ? +value : undefined);
+                            }}
+                            searchable
+                            className="w-sm"
+                        />
+                        <a className="pb-2 text-sm text-muted-foreground">
                             {selectedProvinceId
                                 ? `Hiển thị ${groupedByWard ? Object.keys(groupedByWard).length : 0} khu vực tại ${provinces.data?.data?.content?.find(
                                     (p) => p.id === selectedProvinceId,
                                 )?.name || "chưa chọn"
                                 }`
                                 : "Vui lòng chọn tỉnh/thành phố để xem dữ liệu giá bất động sản tham khảo."}
-                        </div>
+                        </a>
                     </div>
                 </CardContent>
             </Card>
@@ -166,9 +150,11 @@ export const PriceReferencePage = () => {
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
-                                                    onClick={() => navigate({
-                                                        to: `/admin/price-reference/detail/${wardData.wardId}`,
-                                                    })}
+                                                    onClick={() =>
+                                                        navigate({
+                                                            to: `/admin/price-reference/detail/${wardData.wardId}`,
+                                                        })
+                                                    }
                                                     className="gap-2"
                                                 >
                                                     Chi tiết <ArrowRight className="h-4 w-4" />

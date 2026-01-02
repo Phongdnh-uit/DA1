@@ -316,7 +316,7 @@
     "/supports/process/{id}": {
       "put": {
         "tags": [
-          "Support Controller"
+          "Support"
         ],
         "operationId": "processSupportTicket",
         "parameters": [
@@ -1041,7 +1041,7 @@
     "/supports": {
       "post": {
         "tags": [
-          "Support Controller"
+          "Support"
         ],
         "operationId": "createSupportTicket",
         "requestBody": {
@@ -1814,7 +1814,7 @@
     "/supports/close/{id}": {
       "patch": {
         "tags": [
-          "Support Controller"
+          "Support"
         ],
         "operationId": "closeSupportTicket",
         "parameters": [
@@ -2064,7 +2064,7 @@
     "/supports/client": {
       "get": {
         "tags": [
-          "Support Controller"
+          "Support"
         ],
         "operationId": "getClientSupportTickets",
         "parameters": [
@@ -2128,7 +2128,7 @@
     "/supports/client/{id}": {
       "get": {
         "tags": [
-          "Support Controller"
+          "Support"
         ],
         "operationId": "getClientSupportTicketById",
         "parameters": [
@@ -2159,7 +2159,7 @@
     "/supports/admin": {
       "get": {
         "tags": [
-          "Support Controller"
+          "Support"
         ],
         "operationId": "getAdminSupportTickets",
         "parameters": [
@@ -2223,7 +2223,7 @@
     "/supports/admin/{id}": {
       "get": {
         "tags": [
-          "Support Controller"
+          "Support"
         ],
         "operationId": "getAdminSupportTicketById",
         "parameters": [

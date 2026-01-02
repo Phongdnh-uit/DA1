@@ -7,36 +7,11 @@ import { ActionForm } from "./components/ActionForm";
 import { Route } from "@/routes/admin/support/process.$id";
 
 export function SupportProcessPage() {
-    const {supportDetail} = Route.useLoaderData();
+    const { supportDetail } = Route.useLoaderData();
     const reportData = supportDetail.data;
     return (
         <div className="flex-1 p-6 md:p-8 overflow-auto">
             <div className="max-w-[1200px] mx-auto flex flex-col gap-6">
-                <motion.nav
-                    className="flex flex-wrap gap-2 text-sm items-center"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                >
-                    <a
-                        href="#"
-                        className="text-muted-foreground hover:text-primary transition-colors font-medium"
-                    >
-                        Home
-                    </a>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                    <a
-                        href="#"
-                        className="text-muted-foreground hover:text-primary transition-colors font-medium"
-                    >
-                        Reports
-                    </a>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-primary font-medium">
-                        Report #{reportData?.id}
-                    </span>
-                </motion.nav>
-
                 <motion.div
                     className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
                     initial={{ opacity: 0, y: 10 }}
@@ -70,7 +45,7 @@ export function SupportProcessPage() {
                                 name: reportData?.userName || "",
                             }}
                             reportDate={reportData?.createdAt || ""}
-                            // reportedItem={reportData.reportedItem}
+                        // reportedItem={reportData.reportedItem}
                         />
                         <ReportContentCard
                             reportType={reportData?.type || ""}

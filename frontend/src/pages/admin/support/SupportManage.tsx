@@ -23,7 +23,7 @@ import { fadeInUp } from "@/lib/animation";
 
 const statusConfig = {
     OPEN: {
-        label: "Mới",
+        label: "Mở",
         className:
             "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800",
     },
@@ -267,20 +267,18 @@ export const SupportManage = () => {
                         </Card>
                     </motion.div>
                 </motion.div>
-                <motion.div variants={fadeInUp.container}
+                <motion.div
+                    variants={fadeInUp.container}
                     initial="hidden"
                     animate="show"
                 >
                     <motion.div variants={fadeInUp.item}>
                         <Filter
                             sortAttributes={[
-                                { key: "id", label: "Mã quyền" },
-                                { key: "name", label: "Tên quyền" },
-                                { key: "code", label: "Mã quyền hệ thống" },
-                                { key: "resource", label: "Tài nguyên" },
-                                { key: "method", label: "Phương thức" },
-                                { key: "urlPattern", label: "Đường dẫn API" },
-
+                                { key: "id", label: "Mã báo cáo" },
+                                { key: "title", label: "Tiêu đề yêu cầu" },
+                                { key: "type", label: "Loại yêu cầu" },
+                                { key: "status", label: "Trạng thái" },
                                 { key: "createdBy", label: "Người tạo (ID)" },
                                 { key: "updatedBy", label: "Người cập nhật (ID)" },
 
@@ -289,19 +287,15 @@ export const SupportManage = () => {
                             ]}
                             filterAttributes={[
                                 { name: "id", label: "Mã quyền", type: "number" },
-                                { name: "name", label: "Tên quyền", type: "text" },
-                                { name: "code", label: "Mã quyền hệ thống", type: "text" },
-                                { name: "resource", label: "Tài nguyên", type: "text" },
-                                { name: "urlPattern", label: "Đường dẫn API", type: "text" },
-                                { name: "method", label: "Phương thức", type: "text" },
-
+                                { name: "title", label: "Tiêu đề yêu cầu", type: "text" },
+                                { name: "type", label: "Loại yêu cầu", type: "text" },
+                                { name: "status", label: "Trạng thái", type: "text" },
                                 { name: "createdBy", label: "Người tạo (ID)", type: "number" },
                                 {
                                     name: "updatedBy",
                                     label: "Người cập nhật (ID)",
                                     type: "number",
                                 },
-
                                 { name: "createdAt", label: "Ngày tạo", type: "date" },
                                 { name: "updatedAt", label: "Ngày cập nhật", type: "date" },
                             ]}

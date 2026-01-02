@@ -115,7 +115,7 @@ export const PriceReferenceDetail = () => {
                         <Building2 className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{formatCurrency(minPrice)}</div>
+                        <div className="text-2xl font-bold">{formatCurrency(minPrice === Number.MAX_VALUE ? 0 : minPrice)}</div>
                         <p className="text-xs text-muted-foreground">Đáy giá ghi nhận</p>
                     </CardContent>
                 </Card>

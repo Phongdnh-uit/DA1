@@ -95,6 +95,9 @@ export const UserManage = () => {
                             },
                         });
                     },
+                    onView: (row) => {
+                        navigate({ to: `/admin/user/detail/${row.id}` });
+                    },
                 },
                 {
                     deleteCode: "USER_DELETE",
