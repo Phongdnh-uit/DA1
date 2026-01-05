@@ -6,6 +6,7 @@
  */
 import type { UserResponseStatus } from './userResponseStatus';
 import type { FileResponse } from './fileResponse';
+import type { RoleResponse } from './roleResponse';
 
 export interface UserResponse {
   id?: number;
@@ -22,4 +23,5 @@ export interface UserResponse {
   status?: UserResponseStatus;
   roleId?: number;
   avatar?: FileResponse;
+  role?: RoleResponse;
 }

@@ -6,6 +6,6 @@
  */
 
 export interface Location {
-  longitude: number;
-  latitude: number;
+  longitude?: number;
+  latitude?: number;
 }

@@ -21,6 +21,8 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "@tanstack/react-router";
 import PermissionGate from "@/components/general/PermissionGate";
 import { PermissionDetailSheet } from "./DetailPermissionSheet";
+import { motion } from "motion/react";
+import { fadeInUp } from "@/lib/animation";
 
 const keys: (keyof PermissionResponse)[] = [
     "id",
@@ -188,7 +190,12 @@ export const PermissionManage = () => {
     };
 
     return (
-        <div className="space-y-4">
+        <motion.div
+            variants={fadeInUp.container}
+            initial="hidden"
+            animate="show"
+            className="space-y-4"
+        >
             <div className="flex items-center justify-end p-2">
                 <PermissionGate permission="PERMISSION_CREATE">
                     <RippleButton
@@ -199,55 +206,60 @@ export const PermissionManage = () => {
                     </RippleButton>
                 </PermissionGate>
             </div>
-            <Filter
-                sortAttributes={[
-                    { key: "id", label: "Mã quyền" },
-                    { key: "name", label: "Tên quyền" },
-                    { key: "code", label: "Mã quyền hệ thống" },
-                    { key: "resource", label: "Tài nguyên" },
-                    { key: "method", label: "Phương thức" },
-                    { key: "urlPattern", label: "Đường dẫn API" },
+            <motion.div variants={fadeInUp.item}>
+                <Filter
+                    sortAttributes={[
+                        { key: "id", label: "Mã quyền" },
+                        { key: "name", label: "Tên quyền" },
+                        { key: "code", label: "Mã quyền hệ thống" },
+                        { key: "resource", label: "Tài nguyên" },
+                        { key: "method", label: "Phương thức" },
+                        { key: "urlPattern", label: "Đường dẫn API" },
 
-                    { key: "createdBy", label: "Người tạo (ID)" },
-                    { key: "updatedBy", label: "Người cập nhật (ID)" },
+                        { key: "createdBy", label: "Người tạo (ID)" },
+                        { key: "updatedBy", label: "Người cập nhật (ID)" },
 
-                    { key: "createdAt", label: "Ngày tạo" },
-                    { key: "updatedAt", label: "Ngày cập nhật" },
-                ]}
-                filterAttributes={[
-                    { name: "id", label: "Mã quyền", type: "number" },
-                    { name: "name", label: "Tên quyền", type: "text" },
-                    { name: "code", label: "Mã quyền hệ thống", type: "text" },
-                    { name: "resource", label: "Tài nguyên", type: "text" },
-                    { name: "urlPattern", label: "Đường dẫn API", type: "text" },
-                    { name: "method", label: "Phương thức", type: "text" },
+                        { key: "createdAt", label: "Ngày tạo" },
+                        { key: "updatedAt", label: "Ngày cập nhật" },
+                    ]}
+                    filterAttributes={[
+                        { name: "id", label: "Mã quyền", type: "number" },
+                        { name: "name", label: "Tên quyền", type: "text" },
+                        { name: "code", label: "Mã quyền hệ thống", type: "text" },
+                        { name: "resource", label: "Tài nguyên", type: "text" },
+                        { name: "urlPattern", label: "Đường dẫn API", type: "text" },
+                        { name: "method", label: "Phương thức", type: "text" },
 
-                    { name: "createdBy", label: "Người tạo (ID)", type: "number" },
-                    { name: "updatedBy", label: "Người cập nhật (ID)", type: "number" },
+                        { name: "createdBy", label: "Người tạo (ID)", type: "number" },
+                        { name: "updatedBy", label: "Người cập nhật (ID)", type: "number" },
 
-                    { name: "createdAt", label: "Ngày tạo", type: "date" },
-                    { name: "updatedAt", label: "Ngày cập nhật", type: "date" },
-                ]}
-                searchField={["name", "code"]}
-                onApply={onApplyFilter}
-            />
-            <DataTable
-                deleteCode="PERMISSION_DELETE_BULK"
-                className="h-[500px]"
-                name="Quyền hạn"
-                table={table}
-                onBulkDelete={onBulkDelete}
-                pagination={pagination}
-                onPaginationChange={setPagination}
-                totalPages={list.data?.data?.totalPages || 0}
-                totalElements={list.data?.data?.totalElements || 0}
-                numberOfElements={list.data?.data?.numberOfElements || 0}
-            />
+                        { name: "createdAt", label: "Ngày tạo", type: "date" },
+                        { name: "updatedAt", label: "Ngày cập nhật", type: "date" },
+                    ]}
+                    searchField={["name", "code"]}
+                    onApply={onApplyFilter}
+                />
+            </motion.div>
+
+            <motion.div variants={fadeInUp.item}>
+                <DataTable
+                    deleteCode="PERMISSION_DELETE_BULK"
+                    className="h-[500px]"
+                    name="Quyền hạn"
+                    table={table}
+                    onBulkDelete={onBulkDelete}
+                    pagination={pagination}
+                    onPaginationChange={setPagination}
+                    totalPages={list.data?.data?.totalPages || 0}
+                    totalElements={list.data?.data?.totalElements || 0}
+                    numberOfElements={list.data?.data?.numberOfElements || 0}
+                />
+            </motion.div>
             <PermissionDetailSheet
                 open={openedPermissionDetail}
                 onOpenChange={setOpenedPermissionDetail}
                 permission={viewDetailPermission}
             />
-        </div>
+        </motion.div>
     );
 };

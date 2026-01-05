@@ -11,7 +11,7 @@ function RouteComponent() {
     return (
         <ProtectedRoute>
             <AdminSidebar>
-                <div className="flex flex-col size-full gap-4 pr-4 py-4">
+                <div className="relative flex flex-col min-h-screen w-full gap-4 pr-4 py-4 overflow-hidden">
                     <AdminHeader className="sticky top-0 z-50" />
                     <div className="flex-1 overflow-auto">
                         <Outlet />

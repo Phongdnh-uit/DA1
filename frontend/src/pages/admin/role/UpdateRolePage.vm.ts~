@@ -1,5 +1,6 @@
+import { queryClient } from "@/lib/queryClient";
 import { Route } from "@/routes/admin/role/update.$id";
-import { useFindAllPermission } from "@/services/permission/permission";
+import { getFindAllPermissionQueryOptions, useFindAllPermission } from "@/services/permission/permission";
 import { useUpdateRole } from "@/services/role/role";
 import { createRoleBody } from "@/services/role/role.zod";
 import {
@@ -26,14 +27,26 @@ export function useUpdateRoleVM() {
         all: true,
     });
 
+    const permissionIds =
+        useFindAllPermission(
+            {
+                all: true,
+                filter: `roles.id==${role.data?.id}`,
+            },
+            {
+                query: {
+                    enabled: !!role.data?.id,
+                },
+            },
+        ).data?.data?.content?.map((p) => p.id) ?? [];
+
     const form = useForm<RoleRequest>({
         defaultValues: {
             name: role?.data?.name || "",
             description: role?.data?.description || "",
-            permissionIds: role?.data?.permissionIds || [],
+            permissionIds: permissionIds,
             default: role?.data?.default || false,
             canManage: role?.data?.canManage || false,
-            accessibleModules: role?.data?.accessibleModules || [],
         },
         mode: "onSubmit",
         resolver: zodResolver(createRoleBody),
@@ -43,14 +56,24 @@ export function useUpdateRoleVM() {
         mutation: {
             onSuccess: (data) => {
                 toast.success("Cập nhật vai trò thành công");
+                const permissionIds = await queryClient.ensureQueryData(
+                    getFindAllPermissionQueryOptions({
+                        filter: `roles.id==${data?.data.id}`,
+                        all: true,
+                    }, {
+                        query: {
+                            enabled: !!data?.data?.id,
+                        }
+                    })
+                );
                 form.reset({
                     name: data.data?.name,
                     description: data.data?.description,
                     default: data.data?.default,
                     canManage: data.data?.canManage,
                     accessibleModules: data.data?.accessibleModules,
-                    permissionIds: data.data?.permissionIds,
-                });
+                    permissionIds: data.data?.
+                })
             },
             onError: (data) => {
                 const errorResponse = data.response?.data as ApiResponseVoid;
@@ -87,7 +110,6 @@ export function useUpdateRoleVM() {
 
     const onSubmit = (data: RoleRequest) => {
         if (!role?.data?.id) return;
-        console.log("Submitting data:", data);
         mutation.mutate({ id: role.data.id, data });
     };
 
@@ -137,12 +159,6 @@ export function useUpdateRoleVM() {
             searchDebounced.cancel();
         };
     }, [searchDebounced]);
-
-    useEffect(() => {
-        if (form.formState.errors) {
-            console.log("Form Errors:", form.formState.errors);
-        }
-    },[form.formState.errors]);
     return {
         searchDebounced,
         expandedResource,

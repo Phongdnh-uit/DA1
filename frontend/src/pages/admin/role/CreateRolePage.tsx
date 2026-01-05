@@ -5,10 +5,11 @@ import { Label } from "@/components/ui/label";
 import { Search, ChevronDown } from "lucide-react";
 import { useCreateRoleVM } from "./CreateRolePage.vm";
 import { Form } from "@/components/ui/form";
-import { FormInput } from "@/utils/formUtil";
+import { FormCheckbox, FormInput } from "@/utils/formUtil";
 import type { RoleRequest } from "@/types";
 import { BackButton } from "@/components/general/BackButton";
 import { MotionButton } from "@/components/customs/MotionButton";
+import { ModuleManage } from "./components/ModuleManage";
 
 export function CreateRolePage() {
     const {
@@ -50,6 +51,18 @@ export function CreateRolePage() {
                                 placeholder="Mô tả ngắn về vai trò này..."
                                 name="description"
                             />
+                            <div className="flex flex-col md:flex-row md:items-center md:gap-6 mt-2">
+                                <FormCheckbox<RoleRequest>
+                                    title="Mặc định cho người dùng mới"
+                                    direction="row"
+                                    name="default"
+                                />
+                                <FormCheckbox<RoleRequest>
+                                    title="Cho phép quản trị"
+                                    direction="row"
+                                    name="canManage"
+                                />
+                            </div>
                         </div>
                     </Form>
 
@@ -163,9 +176,15 @@ export function CreateRolePage() {
                     </div>
                 </Card>
                 <div className="relative">
+                    <ModuleManage
+                        value={form.watch("accessibleModules") || []}
+                        onChange={(newValue) => {
+                            form.setValue("accessibleModules", newValue);
+                        }}
+                    />
                     <div className="space-y-6 sticky top-8 w-lg">
                         {/* Summary Card */}
-                        <Card className="p-6 border-primary/20 bg-primary/[0.02] rounded-2xl overflow-hidden relative">
+                        <Card className="p-6 border-primary/20 bg-primary/[0.02] rounded-2xl overflow-hidden relative ">
                             <div className="absolute top-0 right-0 p-4 opacity-5">
                                 <Search size={100} />
                             </div>
@@ -224,18 +243,6 @@ export function CreateRolePage() {
                                 </div>
                             </div>
                         </Card>
-
-                        {/* Quick Tip */}
-                        <div className="p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl flex gap-3 items-start">
-                            <div className="p-2 bg-amber-500/10 rounded-lg text-amber-600">
-                                <Search size={16} />
-                            </div>
-                            <p className="text-xs leading-relaxed text-amber-800 dark:text-amber-200/70">
-                                <strong>Lưu ý:</strong> Vai trò mới sẽ có hiệu lực ngay lập tức
-                                sau khi được gán cho người dùng. Hãy kiểm tra kỹ danh sách quyền
-                                hạn trước khi tạo.
-                            </p>
-                        </div>
                     </div>
                 </div>
             </div>

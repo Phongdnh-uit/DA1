@@ -3,7 +3,6 @@ import { useUpdateBooking } from "@/services/booking/booking";
 import { updateBookingBody } from "@/services/booking/booking.zod";
 import type { BookingRequest, BookingRequestType } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "@tanstack/react-router";
 import { Building2Icon, FileTextIcon, HomeIcon, InfoIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -48,13 +47,11 @@ export const useUpdateBookingVM = () => {
 
     const timeSlots = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00"];
 
-    const navigate = useNavigate();
     const createBooking = useUpdateBooking({
         mutation: {
             onSuccess: () => {
                 toast.success("Cập nhật lịch tư vấn thành công!");
                 form.reset();
-                navigate({ to: "/" });
             },
             onError: (error) => {
                 console.log("Error creating booking:", error);
@@ -79,7 +76,7 @@ export const useUpdateBookingVM = () => {
     });
 
     const onSubmit = (data: BookingRequest) => {
-        createBooking.mutate({ id: booking?.data?.id as number , data: data });
+        createBooking.mutate({ id: booking?.data?.id as number, data: data });
     };
 
     return {

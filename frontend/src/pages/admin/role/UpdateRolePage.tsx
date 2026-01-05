@@ -4,11 +4,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Search, ChevronDown } from "lucide-react";
 import { Form } from "@/components/ui/form";
-import { FormInput } from "@/utils/formUtil";
+import { FormCheckbox, FormInput } from "@/utils/formUtil";
 import type { RoleRequest } from "@/types";
 import { BackButton } from "@/components/general/BackButton";
 import { useUpdateRoleVM } from "./UpdateRolePage.vm";
 import { MotionButton } from "@/components/customs/MotionButton";
+import { ModuleManage } from "./components/ModuleManage";
 
 
 export function UpdateRolePage() {
@@ -31,10 +32,10 @@ export function UpdateRolePage() {
                 <Card className="p-6 md:p-8 border border-border/50 shadow-lg">
                     <div>
                         <h2 className="text-2xl font-bold text-foreground mb-2">
-                            Thiết Lập Vai Trò Mới
+                            Cập nhật vai trò người dùng
                         </h2>
                         <p className="text-base text-muted-foreground">
-                            Cấp phát quyền hạn cho các nhóm người dùng.
+                            Chỉnh sửa thông tin và quyền hạn cho vai trò người dùng hiện tại.
                         </p>
                     </div>
                     <Form {...form}>
@@ -51,6 +52,18 @@ export function UpdateRolePage() {
                                 placeholder="Mô tả ngắn về vai trò này..."
                                 name="description"
                             />
+                            <div className="flex flex-col md:flex-row md:gap-6 mt-2 items-baseline">
+                                <FormCheckbox<RoleRequest>
+                                    title="Mặc định cho người dùng mới"
+                                    direction="row"
+                                    name="default"
+                                />
+                                <FormCheckbox<RoleRequest>
+                                    title="Cho phép quản trị"
+                                    direction="row"
+                                    name="canManage"
+                                />
+                            </div>
                         </div>
                     </Form>
 
@@ -164,6 +177,14 @@ export function UpdateRolePage() {
                     </div>
                 </Card>
                 <div className="relative">
+                <ModuleManage
+                    value={form.watch("accessibleModules") || []}
+                    onChange={(newValue) => {
+                        form.setValue("accessibleModules", newValue, {
+                                shouldDirty: true,
+                            });
+                    }}
+                />
                     <div className="space-y-6 sticky top-8 w-lg">
                         {/* Summary Card */}
                         <Card className="p-6 border-primary/20 bg-primary/[0.02] rounded-2xl overflow-hidden relative">

@@ -52,13 +52,13 @@ export default function ClientBanner() {
                             >
                                 <h2 className="font-extrabold text-3xl md:text-6xl text-transparent bg-clip-text bg-gradient-to-b from-white to-neutral-400 leading-tight drop-shadow-md">
                                     {
-                                        (slides[current]?.carousel?.metadata as CarouselMetadata)
+                                        (slides[current]?.carousel?.metadata as CarouselMetadata ?? {})
                                             .caption
                                     }
                                 </h2>
                                 <p className="text-lg md:text-2xl text-neutral-200 mt-4 mb-6 max-w-2xl">
                                     {
-                                        (slides[current]?.carousel?.metadata as CarouselMetadata)
+                                        (slides[current]?.carousel?.metadata as CarouselMetadata ?? {})
                                             .subcaption
                                     }
                                 </p>

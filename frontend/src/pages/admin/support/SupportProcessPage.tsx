@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
-import { Clock, ChevronRight } from "lucide-react";
+import { Clock } from "lucide-react";
 import { SenderInfoCard } from "./components/SenderInfo";
 import { ReportContentCard } from "./components/ReportContentCard";
 import { ActionForm } from "./components/ActionForm";

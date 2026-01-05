@@ -44,8 +44,8 @@ export const updatePropertyBody = zod.object({
   "interior": zod.string().optional(),
   "status": zod.enum(['AVAILABLE', 'RENTED', 'SOLD', 'MAINTENANCE', 'UNDER_CONSTRUCTION', 'OFF_MARKET']),
   "location": zod.object({
-  "longitude": zod.number(),
-  "latitude": zod.number()
+  "longitude": zod.number().optional(),
+  "latitude": zod.number().optional()
 }).optional(),
   "documentIds": zod.array(zod.number()).optional(),
   "thumbnailId": zod.number(),
@@ -85,8 +85,8 @@ export const createPropertyBody = zod.object({
   "interior": zod.string().optional(),
   "status": zod.enum(['AVAILABLE', 'RENTED', 'SOLD', 'MAINTENANCE', 'UNDER_CONSTRUCTION', 'OFF_MARKET']),
   "location": zod.object({
-  "longitude": zod.number(),
-  "latitude": zod.number()
+  "longitude": zod.number().optional(),
+  "latitude": zod.number().optional()
 }).optional(),
   "documentIds": zod.array(zod.number()).optional(),
   "thumbnailId": zod.number(),

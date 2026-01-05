@@ -2,12 +2,13 @@ import { motion } from "motion/react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, AlertCircle, Image, Eye } from "lucide-react";
+import type { FileResponse } from "@/types";
 
 interface ReportContentProps {
     reportType: string;
     severity: string;
     content: string;
-    attachments: string[];
+    attachments: FileResponse[];
 }
 
 export function ReportContentCard({
@@ -61,7 +62,7 @@ export function ReportContentCard({
                 <div className="px-6 pb-6">
                     <h4 className="text-sm font-bold mb-3 flex items-center gap-2">
                         <Image className="h-4 w-4 text-muted-foreground" />
-                        Hinh anh dinh kem ({attachments.length})
+                            ({attachments.length})
                     </h4>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                         {attachments.map((attachment, index) => (
@@ -71,9 +72,10 @@ export function ReportContentCard({
                                 whileHover={{ scale: 1.02 }}
                                 transition={{ duration: 0.2 }}
                             >
-                                <div
+                                <img
+                                    src={attachment.url}
                                     className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-105"
-                                    style={{ backgroundImage: `url("${attachment}")` }}
+                                    style={{ backgroundImage: `url("${attachment.url}")` }}
                                 />
                                 <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/30">
                                     <Eye className="h-5 w-5 text-white opacity-0 transition-opacity group-hover:opacity-100" />

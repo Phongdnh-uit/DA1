@@ -20,6 +20,8 @@ import { toast } from "react-toastify";
 import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
 import PermissionGate from "@/components/general/PermissionGate";
 import { ProvinceDetailSheet } from "./DetailProvinceSheet";
+import { motion } from "motion/react";
+import { fadeInUp } from "@/lib/animation";
 
 const keys: (keyof ProvinceResponse)[] = [
     "id",
@@ -173,7 +175,12 @@ export const ProvinceManage = () => {
     };
 
     return (
-        <div className="space-y-4">
+        <motion.div
+            variants={fadeInUp.container}
+            initial="hidden"
+            animate="show"
+            className="space-y-4"
+        >
             <div className="flex items-center justify-end p-2">
                 <PermissionGate permission="PROVINCE_CREATE">
                     <RippleButton
@@ -188,47 +195,51 @@ export const ProvinceManage = () => {
                     </RippleButton>
                 </PermissionGate>
             </div>
-            <Filter
-                sortAttributes={[
-                    { key: "id", label: "Mã tỉnh / thành" },
-                    { key: "name", label: "Tên tỉnh / thành" },
-                    { key: "code", label: "Mã hành chính" },
-                    { key: "type", label: "Loại đơn vị hành chính" },
-                    { key: "createdAt", label: "Ngày tạo" },
-                    { key: "updatedAt", label: "Ngày cập nhật" },
-                ]}
-                filterAttributes={[
-                    { name: "id", label: "Mã tỉnh / thành", type: "number" },
-                    { name: "name", label: "Tên tỉnh / thành", type: "text" },
-                    { name: "code", label: "Mã hành chính", type: "text" },
-                    { name: "type", label: "Loại đơn vị hành chính", type: "text" },
+            <motion.div variants={fadeInUp.item}>
+                <Filter
+                    sortAttributes={[
+                        { key: "id", label: "Mã tỉnh / thành" },
+                        { key: "name", label: "Tên tỉnh / thành" },
+                        { key: "code", label: "Mã hành chính" },
+                        { key: "type", label: "Loại đơn vị hành chính" },
+                        { key: "createdAt", label: "Ngày tạo" },
+                        { key: "updatedAt", label: "Ngày cập nhật" },
+                    ]}
+                    filterAttributes={[
+                        { name: "id", label: "Mã tỉnh / thành", type: "number" },
+                        { name: "name", label: "Tên tỉnh / thành", type: "text" },
+                        { name: "code", label: "Mã hành chính", type: "text" },
+                        { name: "type", label: "Loại đơn vị hành chính", type: "text" },
 
-                    { name: "createdBy", label: "Người tạo (ID)", type: "number" },
-                    { name: "updatedBy", label: "Người cập nhật (ID)", type: "number" },
+                        { name: "createdBy", label: "Người tạo (ID)", type: "number" },
+                        { name: "updatedBy", label: "Người cập nhật (ID)", type: "number" },
 
-                    { name: "createdAt", label: "Ngày tạo", type: "date" },
-                    { name: "updatedAt", label: "Ngày cập nhật", type: "date" },
-                ]}
-                searchField={["name"]}
-                onApply={onApplyFilter}
-            />
-            <DataTable
-                deleteCode="PROVINCE_DELETE_BULK"
-                className="h-[500px]"
-                name="Tỉnh/Thành phố"
-                table={table}
-                onBulkDelete={onBulkDelete}
-                pagination={pagination}
-                onPaginationChange={setPagination}
-                totalPages={list.data?.data?.totalPages || 0}
-                totalElements={list.data?.data?.totalElements || 0}
-                numberOfElements={list.data?.data?.numberOfElements || 0}
-            />
+                        { name: "createdAt", label: "Ngày tạo", type: "date" },
+                        { name: "updatedAt", label: "Ngày cập nhật", type: "date" },
+                    ]}
+                    searchField={["name"]}
+                    onApply={onApplyFilter}
+                />
+            </motion.div>
+            <motion.div variants={fadeInUp.item}>
+                <DataTable
+                    deleteCode="PROVINCE_DELETE_BULK"
+                    className="h-[500px]"
+                    name="Tỉnh/Thành phố"
+                    table={table}
+                    onBulkDelete={onBulkDelete}
+                    pagination={pagination}
+                    onPaginationChange={setPagination}
+                    totalPages={list.data?.data?.totalPages || 0}
+                    totalElements={list.data?.data?.totalElements || 0}
+                    numberOfElements={list.data?.data?.numberOfElements || 0}
+                />
+            </motion.div>
             <ProvinceDetailSheet
                 province={provinceDetail}
                 open={openedDetail}
                 onOpenChange={setOpenedDetail}
             />
-        </div>
+        </motion.div>
     );
 };

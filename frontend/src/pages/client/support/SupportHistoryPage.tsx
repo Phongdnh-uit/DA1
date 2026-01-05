@@ -28,8 +28,8 @@ import {
     supportTypeConverter,
 } from "@/utils/converter";
 import { useNavigate } from "@tanstack/react-router";
-import { useGetClientSupportTickets } from "@/services/support-controller/support-controller";
 import { debounce } from "lodash";
+import { useGetClientSupportTickets } from "@/services/support/support";
 
 const getTypeIcon = (type: SupportRequestType) => {
     switch (type) {

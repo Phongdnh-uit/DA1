@@ -20,6 +20,8 @@ import { useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { WardDetailSheet } from "./DetailWardSheet";
+import { motion } from "motion/react";
+import { fadeInUp } from "@/lib/animation";
 
 const keys: (keyof WardResponse)[] = [
     "id",
@@ -165,7 +167,12 @@ export const WardManage = () => {
     };
 
     return (
-        <div className="space-y-4">
+        <motion.div
+            variants={fadeInUp.container}
+            initial="hidden"
+            animate="show"
+            className="space-y-4"
+        >
             <div className="flex items-center justify-end p-2">
                 <PermissionGate permission="WARD_CREATE">
                     <RippleButton
@@ -176,59 +183,67 @@ export const WardManage = () => {
                     </RippleButton>
                 </PermissionGate>
             </div>
-            <Filter
-                sortAttributes={[
-                    { key: "id", label: "Mã phường / xã" },
-                    { key: "name", label: "Tên phường / xã" },
-                    { key: "code", label: "Mã hành chính" },
-                    { key: "type", label: "Loại đơn vị hành chính" },
+            <motion.div variants={fadeInUp.item}>
+                <Filter
+                    sortAttributes={[
+                        { key: "id", label: "Mã phường / xã" },
+                        { key: "name", label: "Tên phường / xã" },
+                        { key: "code", label: "Mã hành chính" },
+                        { key: "type", label: "Loại đơn vị hành chính" },
 
-                    { key: "province.id", label: "Mã tỉnh / thành" },
-                    { key: "province.name", label: "Tên tỉnh / thành" },
+                        { key: "province.id", label: "Mã tỉnh / thành" },
+                        { key: "province.name", label: "Tên tỉnh / thành" },
 
-                    { key: "createdAt", label: "Ngày tạo" },
-                    { key: "updatedAt", label: "Ngày cập nhật" },
-                ]}
-                filterAttributes={[
-                    { name: "id", label: "Mã phường / xã", type: "number" },
-                    { name: "name", label: "Tên phường / xã", type: "text" },
-                    { name: "code", label: "Mã hành chính", type: "text" },
-                    { name: "type", label: "Loại đơn vị hành chính", type: "text" },
+                        { key: "createdAt", label: "Ngày tạo" },
+                        { key: "updatedAt", label: "Ngày cập nhật" },
+                    ]}
+                    filterAttributes={[
+                        { name: "id", label: "Mã phường / xã", type: "number" },
+                        { name: "name", label: "Tên phường / xã", type: "text" },
+                        { name: "code", label: "Mã hành chính", type: "text" },
+                        { name: "type", label: "Loại đơn vị hành chính", type: "text" },
 
-                    { name: "province.id", label: "Mã tỉnh / thành", type: "number" },
-                    { name: "province.name", label: "Tên tỉnh / thành", type: "text" },
-                    { name: "province.code", label: "Mã hành chính tỉnh", type: "text" },
-                    {
-                        name: "province.type",
-                        label: "Loại đơn vị hành chính tỉnh",
-                        type: "text",
-                    },
+                        { name: "province.id", label: "Mã tỉnh / thành", type: "number" },
+                        { name: "province.name", label: "Tên tỉnh / thành", type: "text" },
+                        {
+                            name: "province.code",
+                            label: "Mã hành chính tỉnh",
+                            type: "text",
+                        },
+                        {
+                            name: "province.type",
+                            label: "Loại đơn vị hành chính tỉnh",
+                            type: "text",
+                        },
 
-                    { name: "createdBy", label: "Người tạo (ID)", type: "number" },
-                    { name: "updatedBy", label: "Người cập nhật (ID)", type: "number" },
+                        { name: "createdBy", label: "Người tạo (ID)", type: "number" },
+                        { name: "updatedBy", label: "Người cập nhật (ID)", type: "number" },
 
-                    { name: "createdAt", label: "Ngày tạo", type: "date" },
-                    { name: "updatedAt", label: "Ngày cập nhật", type: "date" },
-                ]}
-                onApply={onApplyFilter}
-            />
-            <DataTable
-                deleteCode="WARD_DELETE_BULK"
-                className="h-[500px]"
-                name="Xã/Phường"
-                table={table}
-                onBulkDelete={onBulkDelete}
-                pagination={pagination}
-                onPaginationChange={setPagination}
-                totalPages={list.data?.data?.totalPages || 0}
-                totalElements={list.data?.data?.totalElements || 0}
-                numberOfElements={list.data?.data?.numberOfElements || 0}
-            />
+                        { name: "createdAt", label: "Ngày tạo", type: "date" },
+                        { name: "updatedAt", label: "Ngày cập nhật", type: "date" },
+                    ]}
+                    onApply={onApplyFilter}
+                />
+            </motion.div>
+            <motion.div variants={fadeInUp.item}>
+                <DataTable
+                    deleteCode="WARD_DELETE_BULK"
+                    className="h-[500px]"
+                    name="Xã/Phường"
+                    table={table}
+                    onBulkDelete={onBulkDelete}
+                    pagination={pagination}
+                    onPaginationChange={setPagination}
+                    totalPages={list.data?.data?.totalPages || 0}
+                    totalElements={list.data?.data?.totalElements || 0}
+                    numberOfElements={list.data?.data?.numberOfElements || 0}
+                />
+            </motion.div>
             <WardDetailSheet
                 ward={detailWard}
                 open={openedDetail}
                 onOpenChange={setOpenedDetail}
             />
-        </div>
+        </motion.div>
     );
 };

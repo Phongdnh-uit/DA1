@@ -14,12 +14,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { createColumnsFromType } from "@/utils/createColumn";
 import type { AdminSupportResponse, AdminSupportResponseStatus } from "@/types";
-import { useGetAdminSupportTickets } from "@/services/support-controller/support-controller";
 import { useDatatable } from "@/hooks/useDatatable";
 import Filter from "@/components/admin/Filter";
 import { DataTable } from "@/components/general/DataTable";
 import { useNavigate } from "@tanstack/react-router";
 import { fadeInUp } from "@/lib/animation";
+import { useGetAdminSupportTickets } from "@/services/support/support";
 
 const statusConfig = {
     OPEN: {
@@ -200,7 +200,7 @@ export const SupportManage = () => {
                                 </div>
                                 <div className="flex items-baseline gap-2">
                                     <p className="text-3xl font-bold text-slate-900 dark:text-white">
-                                        124
+                                        1
                                     </p>
                                     <Badge
                                         variant="secondary"
@@ -227,7 +227,7 @@ export const SupportManage = () => {
                                 </div>
                                 <div className="flex items-baseline gap-2">
                                     <p className="text-3xl font-bold text-slate-900 dark:text-white">
-                                        45
+                                        1
                                     </p>
                                     <Badge
                                         variant="secondary"
@@ -253,7 +253,7 @@ export const SupportManage = () => {
                                 </div>
                                 <div className="flex items-baseline gap-2">
                                     <p className="text-3xl font-bold text-slate-900 dark:text-white">
-                                        12
+                                        0
                                     </p>
                                     <Badge
                                         variant="secondary"

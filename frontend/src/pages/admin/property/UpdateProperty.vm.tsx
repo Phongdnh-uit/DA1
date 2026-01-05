@@ -51,7 +51,10 @@ export default function useUpdatePropertyVM() {
             documentIds: property?.data?.documents?.map((doc) => doc.id) ?? [],
             thumbnailId: property?.data?.thumbnail?.id ?? undefined,
             galleryIds: property?.data?.galleries?.map((media) => media.id) ?? [],
-            location: property?.data?.location ?? undefined,
+            location: {
+                latitude: property?.data?.location?.latitude ?? undefined,
+                longitude: property?.data?.location?.longitude ?? undefined,
+            },
         },
         mode: "onSubmit",
         resolver: zodResolver(updatePropertyBody),
@@ -236,7 +239,7 @@ export default function useUpdatePropertyVM() {
     };
 
     const onLocationChange = (data: Location | undefined) => {
-        form.setValue("location", data);
+        form.setValue("location", data, { shouldDirty: true });
     };
 
     const handleAddDocument = async (file: File) => {

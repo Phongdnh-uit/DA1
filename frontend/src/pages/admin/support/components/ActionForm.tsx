@@ -4,14 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Gavel, Lock, Mail, CheckCircle2, X } from "lucide-react";
-import {
-    useCloseSupportTicket,
-    useProcessSupportTicket,
-} from "@/services/support-controller/support-controller";
 import { toast } from "react-toastify";
 import type { ProcessSupportRequest } from "@/types";
 import { Route } from "@/routes/admin/support/process.$id";
 import { useRef } from "react";
+import { useCloseSupportTicket, useProcessSupportTicket } from "@/services/support/support";
 
 export function ActionForm() {
     const { id } = Route.useParams();

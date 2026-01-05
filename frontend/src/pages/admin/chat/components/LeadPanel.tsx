@@ -1,5 +1,6 @@
 "use client";
 
+import { MotionButton } from "@/components/customs/MotionButton";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useFilePreview } from "@/hooks/useFileHook";
@@ -10,6 +11,7 @@ import {
 } from "@/services/conversation/conversation";
 import { useFindPropertyById } from "@/services/property/property";
 import { formatCurrency } from "@/utils/converter";
+import { useNavigate } from "@tanstack/react-router";
 import { Mail, Phone } from "lucide-react";
 import { toast } from "react-toastify";
 
@@ -28,6 +30,7 @@ export default function LeadPanel({
     selectedConversation,
     onLeadChange,
 }: LeadPanelProps) {
+    const navigate = useNavigate();
     const conversation = useGetConversationById(selectedConversation as number, {
         query: {
             enabled: selectedConversation !== null,
@@ -111,15 +114,15 @@ export default function LeadPanel({
                 <div className="space-y-3">
                     <div>
                         <p className="text-sm text-muted-foreground">Họ tên</p>
-                        <p className="font-medium text-foreground">{userInfo?.fullName}</p>
+                        <p className="font-medium text-foreground">{userInfo?.fullName || "Không xác định"}</p>
                     </div>
                     <div className="flex items-center gap-2">
                         <Mail className="h-4 w-4 text-muted-foreground" />
-                        <p className="text-sm text-foreground">{userInfo?.email}</p>
+                        <p className="text-sm text-foreground">{userInfo?.email || "Không xác định"}</p>
                     </div>
                     <div className="flex items-center gap-2">
                         <Phone className="h-4 w-4 text-muted-foreground" />
-                        <p className="text-sm text-foreground">{userInfo?.phone}</p>
+                        <p className="text-sm text-foreground">{userInfo?.phone || "Không xác định"}</p>
                     </div>
                 </div>
             </div>
@@ -149,6 +152,16 @@ export default function LeadPanel({
                                 </p>
                             </div>
                         </div>
+                        <MotionButton
+                            onClick={() => {
+                                if (!property.data?.data?.id) return;
+                                navigate({
+                                    to: `/admin/property/detail/${property.data?.data?.id}`,
+                                });
+                            }}
+                        >
+                            Xem chi tiết bất động sản
+                        </MotionButton>
                     </Card>
                 </div>
             )}

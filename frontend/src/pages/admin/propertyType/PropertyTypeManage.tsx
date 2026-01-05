@@ -20,6 +20,8 @@ import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
 import { useNavigate } from "@tanstack/react-router";
 import PermissionGate from "@/components/general/PermissionGate";
 import { PropertyTypeDetailSheet } from "./PropertyTypeDetailSheet";
+import { motion } from "motion/react";
+import { fadeInUp } from "@/lib/animation";
 
 const keys: (keyof PropertyTypeResponse)[] = [
     "id",
@@ -162,7 +164,12 @@ export const PropertyTypeManage = () => {
     };
 
     return (
-        <div className="space-y-4">
+        <motion.div
+            variants={fadeInUp.container}
+            initial="hidden"
+            animate="show"
+            className="space-y-4"
+        >
             <div className="flex items-center justify-end p-2">
                 <PermissionGate permission="PROPERTY_TYPE_CREATE">
                     <RippleButton
@@ -174,43 +181,47 @@ export const PropertyTypeManage = () => {
                     </RippleButton>
                 </PermissionGate>
             </div>
-            <Filter
-                sortAttributes={[
-                    { key: "id", label: "Mã loại bất động sản" },
-                    { key: "name", label: "Tên loại bất động sản" },
-                    { key: "createdAt", label: "Ngày tạo" },
-                    { key: "updatedAt", label: "Ngày cập nhật" },
-                ]}
-                filterAttributes={[
-                    { name: "id", label: "Mã loại bất động sản", type: "number" },
-                    { name: "name", label: "Tên loại bất động sản", type: "text" },
+            <motion.div variants={fadeInUp.item}>
+                <Filter
+                    sortAttributes={[
+                        { key: "id", label: "Mã loại bất động sản" },
+                        { key: "name", label: "Tên loại bất động sản" },
+                        { key: "createdAt", label: "Ngày tạo" },
+                        { key: "updatedAt", label: "Ngày cập nhật" },
+                    ]}
+                    filterAttributes={[
+                        { name: "id", label: "Mã loại bất động sản", type: "number" },
+                        { name: "name", label: "Tên loại bất động sản", type: "text" },
 
-                    { name: "createdBy", label: "Người tạo (ID)", type: "number" },
-                    { name: "updatedBy", label: "Người cập nhật (ID)", type: "number" },
+                        { name: "createdBy", label: "Người tạo (ID)", type: "number" },
+                        { name: "updatedBy", label: "Người cập nhật (ID)", type: "number" },
 
-                    { name: "createdAt", label: "Ngày tạo", type: "date" },
-                    { name: "updatedAt", label: "Ngày cập nhật", type: "date" },
-                ]}
-                searchField={["name"]}
-                onApply={onApplyFilter}
-            />
-            <DataTable
-                deleteCode="PROPERTY_TYPE_DELETE_BULK"
-                className="h-[500px]"
-                name="Loại bất động sản"
-                table={table}
-                onBulkDelete={onBulkDelete}
-                pagination={pagination}
-                onPaginationChange={setPagination}
-                totalPages={list.data?.data?.totalPages || 0}
-                totalElements={list.data?.data?.totalElements || 0}
-                numberOfElements={list.data?.data?.numberOfElements || 0}
-            />
+                        { name: "createdAt", label: "Ngày tạo", type: "date" },
+                        { name: "updatedAt", label: "Ngày cập nhật", type: "date" },
+                    ]}
+                    searchField={["name"]}
+                    onApply={onApplyFilter}
+                />
+            </motion.div>
+            <motion.div variants={fadeInUp.item}>
+                <DataTable
+                    deleteCode="PROPERTY_TYPE_DELETE_BULK"
+                    className="h-[500px]"
+                    name="Loại bất động sản"
+                    table={table}
+                    onBulkDelete={onBulkDelete}
+                    pagination={pagination}
+                    onPaginationChange={setPagination}
+                    totalPages={list.data?.data?.totalPages || 0}
+                    totalElements={list.data?.data?.totalElements || 0}
+                    numberOfElements={list.data?.data?.numberOfElements || 0}
+                />
+            </motion.div>
             <PropertyTypeDetailSheet
                 open={openedDetail}
                 onOpenChange={setOpenedDetail}
                 propertyType={propertyTypeDetail}
             />
-        </div>
+        </motion.div>
     );
 };

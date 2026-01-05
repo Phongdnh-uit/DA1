@@ -1,7 +1,7 @@
 import { useFileDownload, useFileUpload } from "@/hooks/useFileHook";
 import { config } from "@/lib/config";
-import { useCreateSupportTicket } from "@/services/support-controller/support-controller";
-import { createSupportTicketBody } from "@/services/support-controller/support-controller.zod";
+import { useCreateSupportTicket } from "@/services/support/support";
+import { createSupportTicketBody } from "@/services/support/support.zod";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { FileResponse, SupportRequest } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";

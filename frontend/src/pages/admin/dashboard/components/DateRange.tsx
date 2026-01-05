@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { ArrowRight, CalendarIcon } from "lucide-react";
 import {
     Select,
@@ -14,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/date-picker";
 import { Label } from "@/components/ui/label";
+import { MotionButton } from "@/components/customs/MotionButton";
 
 type GroupBy = "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
 
@@ -24,10 +24,24 @@ const groupByOptions = [
     { value: "YEARLY", label: "Theo năm (Yearly)" },
 ];
 
-export function DateRangeFilter() {
+interface DateRangeFilterProps {
+    onApply?: (
+        startDate: Date | undefined,
+        endDate: Date | undefined,
+        groupBy: GroupBy,
+    ) => void;
+}
+
+export function DateRangeFilter({ onApply }: DateRangeFilterProps) {
     const [startDate, setStartDate] = useState<Date | undefined>(new Date());
     const [endDate, setEndDate] = useState<Date | undefined>(new Date());
     const [groupBy, setGroupBy] = useState<GroupBy>("DAILY");
+
+    const handleApply = () => {
+        if (onApply) {
+            onApply(startDate, endDate, groupBy);
+        }
+    };
 
     return (
         <motion.div
@@ -141,16 +155,12 @@ export function DateRangeFilter() {
                             >
                                 &nbsp;
                             </label>
-                            <motion.div
-                                whileTap={{ scale: 0.95 }}
-                                whileHover={{ scale: 1.02 }}
-                                className="w-full sm:w-auto"
-                            >
-                                <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold px-6 py-2 rounded-lg h-10 hover:from-blue-700 hover:to-blue-800 shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2">
-                                    <ArrowRight className="w-4 h-4" />
-                                    <span>Áp dụng</span>
-                                </Button>
-                            </motion.div>
+                            <MotionButton 
+                                onClick={handleApply}
+                                className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold px-6 py-2 rounded-lg h-10 hover:from-blue-700 hover:to-blue-800 shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2">
+                                <ArrowRight className="w-4 h-4" />
+                                <span>Áp dụng</span>
+                            </MotionButton>
                         </div>
                     </div>
                 </div>

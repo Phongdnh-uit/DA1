@@ -210,13 +210,15 @@ export default function ClientHeader() {
                                         label="Lịch sử hỗ trợ"
                                         onClick={() => navigate({ to: "/support/history" })}
                                     />
-                                    <MenuActionItem
-                                        icon={
-                                            <CircuitBoard className="group-hover:text-blue-500" />
-                                        }
-                                        label="Trang quản trị"
-                                        onClick={() => navigate({ to: "/admin/dashboard" })}
-                                    />
+                                    {authStore.user?.role?.canManage && (
+                                        <MenuActionItem
+                                            icon={
+                                                <CircuitBoard className="group-hover:text-blue-500" />
+                                            }
+                                            label="Trang quản trị"
+                                            onClick={() => navigate({ to: "/admin/dashboard" })}
+                                        />
+                                    )}
                                 </div>
 
                                 <DropdownMenuSeparator className="mx-1" />

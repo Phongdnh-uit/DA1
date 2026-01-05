@@ -153,33 +153,35 @@ export function FormCheckbox<K>({
             control={form.control}
             name={name}
             render={({ field }) => (
-                <FormItem
-                    className={cn({
-                        "flex flex-col gap-2": direction === "column",
-                        "flex flex-row items-center gap-2": direction === "row",
-                    })}
-                >
-                    <FormLabel
-                        htmlFor={name}
-                        className={"text-xl flex tems-center gap-1"}
+                <FormItem>
+                    <div
+                        className={cn({
+                            "flex flex-col gap-2": direction === "column",
+                            "flex flex-row items-center gap-2": direction === "row",
+                        })}
                     >
-                        {title}
-                        {required && <span className="text-red-500">*</span>}
-                    </FormLabel>
-                    <FormControl>
-                        <div>
-                            <Checkbox
-                                id={name}
-                                checked={field.value}
-                                className={cn(
-                                    "size-5 rounded-[6px] bg-white data-[state=checked]:bg-blue-500 data-[state=checked]:border-transparent aria-invalid:border-rose-500 aria-invalid:ring-rose-500/30",
-                                    className,
-                                )}
-                                onCheckedChange={field.onChange}
-                                {...props}
-                            />
-                        </div>
-                    </FormControl>
+                        <FormLabel
+                            htmlFor={name}
+                            className={"text-xl flex tems-center gap-1"}
+                        >
+                            {title}
+                            {required && <span className="text-red-500">*</span>}
+                        </FormLabel>
+                        <FormControl>
+                            <div>
+                                <Checkbox
+                                    id={name}
+                                    checked={field.value}
+                                    className={cn(
+                                        "size-5 rounded-[6px] bg-white data-[state=checked]:bg-blue-500 data-[state=checked]:border-transparent aria-invalid:border-rose-500 aria-invalid:ring-rose-500/30",
+                                        className,
+                                    )}
+                                    onCheckedChange={field.onChange}
+                                    {...props}
+                                />
+                            </div>
+                        </FormControl>
+                    </div>
                     <FormDescription className="text-base">{description}</FormDescription>
                     <FormMessage />
                 </FormItem>
@@ -229,6 +231,7 @@ export function FormSelect<K>({
                         <PopoverTrigger asChild>
                             <FormControl>
                                 <Button
+                                    name={name}
                                     disabled={disabled}
                                     variant="outline"
                                     role="combobox"

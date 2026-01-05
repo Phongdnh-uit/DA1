@@ -21,7 +21,10 @@ export const updateRoleParams = zod.object({
 export const updateRoleBody = zod.object({
   "name": zod.string().min(1),
   "description": zod.string().optional(),
-  "permissionIds": zod.array(zod.number()).optional()
+  "canManage": zod.boolean().optional(),
+  "permissionIds": zod.array(zod.number()).optional(),
+  "accessibleModules": zod.array(zod.string()).optional(),
+  "default": zod.boolean().optional()
 })
 
 export const deleteRoleByIdParams = zod.object({
@@ -34,7 +37,10 @@ export const deleteRoleByIdParams = zod.object({
 export const createRoleBody = zod.object({
   "name": zod.string().min(1),
   "description": zod.string().optional(),
-  "permissionIds": zod.array(zod.number()).optional()
+  "canManage": zod.boolean().optional(),
+  "permissionIds": zod.array(zod.number()).optional(),
+  "accessibleModules": zod.array(zod.string()).optional(),
+  "default": zod.boolean().optional()
 })
 
 export const findAllRoleQueryPageDefault = 0;

@@ -1,13 +1,7 @@
+import { Combobox } from "@/components/customs/Combobox";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { RippleButton } from "@/components/ui/shadcn-io/ripple-button";
 import { useFindAllPropertyType } from "@/services/property-type/property-type";
 import { useFindAllProvince } from "@/services/province/province";
@@ -17,12 +11,10 @@ import { MapPinIcon, SearchIcon } from "lucide-react";
 import { motion } from "motion/react";
 
 interface FilterTopBarProps {
-    onSubmit: () => void
+    onSubmit: () => void;
 }
 
-export const FilterTopBar = (
-    {onSubmit} : FilterTopBarProps
-) => {
+export const FilterTopBar = ({ onSubmit }: FilterTopBarProps) => {
     const filters = useFilterStore((s) => s.filters);
     const update = useFilterStore((s) => s.update);
     const listProvince = useFindAllProvince({ all: true, sort: ["name,asc"] });
@@ -62,84 +54,70 @@ export const FilterTopBar = (
                         <Label htmlFor="type" className="mb-2 block">
                             Tỉnh/Thành phố
                         </Label>
-                        <Select
-                            value={filters.provinceId ? String(filters.provinceId) : ""}
-                            onValueChange={(value) =>
+                        <Combobox
+                            value={filters.provinceId ? String(filters.provinceId) : null}
+                            onChange={(value) =>
                                 update({
                                     provinceId: +value,
                                 })
                             }
-                        >
-                            <SelectTrigger id="type" className="w-full">
-                                <SelectValue placeholder="Chọn tỉnh/thành phố" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {listProvince.data?.data?.content?.map(
-                                    (province) =>
-                                        province.id && (
-                                            <SelectItem
-                                                key={province.id}
-                                                value={province.id.toString()}
-                                            >
-                                                {province.name}
-                                            </SelectItem>
-                                        ),
-                                )}
-                            </SelectContent>
-                        </Select>
+                            options={
+                                listProvince.data?.data?.content?.map((province) => ({
+                                    key: province.id as number,
+                                    render: province.type + " " + province.name,
+                                    searchKey: province.type + " " + province.name,
+                                })) || []
+                            }
+                            searchable
+                            className="!h-12"
+                        />
                     </div>
 
                     <div>
                         <Label htmlFor="type" className="mb-2 block">
                             Xã/Phường
                         </Label>
-                        <Select
-                            value={filters.wardId ? String(filters.wardId) : ""}
-                            onValueChange={(value) => update({ wardId: +value })}
+                        <Combobox
+                            className="!h-12"
+                            value={filters.wardId ? String(filters.wardId) : null}
+                            onChange={(value) =>
+                                update({
+                                    wardId: +value,
+                                })
+                            }
+                            options={
+                                listWard.data?.data?.content?.map((ward) => ({
+                                    key: ward.id as number,
+                                    render: ward.name,
+                                    searchKey: ward.name,
+                                })) || []
+                            }
+                            searchable
                             disabled={!filters.provinceId}
-                        >
-                            <SelectTrigger id="type" className="w-full">
-                                <SelectValue placeholder="Chọn xã/phường" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {listWard.data?.data?.content?.map(
-                                    (ward) =>
-                                        ward.id && (
-                                            <SelectItem key={ward.id} value={ward.id.toString()}>
-                                                {ward.name}
-                                            </SelectItem>
-                                        ),
-                                )}
-                            </SelectContent>
-                        </Select>
+                        />
                     </div>
 
                     <div>
                         <Label htmlFor="type" className="mb-2 block">
                             Loại hình
                         </Label>
-                        <Select
-                            value={filters.typeId ? String(filters.typeId) : ""}
-                            onValueChange={(value) =>
+                        <Combobox
+                            className="!h-12"
+                            value={filters.typeId ? String(filters.typeId) : null}
+                            onChange={(value) =>
                                 update({
                                     typeId: +value,
                                 })
                             }
-                        >
-                            <SelectTrigger id="type" className="w-full">
-                                <SelectValue placeholder="Chọn loại hình" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {listType.data?.data?.content?.map(
-                                    (type) =>
-                                        type.id && (
-                                            <SelectItem key={type.id} value={type.id.toString()}>
-                                                {type.name}
-                                            </SelectItem>
-                                        ),
-                                )}
-                            </SelectContent>
-                        </Select>
+                            options={
+                                listType.data?.data?.content?.map((type) => ({
+                                    key: type.id as number,
+                                    render: type.name,
+                                    searchKey: type.name,
+                                })) || []
+                            }
+                            searchable
+                        />
                     </div>
 
                     {/* Search Button */}
@@ -149,7 +127,8 @@ export const FilterTopBar = (
                             whileHover={{ scale: 1.05 }}
                             transition={{ type: "spring", stiffness: 400 }}
                         >
-                            <RippleButton className="w-full h-10 bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center"
+                            <RippleButton
+                                className="w-full h-10 bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center"
                                 onClick={onSubmit}
                             >
                                 <SearchIcon className="h-4 w-4 mr-2" />

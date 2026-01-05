@@ -14,4 +14,8 @@ export interface RoleResponse {
   updatedAt?: string;
   name?: string;
   description?: string;
+  canManage?: boolean;
+  accessibleModules?: string[];
+  permissionIds?: number[];
+  default?: boolean;
 }

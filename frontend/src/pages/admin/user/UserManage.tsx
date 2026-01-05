@@ -1,8 +1,10 @@
 import Filter from "@/components/admin/Filter";
 import { DataTable } from "@/components/general/DataTable";
 import PermissionGate from "@/components/general/PermissionGate";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RippleButton } from "@/components/ui/shadcn-io/ripple-button";
 import { useDatatable } from "@/hooks/useDatatable";
+import { fadeInUp } from "@/lib/animation";
 import {
     useDeleteBulkUser,
     useDeleteUserById,
@@ -17,6 +19,8 @@ import {
 } from "@/utils/createColumn";
 import { IconSparkles } from "@tabler/icons-react";
 import { useNavigate } from "@tanstack/react-router";
+import { User } from "lucide-react";
+import { motion } from "motion/react";
 import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -56,6 +60,20 @@ export const UserManage = () => {
                 {
                     key: "fullName",
                     header: "Họ và tên",
+                    cell: ({ row }) => (
+                        <div className="flex items-center gap-2">
+                            <Avatar>
+                                <AvatarImage
+                                    src={row.original.avatar?.url}
+                                    alt={row.original.fullName || "User Avatar"}
+                                />
+                                <AvatarFallback>
+                                    <User />
+                                </AvatarFallback>
+                            </Avatar>
+                            <span>{row.original.fullName}</span>
+                        </div>
+                    ),
                 },
                 {
                     key: "email",
@@ -168,7 +186,12 @@ export const UserManage = () => {
     };
 
     return (
-        <div className="space-y-4">
+        <motion.div
+            variants={fadeInUp.container}
+            initial="hidden"
+            animate="show"
+            className="space-y-4"
+        >
             <div className="flex items-center justify-end p-2">
                 <PermissionGate permission="USER_CREATE">
                     <RippleButton
@@ -179,48 +202,52 @@ export const UserManage = () => {
                     </RippleButton>
                 </PermissionGate>
             </div>
-            <Filter
-                sortAttributes={[
-                    { key: "id", label: "Mã người dùng" },
-                    { key: "fullName", label: "Họ và tên" },
-                    { key: "email", label: "Email" },
-                    { key: "phone", label: "Số điện thoại" },
-                    { key: "status", label: "Trạng thái" },
-                    { key: "createdAt", label: "Ngày tạo" },
-                    { key: "updatedAt", label: "Ngày cập nhật" },
-                    { key: "createdBy", label: "Người tạo" },
-                    { key: "updatedBy", label: "Người cập nhật" },
-                ]}
-                filterAttributes={[
-                    { name: "id", label: "Mã người dùng", type: "number" },
-                    { name: "fullName", label: "Họ và tên", type: "text" },
-                    { name: "email", label: "Email", type: "text" },
-                    { name: "phone", label: "Số điện thoại", type: "text" },
+            <motion.div variants={fadeInUp.item}>
+                <Filter
+                    sortAttributes={[
+                        { key: "id", label: "Mã người dùng" },
+                        { key: "fullName", label: "Họ và tên" },
+                        { key: "email", label: "Email" },
+                        { key: "phone", label: "Số điện thoại" },
+                        { key: "status", label: "Trạng thái" },
+                        { key: "createdAt", label: "Ngày tạo" },
+                        { key: "updatedAt", label: "Ngày cập nhật" },
+                        { key: "createdBy", label: "Người tạo" },
+                        { key: "updatedBy", label: "Người cập nhật" },
+                    ]}
+                    filterAttributes={[
+                        { name: "id", label: "Mã người dùng", type: "number" },
+                        { name: "fullName", label: "Họ và tên", type: "text" },
+                        { name: "email", label: "Email", type: "text" },
+                        { name: "phone", label: "Số điện thoại", type: "text" },
 
-                    { name: "status", label: "Trạng thái", type: "text" },
-                    { name: "roleId", label: "Vai trò (ID)", type: "number" },
+                        { name: "status", label: "Trạng thái", type: "text" },
+                        { name: "roleId", label: "Vai trò (ID)", type: "number" },
 
-                    { name: "createdBy", label: "Người tạo (ID)", type: "number" },
-                    { name: "updatedBy", label: "Người cập nhật (ID)", type: "number" },
+                        { name: "createdBy", label: "Người tạo (ID)", type: "number" },
+                        { name: "updatedBy", label: "Người cập nhật (ID)", type: "number" },
 
-                    { name: "createdAt", label: "Ngày tạo", type: "date" },
-                    { name: "updatedAt", label: "Ngày cập nhật", type: "date" },
-                ]}
-                searchField={["fullName", "email", "phone"]}
-                onApply={onApplyFilter}
-            />
-            <DataTable
-                deleteCode="USER_DELETE_BULK"
-                className="h-[500px]"
-                name="Người dùng"
-                table={table}
-                onBulkDelete={onBulkDelete}
-                pagination={pagination}
-                onPaginationChange={setPagination}
-                totalPages={list.data?.data?.totalPages || 0}
-                totalElements={list.data?.data?.totalElements || 0}
-                numberOfElements={list.data?.data?.numberOfElements || 0}
-            />
-        </div>
+                        { name: "createdAt", label: "Ngày tạo", type: "date" },
+                        { name: "updatedAt", label: "Ngày cập nhật", type: "date" },
+                    ]}
+                    searchField={["fullName", "email", "phone"]}
+                    onApply={onApplyFilter}
+                />
+            </motion.div>
+            <motion.div variants={fadeInUp.item}>
+                <DataTable
+                    deleteCode="USER_DELETE_BULK"
+                    className="h-[500px]"
+                    name="Người dùng"
+                    table={table}
+                    onBulkDelete={onBulkDelete}
+                    pagination={pagination}
+                    onPaginationChange={setPagination}
+                    totalPages={list.data?.data?.totalPages || 0}
+                    totalElements={list.data?.data?.totalElements || 0}
+                    numberOfElements={list.data?.data?.numberOfElements || 0}
+                />
+            </motion.div>
+        </motion.div>
     );
 };

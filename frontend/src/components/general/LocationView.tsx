@@ -155,7 +155,7 @@ const LocationView: React.FC<LocationViewProps> = ({
                     <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10">
                         <Button
                             onClick={handleSearchArea}
-                            className="bg-white text-foreground hover:bg-gray-100 shadow-xl rounded-full px-6 py-2 border animate-in fade-in zoom-in duration-300"
+                            className="bg-white text-foreground hover:bg-gray-100 shadow-xl rounded-full px-6 py-2 border animate-in fade-in zoom-in duration-300 dark:bg-gray-800 dark:hover:bg-gray-700"
                         >
                             <Search className="w-4 h-4 mr-2" />
                             Tìm khu vực này

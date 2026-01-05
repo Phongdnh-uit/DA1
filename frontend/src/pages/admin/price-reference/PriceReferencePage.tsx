@@ -69,8 +69,8 @@ export const PriceReferencePage = () => {
     return (
         <div className="space-y-6">
             {/* City Selector */}
-            <Card className="w-full bg-slate-50 border-slate-200">
-                <CardContent className="p-6">
+            <Card className="w-full">
+                <CardContent>
                     <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
                         <Combobox
                             options={

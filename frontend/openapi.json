@@ -4021,6 +4021,62 @@
           }
         }
       },
+      "RoleResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createdBy": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "updatedBy": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "canManage": {
+            "type": "boolean"
+          },
+          "accessibleModules": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "permissionIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "uniqueItems": true
+          },
+          "default": {
+            "type": "boolean"
+          }
+        }
+      },
       "UserResponse": {
         "type": "object",
         "properties": {
@@ -4078,6 +4134,9 @@
           },
           "avatar": {
             "$ref": "#/components/schemas/FileResponse"
+          },
+          "role": {
+            "$ref": "#/components/schemas/RoleResponse"
           }
         }
       },
@@ -4127,12 +4186,25 @@
           "description": {
             "type": "string"
           },
+          "canManage": {
+            "type": "boolean"
+          },
           "permissionIds": {
             "type": "array",
             "items": {
               "type": "integer",
               "format": "int64"
             }
+          },
+          "accessibleModules": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "default": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -4161,41 +4233,6 @@
           "timestamp": {
             "type": "string",
             "format": "date-time"
-          }
-        }
-      },
-      "RoleResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "version": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "createdBy": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "updatedBy": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
           }
         }
       },
@@ -4326,11 +4363,7 @@
             "type": "number",
             "format": "double"
           }
-        },
-        "required": [
-          "latitude",
-          "longitude"
-        ]
+        }
       },
       "PropertyRequest": {
         "type": "object",

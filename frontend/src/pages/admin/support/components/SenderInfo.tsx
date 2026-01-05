@@ -79,7 +79,7 @@ export function SenderInfoCard({
                             href="#"
                             className="text-primary hover:underline font-medium flex items-center gap-1"
                         >
-                            fake
+                            Không
                             {/* {reportedItem.label} #{reportedItem.id} */}
                             <Link2 className="h-3.5 w-3.5" />
                         </a>
