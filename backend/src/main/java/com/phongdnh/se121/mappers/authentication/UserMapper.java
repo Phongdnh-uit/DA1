@@ -5,15 +5,23 @@ import com.phongdnh.se121.dtos.authentication.UserRequest;
 import com.phongdnh.se121.dtos.authentication.UserResponse;
 import com.phongdnh.se121.entities.authentication.User;
 import com.phongdnh.se121.mappers.GenericMapper;
+import com.phongdnh.se121.mappers.authorization.RoleMapper;
 import com.phongdnh.se121.mappers.general.FileMapper;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(
     componentModel = "spring",
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
-    uses = {FileMapper.class})
+    uses = {FileMapper.class, RoleMapper.class})
 public interface UserMapper extends GenericMapper<User, UserRequest, UserResponse> {
+
+  // Do thiết kế sai, nên phải dùng cách này để không phá vỡ cấu trúc hệ thống hiện tại
+  @Mapping(target = "roleId", source = "role.id")
+  @Override
+  UserResponse entityToResponse(User entity);
+
   void partialUpdate(BaseUserRequest request, @MappingTarget User user);
 }

@@ -15,6 +15,14 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.spatial.dialect.mysql.MySQLSpatialDialect
+        format_sql: true
+      # jakarta:
+      #   persistence:
+      #     schema-generation:
+      #       scripts:
+      #         action: create
+      #         create-target: target/shchema.sql
+      #       create-source: metadata
 
   flyway:
     enabled: true
@@ -48,8 +56,8 @@ spring:
     #   base-url: http://localhost:11434
     #   embedding:
     #     model: qwen3-embedding:8b-q4_K_M
-      # chat:
-      #   model: qwen3:4b-instruct-2507-q4_K_M
+    # chat:
+    #   model: qwen3:4b-instruct-2507-q4_K_M
   kafka:
     bootstrap-servers: localhost:9092
     listener:

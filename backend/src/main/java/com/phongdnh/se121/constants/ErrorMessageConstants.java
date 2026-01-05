@@ -1,6 +1,9 @@
 package com.phongdnh.se121.constants;
 
-/** Thông báo lỗi dùng chung cho toàn hệ thống. Đã chuẩn hóa tiếng Việt, loại bỏ trùng ngữ nghĩa. */
+/**
+ * Thông báo lỗi dùng chung cho toàn hệ thống. Đã chuẩn hóa tiếng Việt, loại
+ * bỏ trùng ngữ nghĩa.
+ */
 public interface ErrorMessageConstants {
 
   // ======================== VALIDATION ========================
@@ -8,7 +11,8 @@ public interface ErrorMessageConstants {
   String VALIDATION_PHONE_INVALID = "Số điện thoại không hợp lệ";
   String VALIDATION_CURRENT_PASSWORD_INVALID = "Mật khẩu hiện tại không đúng";
   String VALIDATION_VALUE_ALREADY_EXISTS = "Giá trị đã tồn tại";
-  String VALIDATION_ATTACHMENTS_INVALID = "Một hoặc nhiều tệp đính kèm không hợp lệ";
+  String VALIDATION_ATTACHMENTS_INVALID =
+      "Một hoặc nhiều tệp đính kèm không hợp lệ";
 
   // ======================== VALIDATION - PROPERTY ========================
   String VALIDATION_PROPERTY_TYPE_INVALID = "Loại bất động sản không hợp lệ";
@@ -18,7 +22,8 @@ public interface ErrorMessageConstants {
   String VALIDATION_PROVINCE_NOT_EXISTS = "Tỉnh/Thành không tồn tại";
 
   // ======================== VALIDATION - CONVERSATION ========================
-  String VALIDATION_CONVERSATION_NOT_PENDING = "Cuộc trò chuyện không ở trạng thái chờ xử lý";
+  String VALIDATION_CONVERSATION_NOT_PENDING =
+      "Cuộc trò chuyện không ở trạng thái chờ xử lý";
   String VALIDATION_CONVERSATION_NOT_OPEN = "Cuộc trò chuyện chưa được mở";
 
   // ======================== AUTH ========================
@@ -57,8 +62,10 @@ public interface ErrorMessageConstants {
   String SYSTEM_AI_RESPONSE_PARSE_FAILED = "Không thể xử lý dữ liệu từ AI";
   String SYSTEM_INVALID_JWT_SUBJECT = "Thông tin người dùng trong JWT không hợp lệ";
   String SYSTEM_UNSUPPORTED_CONTACT_TYPE = "Loại liên hệ không được hỗ trợ";
-  String SYSTEM_UNSUPPORTED_VERIFICATION_PURPOSE = "Mục đích xác thực không được hỗ trợ";
-  String SYSTEM_HS512_SECRET_KEY_TOO_SHORT = "Khóa bí mật HS512 quá ngắn, cần ít nhất 64 byte";
+  String SYSTEM_UNSUPPORTED_VERIFICATION_PURPOSE =
+      "Mục đích xác thực không được hỗ trợ";
+  String SYSTEM_HS512_SECRET_KEY_TOO_SHORT =
+      "Khóa bí mật HS512 quá ngắn, cần ít nhất 64 byte";
   String SYSTEM_ERROR_CREATING_BUCKET = "Tạo bucket lưu trữ thất bại";
 
   // ======================== AI ========================
@@ -67,4 +74,17 @@ public interface ErrorMessageConstants {
   // ======================== PROPERTY - PROVINCE ========================
   String PROVINCE_CODE_EXISTS = "Mã tỉnh/thành đã tồn tại";
   String VALIDATION_WARD_CODE_EXISTS = "Mã phường/xã đã tồn tại";
+
+  // ============================ ORTHER ============================
+  String NOT_INTERACTIVE_TELEGRAM_PHONE =
+      "Bạn chưa tương tác với bot Telegram, vui lòng gửi tin nhắn cho bot trước khi"
+          + " xác thực số điện thoại.";
+  String ROLE_DEFAULT_DUPLICATE =
+      "Chỉ có thể có một vai trò mặc định trong hệ thống.";
+  String ROLE_DEFAULT_NOT_FOUND =
+      "Không tìm thấy vai tr� mặc định trong hệ thống. Xin vui lòng liên hệ hỗ"
+          + " trợ.";
+
+  String ROLE_ADMIN_CANNOT_MODIFY = "Không thể chỉnh sửa vai trò quãn trị.";
+  String ROLE_ADMIN_CANNOT_DELETE = "Không thể xóa vai trò quãn trị.";
 }

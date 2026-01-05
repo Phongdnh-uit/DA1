@@ -127,6 +127,6 @@ imgproxy:
   key: ${IMGPROXY_KEY}
   salt: ${IMGPROXY_SALT}
 
-speedsms:
-  api-url: ${SPEEDSMS_API_URL}
-  access-token: ${SPEEDSMS_ACCESS_TOKEN}
+# speedsms:
+#   api-url: ${SPEEDSMS_API_URL}
+#   access-token: ${SPEEDSMS_ACCESS_TOKEN}

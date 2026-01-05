@@ -3,10 +3,9 @@ package com.phongdnh.se121.services.general;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-@Service
+// @Service
 @RequiredArgsConstructor
 public class SpeedSMSAPI {
 

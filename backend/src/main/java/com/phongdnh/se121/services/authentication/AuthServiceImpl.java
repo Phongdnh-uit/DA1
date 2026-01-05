@@ -1,6 +1,7 @@
 package com.phongdnh.se121.services.authentication;
 
 import com.phongdnh.se121.constants.ErrorMessageConstants;
+import com.phongdnh.se121.constants.RedisKey;
 import com.phongdnh.se121.dtos.authentication.BaseUserRequest;
 import com.phongdnh.se121.dtos.authentication.ChangePasswordRequest;
 import com.phongdnh.se121.dtos.authentication.LoginRequest;
@@ -14,12 +15,13 @@ import com.phongdnh.se121.dtos.authentication.UserResponse;
 import com.phongdnh.se121.dtos.authentication.VerifyEmailRequest;
 import com.phongdnh.se121.dtos.authentication.VerifyOtpRequest;
 import com.phongdnh.se121.dtos.authentication.VerifyOtpResponse;
-import com.phongdnh.se121.dtos.general.SMSRequest;
+import com.phongdnh.se121.entities.authentication.LinkedAccount;
 import com.phongdnh.se121.entities.authentication.RefreshToken;
 import com.phongdnh.se121.entities.authentication.User;
 import com.phongdnh.se121.entities.authentication.Verification;
 import com.phongdnh.se121.entities.authorization.Permission;
 import com.phongdnh.se121.enums.authentication.OtpChannel;
+import com.phongdnh.se121.enums.authentication.OtpPurpose;
 import com.phongdnh.se121.enums.authentication.UserStatus;
 import com.phongdnh.se121.enums.authentication.VerificationType;
 import com.phongdnh.se121.enums.general.ContactType;
@@ -28,14 +30,15 @@ import com.phongdnh.se121.enums.general.FileUsageStatus;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
 import com.phongdnh.se121.mappers.authentication.UserMapper;
+import com.phongdnh.se121.repositories.authentication.LinkedAccountRepository;
 import com.phongdnh.se121.repositories.authentication.UserRepository;
 import com.phongdnh.se121.repositories.authorization.PermissionRepository;
 import com.phongdnh.se121.repositories.authorization.RoleRepository;
 import com.phongdnh.se121.repositories.general.FileRepository;
 import com.phongdnh.se121.securities.SecurityUtil;
 import com.phongdnh.se121.securities.TokenProvider;
+import com.phongdnh.se121.services.bot.TelegramBot;
 import com.phongdnh.se121.services.general.MailService;
-import com.phongdnh.se121.services.general.SMSService;
 import com.phongdnh.se121.utils.OtpGenerator;
 import com.phongdnh.se121.utils.ValidationUtil;
 import java.util.HashMap;
@@ -68,7 +71,10 @@ public class AuthServiceImpl implements AuthService {
   private final RoleRepository roleRepository;
   private final PermissionRepository permissionRepository;
   private final FileRepository fileRepository;
-  private final SMSService smsService;
+  private final TelegramBot telegramBot;
+  private final LinkedAccountRepository linkedAccountRepository;
+
+  // private final SMSService smsService;
 
   // ============================ LOGIN ============================
   @Override
@@ -177,10 +183,47 @@ public class AuthServiceImpl implements AuthService {
         mailService.sendOTPCodeEmail(request.getDestination(), otp);
         break;
       case SMS:
-        SMSRequest smsRequest = new SMSRequest();
-        smsRequest.setPhoneNumber(request.getDestination());
-        smsRequest.setMessage("Ma OTP cho UITLAND là: " + otp + ". Ma co hieu luc trong 5 phut.");
-        smsService.sendSMS(smsRequest);
+        // SMSRequest smsRequest = new SMSRequest();
+        // smsRequest.setPhoneNumber(request.getDestination());
+        // smsRequest.setMessage("Ma OTP cho UITLAND là: " + otp + ". Ma co hieu luc trong 5
+        // phut.");
+
+        // Luồng này sẽ thay bằng Telegram do không có dịch vụ SMS miễn phí
+        // Cần tách hẳn 2 luồng lúc mới đăng ký và sau khi đã giao tiếp với Telegram bot rồi thì cần
+        // lưu vào LinkedAccount để dùng cho các OTP Purpose khác
+        if (request.getPurpose() == OtpPurpose.REGISTRATION) {
+
+          String formatedPhone = ValidationUtil.formatPhoneToE164(request.getDestination(), "VN");
+          if (formatedPhone == null) {
+            throw new ApiException(
+                ErrorCode.VALIDATION_ERROR,
+                Map.of("destination", ErrorMessageConstants.NOT_INTERACTIVE_TELEGRAM_PHONE));
+          }
+          // Lưu key dạng 84XXXX nên cần bỏ dấu '+'
+          formatedPhone = formatedPhone.substring(1); // Remove '+' sign
+          String chatId =
+              redisTemplate
+                  .opsForValue()
+                  .get(RedisKey.TELEGRAM_PHONE_KEY + formatedPhone)
+                  .toString();
+          telegramBot.sendMessage(
+              chatId, "Ma OTP cho UITLAND la: " + otp + ". Ma co hieu luc trong 5 phut.");
+        } else {
+          var linkedAccount =
+              linkedAccountRepository.findOne(
+                  (root, _, builder) ->
+                      builder.and(
+                          builder.equal(root.get("user").get("phone"), request.getDestination()),
+                          builder.equal(root.get("provider"), "TELEGRAM")));
+          if (linkedAccount.isEmpty()) {
+            throw new ApiException(
+                ErrorCode.RESOURCE_NOT_FOUND,
+                Map.of("destination", ErrorMessageConstants.NOT_INTERACTIVE_TELEGRAM_PHONE));
+          }
+          telegramBot.sendMessage(
+              linkedAccount.get().getProviderUserId(),
+              "Ma OTP cho UITLAND la: " + otp + ". Ma co hieu luc trong 5 phut.");
+        }
         break;
       default:
         throw new UnsupportedOperationException("Unsupported OTP channel");
@@ -276,12 +319,32 @@ public class AuthServiceImpl implements AuthService {
     user.setPhone(cachedPhone);
     user.setPhoneVerified(true);
     user.setStatus(UserStatus.UNVERIFIED);
-    user.setRoleId(
+    user.setRole(
         roleRepository
-            .findOne((root, _, builder) -> builder.equal(root.get("name"), "USER"))
-            .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND))
-            .getId());
+            .findOne((root, _, builder) -> builder.equal(root.get("isDefault"), true))
+            .orElseThrow(
+                () ->
+                    new ApiException(
+                        ErrorCode.INTERNAL_SERVER_ERROR,
+                        ErrorMessageConstants.ROLE_DEFAULT_NOT_FOUND)));
     user = userRepository.save(user);
+    LinkedAccount linkedAccount = new LinkedAccount();
+    linkedAccount.setUser(user);
+    linkedAccount.setProvider("TELEGRAM"); // Trễ deadline nên tạm hardcode
+    String telegramUserId =
+        redisTemplate
+            .opsForValue()
+            .get(
+                RedisKey.TELEGRAM_PHONE_KEY
+                    + ValidationUtil.formatPhoneToE164(cachedPhone, "VN").substring(1))
+            .toString();
+    if (telegramUserId == null) {
+      throw new ApiException(
+          ErrorCode.VALIDATION_ERROR,
+          Map.of("destination", ErrorMessageConstants.NOT_INTERACTIVE_TELEGRAM_PHONE));
+    }
+    linkedAccount.setProviderUserId(telegramUserId);
+    linkedAccountRepository.save(linkedAccount);
     mailService.sendActivationEmail(
         request.getEmail(),
         verificationService.generateVerificationCode(

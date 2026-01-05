@@ -11,11 +11,10 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
 
 @Slf4j
 @RequiredArgsConstructor
-@Service
+// @Service
 public class SpeedSMSService implements SMSService {
   private final SpeedSMSAPI speedSMSAPI;
   private final ObjectMapper objectMapper;
@@ -32,8 +31,7 @@ public class SpeedSMSService implements SMSService {
     String brandname = ""; // Không sử dụng brandname
     String phoneFormat = ValidationUtil.formatPhoneToE164(smsRequest.getPhoneNumber(), "VN");
     phoneFormat = phoneFormat.substring(1);
-    String response =
-        speedSMSAPI.sendSMS(phoneFormat, smsRequest.getMessage(), type, brandname);
+    String response = speedSMSAPI.sendSMS(phoneFormat, smsRequest.getMessage(), type, brandname);
     try {
       Map<String, Object> responseMap = objectMapper.readValue(response, new TypeReference<>() {});
       if ("success".equals(responseMap.get("status"))) {

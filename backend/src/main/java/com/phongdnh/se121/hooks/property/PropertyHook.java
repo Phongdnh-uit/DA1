@@ -178,7 +178,9 @@ public class PropertyHook
   private void enrich(PropertyRequest input, Property entity, Map<String, Object> context) {
     Long userId = SecurityUtil.getCurrentUserId();
     // if location is provided, set location
-    if (input.getLocation() != null) {
+    if (input.getLocation() != null
+        && input.getLocation().getLatitude() != null
+        && input.getLocation().getLongitude() != null) {
       entity.setLocation(
           geometryFactory.createPoint(
               new Coordinate(

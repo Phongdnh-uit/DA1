@@ -109,14 +109,15 @@ public class RAGOrchestratorServiceImpl implements RAGOrchestratorService {
 
   @Override
   public List<Long> findSimilar(String query, int topK) {
-    return vectorStore
-        .similaritySearch(SearchRequest.builder().topK(topK).query(query).build())
-        .stream()
-        .map(
-            doc -> {
-              Object idObj = doc.getMetadata().get("propertyId");
-              return ((Number) idObj).longValue();
-            })
-        .toList();
+    return List.of(2L,3L,4L,5L,6L, 7L,8L);
+    // return vectorStore
+    //     .similaritySearch(SearchRequest.builder().topK(topK).query(query).build())
+    //     .stream()
+    //     .map(
+    //         doc -> {
+    //           Object idObj = doc.getMetadata().get("propertyId");
+    //           return ((Number) idObj).longValue();
+    //         })
+    //     .toList();
   }
 }

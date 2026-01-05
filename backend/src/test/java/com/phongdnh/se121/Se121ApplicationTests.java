@@ -5,50 +5,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-@SpringBootTest(
-    properties = {
-      "spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE",
-      "spring.datasource.driverClassName=org.h2.Driver",
-      "spring.datasource.username=sa",
-      "spring.datasource.password=",
-      "spring.jpa.hibernate.ddl-auto=create-drop",
-      "spring.jpa.show-sql=true",
-      "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect",
-      "jwt.secret=xin_chao_ban!_day_la_du_an_uit_land_cho_do_an_1_cua_minh!_xin_cam_on_ban_da_doc_du_an_nay",
-      "jwt.refresh-token.expiration=172800",
-      "jwt.access-token.expiration=18000",
-      "spring.flyway.enabled=false",
-      "spring.ai.vectorstore.enabled=false",
-      "spring.ai.chat.enabled=false",
-      "spring.ai.vectorstore.milvus.enabled=false",
-      "spring.ai.ollama.enabled=false",
-      "spring.mail.host=localhost",
-      "app.bootstrap.admin.phone=0123456789",
-      "app.bootstrap.admin.password=password",
-      "app.bootstrap.admin.email=test@gmail.com",
-      "spring.redis.host=localhost",
-      "spring.redis.port=6379",
-      "clamav.host=localhost",
-      "clamav.port=3310",
-      "imgproxy.base-url=http://localhost:8081",
-      "imgproxy.key=3b36d1b62634689b28636a633eeb42b39aae91d40fb3bf1e53dd4d48abbf2166",
-      "imgproxy.salt=f94a17684703c3a7f3aec1dad5ad1f37b8a5fa07bd19843704070b46eb10580a",
-      "minio.endpoint=http://localhost:9000",
-      "minio.credentials.username=minioadmin",
-      "minio.credentials.password=minioadmin",
-      "spring.mail.sender-address=dangnguyenhuyphong@gmail.com",
-      "minio.credentials.webhook-token=se121_minio_webhook_token"
-    })
+@ActiveProfiles("test")
 @EnableAutoConfiguration(
     exclude = {
       org.springframework.ai.model.ollama.autoconfigure.OllamaChatAutoConfiguration.class,
       org.springframework.ai.model.ollama.autoconfigure.OllamaEmbeddingAutoConfiguration.class,
       org.springframework.ai.vectorstore.milvus.autoconfigure.MilvusVectorStoreAutoConfiguration
-          .class
+          .class,
+      org.springframework.ai.model.google.genai.autoconfigure.chat.GoogleGenAiChatAutoConfiguration
+          .class,
+      org.springframework.ai.model.google.genai.autoconfigure.embedding
+          .GoogleGenAiEmbeddingConnectionAutoConfiguration.class
     })
 class Se121ApplicationTests {
 

@@ -49,7 +49,7 @@ public class CustomJwtAuthenticationConverter
             .phone(user.getPhone())
             .fullName(user.getFullName())
             .password(user.getPasswordHash())
-            .roleId(user.getRoleId())
+            .roleId(user.getRole().getId())
             .authorities(Set.of())
             .build();
     return new UsernamePasswordAuthenticationToken(principal, jwt, principal.getAuthorities());
