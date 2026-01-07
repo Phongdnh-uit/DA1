@@ -1,5 +1,6 @@
 package com.phongdnh.se121.services.file;
 
+import com.phongdnh.se121.constants.ErrorMessageConstants;
 import com.phongdnh.se121.dtos.general.PresignedURLResponse;
 import com.phongdnh.se121.dtos.general.PresignedUploadRequest;
 import com.phongdnh.se121.dtos.general.PresignedUploadResponse;
@@ -89,11 +90,11 @@ public class FileOrchestratorServiceImpl implements FileOrchestratorService {
             .orElseThrow(
                 () ->
                     new ApiException(ErrorCode.RESOURCE_NOT_FOUND, Map.of("objectKey", objectKey)));
-    System.out.println("Generating download URL for file status: " + file.getStatus());
     if (file.getStatus() != FileStatus.ACTIVE) {
       throw new ApiException(
           ErrorCode.DOWNLOAD_FAILED, Map.of("objectKey", "File is not available for download"));
     }
+    checkFileAccessible(file);
     if (file.getMimeType().startsWith("image/")) {
       String url = imgproxyService.generateUrl(objectKey, options);
       PresignedURLResponse response =
@@ -251,7 +252,7 @@ public class FileOrchestratorServiceImpl implements FileOrchestratorService {
             participants.stream().anyMatch(p -> p.getUser().getId().equals(userId));
         if (!isParticipant) {
           throw new ApiException(
-              ErrorCode.FORBIDDEN, Map.of("access", "User is not a participant of the chat"));
+              ErrorCode.FORBIDDEN, Map.of("access", ErrorMessageConstants.AUTH_USER_NOT_PARTICIPANT));
         }
         break;
       default:

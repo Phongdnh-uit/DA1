@@ -1,5 +1,6 @@
 package com.phongdnh.se121.hooks.authentication;
 
+import com.phongdnh.se121.constants.ErrorMessageConstants;
 import com.phongdnh.se121.dtos.authentication.UserRequest;
 import com.phongdnh.se121.dtos.authentication.UserResponse;
 import com.phongdnh.se121.entities.authentication.User;
@@ -106,7 +107,7 @@ public class UserHook implements GenericHook<User, Long, UserRequest, UserRespon
                   () -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND, "Avatar not found"));
 
       if (newAvatar.getUsageStatus() == FileUsageStatus.IN_USE) {
-        throw new ApiException(ErrorCode.RESOURCE_EXISTS, "Avatar is already in use");
+        throw new ApiException(ErrorCode.RESOURCE_EXISTS, ErrorMessageConstants.RESOURCE_AVATAR_IN_USE);
       }
 
       entity.setAvatar(newAvatar);

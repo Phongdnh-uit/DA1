@@ -3,8 +3,8 @@ import { FormInput } from "@/utils/formUtil";
 import type { PropertyTypeRequest } from "@/types";
 import { BackButton } from "@/components/general/BackButton";
 import { Card } from "@/components/ui/card";
-import { MotionButton } from "@/components/general/MotionShadcn";
 import { useUpdatePropertyTypeVM } from "./UpdatePropertyType.vm";
+import { MotionButton } from "@/components/customs/MotionButton";
 
 export default function UpdatePropertyTypePage() {
     const { form, onSubmit } = useUpdatePropertyTypeVM();
@@ -33,19 +33,14 @@ export default function UpdatePropertyTypePage() {
                             <div className="flex gap-3 pt-4">
                                 {" "}
                                 <MotionButton
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
                                     onClick={() => form.handleSubmit(onSubmit)()}
                                     className="flex-1 text-xl h-12 rounded-2xl transition-none"
                                     size="lg"
+                                    disabled={!form.formState.isDirty}
                                 >
                                     Cập Nhật Loại Hình
                                 </MotionButton>
                                 <MotionButton
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
                                     variant="outline"
                                     className="flex-1 text-xl h-12 rounded-2xl transition-none"
                                     size="lg"

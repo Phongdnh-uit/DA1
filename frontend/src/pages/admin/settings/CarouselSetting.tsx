@@ -14,6 +14,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { CarouselMetadata } from "@/no-gen/types/carouselMetadata";
+import { motion } from "motion/react";
+import { fadeInUp } from "@/lib/animation";
 
 interface CarouselImage {
     url?: string;
@@ -169,6 +171,10 @@ export const CarouselSetting = () => {
         };
     }, []);
 
+    useEffect(() => {
+        console.log("Images state updated:", images);
+    },[images]);
+
     return (
         <div className="min-h-screen">
             <main className="container mx-auto py-8 px-4 sm:px-6 lg:px-8 max-w-6xl">
@@ -238,7 +244,12 @@ export const CarouselSetting = () => {
                     </Card>
 
                     {/* Image List */}
-                    <div className="space-y-4">
+                    <motion.div
+                        variants={fadeInUp.container}
+                        initial="hidden"
+                        animate="show"
+                        className="space-y-4"
+                    >
                         <div className="flex items-center justify-between">
                             <div>
                                 <h2 className="text-2xl font-bold">Danh sách hiển thị</h2>
@@ -250,134 +261,135 @@ export const CarouselSetting = () => {
 
                         <div className="space-y-4">
                             {images.map((image, idx) => (
-                                <Card
-                                    key={idx}
-                                    className={`relative transition-all shadow-md hover:shadow-xl hover:border-primary/50`}
-                                >
-                                    {/* Actions */}
-                                    <Button
-                                        variant="destructive"
-                                        size="sm"
-                                        onClick={() => handleDeleteImage(idx)}
-                                        className="gap-2 absolute top-4 right-4 z-10"
+                                    <Card
+                                        className={`relative transition-all shadow-md hover:shadow-xl hover:border-primary/50`}
                                     >
-                                        <X className="h-4 w-4" />
-                                        <span className="hidden sm:inline">Xóa</span>
-                                    </Button>
-                                    <CardContent className="p-6">
-                                        <div className="flex flex-col lg:flex-row gap-6">
-                                            <div className="flex gap-4">
-                                                <div className="relative group">
-                                                    <div
-                                                        className={`w-full lg:w-56 h-40 rounded-lg overflow-hidden border-2 transition-all `}
-                                                    >
-                                                        <img
-                                                            src={image.url}
-                                                            className="w-full h-full object-cover"
-                                                        />
-                                                    </div>
-                                                    <div className="absolute top-3 right-3">
-                                                        <Badge
-                                                            className={
-                                                                image.contentBlock?.file?.status === "PENDING"
-                                                                    ? "bg-yellow-500 text-white"
+                                        {/* Actions */}
+                                        <Button
+                                            variant="destructive"
+                                            size="sm"
+                                            onClick={() => handleDeleteImage(idx)}
+                                            className="gap-2 absolute top-4 right-4 z-10"
+                                        >
+                                            <X className="h-4 w-4" />
+                                            <span className="hidden sm:inline">Xóa</span>
+                                        </Button>
+                                        <CardContent className="p-6">
+                                            <div className="flex flex-col lg:flex-row gap-6">
+                                                <div className="flex gap-4">
+                                                    <div className="relative group">
+                                                        <div
+                                                            className={`w-full lg:w-56 h-40 rounded-lg overflow-hidden border-2 transition-all `}
+                                                        >
+                                                            <img
+                                                                src={image.url}
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                        </div>
+                                                        <div className="absolute top-3 right-3">
+                                                            <Badge
+                                                                className={
+                                                                    image.contentBlock?.file?.status === "PENDING"
+                                                                        ? "bg-yellow-500 text-white"
+                                                                        : image.contentBlock?.file?.status ===
+                                                                            "REJECTED"
+                                                                            ? "bg-red-500 text-white"
+                                                                            : "bg-green-500 text-white"
+                                                                }
+                                                            >
+                                                                {image.contentBlock?.file?.status === "PENDING"
+                                                                    ? "Đang kiểm tra hợp lệ!"
                                                                     : image.contentBlock?.file?.status ===
                                                                         "REJECTED"
-                                                                        ? "bg-red-500 text-white"
-                                                                        : "bg-green-500 text-white"
-                                                            }
+                                                                        ? "Bị từ chối"
+                                                                        : "Đã chấp thuận"}
+                                                            </Badge>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Form Fields */}
+                                                <div className="flex-1 grid grid-cols-1 gap-4">
+                                                    <div className="space-y-2">
+                                                        <Label
+                                                            htmlFor={`caption-${idx}`}
+                                                            className="text-xs uppercase tracking-wider"
                                                         >
-                                                            {image.contentBlock?.file?.status === "PENDING"
-                                                                ? "Đang kiểm tra hợp lệ!"
-                                                                : image.contentBlock?.file?.status ===
-                                                                    "REJECTED"
-                                                                    ? "Bị từ chối"
-                                                                    : "Đã chấp thuận"}
-                                                        </Badge>
+                                                            Tiêu đề (Caption)
+                                                        </Label>
+
+                                                        <div
+                                                            className={cn(
+                                                                "relative flex items-center rounded-2xl border backdrop-blur-sm",
+                                                                "focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30",
+                                                                "focus-within:scale-102 transition-all",
+                                                                "hover:border-primary",
+                                                                "has-[:disabled]:opacity-50 has-[:disabled]:cursor-not-allowed error-display",
+                                                            )}
+                                                        >
+                                                            <Input
+                                                                id={`caption-${idx}`}
+                                                                placeholder="Nhập tiêu đề hình ảnh..."
+                                                                className="border-0 focus-visible:ring-0 shadow-none w-full rounded-[24px] h-14 placeholder:text-lg !text-lg"
+                                                                value={
+                                                                    (image.contentBlock?.metadata
+                                                                        ? (image.contentBlock
+                                                                            .metadata as CarouselMetadata)
+                                                                        : {}
+                                                                    ).caption || ""
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleUpdateContentBlockMetadata(
+                                                                        idx,
+                                                                        "caption",
+                                                                        e.target.value,
+                                                                    )
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="space-y-2">
+                                                        <Label
+                                                            htmlFor={`subcaption-${idx}`}
+                                                            className="text-xs uppercase tracking-wider"
+                                                        >
+                                                            Phụ đề
+                                                        </Label>
+                                                        <div
+                                                            className={cn(
+                                                                "relative flex items-center rounded-2xl border backdrop-blur-sm",
+                                                                "focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30",
+                                                                "focus-within:scale-102 transition-all",
+                                                                "hover:border-primary",
+                                                                "has-[:disabled]:opacity-50 has-[:disabled]:cursor-not-allowed error-display",
+                                                            )}
+                                                        >
+                                                            <Input
+                                                                className="border-0 focus-visible:ring-0 shadow-none w-full rounded-[24px] h-14 placeholder:text-lg !text-lg"
+                                                                id={`subcaption-${idx}`}
+                                                                placeholder="Nhập phụ đề hình ảnh..."
+                                                                value={
+                                                                    (image.contentBlock?.metadata
+                                                                        ? (image.contentBlock
+                                                                            .metadata as CarouselMetadata)
+                                                                        : {}
+                                                                    ).subcaption || ""
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleUpdateContentBlockMetadata(
+                                                                        idx,
+                                                                        "subcaption",
+                                                                        e.target.value,
+                                                                    )
+                                                                }
+                                                            />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            {/* Form Fields */}
-                                            <div className="flex-1 grid grid-cols-1 gap-4">
-                                                <div className="space-y-2">
-                                                    <Label
-                                                        htmlFor={`caption-${idx}`}
-                                                        className="text-xs uppercase tracking-wider"
-                                                    >
-                                                        Tiêu đề (Caption)
-                                                    </Label>
-
-                                                    <div
-                                                        className={cn(
-                                                            "relative flex items-center rounded-2xl border backdrop-blur-sm",
-                                                            "focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30",
-                                                            "focus-within:scale-102 transition-all",
-                                                            "hover:border-primary",
-                                                            "has-[:disabled]:opacity-50 has-[:disabled]:cursor-not-allowed error-display",
-                                                        )}
-                                                    >
-                                                        <Input
-                                                            id={`caption-${idx}`}
-                                                            placeholder="Nhập tiêu đề hình ảnh..."
-                                                            className="border-0 focus-visible:ring-0 shadow-none w-full rounded-[24px] h-14 placeholder:text-lg !text-lg"
-                                                            value={
-                                                                (
-                                                                    image.contentBlock
-                                                                        ?.metadata as CarouselMetadata
-                                                                ).caption || ""
-                                                            }
-                                                            onChange={(e) =>
-                                                                handleUpdateContentBlockMetadata(
-                                                                    idx,
-                                                                    "caption",
-                                                                    e.target.value,
-                                                                )
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label
-                                                        htmlFor={`subcaption-${idx}`}
-                                                        className="text-xs uppercase tracking-wider"
-                                                    >
-                                                        Phụ đề
-                                                    </Label>
-                                                    <div
-                                                        className={cn(
-                                                            "relative flex items-center rounded-2xl border backdrop-blur-sm",
-                                                            "focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30",
-                                                            "focus-within:scale-102 transition-all",
-                                                            "hover:border-primary",
-                                                            "has-[:disabled]:opacity-50 has-[:disabled]:cursor-not-allowed error-display",
-                                                        )}
-                                                    >
-                                                        <Input
-                                                            className="border-0 focus-visible:ring-0 shadow-none w-full rounded-[24px] h-14 placeholder:text-lg !text-lg"
-                                                            id={`subcaption-${idx}`}
-                                                            placeholder="Nhập phụ đề hình ảnh..."
-                                                            value={
-                                                                (
-                                                                    image.contentBlock
-                                                                        ?.metadata as CarouselMetadata
-                                                                ).subcaption || ""
-                                                            }
-                                                            onChange={(e) =>
-                                                                handleUpdateContentBlockMetadata(
-                                                                    idx,
-                                                                    "subcaption",
-                                                                    e.target.value,
-                                                                )
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
+                                        </CardContent>
+                                    </Card>
                             ))}
                         </div>
 
@@ -397,7 +409,7 @@ export const CarouselSetting = () => {
                                 </CardContent>
                             </Card>
                         )}
-                    </div>
+                    </motion.div>
                 </div>
             </main>
         </div>

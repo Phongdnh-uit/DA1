@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Paperclip, Send, User, X, Download } from "lucide-react";
+import { Paperclip, User, X, Download } from "lucide-react";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { Client, type IMessage } from "@stomp/stompjs";
-import { ACCESS_TOKEN_STORAGE_KEY } from "@/constant/SecurityConstant";
 import {
     PresignedUploadRequestPurpose,
     type FileResponse,
@@ -16,9 +14,10 @@ import { toast } from "react-toastify";
 import { getFileIcon } from "@/utils/renderUtil";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import SpiralLoader from "../ui/SpiralLoader";
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-const ACCESS_TOKEN = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
+import { config } from "@/lib/config";
+import { Input } from "../ui/input";
+import { MotionButton } from "../customs/MotionButton";
+import { IconBrandTelegram } from "@tabler/icons-react";
 
 interface ChatWindowProps {
     conversationId: number | null;
@@ -29,7 +28,6 @@ export default function ChatWindow({
     conversationId,
     messages,
 }: ChatWindowProps) {
-    const accessToken = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY);
     const clientRef = useRef<Client | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const user = useAuthStore((state) => state.user);
@@ -45,9 +43,9 @@ export default function ChatWindow({
         if (!conversationId) return;
 
         const client = new Client({
-            brokerURL: "ws://localhost:8080/ws",
+            brokerURL: config.websocketUrl,
             connectHeaders: {
-                Authorization: `Bearer ${accessToken}`,
+                Authorization: `Bearer ${config.accessToken}`,
             },
             reconnectDelay: 5000,
         });
@@ -57,6 +55,7 @@ export default function ChatWindow({
                 `/topic/conversations/${conversationId}`,
                 (message: IMessage) => {
                     const payload = JSON.parse(message.body);
+                    console.log("Received message:", payload);
                     setRealTimeMessages((prevMessages) => [...prevMessages, payload]);
                 },
             );
@@ -73,7 +72,7 @@ export default function ChatWindow({
             client.deactivate();
             clientRef.current = null;
         };
-    }, [accessToken, conversationId]);
+    }, [conversationId]);
 
     const { uploadFile } = useFileUpload();
     const { download } = useFileDownload();
@@ -89,12 +88,12 @@ export default function ChatWindow({
         let isCancelled = false;
 
         fetchEventSource(
-            `${BACKEND_URL}/sse/files/notifications/${objectKey}/subscribe`,
+            `${config.backendUrl}/sse/files/notifications/${objectKey}/subscribe`,
             {
                 method: "GET",
                 headers: {
                     Accept: "text/event-stream",
-                    Authorization: `Bearer ${ACCESS_TOKEN}`,
+                    Authorization: `Bearer ${config.accessToken}`,
                 },
                 onmessage(event) {
                     try {
@@ -210,14 +209,6 @@ export default function ChatWindow({
         setAttachments([]);
     };
 
-    // const formatFileSize = (bytes: number): string => {
-    //     if (bytes === 0) return "0 Bytes";
-    //     const k = 1024;
-    //     const sizes = ["Bytes", "KB", "MB", "GB"];
-    //     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    //     return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
-    // };
-
     const renderAttachment = (attachment: FileResponse, isOwn: boolean) => {
         return (
             <div
@@ -232,11 +223,6 @@ export default function ChatWindow({
                     <p className="text-sm font-medium truncate">
                         {attachment.originalName}
                     </p>
-                    {/* {attachment.size && ( */}
-                    {/*     <p className="text-xs opacity-75"> */}
-                    {/*         {formatFileSize(attachment.size)} */}
-                    {/*     </p> */}
-                    {/* )} */}
                 </div>
                 <Download className="h-4 w-4 flex-shrink-0" />
             </div>
@@ -256,7 +242,6 @@ export default function ChatWindow({
                     <p className="text-sm text-muted-foreground">Đang hoạt động</p>
                 </div>
             </div>
-
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {allMessages?.map((msg, idx) => (
@@ -298,8 +283,7 @@ export default function ChatWindow({
                     </div>
                 ))}
             </div>
-
-            {/* Attachment Preview */}
+            {/* Attachments Preview */}
             {attachments.length > 0 && (
                 <div className="px-4 py-2 border-t border-border bg-card">
                     <div className="flex flex-wrap gap-2">
@@ -317,9 +301,6 @@ export default function ChatWindow({
                                     <p className="text-sm font-medium truncate max-w-[150px]">
                                         {attachment.file?.originalName}
                                     </p>
-                                    {/* <p className="text-xs text-muted-foreground"> */}
-                                    {/*     {formatFileSize(attachment.size)} */}
-                                    {/* </p> */}
                                 </div>
                                 <button
                                     onClick={() => removeAttachment(idx)}
@@ -332,7 +313,6 @@ export default function ChatWindow({
                     </div>
                 </div>
             )}
-
             {/* Input Area */}
             <div className="p-4 border-t border-border bg-card">
                 <div className="flex gap-2 items-end">
@@ -351,27 +331,28 @@ export default function ChatWindow({
                     >
                         <Paperclip className="h-5 w-5 text-muted-foreground" />
                     </button>
-                    <input
+                    <Input
                         type="text"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
                         placeholder="Nhập tin nhắn..."
-                        className="flex-1 px-3 py-2 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                        className={"flex-1 px-3 py-2 h-11 rounded-md input-field-utility"}
                         disabled={uploading}
                     />
-                    <Button
+                    <MotionButton
                         onClick={handleSend}
                         size="sm"
-                        className="bg-blue-500 hover:bg-blue-600 text-white flex-shrink-0"
+                        variant="link"
+                        className="flex-shrink-0 size-10 rounded-lg focus-visible:ring-0"
                         disabled={uploading}
                     >
                         {uploading ? (
                             <span className="animate-spin">⏳</span>
                         ) : (
-                            <Send className="h-4 w-4" />
+                            <IconBrandTelegram className="size-8 fill-blue-500 text-blue-500" />
                         )}
-                    </Button>
+                    </MotionButton>
                 </div>
             </div>
         </div>

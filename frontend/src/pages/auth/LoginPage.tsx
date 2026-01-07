@@ -32,6 +32,7 @@ import {
 } from "@/constant/SecurityConstant";
 import { queryClient } from "@/lib/queryClient";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { config } from "@/lib/config";
 
 export default function LoginPage() {
     const search = useSearch({
@@ -88,7 +89,7 @@ export default function LoginPage() {
         const left = window.screen.width / 2 - width / 2;
         const top = window.screen.height / 2 - height / 2;
         const popup = window.open(
-            `http://localhost:8080/oauth2/authorize/google`,
+            `${config.backendUrl}/oauth2/authorize/google`,
             "Login with Google",
             `width=${width},height=${height},top=${top},left=${left}`,
         );
@@ -101,7 +102,7 @@ export default function LoginPage() {
         let intervalId: number | null = null;
 
         const messageListener = (event: MessageEvent) => {
-            if (event.origin !== "http://localhost:8080") return;
+            if (event.origin !== config.backendUrl) return;
             const data: ApiResponseVoid = event.data;
             console.log("Received message:", data);
             if (data.code === 1000) {

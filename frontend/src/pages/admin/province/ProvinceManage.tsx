@@ -20,6 +20,8 @@ import { toast } from "react-toastify";
 import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
 import PermissionGate from "@/components/general/PermissionGate";
 import { ProvinceDetailSheet } from "./DetailProvinceSheet";
+import { motion } from "motion/react";
+import { fadeInUp } from "@/lib/animation";
 
 const keys: (keyof ProvinceResponse)[] = [
     "id",
@@ -33,7 +35,9 @@ const keys: (keyof ProvinceResponse)[] = [
 ];
 
 export const ProvinceManage = () => {
-    const [provinceDetail, setProvinceDetail] = useState<ProvinceResponse | null>(null);
+    const [provinceDetail, setProvinceDetail] = useState<ProvinceResponse | null>(
+        null,
+    );
     const [openedDetail, setOpenedDetail] = useState<boolean>(false);
     const navigate = useNavigate();
     const openDeleteDialog = useDeleteDialogStore((state) => state.openDialog);
@@ -51,7 +55,40 @@ export const ProvinceManage = () => {
     const columns = useMemo(
         () => [
             createSelectionColumn<ProvinceResponse>(),
-            ...createColumnsFromType<ProvinceResponse>(keys),
+            ...createColumnsFromType<ProvinceResponse>(keys, [
+                {
+                    key: "id",
+                    header: "Mã tỉnh / thành",
+                },
+                {
+                    key: "name",
+                    header: "Tên tỉnh / thành",
+                },
+                {
+                    key: "type",
+                    header: "Loại đơn vị hành chính",
+                },
+                {
+                    key: "code",
+                    header: "Mã hành chính",
+                },
+                {
+                    key: "createdAt",
+                    header: "Ngày tạo",
+                },
+                {
+                    key: "updatedAt",
+                    header: "Ngày cập nhật",
+                },
+                {
+                    key: "createdBy",
+                    header: "Người tạo (ID)",
+                },
+                {
+                    key: "updatedBy",
+                    header: "Người cập nhật (ID)",
+                },
+            ]),
             createActionColumn<ProvinceResponse>(
                 {
                     onEdit: (row) => {
@@ -70,7 +107,7 @@ export const ProvinceManage = () => {
                     onView: (row) => {
                         setProvinceDetail(row);
                         setOpenedDetail(true);
-                    }
+                    },
                 },
                 {
                     deleteCode: "PROVINCE_DELETE",
@@ -138,7 +175,12 @@ export const ProvinceManage = () => {
     };
 
     return (
-        <div className="space-y-4">
+        <motion.div
+            variants={fadeInUp.container}
+            initial="hidden"
+            animate="show"
+            className="space-y-4"
+        >
             <div className="flex items-center justify-end p-2">
                 <PermissionGate permission="PROVINCE_CREATE">
                     <RippleButton
@@ -153,43 +195,51 @@ export const ProvinceManage = () => {
                     </RippleButton>
                 </PermissionGate>
             </div>
-            <Filter
-                sortAttributes={[
-                    { key: "id", label: "Id" },
-                    { key: "name", label: "Name" },
-                    { key: "codeName", label: "Code Name" },
-                    { key: "createdAt", label: "Created At" },
-                    { key: "updatedAt", label: "Updated At" },
-                ]}
-                filterAttributes={[
-                    { name: "id", label: "Id", type: "number" },
-                    { name: "name", label: "Name", type: "text" },
-                    { name: "codeName", label: "Code Name", type: "text" },
-                    { name: "divisionType", label: "Division Type", type: "text" },
-                    { name: "createdBy", label: "Created By", type: "number" },
-                    { name: "updatedBy", label: "Updated By", type: "number" },
-                    { name: "createdAt", label: "Created At", type: "date" },
-                    { name: "updatedAt", label: "Updated At", type: "date" },
-                ]}
-                onApply={onApplyFilter}
-            />
-            <DataTable
-                deleteCode="PROVINCE_DELETE_BULK"
-                className="h-[500px]"
-                name="Tỉnh/Thành phố"
-                table={table}
-                onBulkDelete={onBulkDelete}
-                pagination={pagination}
-                onPaginationChange={setPagination}
-                totalPages={list.data?.data?.totalPages || 0}
-                totalElements={list.data?.data?.totalElements || 0}
-                numberOfElements={list.data?.data?.numberOfElements || 0}
-            />
-            <ProvinceDetailSheet 
+            <motion.div variants={fadeInUp.item}>
+                <Filter
+                    sortAttributes={[
+                        { key: "id", label: "Mã tỉnh / thành" },
+                        { key: "name", label: "Tên tỉnh / thành" },
+                        { key: "code", label: "Mã hành chính" },
+                        { key: "type", label: "Loại đơn vị hành chính" },
+                        { key: "createdAt", label: "Ngày tạo" },
+                        { key: "updatedAt", label: "Ngày cập nhật" },
+                    ]}
+                    filterAttributes={[
+                        { name: "id", label: "Mã tỉnh / thành", type: "number" },
+                        { name: "name", label: "Tên tỉnh / thành", type: "text" },
+                        { name: "code", label: "Mã hành chính", type: "text" },
+                        { name: "type", label: "Loại đơn vị hành chính", type: "text" },
+
+                        { name: "createdBy", label: "Người tạo (ID)", type: "number" },
+                        { name: "updatedBy", label: "Người cập nhật (ID)", type: "number" },
+
+                        { name: "createdAt", label: "Ngày tạo", type: "date" },
+                        { name: "updatedAt", label: "Ngày cập nhật", type: "date" },
+                    ]}
+                    searchField={["name"]}
+                    onApply={onApplyFilter}
+                />
+            </motion.div>
+            <motion.div variants={fadeInUp.item}>
+                <DataTable
+                    deleteCode="PROVINCE_DELETE_BULK"
+                    className="h-[500px]"
+                    name="Tỉnh/Thành phố"
+                    table={table}
+                    onBulkDelete={onBulkDelete}
+                    pagination={pagination}
+                    onPaginationChange={setPagination}
+                    totalPages={list.data?.data?.totalPages || 0}
+                    totalElements={list.data?.data?.totalElements || 0}
+                    numberOfElements={list.data?.data?.numberOfElements || 0}
+                />
+            </motion.div>
+            <ProvinceDetailSheet
                 province={provinceDetail}
                 open={openedDetail}
                 onOpenChange={setOpenedDetail}
             />
-        </div>
+        </motion.div>
     );
 };

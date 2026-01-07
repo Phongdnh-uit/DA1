@@ -4,7 +4,7 @@ import { FormCheckbox, FormInput, FormSelect } from "@/utils/formUtil";
 import { UserRequestStatus, type UserRequest } from "@/types";
 import { Card } from "@/components/ui/card";
 import { BackButton } from "@/components/general/BackButton";
-import { MotionButton } from "@/components/general/MotionShadcn";
+import { MotionButton } from "@/components/customs/MotionButton";
 
 export const CreateUserPage = () => {
     const { form, roles, onSubmit } = useCreateUserVM();
@@ -78,9 +78,6 @@ export const CreateUserPage = () => {
                         />
                         <div className="flex gap-3 pt-4">
                             <MotionButton
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                transition={{ type: "spring", stiffness: 400, damping: 20 }}
                                 onClick={() => form.handleSubmit(onSubmit)()}
                                 className="flex-1 text-xl h-12 rounded-2xl transition-none"
                                 size="lg"
@@ -88,9 +85,6 @@ export const CreateUserPage = () => {
                                 Tạo Người Dùng
                             </MotionButton>
                             <MotionButton
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                transition={{ type: "spring", stiffness: 400, damping: 20 }}
                                 variant="outline"
                                 className="flex-1 text-xl h-12 rounded-2xl transition-none"
                                 size="lg"

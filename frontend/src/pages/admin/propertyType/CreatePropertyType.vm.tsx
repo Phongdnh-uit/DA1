@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
-import type { PropertyTypeRequest } from "@/types";
+import type { ApiResponseVoid, PropertyTypeRequest } from "@/types";
 import { createPropertyTypeBody } from "@/services/property-type/property-type.zod";
 import { useCreatePropertyType } from "@/services/property-type/property-type";
 
@@ -18,17 +18,24 @@ export function useCreatePropertyTypeVM() {
     const mutation = useCreatePropertyType({
         mutation: {
             onSuccess: () => {
-                form.reset();
                 toast.success("Tạo loại bất động sản thành công");
-                // Invalidate and refetch
                 queryClient.invalidateQueries({
                     queryKey: ["/property-types/all"],
                     exact: false,
                 });
+                form.reset();
             },
-            onError: (error) => {
+            onError: (data) => {
                 toast.error("Tạo loại bất động sản thất bại");
-                console.error(error);
+                const errorResponse = data.response?.data as ApiResponseVoid;
+                if (errorResponse.errors) {
+                    Object.entries(errorResponse.errors).forEach(([key, value]) => {
+                        form.setError(key as keyof PropertyTypeRequest, {
+                            type: "server",
+                            message: value as string,
+                        });
+                    });
+                }
             },
         },
     });

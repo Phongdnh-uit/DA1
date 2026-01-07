@@ -1,6 +1,7 @@
 package com.phongdnh.se121.hooks.property;
 
 import com.phongdnh.se121.ai.RAGIngestionService;
+import com.phongdnh.se121.constants.ErrorMessageConstants;
 import com.phongdnh.se121.dtos.PageResponse;
 import com.phongdnh.se121.dtos.property.PropertyRequest;
 import com.phongdnh.se121.dtos.property.PropertyResponse;
@@ -164,7 +165,7 @@ public class PropertyHook
                         ErrorCode.RESOURCE_NOT_FOUND,
                         Map.of("thumbnailId", "Thumbnail file not found")));
     if (thumbnailFile.getPurpose() != FilePurpose.PROPERTY_THUMBNAIL) {
-      errors.put("thumbnailId", "Invalid thumbnail file");
+      errors.put("thumbnailId", ErrorMessageConstants.VALIDATION_THUMBNAIL_INVALID);
     }
 
     // forward to next steps
@@ -177,7 +178,9 @@ public class PropertyHook
   private void enrich(PropertyRequest input, Property entity, Map<String, Object> context) {
     Long userId = SecurityUtil.getCurrentUserId();
     // if location is provided, set location
-    if (input.getLocation() != null) {
+    if (input.getLocation() != null
+        && input.getLocation().getLatitude() != null
+        && input.getLocation().getLongitude() != null) {
       entity.setLocation(
           geometryFactory.createPoint(
               new Coordinate(

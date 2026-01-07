@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useRegister } from "@/services/auth/auth";
 import { registerBody } from "@/services/auth/auth.zod";
-import type { RegisterRequest } from "@/types";
+import type { ApiResponseVoid, RegisterRequest } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { KeyRoundIcon, LockIcon, PhoneIcon, UserIcon } from "lucide-react";
@@ -48,7 +48,16 @@ export default function RegisterPage() {
                 toast.success("Đăng ký thành công");
                 navigate({ to: "/auth/login" });
             },
-            onError: () => {
+            onError: (data) => {
+                const errorResponse = data.response?.data as ApiResponseVoid;
+                if (errorResponse.errors) {
+                    Object.entries(errorResponse.errors).forEach(([key, value]) => {
+                        form.setError(key as keyof RegisterRequest, {
+                            type: "server",
+                            message: value as string,
+                        });
+                    });
+                }
                 toast.error("Đăng ký thất bại");
             },
         },

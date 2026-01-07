@@ -3,6 +3,7 @@ package com.phongdnh.se121.seeder;
 import com.phongdnh.se121.entities.authentication.User;
 import com.phongdnh.se121.enums.authentication.UserStatus;
 import com.phongdnh.se121.repositories.authentication.UserRepository;
+import com.phongdnh.se121.repositories.authorization.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ public class AdminAccountSeeder implements ApplicationRunner {
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+  private final RoleRepository roleRepository;
 
   @Value("${app.bootstrap.admin.phone}")
   private String adminPhone;
@@ -43,7 +45,8 @@ public class AdminAccountSeeder implements ApplicationRunner {
     user.setFullName("Administrator");
     user.setEmailVerified(true);
     user.setPhoneVerified(true);
-    user.setRoleId(1L);
+    // Trễ deadline tạm gán cứng role admin id = 1
+    user.setRole(roleRepository.getReferenceById(1L));
     user.setStatus(UserStatus.ACTIVE);
     userRepository.save(user);
     log.info("Admin account created with phone: {} and email: {}", adminPhone, adminEmail);

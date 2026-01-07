@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PropertyRepository extends SimpleRepository<Property, Long> {
 
-  @EntityGraph(attributePaths = {"type", "ward", "ward.province"})
+  @EntityGraph(attributePaths = {"type", "ward", "ward.province", "files", "files.file"})
   @Override
   Page<Property> findAll(Specification<Property> spec, Pageable pageable);
 

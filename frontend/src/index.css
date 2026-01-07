@@ -140,9 +140,15 @@
 
 @layer components {
   .error-display {
-    @apply aria-invalid:border-rose-500;
+    @apply aria-invalid:border-rose-500 aria-invalid:ring-rose-500/30;
   }
   .input-field {
     @apply relative flex items-center rounded-2xl border backdrop-blur-sm focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30 focus-within:scale-102 transition-all hover:border-primary has-[:disabled]:opacity-50 has-[:disabled]:cursor-not-allowed;
+  }
+}
+
+@layer utilities {
+  .input-field-utility {
+    @apply relative flex items-center border backdrop-blur-sm focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30 transition-all hover:border-primary has-[:disabled]:opacity-50 has-[:disabled]:cursor-not-allowed;
   }
 }

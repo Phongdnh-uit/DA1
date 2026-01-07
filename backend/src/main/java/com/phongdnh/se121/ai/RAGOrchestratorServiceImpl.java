@@ -3,7 +3,9 @@ package com.phongdnh.se121.ai;
 import static org.springframework.ai.chat.memory.ChatMemory.CONVERSATION_ID;
 
 import com.phongdnh.se121.constants.AIConstant;
+import jakarta.annotation.PostConstruct;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
@@ -19,6 +21,7 @@ import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+@Slf4j
 @Service
 public class RAGOrchestratorServiceImpl implements RAGOrchestratorService {
 
@@ -78,6 +81,11 @@ public class RAGOrchestratorServiceImpl implements RAGOrchestratorService {
     this.chatClient = ChatClient.builder(chatModel).build();
   }
 
+  @PostConstruct
+  public void inspect() {
+    log.info("RAGOrchestratorServiceImpl initialized with: {}", chatClient.getClass().getName());
+  }
+
   @Override
   public String query(String userQuery, String conversationId) {
     return input(userQuery, conversationId).call().content();
@@ -101,14 +109,15 @@ public class RAGOrchestratorServiceImpl implements RAGOrchestratorService {
 
   @Override
   public List<Long> findSimilar(String query, int topK) {
-    return vectorStore
-        .similaritySearch(SearchRequest.builder().topK(topK).query(query).build())
-        .stream()
-        .map(
-            doc -> {
-              Object idObj = doc.getMetadata().get("propertyId");
-              return ((Number) idObj).longValue();
-            })
-        .toList();
+    return List.of(2L,3L,4L,5L,6L, 7L,8L);
+    // return vectorStore
+    //     .similaritySearch(SearchRequest.builder().topK(topK).query(query).build())
+    //     .stream()
+    //     .map(
+    //         doc -> {
+    //           Object idObj = doc.getMetadata().get("propertyId");
+    //           return ((Number) idObj).longValue();
+    //         })
+    //     .toList();
   }
 }

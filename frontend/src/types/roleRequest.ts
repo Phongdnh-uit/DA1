@@ -9,5 +9,8 @@ export interface RoleRequest {
   /** @minLength 1 */
   name: string;
   description?: string;
+  canManage?: boolean;
   permissionIds?: number[];
+  accessibleModules?: string[];
+  default?: boolean;
 }

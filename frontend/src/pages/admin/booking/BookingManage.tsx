@@ -1,10 +1,7 @@
 import { DataTable } from "@/components/general/DataTable";
 import { RippleButton } from "@/components/ui/shadcn-io/ripple-button";
 import { useDatatable } from "@/hooks/useDatatable";
-import type {
-    BookingRequestStatus,
-    BookingResponse,
-} from "@/types";
+import type { BookingRequestStatus, BookingResponse } from "@/types";
 import {
     createActionColumn,
     createColumnsFromType,
@@ -40,14 +37,32 @@ const keys: (keyof BookingResponse)[] = [
 ];
 
 const statusConfig = {
-  PENDING: { label: 'Chờ xác nhận', color: 'bg-yellow-100 text-yellow-800 border-yellow-300', icon: AlertCircle },
-  CONFIRMED: { label: 'Đã xác nhận', color: 'bg-blue-100 text-blue-800 border-blue-300', icon: CheckCircle2 },
-  COMPLETED: { label: 'Hoàn thành', color: 'bg-green-100 text-green-800 border-green-300', icon: CheckCircle2 },
-  CANCELLED: { label: 'Đã hủy', color: 'bg-red-100 text-red-800 border-red-300', icon: XCircle },
+    PENDING: {
+        label: "Chờ xác nhận",
+        color: "bg-yellow-100 text-yellow-800 border-yellow-300",
+        icon: AlertCircle,
+    },
+    CONFIRMED: {
+        label: "Đã xác nhận",
+        color: "bg-blue-100 text-blue-800 border-blue-300",
+        icon: CheckCircle2,
+    },
+    COMPLETED: {
+        label: "Hoàn thành",
+        color: "bg-green-100 text-green-800 border-green-300",
+        icon: CheckCircle2,
+    },
+    CANCELLED: {
+        label: "Đã hủy",
+        color: "bg-red-100 text-red-800 border-red-300",
+        icon: XCircle,
+    },
 };
 
 export const BookingManage = () => {
-    const [detailBooking, setDetailBooking] = useState<BookingResponse | null>(null);
+    const [detailBooking, setDetailBooking] = useState<BookingResponse | null>(
+        null,
+    );
     const [openedDetail, setOpenedDetail] = useState<boolean>(false);
     const [selectedStatus, setSelectedStatus] = useState<
         BookingRequestStatus | "all"
@@ -70,18 +85,46 @@ export const BookingManage = () => {
             createSelectionColumn<BookingResponse>(),
             ...createColumnsFromType<BookingResponse>(keys, [
                 {
+                    key: "id",
+                    header: "Mã đặt lịch",
+                },
+                {
+                    key: "name",
+                    header: "Tên khách hàng",
+                },
+                {
+                    key: "phone",
+                    header: "Số điện thoại",
+                },
+                {
+                    key: "type",
+                    header: "Loại dịch vụ",
+                },
+                {
                     key: "status",
+                    header: "Trạng thái",
                     cell: ({ row }) => {
                         return (
                             <span
                                 className={`inline-flex items-center px-2 py-1 text-sm font-medium rounded-md border ${statusConfig[row.original.status as BookingRequestStatus].color}`}
                             >
-                                {React.createElement(statusConfig[row.original.status as BookingRequestStatus].icon, { className: "size-4 mr-1" })}
-                                {statusConfig[row.original.status as BookingRequestStatus].label}
+                                {React.createElement(
+                                    statusConfig[row.original.status as BookingRequestStatus]
+                                        .icon,
+                                    { className: "size-4 mr-1" },
+                                )}
+                                {
+                                    statusConfig[row.original.status as BookingRequestStatus]
+                                        .label
+                                }
                             </span>
                         );
-                    }
-                }
+                    },
+                },
+                { key: "createdAt", header: "Ngày tạo" },
+                { key: "updatedAt", header: "Ngày cập nhật" },
+                { key: "createdBy", header: "Người tạo" },
+                { key: "updatedBy", header: "Người cập nhật" },
             ]),
             createActionColumn<BookingResponse>(
                 {
@@ -99,7 +142,7 @@ export const BookingManage = () => {
                     onView: (row) => {
                         setDetailBooking(row);
                         setOpenedDetail(true);
-                    }
+                    },
                 },
                 {
                     viewCode: "BOOKING_VIEW_DETAIL",
@@ -122,11 +165,12 @@ export const BookingManage = () => {
         page: pagination.page,
         size: pagination.size,
         sort: filterParam.sort,
-        filter: selectedStatus === "all" ? filterParam.filter : (
-            filterParam.filter
-                ? `status==${selectedStatus};${filterParam.filter}`
-                : `status==${selectedStatus}`
-        ) ,
+        filter:
+            selectedStatus === "all"
+                ? filterParam.filter
+                : filterParam.filter
+                    ? `status==${selectedStatus};${filterParam.filter}`
+                    : `status==${selectedStatus}`,
     });
     const { table } = useDatatable<BookingResponse>({
         columns,

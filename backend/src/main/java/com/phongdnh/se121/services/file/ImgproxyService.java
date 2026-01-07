@@ -1,5 +1,6 @@
 package com.phongdnh.se121.services.file;
 
+import com.phongdnh.se121.constants.ErrorMessageConstants;
 import com.phongdnh.se121.constants.MinIOConstant;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
@@ -80,7 +81,7 @@ public class ImgproxyService {
       // Mã hóa chữ ký bằng Base64 URL-safe
       return Base64.getUrlEncoder().withoutPadding().encodeToString(signatureBytes);
     } catch (Exception e) {
-      throw new ApiException(ErrorCode.DOWNLOAD_FAILED, "Failed to sign imgproxy URL");
+      throw new ApiException(ErrorCode.DOWNLOAD_FAILED, ErrorMessageConstants.FILE_SIGN_URL_FAILED);
     }
   }
 

@@ -1,6 +1,7 @@
 package com.phongdnh.se121.entities.authentication;
 
 import com.phongdnh.se121.entities.BaseEntity;
+import com.phongdnh.se121.entities.authorization.Role;
 import com.phongdnh.se121.entities.general.File;
 import com.phongdnh.se121.enums.authentication.UserStatus;
 import jakarta.persistence.CascadeType;
@@ -8,7 +9,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -41,6 +44,7 @@ public class User extends BaseEntity {
   @Column(nullable = false)
   private UserStatus status;
 
-  @Column(nullable = false)
-  private Long roleId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "role_id", nullable = false)
+  private Role role;
 }

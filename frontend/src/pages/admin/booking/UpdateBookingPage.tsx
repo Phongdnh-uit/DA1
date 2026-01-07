@@ -14,7 +14,6 @@ import {
     FileText,
     Info,
 } from "lucide-react";
-import { MotionButton } from "@/components/general/MotionShadcn";
 import { BackButton } from "@/components/general/BackButton";
 import { FormInput, FormSelect } from "@/utils/formUtil";
 import { Label } from "@/components/ui/label";
@@ -26,6 +25,7 @@ import { format } from "date-fns";
 import { bookingStatusConverter } from "@/utils/converter";
 import { useUpdateBookingVM } from "./UpdateBookingPage.vm";
 import { motion } from "motion/react";
+import { MotionButton } from "@/components/customs/MotionButton";
 
 export default function UpdateBookingPage() {
     const { form, consultationTypes, timeSlots, onSubmit } = useUpdateBookingVM();
@@ -274,9 +274,6 @@ export default function UpdateBookingPage() {
                             {/* Submit Button */}
                             <div className="flex gap-3 pt-4">
                                 <MotionButton
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
                                     onClick={() => form.handleSubmit(onSubmit)()}
                                     className="flex-1 text-xl h-12 rounded-2xl transition-none"
                                     size="lg"

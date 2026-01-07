@@ -3,9 +3,24 @@ import { KpiCard, type ChartDataPoint } from "./components/StatCard";
 import { Card } from "@/components/ui/card";
 import { HomeIcon, MessageSquareIcon, UsersIcon } from "lucide-react";
 import { DateRangeFilter } from "./components/DateRange";
+import { useState } from "react";
+import { SingleTrendChart } from "./components/SingleTrendChart";
 
 export default function AdminDashboard() {
-    const statistic = useGetStatistics();
+    const [filter, setFilter] = useState<{
+        startDate: Date | undefined;
+        endDate: Date | undefined;
+        granularity?: "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
+    }>({
+        startDate: undefined,
+        endDate: undefined,
+        granularity: "DAILY",
+    });
+    const statistic = useGetStatistics({
+        endDate: filter.endDate?.toISOString(),
+        startDate: filter.startDate?.toISOString(),
+        granularity: filter.granularity,
+    });
     if (statistic.isLoading) {
         return <div>Loading...</div>;
     }
@@ -25,7 +40,11 @@ export default function AdminDashboard() {
                     </div>
                 </header>
                 <main className="mt-8">
-                    <DateRangeFilter />
+                    <DateRangeFilter
+                        onApply={(startDate, endDate, granularity) =>
+                            setFilter({ startDate, endDate, granularity })
+                        }
+                    />
                     <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                         <KpiCard
                             title={"Tổng số người dùng"}
@@ -83,7 +102,60 @@ export default function AdminDashboard() {
                             }
                         />
                     </div>
-                    <Card className="mt-4 h-96 rounded-tremor-small p-2">test</Card>
+                    <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
+                        <SingleTrendChart
+                            title="Xu hướng người dùng"
+                            description="Biểu đồ tăng trưởng người dùng theo thời gian"
+                            data={statistic.data?.data?.totalUsers?.dataPoints?.map(
+                                (point) => ({
+                                    count: point.value as number,
+                                    date: point.label as string,
+                                }),
+                            ) || []}
+                            color="#10b981"
+                            icon={
+                                <div className="p-2 rounded-lg bg-green-50 dark:bg-green-900">
+                                    <UsersIcon className="h-5 w-5 text-green-500" />
+                                </div>
+                            }
+                        />
+
+                        <SingleTrendChart
+                            title="Xu hướng bất động sản"
+                            description="Biểu đồ tăng trưởng bất động sản theo thời gian"
+                            data={statistic.data?.data?.totalProperties?.dataPoints?.map(
+                                (point) => ({
+                                    count: point.value as number,
+                                    date: point.label as string,
+                                }),
+                            ) || []}
+                            color="#3b82f6"
+                            icon={
+                                <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900">
+                                    <HomeIcon className="h-5 w-5 text-blue-500" />
+                                </div>
+                            }
+                        />
+
+                        <SingleTrendChart
+                            title="Xu hướng cần tư vấn"
+                            description="Biểu đồ yêu cầu tư vấn theo thời gian"
+                            data={
+                                statistic.data?.data?.pendingConversations?.dataPoints?.map(
+                                    (point) => ({
+                                        count: point.value as number,
+                                        date: point.label as string,
+                                    }),
+                                ) || []
+                            }
+                            color="#8b5cf6"
+                            icon={
+                                <div className="p-2 rounded-lg bg-purple-50 dark:bg-purple-900">
+                                    <MessageSquareIcon className="h-5 w-5 text-purple-500" />
+                                </div>
+                            }
+                        />
+                    </div>
                 </main>
             </div>
         </>

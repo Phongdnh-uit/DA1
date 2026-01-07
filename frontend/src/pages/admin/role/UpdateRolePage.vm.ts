@@ -1,8 +1,12 @@
 import { Route } from "@/routes/admin/role/update.$id";
 import { useFindAllPermission } from "@/services/permission/permission";
-import { useFindRoleById, useUpdateRole } from "@/services/role/role";
+import { useUpdateRole } from "@/services/role/role";
 import { createRoleBody } from "@/services/role/role.zod";
-import { type PermissionResponse, type RoleRequest } from "@/types";
+import {
+    type ApiResponseVoid,
+    type PermissionResponse,
+    type RoleRequest,
+} from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { debounce } from "lodash";
 import { useEffect, useMemo, useState } from "react";
@@ -10,31 +14,26 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 export function useUpdateRoleVM() {
-    const { id } = Route.useParams();
-
     const [search, setSearch] = useState("");
 
     const [expandedResource, setExpandedResource] = useState<
         Record<string, boolean>
     >({});
 
-    const { data: role, refetch } = useFindRoleById(+id);
+    const { role } = Route.useLoaderData();
 
     const { data: permissions } = useFindAllPermission({
         all: true,
     });
 
-    const permissionIds =
-        useFindAllPermission({
-            all: true,
-            filter: `roles.id==${id}`,
-        }).data?.data?.content?.map((p) => p.id) ?? [];
-
     const form = useForm<RoleRequest>({
         defaultValues: {
             name: role?.data?.name || "",
             description: role?.data?.description || "",
-            permissionIds: permissionIds,
+            permissionIds: role?.data?.permissionIds || [],
+            default: role?.data?.default || false,
+            canManage: role?.data?.canManage || false,
+            accessibleModules: role?.data?.accessibleModules || [],
         },
         mode: "onSubmit",
         resolver: zodResolver(createRoleBody),
@@ -42,12 +41,36 @@ export function useUpdateRoleVM() {
 
     const mutation = useUpdateRole({
         mutation: {
-            onSuccess: () => {
-                refetch();
+            onSuccess: (data) => {
                 toast.success("Cập nhật vai trò thành công");
+                form.reset({
+                    name: data.data?.name,
+                    description: data.data?.description,
+                    default: data.data?.default,
+                    canManage: data.data?.canManage,
+                    accessibleModules: data.data?.accessibleModules,
+                    permissionIds: data.data?.permissionIds,
+                });
             },
-            onError: (error) => {
-                toast.error("Cập nhật vai trò thất bại: " + error.message);
+            onError: (data) => {
+                const errorResponse = data.response?.data as ApiResponseVoid;
+                if (errorResponse.errors) {
+                    Object.entries(errorResponse.errors).forEach(([key, value]) => {
+                        if (key === "isDefault") {
+                            form.setError("default", {
+                                type: "server",
+                                message: value as string,
+                            });
+                        } else {
+                            form.setError(key as keyof RoleRequest, {
+                                type: "server",
+                                message: value as string,
+                            });
+                        }
+                    });
+                }
+                const message = errorResponse?.errors?.["role"] || "";
+                toast.error("Cập nhật vai trò thất bại. " + message);
             },
         },
     });
@@ -63,7 +86,9 @@ export function useUpdateRoleVM() {
             }, {}) ?? {};
 
     const onSubmit = (data: RoleRequest) => {
-        mutation.mutate({ id: +id, data });
+        if (!role?.data?.id) return;
+        console.log("Submitting data:", data);
+        mutation.mutate({ id: role.data.id, data });
     };
 
     const togglePermission = (permissionId: number) => {
@@ -71,7 +96,7 @@ export function useUpdateRoleVM() {
         const updated = current.includes(permissionId)
             ? current.filter((id) => id !== permissionId)
             : [...current, permissionId];
-        form.setValue("permissionIds", updated);
+        form.setValue("permissionIds", updated, { shouldDirty: true });
     };
 
     const toggleResourcePermission = (
@@ -85,7 +110,10 @@ export function useUpdateRoleVM() {
         let updatedPermissionIds: number[];
         if (!allCategorySelected) {
             updatedPermissionIds = [
-                ...new Set([...currentPermissionIds, ...resourcePermissionIds as number[]]),
+                ...new Set([
+                    ...currentPermissionIds,
+                    ...(resourcePermissionIds as number[]),
+                ]),
             ];
         } else {
             updatedPermissionIds = currentPermissionIds.filter(
@@ -93,7 +121,7 @@ export function useUpdateRoleVM() {
             );
         }
 
-        form.setValue("permissionIds", updatedPermissionIds);
+        form.setValue("permissionIds", updatedPermissionIds, { shouldDirty: true });
     };
 
     const searchDebounced = useMemo(
@@ -109,6 +137,12 @@ export function useUpdateRoleVM() {
             searchDebounced.cancel();
         };
     }, [searchDebounced]);
+
+    useEffect(() => {
+        if (form.formState.errors) {
+            console.log("Form Errors:", form.formState.errors);
+        }
+    },[form.formState.errors]);
     return {
         searchDebounced,
         expandedResource,

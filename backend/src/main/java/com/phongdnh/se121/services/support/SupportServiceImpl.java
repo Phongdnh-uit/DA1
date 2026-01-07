@@ -9,6 +9,7 @@ import com.phongdnh.se121.dtos.support.SupportResponse;
 import com.phongdnh.se121.entities.support.SupportAttachment;
 import com.phongdnh.se121.entities.support.SupportTicket;
 import com.phongdnh.se121.enums.general.FilePurpose;
+import com.phongdnh.se121.enums.general.FileUsageStatus;
 import com.phongdnh.se121.enums.support.SupportTicketStatus;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
@@ -77,7 +78,7 @@ public class SupportServiceImpl implements SupportService {
     var userDetail = SecurityUtil.getCurrentUserDetails();
     SupportTicket supportTicket = supportTicketMapper.requestToEntity(request);
     supportTicket.setUserId(userDetail.getId());
-    supportTicket.setUserName(userDetail.getName());
+    supportTicket.setUserName(userDetail.getFullName());
     supportTicket.setUserEmail(userDetail.getEmail());
     supportTicket.setStatus(SupportTicketStatus.OPEN);
     // Handle attachments if any
@@ -100,6 +101,7 @@ public class SupportServiceImpl implements SupportService {
                   })
               .toList();
       supportTicket.setAttachments(ticketAttachments);
+      attachments.stream().forEach(att -> att.setUsageStatus(FileUsageStatus.IN_USE));
     }
     var savedSupportTicket = supportTicketRepository.save(supportTicket);
     return supportTicketMapper.entityToClientResponse(savedSupportTicket);

@@ -3,6 +3,9 @@ package com.phongdnh.se121.ai;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phongdnh.se121.constants.AIConstant;
+import com.phongdnh.se121.constants.ErrorMessageConstants;
+import com.phongdnh.se121.exceptions.errors.ApiException;
+import com.phongdnh.se121.exceptions.errors.ErrorCode;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.springframework.ai.chat.client.ChatClient;
@@ -41,7 +44,8 @@ public class TextNormalizeServiceImpl implements TextNormalizeService {
           });
       return filters;
     } catch (Exception e) {
-      throw new RuntimeException("Failed to parse metadata from AI response", e);
+      throw new ApiException(
+          ErrorCode.INTERNAL_SERVER_ERROR, ErrorMessageConstants.AI_RESPONSE_PARSE_FAILED);
     }
   }
 }

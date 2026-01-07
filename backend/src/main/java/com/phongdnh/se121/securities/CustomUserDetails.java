@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 public class CustomUserDetails implements UserDetails, OAuth2User {
   private Long id;
   private String password;
+  private String fullName;
   private String email;
   private String phone;
   private Long roleId;

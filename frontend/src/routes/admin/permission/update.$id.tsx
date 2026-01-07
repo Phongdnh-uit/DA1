@@ -8,9 +8,12 @@ export const Route = createFileRoute("/admin/permission/update/$id")({
         if (isNaN(Number(params.id))) {
             throw notFound();
         }
-        queryClient.ensureQueryData(
+    },
+    loader: async ({ params }) => {
+        const permission = await queryClient.ensureQueryData(
             getFindPermissionByIdQueryOptions(Number(params.id)),
         );
+        return { permission };
     },
     component: RouteComponent,
 });

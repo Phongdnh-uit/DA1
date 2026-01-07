@@ -11,11 +11,11 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useSendOtp } from "@/services/auth/auth";
 import { sendOtpBody } from "@/services/auth/auth.zod";
-import type { SendOtpRequest } from "@/types";
+import type { ApiResponseVoid, SendOtpRequest } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IconBrandGoogle } from "@tabler/icons-react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { PhoneIcon } from "lucide-react";
+import { AlertCircle, PhoneIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import BannerImage from "@/assets/banner.jpg";
@@ -51,6 +51,17 @@ export default function RegisterFirstPage() {
                     navigate({
                         to: `/auth/otp-verification?purpose=${form.getValues("purpose")}`,
                     });
+                },
+                onError: (data) => {
+                    const errorResponse = data.response?.data as ApiResponseVoid;
+                    if (errorResponse.errors) {
+                        Object.entries(errorResponse.errors).forEach(([key, value]) => {
+                            form.setError(key as keyof SendOtpRequest, {
+                                type: "server",
+                                message: value as string,
+                            });
+                        });
+                    }
                 },
             },
         );
@@ -106,8 +117,8 @@ export default function RegisterFirstPage() {
                                             <div className="relative flex items-center rounded-[24px] border focus-within:ring-1 focus-within:ring-ring pl-4 error-display">
                                                 <PhoneIcon className="h-7 w-7 text-muted-foreground" />
                                                 <Input
-                                                    type="email"
-                                                    placeholder="Nhập số điện thoại hoặc email"
+                                                    type="text"
+                                                    placeholder="Nhập số điện thoại"
                                                     className="border-0 focus-visible:ring-0 shadow-none w-full  h-16 placeholder:text-lg !text-lg"
                                                     {...field}
                                                 />
@@ -156,6 +167,48 @@ export default function RegisterFirstPage() {
                             <span className="text-blue-500">Quy chế</span> và{" "}
                             <span className="text-blue-500">Chính sách</span> của chúng tôi.
                         </p>
+                    </motion.div>
+                    <motion.div
+                        variants={fadeInUp.item}
+                        className="m-4 flex gap-4 p-5 rounded-xl shadow-sm bg-indigo-50 dark:bg-indigo-900"
+                    >
+                        <div className="flex-shrink-0">
+                            <AlertCircle className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
+                        </div>
+
+                        <div className="flex-1 space-y-2">
+                            <h4 className="text-sm font-bold text-indigo-900 dark:text-indigo-200 uppercase tracking-wide">
+                                Thông báo quan trọng
+                            </h4>
+
+                            <p className="text-sm text-indigo-800 dark:text-indigo-300 leading-relaxed">
+                                Trong quá trình phát triển tính năng gửi{" "}
+                                <strong>SMS OTP</strong>, mình đã thử:
+                                <ul className="list-disc ml-5 mt-1">
+                                    <li>
+                                        <strong>SpeedSMS:</strong> gặp khó khăn trong đăng ký và
+                                        giới hạn số điện thoại thử nghiệm
+                                    </li>
+                                    <li>
+                                        <strong>Twilio:</strong> chi phí cao, tài khoản trial không
+                                        hỗ trợ xác thực đầy đủ
+                                    </li>
+                                </ul>
+                                Do đó, hiện tại chức năng gửi OTP sẽ được thực hiện qua{" "}
+                                <strong>Telegram Bot</strong>. Vui lòng truy cập bot tại{" "}
+                                <a
+                                    href="https://t.me/UITLAND_bot"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-500 underline hover:text-blue-600"
+                                >
+                                    đây
+                                </a>{" "}
+                                và nhấn <strong>Start</strong>. Nếu bot không trả lời, bạn có
+                                thể dùng lệnh <code>/start</code> để khởi động lại. Xin lỗi vì
+                                sự bất tiện và cảm ơn bạn đã thông cảm!
+                            </p>
+                        </div>
                     </motion.div>
                 </motion.div>
                 <div className="w-full flex justify-center items-center">

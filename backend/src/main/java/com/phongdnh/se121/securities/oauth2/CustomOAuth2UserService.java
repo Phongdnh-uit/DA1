@@ -1,5 +1,6 @@
 package com.phongdnh.se121.securities.oauth2;
 
+import com.phongdnh.se121.constants.ErrorMessageConstants;
 import com.phongdnh.se121.entities.authentication.LinkedAccount;
 import com.phongdnh.se121.entities.authentication.User;
 import com.phongdnh.se121.enums.authentication.UserStatus;
@@ -7,10 +8,13 @@ import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
 import com.phongdnh.se121.repositories.authentication.LinkedAccountRepository;
 import com.phongdnh.se121.repositories.authentication.UserRepository;
+import com.phongdnh.se121.repositories.authorization.RoleRepository;
 import com.phongdnh.se121.securities.CustomUserDetails;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +31,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Component
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
   private final UserRepository userRepository;
+  private final RoleRepository roleRepository;
   private final LinkedAccountRepository linkedAccountRepository;
 
   @Override
@@ -53,7 +58,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
           .email(user.getEmail())
           .phone(user.getPhone())
           .password(user.getPasswordHash())
-          .roleId(user.getRoleId())
+          .roleId(user.getRole().getId())
           .authorities(Set.of())
           .build();
     }
@@ -63,8 +68,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
     HttpSession session = request.getSession(false);
     if (session == null || session.getAttribute("verifiedPhone") == null) {
-      Throwable cause = new ApiException(ErrorCode.OAUTH2_ERROR, "Phone is not verified");
-      throw new OAuth2AuthenticationException(new OAuth2Error("Phone is not verified"), cause);
+      Throwable cause =
+          new ApiException(ErrorCode.OAUTH2_ERROR, ErrorMessageConstants.AUTH_PHONE_NOT_VERIFIED);
+      throw new OAuth2AuthenticationException(
+          new OAuth2Error(ErrorMessageConstants.AUTH_PHONE_NOT_VERIFIED), cause);
     }
 
     String verifiedPhone = (String) session.getAttribute("verifiedPhone");
@@ -88,7 +95,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
       user.setEmail(email);
       user.setPhone(verifiedPhone);
       user.setFullName(fullName);
-      user.setRoleId(2L);
+      user.setRole(
+          roleRepository
+              .findOne((root, _, builder) -> builder.equal(root.get("isDefault"), true))
+              .orElseThrow(
+                  () ->
+                      new ApiException(
+                          ErrorCode.VALIDATION_ERROR,
+                          Map.of("role", ErrorMessageConstants.ROLE_DEFAULT_NOT_FOUND))));
       user.setEmailVerified(true);
       user.setPhoneVerified(true);
       user.setStatus(UserStatus.ACTIVE);
@@ -108,7 +122,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         .email(user.getEmail())
         .phone(user.getPhone())
         .password(user.getPasswordHash())
-        .roleId(user.getRoleId())
+        .roleId(user.getRole().getId())
         .authorities(Set.of())
         .attributes(oAuth2User.getAttributes())
         .build();

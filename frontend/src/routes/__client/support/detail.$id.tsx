@@ -1,6 +1,6 @@
 import { queryClient } from "@/lib/queryClient";
 import { SupportDetail } from "@/pages/client/support/SupportDetail";
-import { getGetClientSupportTicketByIdQueryOptions } from "@/services/support-controller/support-controller";
+import { getGetClientSupportTicketByIdQueryOptions } from "@/services/support/support";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/__client/support/detail/$id")({

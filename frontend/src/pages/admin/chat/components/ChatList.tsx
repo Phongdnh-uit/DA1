@@ -7,6 +7,7 @@ import { timeAgo } from "@/utils/formatDate";
 import { User } from "lucide-react";
 import { ConversationResponseStatus } from "@/types/conversationResponseStatus";
 import { useAuthStore } from "@/stores/useAuthStore";
+import type { ConversationResponse } from "@/types";
 
 interface ChatListProps {
     selectedConversation: number | null;
@@ -26,6 +27,14 @@ export default function ChatList({
         sort: ["lastMessageAt,desc"],
         filter: `status==${tab}`,
     });
+
+    const getOrtherParticipant = (conversation: ConversationResponse) => {
+        return (
+            conversation.participants?.filter(
+                (participant) => participant.user?.id !== user?.id,
+            ) || []
+        );
+    };
 
     return (
         <div className="w-80 border-r border-border bg-card flex flex-col">
@@ -70,9 +79,8 @@ export default function ChatList({
                     >
                         <div className="flex gap-3">
                             <Avatar className="h-10 w-10 flex-shrink-0">
-                                {conversation.participants
-                                    ?.filter((participant) => participant.user?.id !== user?.id)
-                                    .map((participant) => (
+                                {getOrtherParticipant(conversation).length > 0 ? (
+                                    getOrtherParticipant(conversation).map((participant) => (
                                         <>
                                             <AvatarImage
                                                 key={participant.user?.id}
@@ -83,15 +91,21 @@ export default function ChatList({
                                                 <User />
                                             </AvatarFallback>
                                         </>
-                                    ))}
+                                    ))
+                                ) : (
+                                    <AvatarFallback>
+                                        <User />
+                                    </AvatarFallback>
+                                )}
                             </Avatar>
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between gap-2">
                                     <h3 className="font-semibold text-foreground truncate">
-                                        {conversation.participants
-                                            ?.filter((p) => p.user?.id !== user?.id)
-                                            ?.map((p) => p.user?.fullName)
-                                            .join(", ")}
+                                        {getOrtherParticipant(conversation).length > 0
+                                            ? getOrtherParticipant(conversation)
+                                                .map((participant) => participant.user?.fullName)
+                                                .join(", ")
+                                            : "Người dùng đã xóa tài khoản"}
                                     </h3>
                                     {tab === "PENDING" && (
                                         <Badge className="bg-yellow-400 text-gray-800 text-xs flex-shrink-0">

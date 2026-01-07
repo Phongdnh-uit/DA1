@@ -8,9 +8,12 @@ export const Route = createFileRoute("/admin/property-type/update/$id")({
         if (isNaN(Number(params.id))) {
             throw notFound();
         }
-        queryClient.ensureQueryData(
+    },
+    loader: async ({ params }) => {
+        const propertyType = await queryClient.ensureQueryData(
             getFindPropertyTypeByIdQueryOptions(+params.id),
         );
+        return { propertyType };
     },
     component: RouteComponent,
 });

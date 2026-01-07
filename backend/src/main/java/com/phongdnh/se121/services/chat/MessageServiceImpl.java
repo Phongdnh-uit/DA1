@@ -1,5 +1,6 @@
 package com.phongdnh.se121.services.chat;
 
+import com.phongdnh.se121.constants.ErrorMessageConstants;
 import com.phongdnh.se121.dtos.PageResponse;
 import com.phongdnh.se121.dtos.chat.MessageRequest;
 import com.phongdnh.se121.dtos.chat.MessageResponse;
@@ -27,6 +28,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -69,6 +71,7 @@ public class MessageServiceImpl implements MessageService {
   }
 
   @Override
+  @Transactional
   public void sendMessage(Long conversationId, Long userId, MessageRequest request) {
     // Validate conversation
     Conversation conversation =
@@ -93,7 +96,6 @@ public class MessageServiceImpl implements MessageService {
                     new ApiException(
                         ErrorCode.FORBIDDEN,
                         Map.of("participant", "User is not a participant in this conversation")));
-    participant.getUser().getId();
 
     // Create and save message
     Message message = new Message();
@@ -148,7 +150,7 @@ public class MessageServiceImpl implements MessageService {
             .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND));
     if (!message.getSender().getId().equals(userId)) {
       throw new ApiException(
-          ErrorCode.FORBIDDEN, Map.of("sender", "User is not the sender of this message"));
+          ErrorCode.FORBIDDEN, Map.of("sender", ErrorMessageConstants.AUTH_USER_NOT_MESSAGE_SENDER));
     }
     // Delete attachments if any
     if (message.getAttachments() != null && !message.getAttachments().isEmpty()) {

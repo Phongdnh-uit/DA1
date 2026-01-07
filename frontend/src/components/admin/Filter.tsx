@@ -6,7 +6,7 @@ import FilterInline, {
     type FilterAttribute,
     type FilterRule,
 } from "./FilterInline";
-import { ArrowRight, FilterIcon } from "lucide-react";
+import { ArrowRight, FilterIcon, X } from "lucide-react";
 import { motion } from "motion/react";
 
 interface FilterProps {
@@ -14,6 +14,8 @@ interface FilterProps {
     filterAttributes?: FilterAttribute[];
     additionalChildren?: React.ReactNode;
     sortAttributes?: SortOption[];
+    onReset?: () => void;
+    searchField?: string[];
 }
 
 export default function Filter({
@@ -21,10 +23,13 @@ export default function Filter({
     filterAttributes,
     sortAttributes,
     additionalChildren,
+    onReset,
+    searchField,
 }: FilterProps) {
     const [showFilter, setShowFilter] = useState(false);
     const [sortRules, setSortRules] = useState<SortRule[]>([]);
     const [filterRules, setFilterRules] = useState<FilterRule[]>([]);
+    const [search, setSearch] = useState("");
     const onHandleApply = () => {
         // sort order
         const sort = sortRules
@@ -48,9 +53,32 @@ export default function Filter({
                 }
                 return value;
             });
+        if (searchField && searchField.length > 0) {
+            const searchValues = searchField
+                .map((field) => {
+                    return `${field}=='*${search}*'`; // CONTAINS condition
+                })
+                .join(","); // OR condition
+            if (searchValues) {
+                filterStrings.push(`(${searchValues})`);
+            }
+        }
         const filter = filterStrings.join(";");
         onApply(sort, filter);
     };
+
+    const onResetFilter = () => {
+        setFilterRules([]);
+        setSortRules([]);
+        if (onReset) {
+            onReset();
+        }
+    };
+
+    const onSearchChange = (query: string) => {
+        setSearch(query);
+    };
+
     return (
         <div className="mx-auto space-y-6">
             {/* Filter / Sort Card */}
@@ -59,9 +87,17 @@ export default function Filter({
                 <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between ">
                     <div className="flex gap-3 w-full sm:w-auto flex-1">
                         <div className="flex-1 sm:w-64 flex items-center gap-2 flex-wrap">
-                            <SearchBar className="h-10" onSearch={() => { }} />
+                            <SearchBar className="h-10" onSearch={onSearchChange} />
                             {additionalChildren}
                         </div>
+
+                        <Button
+                            className={`hidden flex-shrink-0 h-10 px-4 rounded-lg font-medium transition-all duration-200 items-center gap-2 ${filterRules.length > 0 || sortRules.length > 0 ? "flex bg-white text-red-600 border-2 border-red-300 hover:bg-red-50 dark:bg-slate-700 dark:text-red-400 dark:border-red-500 dark:hover:bg-slate-600" : ""}`}
+                            onClick={onResetFilter}
+                        >
+                            <X className="w-4 h-4" />
+                            <span className="hidden sm:inline">Đặt lại bộ lọc</span>
+                        </Button>
 
                         <Button
                             onClick={() => setShowFilter(!showFilter)}

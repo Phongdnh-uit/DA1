@@ -128,7 +128,7 @@ export function createActionColumn<TData>(
         id: "ACTIONS",
         enableSorting: false,
         enableHiding: false,
-        header: "Actions",
+        header: () => <span>Thao tác</span>,
         cell: ({ row }) => {
             const data = row.original;
 

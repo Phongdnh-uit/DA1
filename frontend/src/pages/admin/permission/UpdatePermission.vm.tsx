@@ -1,35 +1,19 @@
 import { queryClient } from "@/lib/queryClient";
 import { Route } from "@/routes/admin/permission/update.$id";
-import {
-    useFindPermissionById,
-    useUpdatePermission,
-} from "@/services/permission/permission";
+import { useUpdatePermission } from "@/services/permission/permission";
 import { updatePermissionBody } from "@/services/permission/permission.zod";
-import type { PermissionRequest, PermissionResponse } from "@/types";
+import type { ApiResponseVoid, PermissionRequest } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-export default function useUpdatePermissionVM(data?: PermissionResponse) {
-    const { id } = Route.useParams();
-    const permission = useFindPermissionById(+id);
+export default function useUpdatePermissionVM() {
+    const { permission } = Route.useLoaderData();
     const form = useForm<PermissionRequest>({
-        defaultValues: {
-            name: permission.data?.data?.name,
-            resource: permission.data?.data?.resource,
-            urlPattern: permission.data?.data?.urlPattern,
-            method: permission.data?.data?.method,
-        },
+        defaultValues: permission.data,
         mode: "onSubmit",
         resolver: zodResolver(updatePermissionBody),
     });
-
-    useEffect(() => {
-        if (data) {
-            form.reset(data);
-        }
-    }, [data, form]);
 
     const mutation = useUpdatePermission({
         mutation: {
@@ -41,15 +25,23 @@ export default function useUpdatePermissionVM(data?: PermissionResponse) {
                     exact: false,
                 });
             },
-            onError: (error) => {
+            onError: (data) => {
                 toast.error("Cập nhật quyền hạn thất bại");
-                console.error(error);
+                const errorResponse = data.response?.data as ApiResponseVoid;
+                if (errorResponse.errors) {
+                    Object.entries(errorResponse.errors).forEach(([key, value]) => {
+                        form.setError(key as keyof PermissionRequest, {
+                            type: "server",
+                            message: value as string,
+                        });
+                    });
+                }
             },
         },
     });
     const onSubmit = (request: PermissionRequest) => {
-        if (!data || !data.id) return;
-        mutation.mutate({ id: data.id, data: request });
+        if (!permission?.data?.id) return;
+        mutation.mutate({ id: permission.data.id, data: request });
     };
     return { form, onSubmit };
 }

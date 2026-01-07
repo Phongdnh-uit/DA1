@@ -10,6 +10,7 @@ import {
     type Location,
     type PropertyRequest,
     FileResponseStatus,
+    type ApiResponseVoid,
 } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -91,8 +92,17 @@ export default function useCreatePropertyVM() {
                     exact: false,
                 });
             },
-            onError: () => {
+            onError: (data) => {
                 toast.error("Tạo mới bất động sản thất bại. Vui lòng thử lại");
+                const errorResponse = data.response?.data as ApiResponseVoid;
+                if (errorResponse.errors) {
+                    Object.entries(errorResponse.errors).forEach(([key, value]) => {
+                        form.setError(key as keyof PropertyRequest, {
+                            type: "server",
+                            message: value as string,
+                        });
+                    });
+                }
             },
         },
     });

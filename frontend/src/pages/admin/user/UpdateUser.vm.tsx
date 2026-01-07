@@ -28,14 +28,14 @@ export const useUpdateUserVM = () => {
     const roles = useFindAllRole().data?.data?.content || [];
     const mutation = useUpdateUser({
         mutation: {
-            onSuccess: () => {
-                toast.success("User created successfully");
-                form.reset();
+            onSuccess: (data) => {
+                toast.success("Cập nhật người dùng thành công"); 
+                form.reset(data.data);
             },
             onError: (error) => {
+                toast.error("Cập nhật người dùng thất bại");
                 const err = error.response?.data as ApiResponseVoid;
                 const errors = err?.errors ?? {};
-
                 Object.entries(errors).forEach(([key, message]) => {
                     form.setError(key as keyof UserRequest, {
                         message,

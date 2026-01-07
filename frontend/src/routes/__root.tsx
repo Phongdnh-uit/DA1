@@ -10,11 +10,11 @@ import { DeleteDialogGlobal } from "@/components/general/DeleteDialogGlobal";
 import { AuthInitializer } from "@/components/general/AuthInitializer";
 import { useDarkMode } from "@/hooks/use-dark-mode";
 import { RouterProgressBar } from "@/components/general/RouterProgressBar";
-import { NotFoundPage } from "@/components/general/NotFoundPage";
+import { NotFoundPage } from "@/pages/layout/NotFoundPage";
 
 export const Route = createRootRoute({
     component: RootComponent,
-    notFoundComponent: () => <NotFoundPage />
+    notFoundComponent: () => <NotFoundPage />,
 });
 
 function RootComponent() {
@@ -30,11 +30,9 @@ function RootComponent() {
                 <RouterProgressBar />
                 <AuthInitializer />
                 <Outlet />
-                <ReactQueryDevtools initialIsOpen={false} />
-                <TanStackRouterDevtools />
-                <ToastContainer 
-                    position="bottom-right"
-                />
+                {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+                {/* <TanStackRouterDevtools /> */}
+                <ToastContainer position="bottom-right" />
                 <DeleteDialogGlobal />
             </QueryClientProvider>
         </React.Fragment>

@@ -1,6 +1,7 @@
 package com.phongdnh.se121.services.chat;
 
 import com.phongdnh.se121.constants.ChatConstant;
+import com.phongdnh.se121.constants.ErrorMessageConstants;
 import com.phongdnh.se121.dtos.PageResponse;
 import com.phongdnh.se121.dtos.chat.ChatInitilizeRequest;
 import com.phongdnh.se121.dtos.chat.ConversationResponse;
@@ -126,7 +127,7 @@ public class ConversationServiceImpl implements ConversationService {
     if (!participant.isEmpty()) {
       throw new ApiException(
           ErrorCode.VALIDATION_ERROR,
-          Map.of("participant", "User is already a participant in this conversation"));
+          Map.of("participant", ErrorMessageConstants.AUTH_USER_ALREADY_PARTICIPANT));
     }
     ConversationParticipant newParticipant = new ConversationParticipant();
     newParticipant.setUser(userRepository.getReferenceById(userId));

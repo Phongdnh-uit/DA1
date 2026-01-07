@@ -1,7 +1,5 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
-    Home,
-    ChevronRight,
     Plus,
     Search,
     HeadphonesIcon,
@@ -30,7 +28,8 @@ import {
     supportTypeConverter,
 } from "@/utils/converter";
 import { useNavigate } from "@tanstack/react-router";
-import { useGetClientSupportTickets } from "@/services/support-controller/support-controller";
+import { debounce } from "lodash";
+import { useGetClientSupportTickets } from "@/services/support/support";
 
 const getTypeIcon = (type: SupportRequestType) => {
     switch (type) {
@@ -87,8 +86,10 @@ const getStatusBadge = (status: SupportResponseStatus) => {
 
 export const SupportHistoryPage = () => {
     const [searchQuery, setSearchQuery] = useState("");
+    const [searchText, setSearchText] = useState("");
     const [typeFilter, setTypeFilter] = useState("all");
     const [statusFilter, setStatusFilter] = useState("all");
+    const [page, setPage] = useState(0);
     const buildQuery = () => {
         if (searchQuery || typeFilter !== "all" || statusFilter !== "all") {
             const queryList = [];
@@ -105,36 +106,37 @@ export const SupportHistoryPage = () => {
         }
         return "";
     };
-    const clientTicket = useGetClientSupportTickets({ filter: buildQuery() });
+    const clientTicket = useGetClientSupportTickets({
+        filter: buildQuery(),
+        page: page,
+    });
     const navigate = useNavigate();
 
     const history = clientTicket.data;
+
+    const searchDebounce = useMemo(() => {
+        return debounce((keyword: string) => {
+            setSearchQuery(keyword);
+            setPage(0);
+        }, 500);
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            searchDebounce.cancel();
+        };
+    }, [searchDebounce]);
+
+    const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchText(e.target.value);
+        searchDebounce(e.target.value);
+    };
 
     return (
         <div className="min-h-screen bg-[#f6f7f8] dark:bg-[#101922]">
             {/* Main Content */}
             <main className="flex-1 flex justify-center py-8 px-4 md:px-10">
                 <div className="w-full max-w-[1200px] flex flex-col gap-6">
-                    {/* Breadcrumbs */}
-                    <div className="flex items-center gap-2 text-sm">
-                        <a
-                            className="text-gray-600 dark:text-gray-400 font-medium hover:text-[#137fec] transition-colors flex items-center gap-1"
-                            href="#"
-                        >
-                            <Home className="h-4 w-4" />
-                            Trang chủ
-                        </a>
-                        <ChevronRight className="h-4 w-4 text-gray-400" />
-                        <a
-                            className="text-gray-600 dark:text-gray-400 font-medium hover:text-[#137fec] transition-colors"
-                            href="#"
-                        >
-                            Hỗ trợ
-                        </a>
-                        <ChevronRight className="h-4 w-4 text-gray-400" />
-                        <span className="font-medium">Lịch sử yêu cầu</span>
-                    </div>
-
                     {/* Page Heading */}
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                         <div className="flex flex-col gap-2">
@@ -163,8 +165,8 @@ export const SupportHistoryPage = () => {
                                 <Input
                                     className="w-full h-11 pl-10 pr-4"
                                     placeholder="Tìm kiếm theo mã yêu cầu hoặc tiêu đề..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    value={searchText}
+                                    onChange={onSearchChange}
                                 />
                             </div>
                             <div className="flex gap-3 w-full md:w-auto">
@@ -307,10 +309,20 @@ export const SupportHistoryPage = () => {
                                 kết quả
                             </p>
                             <div className="flex gap-2">
-                                <Button variant="outline" size="sm" disabled>
+                                <Button
+                                    onClick={() => setPage(page - 1)}
+                                    variant="outline"
+                                    size="sm"
+                                    disabled={page === 0}
+                                >
                                     Trước
                                 </Button>
-                                <Button variant="outline" size="sm">
+                                <Button
+                                    onClick={() => setPage(page + 1)}
+                                    variant="outline"
+                                    size="sm"
+                                    disabled={page >= (history?.data?.totalPages || 1) - 1}
+                                >
                                     Sau
                                 </Button>
                             </div>

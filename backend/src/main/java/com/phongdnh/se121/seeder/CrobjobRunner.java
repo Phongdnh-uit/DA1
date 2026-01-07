@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class CrobjobRunner implements ApplicationRunner {
   private final FileOrchestratorService fileOrchestratorService;
-  private final PriceReferenceService priceReferenceService;
+  // private final PriceReferenceService priceReferenceService;
 
   // Active all cronjob on startup
   @Override
   public void run(ApplicationArguments args) throws Exception {
     fileOrchestratorService.cronjobCleanupOrphanedFiles();
-    priceReferenceService.batchUpdatePriceReferences();
+    // priceReferenceService.batchUpdatePriceReferences();
   }
 }

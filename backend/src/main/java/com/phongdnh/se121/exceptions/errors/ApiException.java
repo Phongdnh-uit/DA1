@@ -2,8 +2,10 @@ package com.phongdnh.se121.exceptions.errors;
 
 import java.util.Map;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class ApiException extends RuntimeException {
   private final ErrorCode errorCode;
   private final Map<String, String> fieldErrors;

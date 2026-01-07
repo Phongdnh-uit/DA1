@@ -47,6 +47,7 @@ export function PreferencesSection() {
                                 <ThemeToggleButton
                                     key={id}
                                     variant="circle-blur"
+                                    start="top-right"
                                     onClick={() => startTransition(toggle)}
                                     asChild
                                 >

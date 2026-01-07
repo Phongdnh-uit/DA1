@@ -1,7 +1,7 @@
 import { DataTable } from "@/components/general/DataTable";
 import { RippleButton } from "@/components/ui/shadcn-io/ripple-button";
 import { useDatatable } from "@/hooks/useDatatable";
-import type { RoleResponse } from "@/types";
+import type { ApiResponseVoid, RoleResponse } from "@/types";
 import {
     createActionColumn,
     createColumnsFromType,
@@ -20,6 +20,8 @@ import { useDeleteDialogStore } from "@/stores/useDeleteDialogStore";
 import { useNavigate } from "@tanstack/react-router";
 import PermissionGate from "@/components/general/PermissionGate";
 import { RoleDetailSheet } from "./DetailRoleSheet";
+import { motion } from "motion/react";
+import { fadeInUp } from "@/lib/animation";
 
 const keys: (keyof RoleResponse)[] = [
     "id",
@@ -41,21 +43,56 @@ export const RoleManage = () => {
                 toast.success("Xoá thành công");
                 list.refetch();
             },
-            onError: () => {
-                toast.error("Xoá thất bại");
+            onError: (data) => {
+                const errorResponse = data.response?.data as ApiResponseVoid;
+                const message = errorResponse?.errors?.["role"] || "";
+                toast.error("Xoá thất bại. " + message);
             },
         },
     });
     const columns = useMemo(
         () => [
             createSelectionColumn<RoleResponse>(),
-            ...createColumnsFromType<RoleResponse>(keys),
+            ...createColumnsFromType<RoleResponse>(keys, [
+                {
+                    key: "id",
+                    header: "Mã vai trò",
+                },
+                {
+                    key: "name",
+                    header: "Tên vai trò",
+                },
+                {
+                    key: "createdAt",
+                    header: "Ngày tạo",
+                },
+                {
+                    key: "updatedAt",
+                    header: "Ngày cập nhật",
+                },
+                {
+                    key: "createdBy",
+                    header: "Người tạo (ID)",
+                },
+                {
+                    key: "updatedBy",
+                    header: "Người cập nhật (ID)",
+                },
+            ]),
             createActionColumn<RoleResponse>(
                 {
                     onEdit: (row) => {
+                        if (row.id === 1) {
+                            toast.info("Không thể chỉnh sửa vai trò quản trị viên.");
+                            return;
+                        }
                         navigate({ to: `/admin/role/update/${row.id}` });
                     },
                     onDelete: (row) => {
+                        if (row.id === 1) {
+                            toast.info("Không thể xoá vai trò quản trị viên.");
+                            return;
+                        }
                         openDeleteDialog({
                             onConfirm() {
                                 if (!row.id) return;
@@ -66,7 +103,7 @@ export const RoleManage = () => {
                     onView: (row) => {
                         setDetailRole(row);
                         setOpenedDetail(true);
-                    }
+                    },
                 },
                 {
                     viewCode: "ROLE_VIEW_DETAIL",
@@ -103,6 +140,11 @@ export const RoleManage = () => {
                 toast.success("Xoá thành công");
                 list.refetch();
             },
+            onError: (data) => {
+                const errorResponse = data.response?.data as ApiResponseVoid;
+                const message = errorResponse?.errors?.["role"] || "";
+                toast.error("Xoá thất bại. " + message);
+            },
         },
     });
 
@@ -130,7 +172,12 @@ export const RoleManage = () => {
     };
 
     return (
-        <div className="space-y-4">
+        <motion.div
+            variants={fadeInUp.container}
+            initial="hidden"
+            animate="show"
+            className="space-y-4"
+        >
             <div className="flex items-center justify-end p-2">
                 <PermissionGate permission="ROLE_CREATE">
                     <RippleButton
@@ -142,40 +189,51 @@ export const RoleManage = () => {
                     </RippleButton>
                 </PermissionGate>
             </div>
-            <Filter
-                sortAttributes={[
-                    { key: "id", label: "ID" },
-                    { key: "name", label: "Tên" },
-                    { key: "createdAt", label: "Ngày tạo" },
-                    { key: "updatedAt", label: "Ngày cập nhật" },
-                ]}
-                filterAttributes={[
-                    { name: "name", label: "Name", type: "text" },
-                    { name: "id", label: "Id", type: "number" },
-                    { name: "createdBy", label: "Created By", type: "number" },
-                    { name: "updatedBy", label: "Updated By", type: "number" },
-                    { name: "createdAt", label: "Created At", type: "date" },
-                    { name: "updatedAt", label: "Updated At", type: "date" },
-                ]}
-                onApply={onApplyFilter}
-            />
-            <DataTable
-                deleteCode="ROLE_DELETE_BULK"
-                className="h-[500px]"
-                name="Vai trò"
-                table={table}
-                onBulkDelete={onBulkDelete}
-                pagination={pagination}
-                onPaginationChange={setPagination}
-                totalPages={list.data?.data?.totalPages || 0}
-                totalElements={list.data?.data?.totalElements || 0}
-                numberOfElements={list.data?.data?.numberOfElements || 0}
-            />
+
+            <motion.div variants={fadeInUp.item}>
+                <Filter
+                    sortAttributes={[
+                        { key: "id", label: "Mã vai trò" },
+                        { key: "name", label: "Tên vai trò" },
+                        { key: "createdBy", label: "Người tạo (ID)" },
+                        { key: "updatedBy", label: "Người cập nhật (ID)" },
+                        { key: "createdAt", label: "Ngày tạo" },
+                        { key: "updatedAt", label: "Ngày cập nhật" },
+                    ]}
+                    filterAttributes={[
+                        { name: "id", label: "Mã vai trò", type: "number" },
+                        { name: "name", label: "Tên vai trò", type: "text" },
+                        { name: "description", label: "Mô tả", type: "text" },
+
+                        { name: "createdBy", label: "Người tạo (ID)", type: "number" },
+                        { name: "updatedBy", label: "Người cập nhật (ID)", type: "number" },
+
+                        { name: "createdAt", label: "Ngày tạo", type: "date" },
+                        { name: "updatedAt", label: "Ngày cập nhật", type: "date" },
+                    ]}
+                    searchField={["name"]}
+                    onApply={onApplyFilter}
+                />
+            </motion.div>
+            <motion.div variants={fadeInUp.item}>
+                <DataTable
+                    deleteCode="ROLE_DELETE_BULK"
+                    className="h-[500px]"
+                    name="Vai trò"
+                    table={table}
+                    onBulkDelete={onBulkDelete}
+                    pagination={pagination}
+                    onPaginationChange={setPagination}
+                    totalPages={list.data?.data?.totalPages || 0}
+                    totalElements={list.data?.data?.totalElements || 0}
+                    numberOfElements={list.data?.data?.numberOfElements || 0}
+                />
+            </motion.div>
             <RoleDetailSheet
                 open={openedDetail}
                 onOpenChange={setOpenedDetail}
                 role={detailRole}
             />
-        </div>
+        </motion.div>
     );
 };

@@ -3,34 +3,29 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Camera, UserIcon } from "lucide-react";
+import { Camera, Edit2, Save, UserIcon, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { PresignedUploadRequestPurpose, type BaseUserRequest } from "@/types";
 import { useGetCurrentUser, useUpdateCurrentUser } from "@/services/auth/auth";
 import { Form } from "@/components/ui/form";
 import { FormInput } from "@/utils/formUtil";
-import { motion } from "motion/react";
 import { toast } from "react-toastify";
 import { useEffect, useRef, useState } from "react";
 import SpiralLoader from "@/components/ui/SpiralLoader";
 import { useFileUpload } from "@/hooks/useFileHook";
 import { useFileSSE } from "@/hooks/useFileSse";
 import type { FileEvent } from "@/no-gen/types/fileEvent";
-
-const MotionButton = motion(Button);
+import { MotionButton } from "@/components/customs/MotionButton";
+import { cn } from "@/lib/utils";
 
 export function ProfileSection() {
+    const [editMode, setEditMode] = useState(false);
     const currentUser = useGetCurrentUser();
     const [tempAvatar, setTempAvatar] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState(false);
     const [uploadedFileId, setUploadedFileId] = useState<string | null>(null);
     const form = useForm<BaseUserRequest>({
-        defaultValues: {
-            email: currentUser?.data?.data?.email,
-            fullName: currentUser?.data?.data?.fullName,
-            phone: currentUser?.data?.data?.phone,
-            avatarId: currentUser?.data?.data?.avatar?.id,
-        },
+        defaultValues: currentUser.data?.data,
     });
     const fileEvent = useFileSSE(uploadedFileId);
     const { uploadFile } = useFileUpload();
@@ -77,13 +72,15 @@ export function ProfileSection() {
 
     const updateCurrentUserMutation = useUpdateCurrentUser({
         mutation: {
-            onSuccess: () => {
+            onSuccess: (data) => {
                 toast.success("Cập nhật thông tin thành công");
                 currentUser.refetch();
                 if (tempAvatar) {
                     URL.revokeObjectURL(tempAvatar);
                     setTempAvatar(null);
                 }
+                setEditMode(false);
+                form.reset(data.data);
             },
             onError: () => {
                 toast.error("Cập nhật thông tin thất bại");
@@ -107,9 +104,52 @@ export function ProfileSection() {
             </div>
 
             <Card className="p-6">
-                <h2 className="text-xl font-semibold text-foreground mb-6">
-                    Thông tin hồ sơ
-                </h2>
+                <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-semibold text-foreground mb-6">
+                        Thông tin hồ sơ
+                    </h2>
+
+                    <div className="flex items-center gap-3 text-base">
+                        <MotionButton
+                            onClick={() => setEditMode(!editMode)}
+                            className={cn(
+                                "rounded-md px-4 h-10 transition-all flex items-center gap-2",
+                                editMode
+                                    ? "bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200"
+                                    : "bg-blue-600 hover:bg-blue-700 text-white shadow-sm",
+                            )}
+                        >
+                            {editMode ? (
+                                <>
+                                    <X size={16} />
+                                    <span>Hủy bỏ</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Edit2 size={16} />
+                                    <span>Chỉnh sửa hồ sơ</span>
+                                </>
+                            )}
+                        </MotionButton>
+
+                        {editMode && (
+                            <MotionButton
+                                onClick={form.handleSubmit(onSubmit)}
+                                disabled={!form.formState.isDirty}
+                                className={cn(
+                                    "rounded-md px-4 h-10 flex items-center gap-2 transition-all",
+                                    "bg-blue-600 hover:bg-blue-700 text-white shadow-md",
+                                    "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-300",
+                                )}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                            >
+                                <Save size={16} />
+                                Lưu thay đổi
+                            </MotionButton>
+                        )}
+                    </div>
+                </div>
 
                 <div className="flex items-center gap-6 mb-8">
                     <div className="relative">
@@ -170,29 +210,21 @@ export function ProfileSection() {
                             name="fullName"
                             title="Họ và tên"
                             placeholder="Nhập họ và tên"
+                            disabled={!editMode}
                         />
                         <FormInput<BaseUserRequest>
                             name="email"
                             title="Email"
                             placeholder="Nhập email"
+                            disabled={!editMode}
                         />
                         <FormInput<BaseUserRequest>
                             name="phone"
                             title="Số điện thoại"
                             placeholder="Nhập số điện thoại"
+                            disabled={!editMode}
                         />
                     </Form>
-
-                    <MotionButton
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                        className="flex-1 text-xl h-12 rounded-2xl transition-none w-full"
-                        size="lg"
-                        onClick={() => form.handleSubmit(onSubmit)()}
-                    >
-                        Lưu thay đổi
-                    </MotionButton>
                 </div>
             </Card>
         </div>

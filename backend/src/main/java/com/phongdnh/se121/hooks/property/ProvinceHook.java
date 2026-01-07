@@ -1,5 +1,6 @@
 package com.phongdnh.se121.hooks.property;
 
+import com.phongdnh.se121.constants.ErrorMessageConstants;
 import com.phongdnh.se121.dtos.property.ProvinceRequest;
 import com.phongdnh.se121.dtos.property.ProvinceResponse;
 import com.phongdnh.se121.entities.property.Province;
@@ -39,7 +40,7 @@ public class ProvinceHook
           codeSpec.and((root, _, criteriaBuilder) -> criteriaBuilder.notEqual(root.get("id"), id));
     }
     if (provinceRepository.exists(codeSpec)) {
-      errors.put("code", "Code already exists");
+      errors.put("code", ErrorMessageConstants.PROVINCE_CODE_EXISTS);
     }
 
     if (!errors.isEmpty()) {

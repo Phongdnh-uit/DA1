@@ -62,7 +62,6 @@ public class ContentBlockServiceImpl implements ContentBlockService {
                     root.get("id")
                         .in(
                             request.getContentBlocks().stream()
-                                .filter(cb -> cb.getFileId() != null)
                                 .map(ContentBlockRequest::getFileId)
                                 .toList()),
                     builder.equal(root.get("purpose"), FilePurpose.CAROUSEL_IMAGE),

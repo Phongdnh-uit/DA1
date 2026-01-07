@@ -14,7 +14,6 @@ import {
     FileText,
     Info,
 } from "lucide-react";
-import { MotionButton } from "@/components/general/MotionShadcn";
 import { BackButton } from "@/components/general/BackButton";
 import { FormInput, FormSelect } from "@/utils/formUtil";
 import { Label } from "@/components/ui/label";
@@ -26,6 +25,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { vi } from "date-fns/locale/vi";
 import { format } from "date-fns";
 import { bookingStatusConverter } from "@/utils/converter";
+import { MotionButton } from "@/components/customs/MotionButton";
 
 export default function CreateBookingPage() {
     const { form, consultationTypes, timeSlots, onSubmit } = useCreateBookingVM();

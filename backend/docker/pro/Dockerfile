@@ -5,7 +5,7 @@ FROM eclipse-temurin:24-jdk AS build
 
 WORKDIR /build
 
-COPY build.gradle settings.gradle gradlew .
+COPY build.gradle settings.gradle gradlew ./
 COPY gradle gradle
 
 RUN chmod +x gradlew 

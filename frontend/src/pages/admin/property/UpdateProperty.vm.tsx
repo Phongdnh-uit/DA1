@@ -7,6 +7,7 @@ import { useFindAllWard } from "@/services/ward/ward";
 import {
     FileResponseStatus,
     PresignedUploadRequestPurpose,
+    type ApiResponseVoid,
     type FileResponse,
     type PropertyRequest,
 } from "@/types";
@@ -50,7 +51,10 @@ export default function useUpdatePropertyVM() {
             documentIds: property?.data?.documents?.map((doc) => doc.id) ?? [],
             thumbnailId: property?.data?.thumbnail?.id ?? undefined,
             galleryIds: property?.data?.galleries?.map((media) => media.id) ?? [],
-            location: property?.data?.location ?? undefined,
+            location: {
+                latitude: property?.data?.location?.latitude ?? undefined,
+                longitude: property?.data?.location?.longitude ?? undefined,
+            },
         },
         mode: "onSubmit",
         resolver: zodResolver(updatePropertyBody),
@@ -65,8 +69,17 @@ export default function useUpdatePropertyVM() {
                     exact: false,
                 });
             },
-            onError: () => {
+            onError: (data) => {
                 toast.error("Lỗi xảy ra, vui lòng thử lại");
+                const errorResponse = data.response?.data as ApiResponseVoid;
+                if (errorResponse.errors) {
+                    Object.entries(errorResponse.errors).forEach(([key, value]) => {
+                        form.setError(key as keyof PropertyRequest, {
+                            type: "server",
+                            message: value as string,
+                        });
+                    });
+                }
             },
         },
     });
@@ -83,7 +96,7 @@ export default function useUpdatePropertyVM() {
         | undefined
     >({
         file: property?.data?.thumbnail,
-        url: property.data?.thumbnail?.url
+        url: property.data?.thumbnail?.url,
     });
     const [gallery, setGallery] = useState<
         {
@@ -226,7 +239,7 @@ export default function useUpdatePropertyVM() {
     };
 
     const onLocationChange = (data: Location | undefined) => {
-        form.setValue("location", data);
+        form.setValue("location", data, { shouldDirty: true });
     };
 
     const handleAddDocument = async (file: File) => {
