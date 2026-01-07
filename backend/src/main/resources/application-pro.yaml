@@ -30,28 +30,31 @@ spring:
     port: ${REDIS_PORT}
 
   ai:
+    chat:
+      client:
+        enabled: true
     vectorstore:
       milvus:
         client:
-          host: ${MILVUS_HOST}
-          port: ${MILVUS_PORT}
-        database-name: ${MILVUS_DB_NAME}
+          uri: ${MILVUS_URI}
+          username: ${MILVUS_USERNAME}
+          password: ${MILVUS_PASSWORD}
+          secure: true
+        # database-name: ${MILVUS_DB_NAME}
         collection-name: ${MILVUS_COLLECTION_NAME}
-        embedding-dimension: 4096
+        embedding-dimension: ${MILVUS_EMBEDDING_DIMENSION:4096}
         metric-type: cosine
-        index-type: ivf-flat
-        initialize-schema: true
+        index-type: hnsw
+        # initialize-schema: true
     ollama:
       init:
         pull-model-strategy: always
       base-url: ${OLLAMA_BASE_URL}
       embedding:
-        model: qwen3-embedding:8b-q4_K_M
+        model: ${OLLAMA_EMBEDDING_MODEL:qwen3-embedding:16k-q4_K_M}
       chat:
-        model: qwen3:4b-instruct-2507-q4_K_M
-    chat:
-      client:
-        enabled: true
+        model: ${OLLAMA_CHAT_MODEL:qwen3-chat:16k-q4_K_M}
+
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
     listener:
@@ -87,7 +90,7 @@ spring:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
             scope: profile,email
-            redirect-uri:  "{baseUrl}/oauth2/callback/google"
+            redirect-uri: "{baseUrl}/oauth2/callback/google"
         provider:
           google:
             authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
@@ -103,6 +106,8 @@ app:
       password: ${BOOTSTRAP_ADMIN_PASSWORD}
       email: ${BOOTSTRAP_ADMIN_EMAIL}
       force-recreate: ${BOOTSTRAP_ADMIN_FORCE_RECREATE:false}
+  cronjob-runner:
+    enabled: ${CRONJOB_RUNNER_ENABLED:true}
 
 jwt:
   secret: ${JWT_SECRET}
@@ -127,6 +132,8 @@ imgproxy:
   key: ${IMGPROXY_KEY}
   salt: ${IMGPROXY_SALT}
 
-# speedsms:
-#   api-url: ${SPEEDSMS_API_URL}
-#   access-token: ${SPEEDSMS_ACCESS_TOKEN}
+telegram:
+  bot:
+    enabled: true
+    username: ${TELEGRAM_BOT_USERNAME}
+    token: ${TELEGRAM_BOT_TOKEN}

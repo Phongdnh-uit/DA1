@@ -3,7 +3,6 @@ package com.phongdnh.se121.services.bot;
 import com.phongdnh.se121.constants.RedisKey;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
