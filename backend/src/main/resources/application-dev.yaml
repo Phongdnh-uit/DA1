@@ -50,14 +50,14 @@ spring:
         metric-type: cosine
         index-type: ivf-flat
         initialize-schema: true
-    # ollama:
-    #   init:
-    #     pull-model-strategy: always
-    #   base-url: http://localhost:11434
-    #   embedding:
-    #     model: qwen3-embedding:8b-q4_K_M
-    # chat:
-    #   model: qwen3:4b-instruct-2507-q4_K_M
+    ollama:
+      init:
+        pull-model-strategy: always
+      base-url: http://localhost:11434
+      embedding:
+        model: qwen3-embedding:8b-q4_K_M
+      chat:
+        model: qwen3:4b-instruct-2507-q4_K_M
   kafka:
     bootstrap-servers: localhost:9092
     listener:
@@ -114,3 +114,7 @@ imgproxy:
   base-url: http://localhost:8081
   key: 3b36d1b62634689b28636a633eeb42b39aae91d40fb3bf1e53dd4d48abbf2166
   salt: f94a17684703c3a7f3aec1dad5ad1f37b8a5fa07bd19843704070b46eb10580a
+
+app:
+  cronjob-runner:
+    enabled: false

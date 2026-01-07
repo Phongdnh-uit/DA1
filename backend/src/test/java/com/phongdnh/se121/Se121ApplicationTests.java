@@ -16,10 +16,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
       org.springframework.ai.model.ollama.autoconfigure.OllamaEmbeddingAutoConfiguration.class,
       org.springframework.ai.vectorstore.milvus.autoconfigure.MilvusVectorStoreAutoConfiguration
           .class,
-      org.springframework.ai.model.google.genai.autoconfigure.chat.GoogleGenAiChatAutoConfiguration
-          .class,
-      org.springframework.ai.model.google.genai.autoconfigure.embedding
-          .GoogleGenAiEmbeddingConnectionAutoConfiguration.class
     })
 class Se121ApplicationTests {
 

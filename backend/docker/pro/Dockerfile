@@ -21,9 +21,14 @@ RUN ./gradlew clean bootJar --no-daemon
 # APP STAGE
 # ============================
 
-FROM eclipse-temurin:24-jre-alpine
+# FROM eclipse-temurin:24-jre-alpine
+FROM eclipse-temurin:24-jre
 
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+# RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# Tạo user/group chuẩn Debian
+RUN addgroup --system appgroup && \
+    adduser --system --ingroup appgroup appuser
 
 WORKDIR /app
 

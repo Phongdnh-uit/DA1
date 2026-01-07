@@ -1,6 +1,7 @@
 package com.phongdnh.se121.configurations;
 
 import com.phongdnh.se121.services.bot.TelegramBot;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,7 @@ public class TelegramConfig {
       telegramBotsApi.registerBot(telegramBot);
       initialized = true;
     }
+    telegramBotsApi.registerBot(telegramBot);
     return telegramBotsApi;
   }
 }
