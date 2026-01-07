@@ -21,7 +21,6 @@ public class TelegramConfig {
       telegramBotsApi.registerBot(telegramBot);
       initialized = true;
     }
-    telegramBotsApi.registerBot(telegramBot);
     return telegramBotsApi;
   }
 }
