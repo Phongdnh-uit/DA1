@@ -195,10 +195,10 @@ services:
     networks:
       - uitland-network
   app:
-    build:
-      context: ../../
-      dockerfile: docker/pro/Dockerfile
-    # image: dnhphong2005/uitland-backend:latest
+    # build:
+    #   context: ../../
+    #   dockerfile: docker/pro/Dockerfile
+    image: dnhphong2005/uitland-backend:latest
     container_name: uitland-backend-pro
     env_file:
       - .env

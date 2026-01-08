@@ -50,10 +50,11 @@ spring:
       init:
         pull-model-strategy: always
       base-url: ${OLLAMA_BASE_URL}
+
       embedding:
-        model: ${OLLAMA_EMBEDDING_MODEL:qwen3-embedding:16k-q4_K_M}
+        model: ${OLLAMA_EMBEDDING_MODEL:qwen3-embedding:8b-q4_K_M}
       chat:
-        model: ${OLLAMA_CHAT_MODEL:qwen3-chat:16k-q4_K_M}
+        model: ${OLLAMA_CHAT_MODEL:qwen3:4b-instruct-2507-q4_K_M}
 
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
