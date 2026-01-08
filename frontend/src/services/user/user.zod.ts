@@ -27,7 +27,7 @@ export const updateUserBody = zod.object({
   "password": zod.string().optional(),
   "emailVerified": zod.boolean().optional(),
   "phoneVerified": zod.boolean().optional(),
-  "status": zod.enum(['UNVERIFIED', 'ACTIVE', 'INACTIVE', 'BLOCKED']).optional(),
+  "status": zod.enum(['UNVERIFIED', 'ACTIVE', 'BLOCKED']).optional(),
   "roleId": zod.number()
 })
 
@@ -47,7 +47,7 @@ export const createUserBody = zod.object({
   "password": zod.string().optional(),
   "emailVerified": zod.boolean().optional(),
   "phoneVerified": zod.boolean().optional(),
-  "status": zod.enum(['UNVERIFIED', 'ACTIVE', 'INACTIVE', 'BLOCKED']).optional(),
+  "status": zod.enum(['UNVERIFIED', 'ACTIVE', 'BLOCKED']).optional(),
   "roleId": zod.number()
 })
 

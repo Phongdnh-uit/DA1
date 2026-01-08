@@ -12,6 +12,5 @@ export type UserResponseStatus = typeof UserResponseStatus[keyof typeof UserResp
 export const UserResponseStatus = {
   UNVERIFIED: 'UNVERIFIED',
   ACTIVE: 'ACTIVE',
-  INACTIVE: 'INACTIVE',
   BLOCKED: 'BLOCKED',
 } as const;

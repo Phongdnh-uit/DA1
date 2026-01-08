@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Paperclip, User, X, Download } from "lucide-react";
+import { Paperclip, User, X, Download, LockIcon } from "lucide-react";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { Client, type IMessage } from "@stomp/stompjs";
 import {
@@ -18,6 +18,9 @@ import { config } from "@/lib/config";
 import { Input } from "../ui/input";
 import { MotionButton } from "../customs/MotionButton";
 import { IconBrandTelegram } from "@tabler/icons-react";
+import {
+    useGetCurrentUserConversations,
+} from "@/services/conversation/conversation";
 
 interface ChatWindowProps {
     conversationId: number | null;
@@ -38,6 +41,20 @@ export default function ChatWindow({
     const [realTimeMessages, setRealTimeMessages] = useState<MessageResponse[]>(
         [],
     );
+
+    // Không khuyến khích, do mình lười nên dùng tạm vậy
+    const conversationList = useGetCurrentUserConversations(
+        {
+            filter: `id==${conversationId}`,
+        },
+        {
+            query: {
+                enabled: !!conversationId,
+            },
+        },
+    );
+
+    const conversation = conversationList?.data?.data?.content?.at(0) || null;
 
     useEffect(() => {
         if (!conversationId) return;
@@ -282,6 +299,20 @@ export default function ChatWindow({
                         </div>
                     </div>
                 ))}
+                {conversation?.status === "CLOSED" && (
+                    <div className="flex flex-col items-center justify-center py-6 px-4 space-y-2 animate-in fade-in zoom-in duration-300">
+                        <div className="h-[1px] w-full bg-gray-200 dark:bg-gray-700 mb-2" />
+                        <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 px-4 py-2 rounded-full border border-gray-200 dark:border-gray-800">
+                            <LockIcon size={14} className="text-gray-400" />
+                            <span className="text-xs font-medium uppercase tracking-wider">
+                                Cuộc trò chuyện này đã kết thúc
+                            </span>
+                        </div>
+                        <p className="text-[11px] text-gray-400 text-center">
+                            Bạn không thể gửi thêm tin nhắn vào luồng này.
+                        </p>
+                    </div>
+                )}
             </div>
             {/* Attachments Preview */}
             {attachments.length > 0 && (
