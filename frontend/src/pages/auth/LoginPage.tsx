@@ -74,8 +74,22 @@ export default function LoginPage() {
                     });
                 }
             },
-            onError: () => {
-                toast.error("Đăng nhập thất bại. Thông tin đăng nhập không đúng");
+            onError: (data) => {
+                const errorResponse = data.response?.data as ApiResponseVoid;
+                if (errorResponse.code === 2007 || errorResponse.code === 2099) {
+                    toast.error("Đăng nhập thất bại. Thông tin đăng nhập không đúng");
+                } else if (errorResponse.code === 2500) {
+                    const status = errorResponse.errors?.status;
+                    if (status === "UNVERIFIED") {
+                        toast.error(
+                            "Tài khoản chưa được xác thực. Vui lòng kiểm tra email để xác thực tài khoản.",
+                        );
+                    } else if (status === "BLOCKED") {
+                        toast.error(
+                            "Tài khoản đã bị vô hiệu hóa. Vui lòng liên hệ bộ phận hỗ trợ để biết thêm chi tiết.",
+                        );
+                    }
+                }
             },
         },
     });

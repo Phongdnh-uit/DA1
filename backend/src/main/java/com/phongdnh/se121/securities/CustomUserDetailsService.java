@@ -2,9 +2,11 @@ package com.phongdnh.se121.securities;
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.phongdnh.se121.entities.authentication.User;
+import com.phongdnh.se121.enums.authentication.UserStatus;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
 import com.phongdnh.se121.repositories.authentication.UserRepository;
+import java.util.Map;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,6 +35,9 @@ public class CustomUserDetailsService implements UserDetailsService {
           userRepository
               .findOne((root, _, builder) -> builder.equal(root.get("email"), credential))
               .orElseThrow(() -> new ApiException(ErrorCode.INVALID_CREDENTIALS));
+    }
+    if (user.getStatus() != UserStatus.ACTIVE) {
+      throw new ApiException(ErrorCode.USER_INACTIVE, Map.of("status", "" + user.getStatus()));
     }
     return CustomUserDetails.builder()
         .id(user.getId())

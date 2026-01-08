@@ -3955,7 +3955,6 @@
             "enum": [
               "UNVERIFIED",
               "ACTIVE",
-              "INACTIVE",
               "BLOCKED"
             ]
           },
@@ -4124,7 +4123,6 @@
             "enum": [
               "UNVERIFIED",
               "ACTIVE",
-              "INACTIVE",
               "BLOCKED"
             ]
           },

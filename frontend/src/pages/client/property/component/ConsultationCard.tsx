@@ -23,7 +23,7 @@ export default function ConsultationCard({ className, propertyId }: Consultation
             onSuccess: (data) => {
                 toast.success("Xin chờ một chút, đang chuyển bạn đến phòng chat...");
                 navigate({
-                    to: `/chat/${data.data?.id}`,
+                    to: `/chat`,
                 });
             },
         },

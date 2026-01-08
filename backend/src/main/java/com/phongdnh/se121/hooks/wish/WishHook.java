@@ -44,12 +44,14 @@ public class WishHook implements GenericHook<Wish, Long, WishRequest, WishRespon
 
   // ============================ HELPER METHOD ============================
   private void validate(WishRequest input, Long id) {
+    Long userId = SecurityUtil.getCurrentUserId();
     // 1. ---- Check if wish exists ----
     Specification<Wish> spec =
         (root, _, builder) ->
             builder.and(
                 builder.equal(root.get("type"), input.getType()),
-                builder.equal(root.get("identifier"), input.getIdentifier()));
+                builder.equal(root.get("identifier"), input.getIdentifier()),
+                builder.equal(root.get("user").get("id"), userId));
     if (id != null) {
       spec = spec.and((root, _, builder) -> builder.notEqual(root.get("id"), id));
     }

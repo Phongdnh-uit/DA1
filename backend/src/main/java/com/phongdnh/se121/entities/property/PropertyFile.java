@@ -16,7 +16,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "property_files")
 public class PropertyFile extends BaseEntity {
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
   @JoinColumn(name = "property_id", nullable = false)
   private Property property;
 

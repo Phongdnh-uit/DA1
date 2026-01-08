@@ -4,6 +4,7 @@ import com.phongdnh.se121.constants.ErrorMessageConstants;
 import com.phongdnh.se121.dtos.general.PresignedURLResponse;
 import com.phongdnh.se121.dtos.general.PresignedUploadRequest;
 import com.phongdnh.se121.dtos.general.PresignedUploadResponse;
+import com.phongdnh.se121.entities.chat.ChatAttachment;
 import com.phongdnh.se121.entities.chat.ConversationParticipant;
 import com.phongdnh.se121.entities.chat.Message;
 import com.phongdnh.se121.entities.general.File;
@@ -21,6 +22,8 @@ import com.phongdnh.se121.services.file.processor.MagicByteProcessor;
 import com.phongdnh.se121.services.file.processor.VirusScanProcessor;
 import com.phongdnh.se121.services.general.FileNotificationService;
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.criteria.Join;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -152,10 +155,11 @@ public class FileOrchestratorServiceImpl implements FileOrchestratorService {
       }
       storageProvider.promoteFromQuarantine(objectKey);
       file.setStatus(FileStatus.ACTIVE);
-      fileRepository.save(file);
+      file = fileRepository.save(file);
       log.info("File {} processed and activated.", objectKey);
       // Notify other service
-      PresignedURLResponse presignedURLResponse = generatePresignedDownURL(objectKey, null);
+      PresignedURLResponse presignedURLResponse =
+          generatePresignedDownURLWhenProcessCompleted(file);
       notifyFileProcessed(objectKey, FileStatus.ACTIVE, presignedURLResponse.getUrl());
     } catch (IOException e) {
       throw new ApiException(ErrorCode.DOWNLOAD_FAILED, Map.of("reason", e.getMessage()));
@@ -207,7 +211,7 @@ public class FileOrchestratorServiceImpl implements FileOrchestratorService {
 
   private void checkFileAccessible(File file) {
     Long userId = SecurityUtil.getCurrentUserId();
-    boolean isRealAuthenticatd = SecurityUtil.isRealAuthenticated();
+    boolean isRealAuthenticated = SecurityUtil.isRealAuthenticated();
     if (file.getStatus() != FileStatus.ACTIVE) {
       throw new ApiException(
           ErrorCode.DOWNLOAD_FAILED, Map.of("objectKey", "File is not available for download"));
@@ -226,7 +230,7 @@ public class FileOrchestratorServiceImpl implements FileOrchestratorService {
         break;
       case PROPERTY_FILE:
         // login, owner or admin
-        if (!isRealAuthenticatd) {
+        if (!isRealAuthenticated) {
           throw new ApiException(
               ErrorCode.AUTHENTICATION_REQUIRED,
               Map.of("authentication", "User must be logged in"));
@@ -234,7 +238,7 @@ public class FileOrchestratorServiceImpl implements FileOrchestratorService {
         break;
       case CHAT_FILE:
         // login and must be among
-        if (!isRealAuthenticatd) {
+        if (!isRealAuthenticated) {
           throw new ApiException(
               ErrorCode.AUTHENTICATION_REQUIRED,
               Map.of("authentication", "User must be logged in"));
@@ -242,7 +246,11 @@ public class FileOrchestratorServiceImpl implements FileOrchestratorService {
         // only chat participants
         Message message =
             messageRepository
-                .findOne((root, _, cb) -> cb.equal(root.get("attachments").get("id"), file.getId()))
+                .findOne(
+                    (root, _, cb) -> {
+                      Join<Message, ChatAttachment> attachmentJoin = root.join("attachments");
+                      return cb.equal(attachmentJoin.get("attachment").get("id"), file.getId());
+                    })
                 .orElseThrow(
                     () ->
                         new ApiException(
@@ -252,11 +260,22 @@ public class FileOrchestratorServiceImpl implements FileOrchestratorService {
             participants.stream().anyMatch(p -> p.getUser().getId().equals(userId));
         if (!isParticipant) {
           throw new ApiException(
-              ErrorCode.FORBIDDEN, Map.of("access", ErrorMessageConstants.AUTH_USER_NOT_PARTICIPANT));
+              ErrorCode.FORBIDDEN,
+              Map.of("access", ErrorMessageConstants.AUTH_USER_NOT_PARTICIPANT));
         }
         break;
       default:
         break;
     }
+  }
+
+  private PresignedURLResponse generatePresignedDownURLWhenProcessCompleted(File file) {
+    if (file.getMimeType().startsWith("image/")) {
+      String url = imgproxyService.generateUrl(file.getObjectName(), null);
+      PresignedURLResponse response =
+          PresignedURLResponse.builder().url(url).key(file.getObjectName()).build();
+      return response;
+    }
+    return storageProvider.generatePresignedDownloadURL(file.getObjectName());
   }
 }
