@@ -28,7 +28,8 @@ public enum ErrorCode {
   EMAIL_NOT_VERIFIED(2202, HttpStatus.PRECONDITION_REQUIRED, "Email Not Verified"),
   OPERATION_NOT_ALLOWED(2300, HttpStatus.BAD_REQUEST, "Operation Not Allowed"),
   INVALID_PHONE_NUMBER(2400, HttpStatus.BAD_REQUEST, "Invalid Phone Number"),
-  SMS_SENDING_FAILED(2401, HttpStatus.INTERNAL_SERVER_ERROR, "SMS Sending Failed");
+  SMS_SENDING_FAILED(2401, HttpStatus.INTERNAL_SERVER_ERROR, "SMS Sending Failed"),
+  USER_INACTIVE(2500, HttpStatus.FORBIDDEN, "User Inactive");
 
   private final int code;
   private final HttpStatus httpCode;

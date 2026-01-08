@@ -44,6 +44,7 @@ import com.phongdnh.se121.utils.ValidationUtil;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
@@ -128,7 +129,7 @@ public class AuthServiceImpl implements AuthService {
         if (exists) {
           throw new ApiException(
               ErrorCode.VALIDATION_ERROR,
-              Map.of("destination", "User with this contact already exists"));
+              Map.of("destination", ErrorMessageConstants.AUTH_USER_ALREADY_EXISTS));
         }
         break;
       default:
@@ -202,9 +203,15 @@ public class AuthServiceImpl implements AuthService {
           // Lưu key dạng 84XXXX nên cần bỏ dấu '+'
           formatedPhone = formatedPhone.substring(1); // Remove '+' sign
           String chatId =
-              redisTemplate
-                  .opsForValue()
-                  .get(RedisKey.TELEGRAM_PHONE_KEY + formatedPhone)
+              Optional.ofNullable(
+                      redisTemplate.opsForValue().get(RedisKey.TELEGRAM_PHONE_KEY + formatedPhone))
+                  .orElseThrow(
+                      () ->
+                          new ApiException(
+                              ErrorCode.VALIDATION_ERROR,
+                              Map.of(
+                                  "destination",
+                                  ErrorMessageConstants.NOT_INTERACTIVE_TELEGRAM_PHONE)))
                   .toString();
           telegramBot.sendMessage(
               chatId, "Ma OTP cho UITLAND la: " + otp + ". Ma co hieu luc trong 5 phut.");

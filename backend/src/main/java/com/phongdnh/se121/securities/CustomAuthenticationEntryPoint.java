@@ -2,6 +2,7 @@ package com.phongdnh.se121.securities;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phongdnh.se121.dtos.ApiResponse;
+import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,6 +37,10 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         apiResponse.setCode(ErrorCode.TOKEN_INVALID.getCode());
         apiResponse.setMessage(ErrorCode.TOKEN_INVALID.getMessage());
       }
+    } else if (cause instanceof ApiException apiException) {
+      apiResponse.setCode(apiException.getErrorCode().getCode());
+      apiResponse.setMessage(apiException.getErrorCode().getMessage());
+      apiResponse.setErrors(apiException.getFieldErrors());
     } else {
       apiResponse.setCode(ErrorCode.AUTHENTICATION_REQUIRED.getCode());
       apiResponse.setMessage(authException.getMessage());

@@ -64,7 +64,8 @@ public class SecurityConfig implements WebMvcConfigurer {
                     .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter))
                     .authenticationEntryPoint(entryPoint))
         .formLogin(AbstractHttpConfigurer::disable)
-        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .exceptionHandling(ex -> ex.authenticationEntryPoint(entryPoint));
     return http.build();
   }
 
@@ -115,9 +116,8 @@ public class SecurityConfig implements WebMvcConfigurer {
             "/chat/conversations/me",
             "/chat/conversations/initialize")
         .excludePathPatterns(
-                "/files/upload/signed-url",
-                "/files/download/signed-url",
-                "/sse/files/notifications/{key}/subscribe"
-            );
+            "/files/upload/signed-url",
+            "/files/download/signed-url",
+            "/sse/files/notifications/{key}/subscribe");
   }
 }

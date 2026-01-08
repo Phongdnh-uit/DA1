@@ -19,10 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.SoftDelete;
 import org.locationtech.jts.geom.Point;
 
 @Getter
 @Setter
+@SoftDelete(columnName = "is_deleted")
+@SQLRestriction(value = "is_deleted = false")
 @Entity
 @Table(name = "properties")
 public class Property extends BaseEntity {
@@ -34,7 +38,7 @@ public class Property extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private PropertyPurpose purpose;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "type_Id")
   private PropertyType type;
 
@@ -43,7 +47,7 @@ public class Property extends BaseEntity {
 
   private String lineAddress;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "ward_Id")
   private Ward ward;
 

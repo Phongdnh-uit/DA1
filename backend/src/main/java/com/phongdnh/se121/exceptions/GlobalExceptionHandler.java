@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -44,8 +45,13 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(ErrorCode.VALIDATION_ERROR.getHttpCode()).body(response);
   }
 
-  @ExceptionHandler(Exception.class)
+  @ExceptionHandler({Exception.class, RuntimeException.class})
   public ResponseEntity<ApiResponse<Void>> handleUncatchException(Exception ex) {
+    // Bắt exception của UserDetailService do login gọi thủ công
+    if (ex instanceof InternalAuthenticationServiceException iae
+        && iae.getCause() instanceof ApiException) {
+      return handleApiException((ApiException) iae.getCause());
+    }
     ApiResponse<Void> response = new ApiResponse<>();
     response.setCode(ErrorCode.INTERNAL_SERVER_ERROR.getCode());
     response.setMessage(

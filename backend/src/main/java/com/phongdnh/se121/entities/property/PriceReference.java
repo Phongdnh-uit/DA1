@@ -15,11 +15,11 @@ import lombok.Setter;
 @Entity
 @Table(name = "price_reference")
 public class PriceReference extends BaseEntity {
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "ward_id", nullable = false)
   private Ward ward;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "property_type_id", nullable = false)
   private PropertyType propertyType;
 

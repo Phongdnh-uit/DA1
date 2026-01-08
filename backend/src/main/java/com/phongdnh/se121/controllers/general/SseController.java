@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class SseController {
   private final FileNotificationService fileNotificationService;
 
-  @GetMapping("/sse/files/notifications/{key}/subscribe")
+  @GetMapping("/sse/files/notifications/{key:.+}/subscribe")
   public SseEmitter subscribeToFileNotifications(@PathVariable("key") String key) {
     return fileNotificationService.subcribe(key);
   }

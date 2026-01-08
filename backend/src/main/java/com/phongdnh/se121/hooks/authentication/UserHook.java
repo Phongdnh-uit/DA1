@@ -78,10 +78,15 @@ public class UserHook implements GenericHook<User, Long, UserRequest, UserRespon
   }
 
   private void enrich(UserRequest input, User entity) {
-    if (input.isEmailVerified() && input.isPhoneVerified()) {
-      entity.setStatus(UserStatus.ACTIVE);
-    } else {
+    // Tạo mới tài khoản mà chưa xác thực email và điện thoại thì để trạng thái UNVERIFIED
+    // Cập nhật tài khoản không thay đổi trạng thái
+    if (!input.isEmailVerified() || !input.isPhoneVerified()) {
       entity.setStatus(UserStatus.UNVERIFIED);
+    }
+    if (input.isEmailVerified()
+        && input.isPhoneVerified()
+        && entity.getStatus() == UserStatus.UNVERIFIED) {
+      entity.setStatus(UserStatus.ACTIVE);
     }
 
     if (input.getAvatarId() != null) {
@@ -107,7 +112,8 @@ public class UserHook implements GenericHook<User, Long, UserRequest, UserRespon
                   () -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND, "Avatar not found"));
 
       if (newAvatar.getUsageStatus() == FileUsageStatus.IN_USE) {
-        throw new ApiException(ErrorCode.RESOURCE_EXISTS, ErrorMessageConstants.RESOURCE_AVATAR_IN_USE);
+        throw new ApiException(
+            ErrorCode.RESOURCE_EXISTS, ErrorMessageConstants.RESOURCE_AVATAR_IN_USE);
       }
 
       entity.setAvatar(newAvatar);

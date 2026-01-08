@@ -27,6 +27,7 @@ public interface ErrorMessageConstants {
   String AUTH_USER_CONTACT_ALREADY_EXISTS = "Thông tin liên hệ đã tồn tại";
   String AUTH_PHONE_NOT_VERIFIED = "Số điện thoại chưa được xác thực";
   String AUTH_LOGIN_REQUIRED = "Người dùng chưa đăng nhập";
+String AUTH_USER_ALREADY_EXISTS = "Người dùng đã tồn tại";
 
   // ======================== AUTH - ROLE / PERMISSION ========================
   String AUTH_ROLE_NOT_FOUND = "Vai trò không tồn tại";
