@@ -17,12 +17,14 @@ export default function useUpdatePermissionVM() {
 
     const mutation = useUpdatePermission({
         mutation: {
-            onSuccess: () => {
-                form.reset();
+            onSuccess: (data) => {
                 toast.success("Cập nhật quyền hạn thành công");
                 queryClient.invalidateQueries({
                     queryKey: ["/permissions/all"],
                     exact: false,
+                });
+                form.reset({
+                    ...data.data,
                 });
             },
             onError: (data) => {

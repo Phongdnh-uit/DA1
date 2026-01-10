@@ -14,6 +14,7 @@ import com.phongdnh.se121.enums.support.SupportTicketStatus;
 import com.phongdnh.se121.exceptions.errors.ApiException;
 import com.phongdnh.se121.exceptions.errors.ErrorCode;
 import com.phongdnh.se121.mappers.support.SupportTicketMapper;
+import com.phongdnh.se121.projections.SupportTicketProjection;
 import com.phongdnh.se121.repositories.general.FileRepository;
 import com.phongdnh.se121.repositories.support.SupportTicketRepository;
 import com.phongdnh.se121.securities.SecurityUtil;
@@ -125,5 +126,10 @@ public class SupportServiceImpl implements SupportService {
             .findById(ticketId)
             .orElseThrow(() -> new ApiException(ErrorCode.RESOURCE_NOT_FOUND));
     supportTicket.setStatus(SupportTicketStatus.CLOSED);
+  }
+
+  @Override
+  public SupportTicketProjection getStatisticSupportTicket() {
+    return supportTicketRepository.getSupportTicketStatistics();
   }
 }

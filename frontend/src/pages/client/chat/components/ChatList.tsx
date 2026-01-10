@@ -6,7 +6,6 @@ import { timeAgo } from "@/utils/formatDate";
 import { User } from "lucide-react";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useEffect } from "react";
-import type { ConversationResponse } from "@/types";
 
 interface ChatListProps {
     selectedConversation: number | null;
@@ -32,14 +31,6 @@ export default function ChatList({
         onSelectConversation,
         selectedConversation,
     ]);
-
-    const ortherUsers = (conversation: ConversationResponse) => {
-        return (
-            conversation.participants?.filter(
-                (participant) => participant?.user?.id !== user?.id,
-            ) || []
-        );
-    };
 
     return (
         <div className="w-80 border-r border-border bg-card flex flex-col">
@@ -79,11 +70,7 @@ export default function ChatList({
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between gap-2">
                                     <h3 className="font-semibold text-foreground truncate">
-                                        {ortherUsers(conversation)?.length > 0
-                                            ? ortherUsers(conversation)
-                                                .map((participant) => participant?.user?.fullName)
-                                                .join(", ")
-                                            : "Đang chờ được tiếp nhận"}
+                                        Phiên tư vấn #{conversation.id}
                                     </h3>
                                 </div>
                                 <p className="text-sm text-muted-foreground truncate">

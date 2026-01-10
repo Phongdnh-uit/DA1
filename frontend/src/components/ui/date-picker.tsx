@@ -19,6 +19,7 @@ interface DatePickerProps {
     className?: string;
     date?: Date | undefined;
     onDateChange?: (date: Date | undefined) => void;
+    disabled?: (date: Date) => boolean;
 }
 
 export function DatePicker({
@@ -26,6 +27,7 @@ export function DatePicker({
     date,
     id,
     className,
+    disabled,
 }: DatePickerProps) {
     const [open, setOpen] = React.useState(false);
 
@@ -58,6 +60,7 @@ export function DatePicker({
                             onDateChange?.(date);
                             setOpen(false);
                         }}
+                        disabled={disabled}
                     />
                 </PopoverContent>
             </Popover>

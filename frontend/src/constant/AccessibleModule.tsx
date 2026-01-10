@@ -8,14 +8,10 @@ import {
     IconMapPin,
     IconTag,
     IconHome,
-    IconCalendar,
     IconSettings,
 } from "@tabler/icons-react";
 
-import {
-    Building2,
-    FlagTriangleRight,
-} from "lucide-react";
+import { Building2, FlagTriangleRight } from "lucide-react";
 
 export interface Module {
     code: string;
@@ -85,12 +81,12 @@ export const ACCESSIBLE_MODULES: Module[] = [
         href: "/admin/chat",
         icon: <IconBrandWechat className="h-6 w-6" />,
     },
-    {
-        code: "booking",
-        title: "Đặt lịch",
-        href: "/admin/booking",
-        icon: <IconCalendar className="h-6 w-6" />,
-    },
+    // {
+    //     code: "booking",
+    //     title: "Đặt lịch",
+    //     href: "/admin/booking",
+    //     icon: <IconCalendar className="h-6 w-6" />,
+    // },
     {
         code: "settings",
         title: "Cài đặt",

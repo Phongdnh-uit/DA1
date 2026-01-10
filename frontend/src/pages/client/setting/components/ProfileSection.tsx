@@ -50,7 +50,7 @@ export function ProfileSection() {
             PresignedUploadRequestPurpose.AVATAR,
         );
         setUploadedFileId(response.file?.objectName || null);
-        form.setValue("avatarId", response.file?.id);
+        form.setValue("avatarId", response.file?.id, { shouldDirty: true });
     };
 
     useEffect(() => {
@@ -187,13 +187,15 @@ export function ProfileSection() {
                         <p className="text-sm text-muted-foreground">
                             {currentUser?.data?.data?.email}
                         </p>
-                        <Button
-                            variant={"link"}
-                            onClick={handleAvatarChange}
-                            className="text-sm text-primary mt-2"
-                        >
-                            Thay đổi ảnh đại diện
-                        </Button>
+                        {editMode && (
+                            <Button
+                                variant={"link"}
+                                onClick={handleAvatarChange}
+                                className="text-sm text-primary mt-2"
+                            >
+                                Thay đổi ảnh đại diện
+                            </Button>
+                        )}
                         <input
                             type="file"
                             accept={"image/png, image/jpeg, image/jpg"}

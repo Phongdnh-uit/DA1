@@ -18,9 +18,7 @@ import { config } from "@/lib/config";
 import { Input } from "../ui/input";
 import { MotionButton } from "../customs/MotionButton";
 import { IconBrandTelegram } from "@tabler/icons-react";
-import {
-    useGetCurrentUserConversations,
-} from "@/services/conversation/conversation";
+import { useGetCurrentUserConversations } from "@/services/conversation/conversation";
 
 interface ChatWindowProps {
     conversationId: number | null;
@@ -248,15 +246,22 @@ export default function ChatWindow({
 
     const allMessages = [...messages.slice().reverse(), ...realTimeMessages];
 
+    const headerTitle =
+        conversation?.participants
+            ?.filter((p) => p.user?.id !== user?.id)
+            .map((p) => p.user?.fullName)
+            .join(", ") || "Cuộc trò chuyện";
+
     return (
         <div className="flex-1 flex flex-col bg-background">
             {/* Header */}
             <div className="p-4 border-b border-border bg-card flex items-center justify-between">
                 <div>
                     <h2 className="text-lg font-semibold text-foreground">
-                        Cuộc trò chuyện
+                        {headerTitle.length > 30
+                            ? headerTitle.slice(0, 30) + "..."
+                            : headerTitle}
                     </h2>
-                    <p className="text-sm text-muted-foreground">Đang hoạt động</p>
                 </div>
             </div>
             {/* Messages */}
@@ -310,6 +315,21 @@ export default function ChatWindow({
                         </div>
                         <p className="text-[11px] text-gray-400 text-center">
                             Bạn không thể gửi thêm tin nhắn vào luồng này.
+                        </p>
+                    </div>
+                )}
+                {conversation?.status === "PENDING" && (
+                    <div className="flex flex-col items-center justify-center py-6 px-4 space-y-2 animate-in fade-in zoom-in duration-300">
+                        <div className="h-[1px] w-full bg-gray-200 dark:bg-gray-700 mb-2" />
+                        <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 px-4 py-2 rounded-full border border-gray-200 dark:border-gray-800">
+                            <LockIcon size={14} className="text-gray-400" />
+                            <span className="text-xs font-medium uppercase tracking-wider">
+                                Cuộc trò chuyện đang chờ được chấp nhận
+                            </span>
+                        </div>
+                        <p className="text-[11px] text-gray-400 text-center">
+                            Vui lòng chờ cho đến khi cuộc trò chuyện được chấp nhận bởi người
+                            nhận.
                         </p>
                     </div>
                 )}

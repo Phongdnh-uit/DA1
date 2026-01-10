@@ -89,6 +89,8 @@ public class UserHook implements GenericHook<User, Long, UserRequest, UserRespon
       entity.setStatus(UserStatus.ACTIVE);
     }
 
+    entity.setRole(roleRepository.getReferenceById(input.getRoleId()));
+
     if (input.getAvatarId() != null) {
       var currentAvatar = entity.getAvatar();
       var newAvatarId = input.getAvatarId();
@@ -115,7 +117,6 @@ public class UserHook implements GenericHook<User, Long, UserRequest, UserRespon
         throw new ApiException(
             ErrorCode.RESOURCE_EXISTS, ErrorMessageConstants.RESOURCE_AVATAR_IN_USE);
       }
-
       entity.setAvatar(newAvatar);
       newAvatar.setUsageStatus(FileUsageStatus.IN_USE);
       fileRepository.save(newAvatar);

@@ -1,5 +1,5 @@
 import { Form } from "@/components/ui/form";
-import { FormInput } from "@/utils/formUtil";
+import { FormInput, FormSelect } from "@/utils/formUtil";
 import type { WardRequest } from "@/types";
 import { BackButton } from "@/components/general/BackButton";
 import { Card } from "@/components/ui/card";
@@ -7,7 +7,7 @@ import useUpdateWardVM from "./UpdateWard.vm";
 import { MotionButton } from "@/components/customs/MotionButton";
 
 export default function UpdateWardPage() {
-    const { form, onSubmit } = useUpdateWardVM();
+    const { form, onSubmit, province } = useUpdateWardVM();
     return (
         <main>
             <BackButton />
@@ -28,20 +28,32 @@ export default function UpdateWardPage() {
                                 placeholder="Nhập tên"
                                 title="Tên phường xã"
                             />
-                            <FormInput<WardRequest>
+                            <FormSelect<WardRequest>
                                 name="type"
-                                placeholder="Nhập loại"
                                 title="Loại"
+                                options={[
+                                    { key: "Phường", render: "Phường" },
+                                    { key: "Xã", render: "Xã" },
+                                    { key: "Thị trấn", render: "Thị trấn" },
+                                ]}
                             />
                             <FormInput<WardRequest>
                                 name="code"
                                 placeholder="Nhập tên code"
                                 title="Tên code"
                             />
-                            <FormInput<WardRequest>
+                            <FormSelect<WardRequest>
                                 name="provinceId"
-                                placeholder="Nhập mã tỉnh/thành phố"
                                 title="Mã Tỉnh/Thành Phố"
+                                searchable={true}
+                                keyType="number"
+                                options={
+                                    province.data?.data?.content?.map((prov) => ({
+                                        key: prov.id as number,
+                                        render: prov.type + " " + prov.name,
+                                        searchKey: prov.type + " " + prov.name,
+                                    })) || []
+                                }
                             />
                             {/* Submit Button */}
                             <div className="flex gap-3 pt-4">

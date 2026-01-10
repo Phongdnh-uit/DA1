@@ -30,12 +30,10 @@ import {
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { useFilePreview } from "@/hooks/useFileHook";
+import { ACCESSIBLE_MODULES } from "@/constant/AccessibleModule";
 
 const middleItems = [
     { name: "Tất cả bất động sản", href: "/properties" },
-    { name: "Dự án", href: "/" },
-    { name: "Tin tức", href: "/" },
-    { name: "Wiki BĐS", href: "/" },
 ] as { name: string; href: string }[];
 const MenuActionItem = ({
     icon,
@@ -193,30 +191,48 @@ export default function ClientHeader() {
                                         label="Cài đặt"
                                         onClick={() => navigate({ to: "/settings" })}
                                     />
-                                    <MenuActionItem
-                                        icon={<HeartIcon className="group-hover:text-blue-500" />}
-                                        label="Yêu thích"
-                                        onClick={() => navigate({ to: "/wish-list" })}
-                                    />
-                                    <MenuActionItem
-                                        icon={
-                                            <MessageCircleIcon className="group-hover:text-blue-500" />
-                                        }
-                                        label="Trò chuyện"
-                                        onClick={() => navigate({ to: "/chat" })}
-                                    />
-                                    <MenuActionItem
-                                        icon={<Flag className="group-hover:text-blue-500" />}
-                                        label="Lịch sử hỗ trợ"
-                                        onClick={() => navigate({ to: "/support/history" })}
-                                    />
+                                    {authStore.user?.role?.default && (
+                                        <>
+                                            <MenuActionItem
+                                                icon={
+                                                    <HeartIcon className="group-hover:text-blue-500" />
+                                                }
+                                                label="Yêu thích"
+                                                onClick={() => navigate({ to: "/wish-list" })}
+                                            />
+                                            <MenuActionItem
+                                                icon={
+                                                    <MessageCircleIcon className="group-hover:text-blue-500" />
+                                                }
+                                                label="Trò chuyện"
+                                                onClick={() => navigate({ to: "/chat" })}
+                                            />
+                                            <MenuActionItem
+                                                icon={<Flag className="group-hover:text-blue-500" />}
+                                                label="Lịch sử hỗ trợ"
+                                                onClick={() => navigate({ to: "/support/history" })}
+                                            />
+                                        </>
+                                    )}
                                     {authStore.user?.role?.canManage && (
                                         <MenuActionItem
                                             icon={
                                                 <CircuitBoard className="group-hover:text-blue-500" />
                                             }
                                             label="Trang quản trị"
-                                            onClick={() => navigate({ to: "/admin/dashboard" })}
+                                            onClick={() =>
+                                                navigate({
+                                                    to:
+                                                        ACCESSIBLE_MODULES.filter(
+                                                            (module) =>
+                                                                module.code ===
+                                                                authStore.user?.role?.accessibleModules?.[0],
+                                                        )[0]?.href ||
+                                                        (authStore.user?.role?.id === 1
+                                                            ? "/admin/dashboard"
+                                                            : "/admin"),
+                                                })
+                                            }
                                         />
                                     )}
                                 </div>

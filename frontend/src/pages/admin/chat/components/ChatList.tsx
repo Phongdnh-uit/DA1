@@ -25,7 +25,7 @@ export default function ChatList({
     const user = useAuthStore((state) => state.user);
     const conversations = useFindAllConversations({
         sort: ["lastMessageAt,desc"],
-        filter: `status==${tab}`,
+        filter: `status==${tab}` + (tab !== "PENDING" ? `;participants.user.id=in=(${user?.id})` : ``),
     });
 
     const getOrtherParticipant = (conversation: ConversationResponse) => {
@@ -101,11 +101,7 @@ export default function ChatList({
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between gap-2">
                                     <h3 className="font-semibold text-foreground truncate">
-                                        {getOrtherParticipant(conversation).length > 0
-                                            ? getOrtherParticipant(conversation)
-                                                .map((participant) => participant.user?.fullName)
-                                                .join(", ")
-                                            : "Người dùng đã xóa tài khoản"}
+                                        Phiên tư vấn #{conversation.id}
                                     </h3>
                                     {tab === "PENDING" && (
                                         <Badge className="bg-yellow-400 text-gray-800 text-xs flex-shrink-0">

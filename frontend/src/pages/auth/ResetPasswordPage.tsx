@@ -95,7 +95,7 @@ export default function ResetPasswordPage() {
                                             <div className="relative flex items-center rounded-[24px] border focus-within:ring-1 focus-within:ring-ring pl-4 error-display">
                                                 <LockIcon className="h-7 w-7 text-muted-foreground" />
                                                 <Input
-                                                    type="text"
+                                                    type="password"
                                                     placeholder="Nhập mật khẩu mới"
                                                     className="border-0 focus-visible:ring-0 shadow-none w-full  h-16 placeholder:text-lg !text-lg"
                                                     {...field}
@@ -118,7 +118,7 @@ export default function ResetPasswordPage() {
                                             <div className="relative flex items-center rounded-[24px] border focus-within:ring-1 focus-within:ring-ring pl-4 error-display">
                                                 <LockIcon className="h-7 w-7 text-muted-foreground" />
                                                 <Input
-                                                    type="text"
+                                                    type="password"
                                                     placeholder="Xác nhận mật khẩu mới"
                                                     className="border-0 focus-visible:ring-0 shadow-none w-full  h-16 placeholder:text-lg !text-lg"
                                                     {...field}

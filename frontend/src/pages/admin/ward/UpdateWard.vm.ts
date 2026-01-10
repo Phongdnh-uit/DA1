@@ -1,5 +1,6 @@
 import { queryClient } from "@/lib/queryClient";
 import { Route } from "@/routes/admin/ward/update.$id";
+import { useFindAllProvince } from "@/services/province/province";
 import { useUpdateWard } from "@/services/ward/ward";
 import { updateWardBody } from "@/services/ward/ward.zod";
 import type { ApiResponseVoid, WardRequest } from "@/types";
@@ -49,5 +50,9 @@ export default function useUpdateWardVM() {
         mutation.mutate({ id: ward.data?.id, data: data });
     };
 
-    return { form, onSubmit };
+    const province = useFindAllProvince({
+        all: true,
+    });
+
+    return { form, onSubmit, province };
 }

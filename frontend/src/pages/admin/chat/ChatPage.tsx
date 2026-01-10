@@ -3,10 +3,14 @@
 import { useEffect, useState } from "react";
 import ChatList from "./components/ChatList";
 import LeadPanel from "./components/LeadPanel";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import type { ConversationResponseStatus } from "@/types";
 import ChatWindow from "@/components/chat/ChatWindow";
 import { useGetMessagesByConversationIdForManager } from "@/services/chat-message/chat-message";
+import { motion } from "motion/react";
+import { fadeInUp } from "@/lib/animation";
+import { CheckCircle, Clock, FolderOpen, TrendingUp } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export default function ChatPage() {
     const [tab, setTab] = useState<ConversationResponseStatus>("PENDING");

@@ -1,4 +1,5 @@
 import { queryClient } from "@/lib/queryClient";
+import { useFindAllProvince } from "@/services/province/province";
 import { useCreateWard } from "@/services/ward/ward";
 import { createWardBody } from "@/services/ward/ward.zod";
 import type { ApiResponseVoid, WardRequest } from "@/types";
@@ -10,7 +11,7 @@ export default function useCreateWardVM() {
     const form = useForm<WardRequest>({
         defaultValues: {
             code: "",
-            type: "",
+            type: undefined,
             name: "",
             provinceId: undefined,
         },
@@ -44,6 +45,9 @@ export default function useCreateWardVM() {
     const onSubmit = (data: WardRequest) => {
         mutation.mutate({ data });
     };
+    const province = useFindAllProvince({
+        all: true
+    });
 
-    return { form, onSubmit };
+    return { form, onSubmit, province };
 }

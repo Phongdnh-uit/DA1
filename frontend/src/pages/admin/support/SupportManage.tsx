@@ -1,14 +1,6 @@
 import { useMemo, useState } from "react";
 import { motion } from "motion/react";
-import {
-    Download,
-    Plus,
-    TrendingUp,
-    FolderOpen,
-    Clock,
-    CheckCircle,
-    Eye,
-} from "lucide-react";
+import { TrendingUp, FolderOpen, Clock, CheckCircle, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +11,10 @@ import Filter from "@/components/admin/Filter";
 import { DataTable } from "@/components/general/DataTable";
 import { useNavigate } from "@tanstack/react-router";
 import { fadeInUp } from "@/lib/animation";
-import { useGetAdminSupportTickets } from "@/services/support/support";
+import {
+    useGetAdminSupportTickets,
+    useGetSupportTicketStatsByStatus,
+} from "@/services/support/support";
 
 const statusConfig = {
     OPEN: {
@@ -123,6 +118,8 @@ export const SupportManage = () => {
         [navigate],
     );
 
+    const statistic = useGetSupportTicketStatsByStatus();
+
     const [filterParam, setFilterParam] = useState<{
         filter: string;
         sort: string[];
@@ -164,21 +161,6 @@ export const SupportManage = () => {
                             Theo dõi, phân loại và xử lý các yêu cầu hỗ trợ từ người dùng.
                         </p>
                     </div>
-                    <motion.div
-                        className="flex items-center gap-3"
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.2 }}
-                    >
-                        <Button variant="outline" className="gap-2">
-                            <Download className="h-4 w-4" />
-                            Xuất báo cáo
-                        </Button>
-                        <Button className="gap-2 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/30">
-                            <Plus className="h-4 w-4" />
-                            Tạo yêu cầu mới
-                        </Button>
-                    </motion.div>
                 </motion.div>
 
                 <motion.div
@@ -192,7 +174,7 @@ export const SupportManage = () => {
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between mb-3">
                                     <p className="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
-                                        Tổng yêu cầu
+                                        Chưa giải quyết
                                     </p>
                                     <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
                                         <FolderOpen className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -200,14 +182,14 @@ export const SupportManage = () => {
                                 </div>
                                 <div className="flex items-baseline gap-2">
                                     <p className="text-3xl font-bold text-slate-900 dark:text-white">
-                                        1
+                                        {statistic.data?.data?.numberOfOpenTickets || 0}
                                     </p>
+
                                     <Badge
                                         variant="secondary"
-                                        className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border-0"
+                                        className="bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border-0"
                                     >
-                                        <TrendingUp className="h-3 w-3 mr-1" />
-                                        +5%
+                                        Còn lại
                                     </Badge>
                                 </div>
                             </CardContent>
@@ -219,7 +201,7 @@ export const SupportManage = () => {
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between mb-3">
                                     <p className="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
-                                        Đang xử lý
+                                        Đã giải quyết
                                     </p>
                                     <div className="p-2 rounded-lg bg-orange-100 dark:bg-orange-900/30">
                                         <Clock className="h-5 w-5 text-orange-600 dark:text-orange-400" />
@@ -227,13 +209,14 @@ export const SupportManage = () => {
                                 </div>
                                 <div className="flex items-baseline gap-2">
                                     <p className="text-3xl font-bold text-slate-900 dark:text-white">
-                                        1
+                                        {statistic.data?.data?.numberOfResolvedTickets || 0}
                                     </p>
+
                                     <Badge
                                         variant="secondary"
-                                        className="bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border-0"
+                                        className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border-0"
                                     >
-                                        Cần chú ý
+                                        Đã giải quyết
                                     </Badge>
                                 </div>
                             </CardContent>
@@ -245,7 +228,7 @@ export const SupportManage = () => {
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between mb-3">
                                     <p className="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
-                                        Đã giải quyết hôm nay
+                                        Đã đóng
                                     </p>
                                     <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
                                         <CheckCircle className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
@@ -253,14 +236,13 @@ export const SupportManage = () => {
                                 </div>
                                 <div className="flex items-baseline gap-2">
                                     <p className="text-3xl font-bold text-slate-900 dark:text-white">
-                                        0
+                                        {statistic.data?.data?.numberOfClosedTickets || 0}
                                     </p>
                                     <Badge
                                         variant="secondary"
-                                        className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border-0"
+                                        className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-0"
                                     >
-                                        <TrendingUp className="h-3 w-3 mr-1" />
-                                        +2%
+                                        Đã đóng
                                     </Badge>
                                 </div>
                             </CardContent>

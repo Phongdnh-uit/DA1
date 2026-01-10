@@ -21,6 +21,7 @@ import { useRef, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "@tanstack/react-router";
 import { useInitializeChat } from "@/services/conversation/conversation";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const features = [
     "Tư vấn miễn phí 100%",
@@ -29,6 +30,7 @@ const features = [
 ];
 
 export function CTASection() {
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
     const navigate = useNavigate();
     const chatInitializeMutation = useInitializeChat({
         mutation: {
@@ -54,16 +56,21 @@ export function CTASection() {
     const handleSchedule = () => {
         navigate({
             to: "/booking",
-        })
+        });
         toast.success("Đang mở form đặt lịch...");
     };
 
     const handleCall = () => {
-        toast.info("Đang kết nối cuộc gọi...");
+        const phoneNumber = "0867907500"; // Số điện thoại của bạn
+        window.location.href = `tel:${phoneNumber}`;
     };
 
     const handleEmail = () => {
-        toast.info("Đang mở email...");
+        const email = "dangnguyenhuyphong@gmail.com";
+        const subject = "Hỗ trợ khách hàng";
+        const body = "Kính chào đội ngũ hỗ trợ,\n\nTôi muốn nhận được sự hỗ trợ về dịch vụ của quý công ty. Vui lòng liên hệ lại với tôi sớm nhất có thể.\n\nTrân trọng,\n[Họ và tên của bạn]";
+
+        window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     };
 
     const containerVariants = {
@@ -91,6 +98,11 @@ export function CTASection() {
     };
 
     const handleChatNow = () => {
+        if (!isAuthenticated) {
+            navigate({
+                to: "/auth/login",
+            });
+        }
         chatInitializeMutation.mutate({
             data: {},
         });
@@ -128,7 +140,6 @@ export function CTASection() {
             iconColor: "text-purple-600",
         },
     ];
-
 
     return (
         <section
@@ -183,8 +194,8 @@ export function CTASection() {
                         Sẵn sàng cho bước đi tiếp theo?
                     </h2>
                     <p className="text-xl md:text-2xl mb-8 text-white/90 max-w-3xl mx-auto text-pretty">
-                        Nhận tư vấn chuyên nghiệp từ đội ngũ cố vấn giàu kinh nghiệm.
-                        Đặt lịch tư vấn miễn phí ngay hôm nay.
+                        Nhận tư vấn chuyên nghiệp từ đội ngũ cố vấn giàu kinh nghiệm. Đặt
+                        lịch tư vấn miễn phí ngay hôm nay.
                     </p>
 
                     <div className="flex flex-wrap justify-center gap-4 mb-8">
@@ -193,7 +204,10 @@ export function CTASection() {
                                 key={index}
                                 variants={itemVariants}
                                 className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full"
-                                whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.3)" }}
+                                whileHover={{
+                                    scale: 1.05,
+                                    backgroundColor: "rgba(255,255,255,0.3)",
+                                }}
                             >
                                 <CheckCircle className="w-5 h-5 text-green-300" />
                                 <span className="text-white font-medium">{feature}</span>
@@ -214,14 +228,14 @@ export function CTASection() {
                                 variants={itemVariants}
                                 onHoverStart={() => setHoveredCard(index)}
                                 onHoverEnd={() => setHoveredCard(null)}
-                                whileHover={{ y: -8, scale: 1.02 }}
+                                whileHover={{ y: -1, scale: 1.02 }}
                                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
                             >
                                 <Card className="relative overflow-hidden bg-white/95 backdrop-blur-lg border-white/20 shadow-2xl h-full group">
                                     <motion.div
                                         className={cn(
                                             "absolute inset-0 opacity-0 group-hover:opacity-10 bg-gradient-to-br transition-opacity duration-300",
-                                            method.gradient
+                                            method.gradient,
                                         )}
                                     />
 
@@ -229,10 +243,11 @@ export function CTASection() {
                                         <motion.div
                                             className={cn(
                                                 "w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center",
-                                                method.iconBg
+                                                method.iconBg,
                                             )}
                                             animate={{
-                                                rotate: hoveredCard === index ? [0, -10, 10, -10, 0] : 0,
+                                                rotate:
+                                                    hoveredCard === index ? [0, -10, 10, -10, 0] : 0,
                                             }}
                                             transition={{ duration: 0.5 }}
                                         >
@@ -247,14 +262,14 @@ export function CTASection() {
                                     </CardHeader>
                                     <CardContent className="relative z-10">
                                         <motion.div
-                                            whileHover={{ scale: 1.05 }}
+                                            whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.95 }}
                                         >
                                             <Button
                                                 onClick={method.onClick}
                                                 className={cn(
-                                                    "w-full font-semibold text-white shadow-lg bg-gradient-to-r",
-                                                    method.gradient
+                                                    "w-full font-semibold text-white shadow-lg bg-gradient-to-r h-12",
+                                                    method.gradient,
                                                 )}
                                             >
                                                 {method.buttonText}
@@ -282,32 +297,32 @@ export function CTASection() {
                     className="text-center"
                     whileHover={{ scale: 1.02 }}
                 >
-                    <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="inline-block"
-                    >
-                        <Button
-                            onClick={handleSchedule}
-                            size="lg"
-                            className="bg-white text-blue-600 hover:bg-white/90 text-lg px-10 py-6 shadow-2xl font-bold group relative overflow-hidden"
-                        >
-                            <motion.div
-                                className="absolute inset-0 bg-gradient-to-r from-blue-100 to-purple-100 opacity-0 group-hover:opacity-100 transition-opacity"
-                                layoutId="button-bg"
-                            />
-                            <span className="relative z-10 flex items-center gap-2">
-                                <Calendar className="w-5 h-5" />
-                                Đặt lịch tư vấn miễn phí
-                                <motion.div
-                                    animate={{ x: [0, 5, 0] }}
-                                    transition={{ duration: 1.5, repeat: Infinity }}
-                                >
-                                    <ArrowRight className="w-5 h-5" />
-                                </motion.div>
-                            </span>
-                        </Button>
-                    </motion.div>
+                    {/* <motion.div */}
+                    {/*     whileHover={{ scale: 1.05 }} */}
+                    {/*     whileTap={{ scale: 0.95 }} */}
+                    {/*     className="inline-block" */}
+                    {/* > */}
+                    {/*     <Button */}
+                    {/*         onClick={handleSchedule} */}
+                    {/*         size="lg" */}
+                    {/*         className="bg-white text-blue-600 hover:bg-white/90 text-lg px-10 py-6 shadow-2xl font-bold group relative overflow-hidden" */}
+                    {/*     > */}
+                    {/*         <motion.div */}
+                    {/*             className="absolute inset-0 bg-gradient-to-r from-blue-100 to-purple-100 opacity-0 group-hover:opacity-100 transition-opacity" */}
+                    {/*             layoutId="button-bg" */}
+                    {/*         /> */}
+                    {/*         <span className="relative z-10 flex items-center gap-2"> */}
+                    {/*             <Calendar className="w-5 h-5" /> */}
+                    {/*             Đặt lịch tư vấn miễn phí */}
+                    {/*             <motion.div */}
+                    {/*                 animate={{ x: [0, 5, 0] }} */}
+                    {/*                 transition={{ duration: 1.5, repeat: Infinity }} */}
+                    {/*             > */}
+                    {/*                 <ArrowRight className="w-5 h-5" /> */}
+                    {/*             </motion.div> */}
+                    {/*         </span> */}
+                    {/*     </Button> */}
+                    {/* </motion.div> */}
 
                     <motion.p
                         variants={itemVariants}

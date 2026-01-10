@@ -1,23 +1,10 @@
 "use client";
 import { useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "../ui/sidebar";
-import {
-    IconLogout,
-    IconSettings,
-    IconUser,
-} from "@tabler/icons-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/useAuthStore";
 import logo from "@/assets/logo.svg";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
 import { useNavigate } from "@tanstack/react-router";
 import { ACCESSIBLE_MODULES } from "@/constant/AccessibleModule";
 

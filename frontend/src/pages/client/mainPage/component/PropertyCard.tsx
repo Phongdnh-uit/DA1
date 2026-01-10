@@ -112,21 +112,21 @@ const PropertyCard = ({ data, isFavorite, isMini }: PropertyCardProps) => {
                             </p>
                             <p className="text-xs text-muted-foreground">VNĐ</p>
                         </div>
-                        <Button
-                            onClick={() => addPropertyToCompare(data.id as number)}
-                            variant="outline"
-                            size="sm"
-                            className="group/btn"
-                        >
-                            <span>So sánh</span>
-                            <motion.span
-                                className="inline-block ml-1"
-                                animate={{ x: [0, 3, 0] }}
-                                transition={{ repeat: Infinity, duration: 1.5 }}
-                            >
-                                <ScaleIcon />
-                            </motion.span>
-                        </Button>
+                        {/* <Button */}
+                        {/*     onClick={() => addPropertyToCompare(data.id as number)} */}
+                        {/*     variant="outline" */}
+                        {/*     size="sm" */}
+                        {/*     className="group/btn" */}
+                        {/* > */}
+                        {/*     <span>So sánh</span> */}
+                        {/*     <motion.span */}
+                        {/*         className="inline-block ml-1" */}
+                        {/*         animate={{ x: [0, 3, 0] }} */}
+                        {/*         transition={{ repeat: Infinity, duration: 1.5 }} */}
+                        {/*     > */}
+                        {/*         <ScaleIcon /> */}
+                        {/*     </motion.span> */}
+                        {/* </Button> */}
                     </div>
                     <Button
                         onClick={() => navigate({ to: `/detail/${data.id}` })}

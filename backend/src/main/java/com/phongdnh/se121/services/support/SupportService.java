@@ -7,6 +7,7 @@ import com.phongdnh.se121.dtos.support.SummarySupportResponse;
 import com.phongdnh.se121.dtos.support.SupportRequest;
 import com.phongdnh.se121.dtos.support.SupportResponse;
 import com.phongdnh.se121.entities.support.SupportTicket;
+import com.phongdnh.se121.projections.SupportTicketProjection;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -27,4 +28,6 @@ public interface SupportService {
   void processSupportTickets(Long id, ProcessSupportRequest request);
 
   void closeSupportTicket(Long ticketId);
+
+  SupportTicketProjection getStatisticSupportTicket();
 }

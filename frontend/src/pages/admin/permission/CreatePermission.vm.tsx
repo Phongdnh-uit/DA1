@@ -15,6 +15,7 @@ export function useCreatePermissionVM() {
             resource: "",
             method: "GET",
             urlPattern: "/",
+            code: "",
         },
         mode: "onSubmit",
         resolver: zodResolver(createPermissionBody),
@@ -22,13 +23,13 @@ export function useCreatePermissionVM() {
     const mutation = useCreatePermission({
         mutation: {
             onSuccess: () => {
-                form.reset();
                 toast.success("Tạo quyền thành công");
                 // Invalidate and refetch
                 queryClient.invalidateQueries({
                     queryKey: ["/permissions/all"],
                     exact: false,
                 });
+                form.reset({});
             },
             onError: (data) => {
                 toast.error("Tạo quyền thất bại");

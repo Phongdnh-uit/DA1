@@ -8,6 +8,7 @@ import com.phongdnh.se121.dtos.support.SummarySupportResponse;
 import com.phongdnh.se121.dtos.support.SupportRequest;
 import com.phongdnh.se121.dtos.support.SupportResponse;
 import com.phongdnh.se121.entities.support.SupportTicket;
+import com.phongdnh.se121.projections.SupportTicketProjection;
 import com.phongdnh.se121.services.support.SupportService;
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -81,5 +82,10 @@ public class SupportController {
   private ResponseEntity<ApiResponse<Void>> closeSupportTicket(@PathVariable("id") Long id) {
     supportService.closeSupportTicket(id);
     return ResponseEntity.ok(ApiResponse.ok(null));
+  }
+
+  @GetMapping("/stats/status")
+  private ResponseEntity<ApiResponse<SupportTicketProjection>> getSupportTicketStatsByStatus() {
+    return ResponseEntity.ok(ApiResponse.ok(supportService.getStatisticSupportTicket()));
   }
 }

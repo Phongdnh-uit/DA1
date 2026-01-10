@@ -20,7 +20,7 @@ import type { ApiResponseVoid, LoginRequest, LoginResponse } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IconBrandGoogle } from "@tabler/icons-react";
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
-import { KeyIcon, PhoneIcon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, KeyIcon, PhoneIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import BannerImage from "@/assets/banner.jpg";
@@ -33,11 +33,13 @@ import {
 import { queryClient } from "@/lib/queryClient";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { config } from "@/lib/config";
+import { useState } from "react";
 
 export default function LoginPage() {
     const search = useSearch({
         from: "/auth/login",
     });
+    const [seePassword, setSeePassword] = useState(false);
     const navigate = useNavigate();
     const form = useForm<LoginRequest>({
         defaultValues: {
@@ -194,7 +196,7 @@ export default function LoginPage() {
                                                 <Input
                                                     type="email"
                                                     placeholder="Nhập số điện thoại hoặc email"
-                                                    className="border-0 focus-visible:ring-0 shadow-none w-full  h-16 placeholder:text-lg !text-lg"
+                                                    className="border-0 focus-visible:ring-0 shadow-none w-full  h-16 placeholder:text-lg !text-lg rounded-[24px]"
                                                     {...field}
                                                 />
                                             </div>
@@ -215,11 +217,24 @@ export default function LoginPage() {
                                             <div className="relative flex items-center rounded-[24px] border focus-within:ring-1 focus-within:ring-ring pl-4 error-display">
                                                 <KeyIcon className="h-7 w-7 text-muted-foreground" />
                                                 <Input
-                                                    type="password"
+                                                    type={seePassword ? "text" : "password"}
                                                     placeholder="Nhập mật khẩu"
-                                                    className="border-0 focus-visible:ring-0 shadow-none h-16 placeholder:text-lg !text-xl"
+                                                    className="border-0 focus-visible:ring-0 shadow-none h-16 placeholder:text-lg !text-xl rounded-[24px] w-full"
                                                     {...field}
                                                 />
+                                                <div>
+                                                    {seePassword ? (
+                                                        <EyeOffIcon
+                                                            className="h-6 w-6 mr-4 cursor-pointer text-muted-foreground"
+                                                            onClick={() => setSeePassword(false)}
+                                                        />
+                                                    ) : (
+                                                        <EyeIcon
+                                                            className="h-6 w-6 mr-4 cursor-pointer text-muted-foreground"
+                                                            onClick={() => setSeePassword(true)}
+                                                        />
+                                                    )}
+                                                </div>
                                             </div>
                                         </FormControl>
                                         <FormMessage />

@@ -27,6 +27,7 @@ import type {
   ApiResponseAdminSupportResponse,
   ApiResponsePageResponseSummarySupportResponse,
   ApiResponseSupportResponse,
+  ApiResponseSupportTicketProjection,
   ApiResponseVoid,
   GetAdminSupportTicketsParams,
   GetClientSupportTicketsParams,
@@ -213,7 +214,93 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
       return useMutation(mutationOptions, queryClient);
     }
-    export const getClientSupportTickets = (
+    export const getSupportTicketStatsByStatus = (
+    
+ options?: SecondParameter<typeof axiosInstanceFn>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstanceFn<ApiResponseSupportTicketProjection>(
+      {url: `/supports/stats/status`, method: 'GET', signal
+    },
+      options);
+    }
+  
+
+
+
+export const getGetSupportTicketStatsByStatusQueryKey = () => {
+    return [
+    `/supports/stats/status`
+    ] as const;
+    }
+
+    
+export const getGetSupportTicketStatsByStatusQueryOptions = <TData = Awaited<ReturnType<typeof getSupportTicketStatsByStatus>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSupportTicketStatsByStatus>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetSupportTicketStatsByStatusQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSupportTicketStatsByStatus>>> = ({ signal }) => getSupportTicketStatsByStatus(requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSupportTicketStatsByStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetSupportTicketStatsByStatusQueryResult = NonNullable<Awaited<ReturnType<typeof getSupportTicketStatsByStatus>>>
+export type GetSupportTicketStatsByStatusQueryError = ErrorType<unknown>
+
+
+export function useGetSupportTicketStatsByStatus<TData = Awaited<ReturnType<typeof getSupportTicketStatsByStatus>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSupportTicketStatsByStatus>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getSupportTicketStatsByStatus>>,
+          TError,
+          Awaited<ReturnType<typeof getSupportTicketStatsByStatus>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetSupportTicketStatsByStatus<TData = Awaited<ReturnType<typeof getSupportTicketStatsByStatus>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSupportTicketStatsByStatus>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getSupportTicketStatsByStatus>>,
+          TError,
+          Awaited<ReturnType<typeof getSupportTicketStatsByStatus>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetSupportTicketStatsByStatus<TData = Awaited<ReturnType<typeof getSupportTicketStatsByStatus>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSupportTicketStatsByStatus>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetSupportTicketStatsByStatus<TData = Awaited<ReturnType<typeof getSupportTicketStatsByStatus>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSupportTicketStatsByStatus>>, TError, TData>>, request?: SecondParameter<typeof axiosInstanceFn>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetSupportTicketStatsByStatusQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const getClientSupportTickets = (
     params?: GetClientSupportTicketsParams,
  options?: SecondParameter<typeof axiosInstanceFn>,signal?: AbortSignal
 ) => {

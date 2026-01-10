@@ -41,6 +41,8 @@ export default function AdminDashboard() {
                 </header>
                 <main className="mt-8">
                     <DateRangeFilter
+                        initiialStartDate={filter.startDate}
+                        initiialEndDate={filter.endDate}
                         onApply={(startDate, endDate, granularity) =>
                             setFilter({ startDate, endDate, granularity })
                         }

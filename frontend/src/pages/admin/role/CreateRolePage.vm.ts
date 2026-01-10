@@ -1,7 +1,7 @@
 import { useFindAllPermission } from "@/services/permission/permission";
 import { useCreateRole } from "@/services/role/role";
 import { createRoleBody } from "@/services/role/role.zod";
-import { type PermissionResponse, type RoleRequest } from "@/types";
+import { type ApiResponseVoid, type PermissionResponse, type RoleRequest } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { debounce } from "lodash";
 import { useEffect, useMemo, useState } from "react";
@@ -36,8 +36,23 @@ export function useCreateRoleVM() {
                 form.reset();
                 toast.success("Tạo vai trò thành công");
             },
-            onError: (error) => {
-                toast.error("Tạo vai trò thất bại: " + error.message);
+            onError: (data) => {
+                const errorResponse = data.response?.data as ApiResponseVoid;
+                if (errorResponse.errors) {
+                    Object.entries(errorResponse.errors).forEach(([key, value]) => {
+                        form.setError(key as keyof RoleRequest, {
+                            type: "server",
+                            message: value as string,
+                        });
+                    });
+                }
+                if (errorResponse?.errors?.["isDefault"]) {
+                    form.setError("default", {
+                        type: "server",
+                        message: errorResponse.errors["isDefault"] as string,
+                    });
+                }
+                toast.error("Tạo vai trò thất bại");
             },
         },
     });

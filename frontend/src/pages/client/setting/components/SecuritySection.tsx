@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Shield, Monitor, Smartphone, Lock } from "lucide-react";
+import { Shield, Lock } from "lucide-react";
 import { useChangePassword } from "@/services/auth/auth";
 import { useForm } from "react-hook-form";
 import type { ChangePasswordRequest } from "@/types";
@@ -74,19 +73,19 @@ export function SecuritySection() {
 
             <div className="space-y-8">
                 {/* Alert Thông báo đăng nhập */}
-                <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex gap-4 items-start">
-                    <div className="p-2 bg-white rounded-full shadow-sm">
-                        <Monitor className="w-4 h-4 text-blue-600" />
-                    </div>
-                    <div>
-                        <p className="font-semibold text-blue-900 text-sm">
-                            Đăng nhập gần đây
-                        </p>
-                        <p className="text-sm text-blue-700/80">
-                            Hôm nay lúc 2:35 chiều từ Chrome trên macOS
-                        </p>
-                    </div>
-                </div>
+                {/* <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex gap-4 items-start"> */}
+                {/*     <div className="p-2 bg-white rounded-full shadow-sm"> */}
+                {/*         <Monitor className="w-4 h-4 text-blue-600" /> */}
+                {/*     </div> */}
+                {/*     <div> */}
+                {/*         <p className="font-semibold text-blue-900 text-sm"> */}
+                {/*             Đăng nhập gần đây */}
+                {/*         </p> */}
+                {/*         <p className="text-sm text-blue-700/80"> */}
+                {/*             Hôm nay lúc 2:35 chiều từ Chrome trên macOS */}
+                {/*         </p> */}
+                {/*     </div> */}
+                {/* </div> */}
 
                 {/* Mục Mật khẩu */}
                 <div className="flex items-start justify-between">
@@ -157,31 +156,31 @@ export function SecuritySection() {
                 </AnimatePresence>
 
                 {/* Mục 2FA */}
-                <div className="pt-6 border-t border-border flex items-center justify-between">
-                    <div className="flex gap-4">
-                        <Smartphone className="w-5 h-5 text-muted-foreground" />
-                        <div>
-                            <div className="flex items-center gap-2">
-                                <p className="font-semibold text-foreground">
-                                    Xác thực hai bước (2FA)
-                                </p>
-                                <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-bold uppercase">
-                                    Tắt
-                                </span>
-                            </div>
-                            <p className="text-sm text-muted-foreground">
-                                Thêm một lớp bảo mật bổ sung cho tài khoản
-                            </p>
-                        </div>
-                    </div>
-                    <Button
-                        onClick={() => alert("Comming soon")}
-                        variant="outline"
-                        className="border-blue-200 text-blue-600 hover:bg-blue-50"
-                    >
-                        Kích hoạt
-                    </Button>
-                </div>
+                {/* <div className="pt-6 border-t border-border flex items-center justify-between"> */}
+                {/*     <div className="flex gap-4"> */}
+                {/*         <Smartphone className="w-5 h-5 text-muted-foreground" /> */}
+                {/*         <div> */}
+                {/*             <div className="flex items-center gap-2"> */}
+                {/*                 <p className="font-semibold text-foreground"> */}
+                {/*                     Xác thực hai bước (2FA) */}
+                {/*                 </p> */}
+                {/*                 <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-bold uppercase"> */}
+                {/*                     Tắt */}
+                {/*                 </span> */}
+                {/*             </div> */}
+                {/*             <p className="text-sm text-muted-foreground"> */}
+                {/*                 Thêm một lớp bảo mật bổ sung cho tài khoản */}
+                {/*             </p> */}
+                {/*         </div> */}
+                {/*     </div> */}
+                {/*     <Button */}
+                {/*         onClick={() => alert("Comming soon")} */}
+                {/*         variant="outline" */}
+                {/*         className="border-blue-200 text-blue-600 hover:bg-blue-50" */}
+                {/*     > */}
+                {/*         Kích hoạt */}
+                {/*     </Button> */}
+                {/* </div> */}
             </div>
         </Card>
     );

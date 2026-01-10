@@ -86,10 +86,7 @@ export function DataTable<TData>({
                 <div className="flex items-center justify-between">
                     <CardHeader className="font-medium text-lg text-zinc-900 w-full">
                         {name}
-                    </CardHeader>
-                    <div className="flex items-center gap-4 justify-end pr-4">
-                        <PermissionGate permission={deleteCode || ""}>
-                            <Button
+                    </CardHeader> <div className="flex items-center gap-4 justify-end pr-4"> <PermissionGate permission={deleteCode || ""}> <Button
                                 onClick={onBulkDelete}
                                 className="text-rose-500 bg-transparent hover:bg-rose-500 hover:text-white hover:border-rose-500"
                             >
@@ -97,13 +94,13 @@ export function DataTable<TData>({
                                 Xóa
                             </Button>
                         </PermissionGate>
-                        <Button
-                            variant={"outline"}
-                            className="bg-transparen text-violet-500 border-violet-300 hover:bg-violet-500 hover:text-white hover:border-violet-500"
-                        >
-                            <DownloadCloud className="mr-2 h-4 w-4" />
-                            Xuất CSV
-                        </Button>
+                        {/* <Button */}
+                        {/*     variant={"outline"} */}
+                        {/*     className="bg-transparen text-violet-500 border-violet-300 hover:bg-violet-500 hover:text-white hover:border-violet-500" */}
+                        {/* > */}
+                        {/*     <DownloadCloud className="mr-2 h-4 w-4" /> */}
+                        {/*     Xuất CSV */}
+                        {/* </Button> */}
                         <DensitySelect
                             density={densityState}
                             setDensity={setDensityState}

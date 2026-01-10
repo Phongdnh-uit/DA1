@@ -2061,6 +2061,26 @@
         }
       }
     },
+    "/supports/stats/status": {
+      "get": {
+        "tags": [
+          "Support"
+        ],
+        "operationId": "getSupportTicketStatsByStatus",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseSupportTicketProjection"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/supports/client": {
       "get": {
         "tags": [
@@ -2326,7 +2346,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "text/event-stream": {
                 "schema": {
                   "$ref": "#/components/schemas/SseEmitter"
                 }
@@ -5808,6 +5828,48 @@
             "items": {
               "$ref": "#/components/schemas/UserResponse"
             }
+          }
+        }
+      },
+      "ApiResponseSupportTicketProjection": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/SupportTicketProjection"
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SupportTicketProjection": {
+        "type": "object",
+        "properties": {
+          "numberOfOpenTickets": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "numberOfResolvedTickets": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "numberOfClosedTickets": {
+            "type": "integer",
+            "format": "int64"
           }
         }
       },

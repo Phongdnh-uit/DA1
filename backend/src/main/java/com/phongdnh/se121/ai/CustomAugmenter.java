@@ -33,7 +33,6 @@ public class CustomAugmenter implements QueryAugmenter {
       documents.set(documents.indexOf(doc), updatedDoc);
     }
     Query lastQuery = delegate.augment(query, documents);
-    System.out.println("Augmented Query: " + lastQuery.text());
     return lastQuery;
   }
 }

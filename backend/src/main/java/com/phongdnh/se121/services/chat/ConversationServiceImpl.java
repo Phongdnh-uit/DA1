@@ -19,6 +19,7 @@ import com.phongdnh.se121.repositories.chat.MessageRepository;
 import com.phongdnh.se121.securities.SecurityUtil;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -71,10 +72,10 @@ public class ConversationServiceImpl implements ConversationService {
               (root, _, builder) ->
                   builder.equal(root.get("conversation").get("contextId"), request.getContextId()));
     }
-    Optional<ConversationParticipant> participantOpt =
-        conversationParticipantRepository.findOne(spec);
-    if (participantOpt.isPresent()) {
-      return conversationMapper.entityToResponse(participantOpt.get().getConversation());
+    List<ConversationParticipant> participants =
+        conversationParticipantRepository.findAll(spec);
+    if (participants.size() > 0) {
+      return conversationMapper.entityToResponse(participants.get(0).getConversation());
     }
     Conversation conversation = new Conversation();
     conversation.setStatus(ConversationStatus.PENDING);
