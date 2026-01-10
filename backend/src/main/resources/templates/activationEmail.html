@@ -1,0 +1,167 @@
+<!-- <!doctype html> -->
+<!-- <html xmlns:th="http://www.thymeleaf.org" lang="vi"> -->
+<!--   <head> -->
+<!--     <meta charset="UTF-8" /> -->
+<!--     <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
+<!--     <title>Activation Email</title> -->
+<!--     <style> -->
+<!--       body { -->
+<!--         font-family: Arial, sans-serif; -->
+<!--         background-color: #f4f4f4; -->
+<!--         margin: 0; -->
+<!--         padding: 20px; -->
+<!--       } -->
+<!--       .container { -->
+<!--         max-width: 600px; -->
+<!--         margin: auto; -->
+<!--         background: white; -->
+<!--         padding: 20px; -->
+<!--         border-radius: 5px; -->
+<!--         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); -->
+<!--       } -->
+<!--       h1 { -->
+<!--         color: #333; -->
+<!--       } -->
+<!--       p { -->
+<!--         color: #555; -->
+<!--       } -->
+<!--       a { -->
+<!--         display: inline-block; -->
+<!--         padding: 10px 20px; -->
+<!--         background-color: #007bff; -->
+<!--         color: white; -->
+<!--         text-decoration: none; -->
+<!--         border-radius: 5px; -->
+<!--       } -->
+<!--     </style> -->
+<!--   </head> -->
+<!--   <body> -->
+<!--     <div class="container"> -->
+<!--       <h1>Activate Your Account</h1> -->
+<!--       <p>Xin chào bạn,</p> -->
+<!--       <p> -->
+<!--         Cảm ơn bạn đã đăng ký tài khoản với chúng tôi! Để hoàn tất quá trình -->
+<!--         đăng ký, vui lòng nhấp vào liên kết bên dưới để kích hoạt tài khoản của -->
+<!--         bạn. -->
+<!--       </p> -->
+<!--       <a th:href="${activationLink}">Kích hoạt tài khoản</a> -->
+<!--       <p>Nếu không phải bạn tạo tài khoản. Xin hãy bỏ qua email này.</p> -->
+<!--       <p>Trân trọng,</p> -->
+<!--     </div> -->
+<!--   </body> -->
+<!-- </html> -->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kích hoạt tài khoản</title>
+    <style>
+      /* Reset để đảm bảo hiển thị giống nhau trên các trình duyệt email */
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100% !important;
+        background-color: #f9fafb;
+        font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrapper {
+        width: 100%;
+        table-layout: fixed;
+        background-color: #f9fafb;
+        padding-bottom: 40px;
+      }
+      .container {
+        max-width: 500px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+      }
+      .content {
+        padding: 40px 32px;
+        text-align: center;
+      }
+      .header-icon {
+        font-size: 48px;
+        margin-bottom: 20px;
+      }
+      h1 {
+        color: #111827;
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0 0 16px 0;
+        letter-spacing: -0.02em;
+      }
+      p {
+        color: #4b5563;
+        font-size: 16px;
+        line-height: 1.6;
+        margin: 0 0 24px 0;
+      }
+      .button-container {
+        padding: 10px 0 30px 0;
+      }
+      .btn {
+        background-color: #2563eb;
+        color: #ffffff !important;
+        display: inline-block;
+        padding: 14px 32px;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 16px;
+        transition: background-color 0.2s;
+      }
+      .footer {
+        padding: 24px;
+        background-color: #f3f4f6;
+        text-align: center;
+        border-top: 1px solid #e5e7eb;
+      }
+      .footer p {
+        color: #9ca3af;
+        font-size: 13px;
+        margin: 0;
+      }
+      /* Responsive cho mobile */
+      @media screen and (max-width: 600px) {
+        .container {
+          margin: 20px 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        <div class="content">
+          <div class="header-icon">✉️</div>
+          <h1>Xác thực email của bạn</h1>
+          <p>Chào bạn,</p>
+          <p>
+            Cảm ơn bạn đã đồng hành cùng chúng tôi. Để bắt đầu trải nghiệm dịch vụ, 
+            vui lòng xác nhận tài khoản bằng cách nhấn vào nút bên dưới.
+          </p>
+          
+          <div class="button-container">
+            <a th:href="${activationLink}" class="btn">Kích hoạt tài khoản</a>
+          </div>
+
+          <p style="font-size: 14px; color: #9ca3af; margin-bottom: 0;">
+            Nếu nút trên không hoạt động, bạn có thể copy link này: <br>
+            <span th:text="${activationLink}" style="color: #2563eb; word-break: break-all;"></span>
+          </p>
+        </div>
+        
+        <div class="footer">
+          <p>Nếu bạn không đăng ký tài khoản này, vui lòng bỏ qua email này.</p>
+          <p style="margin-top: 8px;">&copy; 2024 Your Company. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,34 @@
+package com.phongdnh.se121.constants;
+
+public interface SecurityConstant {
+
+  String[] PUBLIC_URLS = {
+    "/actuator/**",
+    "/swagger-ui/**",
+    "/v3/api-docs/**",
+    "/auth/login",
+    "/auth/refresh",
+    "/auth/send-otp",
+    "/auth/verify-otp",
+    "/auth/verify-email",
+    "/auth/register",
+    "/auth/reset-password",
+    "/ai/chat/**",
+    "/ws/**",
+    "/files/storage/webhook/callback", // Use static token for webhook callback
+    "/files/download/signed-url",
+    "/content-blocks/carousels"
+  };
+
+  String[] PUBLIC_GET_URLS = {
+    "/properties/all",
+    "/properties/{id}",
+    "/provinces/all",
+    "/wards/all",
+    "/property-types/all",
+    "/properties/similar/{id}",
+    "/properties/within-radius"
+  };
+
+  String[] PUBLIC_POST_URLS = {"/bookings"};
+}

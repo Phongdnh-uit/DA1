@@ -1,0 +1,144 @@
+# Spring Boot configuration for 'pro' profile
+spring:
+  config:
+    activate:
+      on-profile: pro
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.spatial.dialect.mysql.MySQLSpatialDialect
+
+  flyway:
+    enabled: true
+    clean-disabled: true
+
+  docker:
+    compose:
+      enabled: false
+
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+
+  ai:
+    chat:
+      client:
+        enabled: true
+    vectorstore:
+      milvus:
+        client:
+          host: ${MILVUS_HOST}
+          port: ${MILVUS_PORT}
+        database-name: default
+        collection-name: ${MILVUS_COLLECTION_NAME}
+        embedding-dimension: ${MILVUS_EMBEDDING_DIMENSION:4096}
+        metric-type: cosine
+        index-type: hnsw
+        initialize-schema: true
+
+    ollama:
+      init:
+        pull-model-strategy: always
+      base-url: ${OLLAMA_BASE_URL}
+
+      embedding:
+        model: ${OLLAMA_EMBEDDING_MODEL:qwen3-embedding:4b-q4_K_M}
+      chat:
+        model: ${OLLAMA_CHAT_MODEL:qwen3:4b-instruct-2507-q4_K_M}
+        options:
+          num-ctx: 8192
+          temperature: 0.2
+          top-p: 0.9
+          repeat_penalty: 1.1
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    listener:
+      ack-mode: manual
+    consumer:
+      auto-offset-reset: latest
+      enable-auto-commit: false
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.value.default.type: java.util.HashMap
+        spring.json.use.type.headers: false
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  threads:
+    virtual:
+      enabled: true
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    sender-address: ${MAIL_FROM_ADDRESS}
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: profile,email
+            redirect-uri: "{baseUrl}/oauth2/callback/google"
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
+
+# APP Settings
+app:
+  bootstrap:
+    admin:
+      phone: ${BOOTSTRAP_ADMIN_PHONE}
+      password: ${BOOTSTRAP_ADMIN_PASSWORD}
+      email: ${BOOTSTRAP_ADMIN_EMAIL}
+      force-recreate: ${BOOTSTRAP_ADMIN_FORCE_RECREATE:false}
+  cronjob-runner:
+    enabled: ${CRONJOB_RUNNER_ENABLED:true}
+
+jwt:
+  secret: ${JWT_SECRET}
+  refresh-token:
+    expiration: ${JWT_REFRESH_TOKEN_EXPIRATION:604800}
+  access-token:
+    expiration: ${JWT_ACCESS_TOKEN_EXPIRATION:3600}
+
+minio:
+  endpoint: ${MINIO_ENDPOINT}
+  credentials:
+    username: ${MINIO_ACCESS_KEY}
+    password: ${MINIO_SECRET_KEY}
+    webhook-token: ${MINIO_WEBHOOK_TOKEN}
+
+clamav:
+  host: ${CLAMAV_HOST}
+  port: ${CLAMAV_PORT}
+
+imgproxy:
+  base-url: ${IMGPROXY_BASE_URL}
+  key: ${IMGPROXY_KEY}
+  salt: ${IMGPROXY_SALT}
+
+telegram:
+  bot:
+    enabled: true
+    username: ${TELEGRAM_BOT_USERNAME}
+    token: ${TELEGRAM_BOT_TOKEN}

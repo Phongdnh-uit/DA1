@@ -1,11 +1,15 @@
+import "../src/lib/zod-config.ts";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
+import "nprogress/nprogress.css";
 
 import { routeTree } from "./routeTree.gen.ts";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 
-const router = createRouter({ routeTree });
+const router = createRouter({
+    routeTree,
+});
 
 declare module "@tanstack/react-router" {
     interface Register {

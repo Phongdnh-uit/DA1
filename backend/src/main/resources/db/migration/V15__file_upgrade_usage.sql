@@ -1,0 +1,2 @@
+ALTER TABLE files ADD COLUMN usage_status VARCHAR(100);
+ALTER TABLE files ADD COLUMN mime_type VARCHAR(100);

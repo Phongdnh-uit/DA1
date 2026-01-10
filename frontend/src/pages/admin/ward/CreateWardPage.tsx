@@ -1,0 +1,84 @@
+import { Form } from "@/components/ui/form";
+import { FormInput, FormSelect } from "@/utils/formUtil";
+import type { WardRequest } from "@/types";
+import useCreateWardVM from "./CreateWard.vm";
+import { BackButton } from "@/components/general/BackButton";
+import { Card } from "@/components/ui/card";
+import { MotionButton } from "@/components/customs/MotionButton";
+
+export default function CreateWardPage() {
+    const { form, onSubmit, province } = useCreateWardVM();
+    return (
+        <main>
+            <BackButton />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <Card className="p-6 md:p-8 border border-border/50 shadow-lg">
+                    <div>
+                        <h2 className="text-2xl font-bold text-foreground mb-2">
+                            Tạo Xã/Phường Mới
+                        </h2>
+                        <p className="text-base text-muted-foreground">
+                            Vui lòng nhập đầy đủ thông tin bên dưới để tạo xã/phường mới.
+                        </p>
+                    </div>
+                    <Form {...form}>
+                        <div className="space-y-6">
+                            <FormInput<WardRequest>
+                                name="name"
+                                placeholder="Nhập tên"
+                                title="Tên phường xã"
+                            />
+                            <FormSelect<WardRequest>
+                                name="type"
+                                title="Loại"
+                                options={[
+                                    { key: "Phường", render: "Phường" },
+                                    { key: "Xã", render: "Xã" },
+                                    { key: "Thị trấn", render: "Thị trấn" },
+                                ]}
+                            />
+                            <FormInput<WardRequest>
+                                name="code"
+                                placeholder="Nhập tên code"
+                                title="Tên code"
+                            />
+                            <FormSelect<WardRequest>
+                                name="provinceId"
+                                title="Mã Tỉnh/Thành Phố"
+                                searchable={true}
+                                keyType="number"
+                                options={
+                                    province.data?.data?.content?.map((prov) => ({
+                                        key: prov.id as number,
+                                        render: prov.type + " " + prov.name,
+                                        searchKey: prov.type + " " + prov.name,
+                                    })) || []
+                                }
+                            />
+                            {/* Submit Button */}
+                            <div className="flex gap-3 pt-4">
+                                {" "}
+                                <MotionButton
+                                    onClick={() => form.handleSubmit(onSubmit)()}
+                                    className="flex-1 text-xl h-12 rounded-2xl transition-none"
+                                    size="lg"
+                                    disabled={!form.formState.isDirty}
+                                >
+                                    Tạo Phường/Xã Mới
+                                </MotionButton>
+                                <MotionButton
+                                    variant="outline"
+                                    className="flex-1 text-xl h-12 rounded-2xl transition-none"
+                                    size="lg"
+                                    onClick={() => form.reset()}
+                                >
+                                    Hủy Bỏ
+                                </MotionButton>
+                            </div>
+                        </div>
+                    </Form>
+                </Card>
+            </div>
+        </main>
+    );
+}

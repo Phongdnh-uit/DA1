@@ -9,14 +9,64 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TestDatatableRouteImport } from './routes/test-datatable'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as _clientRouteImport } from './routes/__client'
+import { Route as _clientIndexRouteImport } from './routes/__client/index'
+import { Route as AuthVerifyEmailRouteImport } from './routes/auth/verify-email'
+import { Route as AuthSignUpAdditionRouteImport } from './routes/auth/sign-up-addition'
+import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
+import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
+import { Route as AuthOtpVerificationRouteImport } from './routes/auth/otp-verification'
+import { Route as AuthLoginRouteImport } from './routes/auth/login'
+import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
+import { Route as _clientWishListRouteImport } from './routes/__client/wish-list'
+import { Route as _clientSettingsRouteImport } from './routes/__client/settings'
+import { Route as _clientPropertiesRouteImport } from './routes/__client/properties'
+import { Route as _clientChatRouteImport } from './routes/__client/chat'
+import { Route as _clientBookingRouteImport } from './routes/__client/booking'
+import { Route as AdminWardIndexRouteImport } from './routes/admin/ward/index'
+import { Route as AdminUserIndexRouteImport } from './routes/admin/user/index'
+import { Route as AdminSupportIndexRouteImport } from './routes/admin/support/index'
+import { Route as AdminSettingsIndexRouteImport } from './routes/admin/settings/index'
+import { Route as AdminRoleIndexRouteImport } from './routes/admin/role/index'
+import { Route as AdminProvinceIndexRouteImport } from './routes/admin/province/index'
+import { Route as AdminPropertyIndexRouteImport } from './routes/admin/property/index'
+import { Route as AdminPropertyTypeIndexRouteImport } from './routes/admin/property-type/index'
+import { Route as AdminPriceReferenceIndexRouteImport } from './routes/admin/price-reference/index'
+import { Route as AdminPermissionIndexRouteImport } from './routes/admin/permission/index'
 import { Route as AdminDashboardIndexRouteImport } from './routes/admin/dashboard/index'
+import { Route as AdminChatIndexRouteImport } from './routes/admin/chat/index'
+import { Route as AdminBookingIndexRouteImport } from './routes/admin/booking/index'
+import { Route as _clientSupportIndexRouteImport } from './routes/__client/support/index'
+import { Route as AdminWardCreateRouteImport } from './routes/admin/ward/create'
+import { Route as AdminUserCreateRouteImport } from './routes/admin/user/create'
+import { Route as AdminRoleCreateRouteImport } from './routes/admin/role/create'
+import { Route as AdminProvinceCreateRouteImport } from './routes/admin/province/create'
+import { Route as AdminPropertyCreateRouteImport } from './routes/admin/property/create'
+import { Route as AdminPropertyTypeCreateRouteImport } from './routes/admin/property-type/create'
+import { Route as AdminPermissionCreateRouteImport } from './routes/admin/permission/create'
+import { Route as AdminBookingCreateRouteImport } from './routes/admin/booking/create'
+import { Route as _clientSupportHistoryRouteImport } from './routes/__client/support/history'
+import { Route as _clientDetailIdRouteImport } from './routes/__client/detail.$id'
+import { Route as AdminWardUpdateIdRouteImport } from './routes/admin/ward/update.$id'
+import { Route as AdminUserUpdateIdRouteImport } from './routes/admin/user/update.$id'
+import { Route as AdminUserDetailIdRouteImport } from './routes/admin/user/detail.$id'
+import { Route as AdminSupportProcessIdRouteImport } from './routes/admin/support/process.$id'
+import { Route as AdminRoleUpdateIdRouteImport } from './routes/admin/role/update.$id'
+import { Route as AdminProvinceUpdateIdRouteImport } from './routes/admin/province/update.$id'
+import { Route as AdminPropertyUpdateIdRouteImport } from './routes/admin/property/update.$id'
+import { Route as AdminPropertyDetailIdRouteImport } from './routes/admin/property/detail.$id'
+import { Route as AdminPropertyTypeUpdateIdRouteImport } from './routes/admin/property-type/update.$id'
+import { Route as AdminPriceReferenceDetailIdRouteImport } from './routes/admin/price-reference/detail.$id'
+import { Route as AdminPermissionUpdateIdRouteImport } from './routes/admin/permission/update.$id'
+import { Route as AdminBookingUpdateIdRouteImport } from './routes/admin/booking/update.$id'
+import { Route as _clientSupportDetailIdRouteImport } from './routes/__client/support/detail.$id'
+import { Route as _clientCompareId1ToId2RouteImport } from './routes/__client/compare.$id1.to.$id2'
 
-const TestDatatableRoute = TestDatatableRouteImport.update({
-  id: '/test-datatable',
-  path: '/test-datatable',
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -24,57 +74,618 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const _clientRoute = _clientRouteImport.update({
+  id: '/__client',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const _clientIndexRoute = _clientIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => _clientRoute,
+} as any)
+const AuthVerifyEmailRoute = AuthVerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthSignUpAdditionRoute = AuthSignUpAdditionRouteImport.update({
+  id: '/sign-up-addition',
+  path: '/sign-up-addition',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthSignUpRoute = AuthSignUpRouteImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthOtpVerificationRoute = AuthOtpVerificationRouteImport.update({
+  id: '/otp-verification',
+  path: '/otp-verification',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => AuthRoute,
+} as any)
+const _clientWishListRoute = _clientWishListRouteImport.update({
+  id: '/wish-list',
+  path: '/wish-list',
+  getParentRoute: () => _clientRoute,
+} as any)
+const _clientSettingsRoute = _clientSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => _clientRoute,
+} as any)
+const _clientPropertiesRoute = _clientPropertiesRouteImport.update({
+  id: '/properties',
+  path: '/properties',
+  getParentRoute: () => _clientRoute,
+} as any)
+const _clientChatRoute = _clientChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => _clientRoute,
+} as any)
+const _clientBookingRoute = _clientBookingRouteImport.update({
+  id: '/booking',
+  path: '/booking',
+  getParentRoute: () => _clientRoute,
+} as any)
+const AdminWardIndexRoute = AdminWardIndexRouteImport.update({
+  id: '/ward/',
+  path: '/ward/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUserIndexRoute = AdminUserIndexRouteImport.update({
+  id: '/user/',
+  path: '/user/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSupportIndexRoute = AdminSupportIndexRouteImport.update({
+  id: '/support/',
+  path: '/support/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsIndexRoute = AdminSettingsIndexRouteImport.update({
+  id: '/settings/',
+  path: '/settings/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRoleIndexRoute = AdminRoleIndexRouteImport.update({
+  id: '/role/',
+  path: '/role/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProvinceIndexRoute = AdminProvinceIndexRouteImport.update({
+  id: '/province/',
+  path: '/province/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPropertyIndexRoute = AdminPropertyIndexRouteImport.update({
+  id: '/property/',
+  path: '/property/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPropertyTypeIndexRoute = AdminPropertyTypeIndexRouteImport.update({
+  id: '/property-type/',
+  path: '/property-type/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPriceReferenceIndexRoute =
+  AdminPriceReferenceIndexRouteImport.update({
+    id: '/price-reference/',
+    path: '/price-reference/',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminPermissionIndexRoute = AdminPermissionIndexRouteImport.update({
+  id: '/permission/',
+  path: '/permission/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminDashboardIndexRoute = AdminDashboardIndexRouteImport.update({
   id: '/dashboard/',
   path: '/dashboard/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminChatIndexRoute = AdminChatIndexRouteImport.update({
+  id: '/chat/',
+  path: '/chat/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBookingIndexRoute = AdminBookingIndexRouteImport.update({
+  id: '/booking/',
+  path: '/booking/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const _clientSupportIndexRoute = _clientSupportIndexRouteImport.update({
+  id: '/support/',
+  path: '/support/',
+  getParentRoute: () => _clientRoute,
+} as any)
+const AdminWardCreateRoute = AdminWardCreateRouteImport.update({
+  id: '/ward/create',
+  path: '/ward/create',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUserCreateRoute = AdminUserCreateRouteImport.update({
+  id: '/user/create',
+  path: '/user/create',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRoleCreateRoute = AdminRoleCreateRouteImport.update({
+  id: '/role/create',
+  path: '/role/create',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProvinceCreateRoute = AdminProvinceCreateRouteImport.update({
+  id: '/province/create',
+  path: '/province/create',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPropertyCreateRoute = AdminPropertyCreateRouteImport.update({
+  id: '/property/create',
+  path: '/property/create',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPropertyTypeCreateRoute = AdminPropertyTypeCreateRouteImport.update({
+  id: '/property-type/create',
+  path: '/property-type/create',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPermissionCreateRoute = AdminPermissionCreateRouteImport.update({
+  id: '/permission/create',
+  path: '/permission/create',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBookingCreateRoute = AdminBookingCreateRouteImport.update({
+  id: '/booking/create',
+  path: '/booking/create',
+  getParentRoute: () => AdminRoute,
+} as any)
+const _clientSupportHistoryRoute = _clientSupportHistoryRouteImport.update({
+  id: '/support/history',
+  path: '/support/history',
+  getParentRoute: () => _clientRoute,
+} as any)
+const _clientDetailIdRoute = _clientDetailIdRouteImport.update({
+  id: '/detail/$id',
+  path: '/detail/$id',
+  getParentRoute: () => _clientRoute,
+} as any)
+const AdminWardUpdateIdRoute = AdminWardUpdateIdRouteImport.update({
+  id: '/ward/update/$id',
+  path: '/ward/update/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUserUpdateIdRoute = AdminUserUpdateIdRouteImport.update({
+  id: '/user/update/$id',
+  path: '/user/update/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUserDetailIdRoute = AdminUserDetailIdRouteImport.update({
+  id: '/user/detail/$id',
+  path: '/user/detail/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSupportProcessIdRoute = AdminSupportProcessIdRouteImport.update({
+  id: '/support/process/$id',
+  path: '/support/process/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRoleUpdateIdRoute = AdminRoleUpdateIdRouteImport.update({
+  id: '/role/update/$id',
+  path: '/role/update/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProvinceUpdateIdRoute = AdminProvinceUpdateIdRouteImport.update({
+  id: '/province/update/$id',
+  path: '/province/update/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPropertyUpdateIdRoute = AdminPropertyUpdateIdRouteImport.update({
+  id: '/property/update/$id',
+  path: '/property/update/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPropertyDetailIdRoute = AdminPropertyDetailIdRouteImport.update({
+  id: '/property/detail/$id',
+  path: '/property/detail/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPropertyTypeUpdateIdRoute =
+  AdminPropertyTypeUpdateIdRouteImport.update({
+    id: '/property-type/update/$id',
+    path: '/property-type/update/$id',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminPriceReferenceDetailIdRoute =
+  AdminPriceReferenceDetailIdRouteImport.update({
+    id: '/price-reference/detail/$id',
+    path: '/price-reference/detail/$id',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminPermissionUpdateIdRoute = AdminPermissionUpdateIdRouteImport.update({
+  id: '/permission/update/$id',
+  path: '/permission/update/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBookingUpdateIdRoute = AdminBookingUpdateIdRouteImport.update({
+  id: '/booking/update/$id',
+  path: '/booking/update/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const _clientSupportDetailIdRoute = _clientSupportDetailIdRouteImport.update({
+  id: '/support/detail/$id',
+  path: '/support/detail/$id',
+  getParentRoute: () => _clientRoute,
+} as any)
+const _clientCompareId1ToId2Route = _clientCompareId1ToId2RouteImport.update({
+  id: '/compare/$id1/to/$id2',
+  path: '/compare/$id1/to/$id2',
+  getParentRoute: () => _clientRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/test-datatable': typeof TestDatatableRoute
+  '/auth': typeof AuthRouteWithChildren
+  '/booking': typeof _clientBookingRoute
+  '/chat': typeof _clientChatRoute
+  '/properties': typeof _clientPropertiesRoute
+  '/settings': typeof _clientSettingsRoute
+  '/wish-list': typeof _clientWishListRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/otp-verification': typeof AuthOtpVerificationRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
+  '/auth/sign-up-addition': typeof AuthSignUpAdditionRoute
+  '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/': typeof _clientIndexRoute
+  '/detail/$id': typeof _clientDetailIdRoute
+  '/support/history': typeof _clientSupportHistoryRoute
+  '/admin/booking/create': typeof AdminBookingCreateRoute
+  '/admin/permission/create': typeof AdminPermissionCreateRoute
+  '/admin/property-type/create': typeof AdminPropertyTypeCreateRoute
+  '/admin/property/create': typeof AdminPropertyCreateRoute
+  '/admin/province/create': typeof AdminProvinceCreateRoute
+  '/admin/role/create': typeof AdminRoleCreateRoute
+  '/admin/user/create': typeof AdminUserCreateRoute
+  '/admin/ward/create': typeof AdminWardCreateRoute
+  '/support': typeof _clientSupportIndexRoute
+  '/admin/booking': typeof AdminBookingIndexRoute
+  '/admin/chat': typeof AdminChatIndexRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
+  '/admin/permission': typeof AdminPermissionIndexRoute
+  '/admin/price-reference': typeof AdminPriceReferenceIndexRoute
+  '/admin/property-type': typeof AdminPropertyTypeIndexRoute
+  '/admin/property': typeof AdminPropertyIndexRoute
+  '/admin/province': typeof AdminProvinceIndexRoute
+  '/admin/role': typeof AdminRoleIndexRoute
+  '/admin/settings': typeof AdminSettingsIndexRoute
+  '/admin/support': typeof AdminSupportIndexRoute
+  '/admin/user': typeof AdminUserIndexRoute
+  '/admin/ward': typeof AdminWardIndexRoute
+  '/support/detail/$id': typeof _clientSupportDetailIdRoute
+  '/admin/booking/update/$id': typeof AdminBookingUpdateIdRoute
+  '/admin/permission/update/$id': typeof AdminPermissionUpdateIdRoute
+  '/admin/price-reference/detail/$id': typeof AdminPriceReferenceDetailIdRoute
+  '/admin/property-type/update/$id': typeof AdminPropertyTypeUpdateIdRoute
+  '/admin/property/detail/$id': typeof AdminPropertyDetailIdRoute
+  '/admin/property/update/$id': typeof AdminPropertyUpdateIdRoute
+  '/admin/province/update/$id': typeof AdminProvinceUpdateIdRoute
+  '/admin/role/update/$id': typeof AdminRoleUpdateIdRoute
+  '/admin/support/process/$id': typeof AdminSupportProcessIdRoute
+  '/admin/user/detail/$id': typeof AdminUserDetailIdRoute
+  '/admin/user/update/$id': typeof AdminUserUpdateIdRoute
+  '/admin/ward/update/$id': typeof AdminWardUpdateIdRoute
+  '/compare/$id1/to/$id2': typeof _clientCompareId1ToId2Route
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/test-datatable': typeof TestDatatableRoute
+  '/auth': typeof AuthRouteWithChildren
+  '/booking': typeof _clientBookingRoute
+  '/chat': typeof _clientChatRoute
+  '/properties': typeof _clientPropertiesRoute
+  '/settings': typeof _clientSettingsRoute
+  '/wish-list': typeof _clientWishListRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/otp-verification': typeof AuthOtpVerificationRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
+  '/auth/sign-up-addition': typeof AuthSignUpAdditionRoute
+  '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/': typeof _clientIndexRoute
+  '/detail/$id': typeof _clientDetailIdRoute
+  '/support/history': typeof _clientSupportHistoryRoute
+  '/admin/booking/create': typeof AdminBookingCreateRoute
+  '/admin/permission/create': typeof AdminPermissionCreateRoute
+  '/admin/property-type/create': typeof AdminPropertyTypeCreateRoute
+  '/admin/property/create': typeof AdminPropertyCreateRoute
+  '/admin/province/create': typeof AdminProvinceCreateRoute
+  '/admin/role/create': typeof AdminRoleCreateRoute
+  '/admin/user/create': typeof AdminUserCreateRoute
+  '/admin/ward/create': typeof AdminWardCreateRoute
+  '/support': typeof _clientSupportIndexRoute
+  '/admin/booking': typeof AdminBookingIndexRoute
+  '/admin/chat': typeof AdminChatIndexRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
+  '/admin/permission': typeof AdminPermissionIndexRoute
+  '/admin/price-reference': typeof AdminPriceReferenceIndexRoute
+  '/admin/property-type': typeof AdminPropertyTypeIndexRoute
+  '/admin/property': typeof AdminPropertyIndexRoute
+  '/admin/province': typeof AdminProvinceIndexRoute
+  '/admin/role': typeof AdminRoleIndexRoute
+  '/admin/settings': typeof AdminSettingsIndexRoute
+  '/admin/support': typeof AdminSupportIndexRoute
+  '/admin/user': typeof AdminUserIndexRoute
+  '/admin/ward': typeof AdminWardIndexRoute
+  '/support/detail/$id': typeof _clientSupportDetailIdRoute
+  '/admin/booking/update/$id': typeof AdminBookingUpdateIdRoute
+  '/admin/permission/update/$id': typeof AdminPermissionUpdateIdRoute
+  '/admin/price-reference/detail/$id': typeof AdminPriceReferenceDetailIdRoute
+  '/admin/property-type/update/$id': typeof AdminPropertyTypeUpdateIdRoute
+  '/admin/property/detail/$id': typeof AdminPropertyDetailIdRoute
+  '/admin/property/update/$id': typeof AdminPropertyUpdateIdRoute
+  '/admin/province/update/$id': typeof AdminProvinceUpdateIdRoute
+  '/admin/role/update/$id': typeof AdminRoleUpdateIdRoute
+  '/admin/support/process/$id': typeof AdminSupportProcessIdRoute
+  '/admin/user/detail/$id': typeof AdminUserDetailIdRoute
+  '/admin/user/update/$id': typeof AdminUserUpdateIdRoute
+  '/admin/ward/update/$id': typeof AdminWardUpdateIdRoute
+  '/compare/$id1/to/$id2': typeof _clientCompareId1ToId2Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/__client': typeof _clientRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
-  '/test-datatable': typeof TestDatatableRoute
+  '/auth': typeof AuthRouteWithChildren
+  '/__client/booking': typeof _clientBookingRoute
+  '/__client/chat': typeof _clientChatRoute
+  '/__client/properties': typeof _clientPropertiesRoute
+  '/__client/settings': typeof _clientSettingsRoute
+  '/__client/wish-list': typeof _clientWishListRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/otp-verification': typeof AuthOtpVerificationRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
+  '/auth/sign-up-addition': typeof AuthSignUpAdditionRoute
+  '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/__client/': typeof _clientIndexRoute
+  '/__client/detail/$id': typeof _clientDetailIdRoute
+  '/__client/support/history': typeof _clientSupportHistoryRoute
+  '/admin/booking/create': typeof AdminBookingCreateRoute
+  '/admin/permission/create': typeof AdminPermissionCreateRoute
+  '/admin/property-type/create': typeof AdminPropertyTypeCreateRoute
+  '/admin/property/create': typeof AdminPropertyCreateRoute
+  '/admin/province/create': typeof AdminProvinceCreateRoute
+  '/admin/role/create': typeof AdminRoleCreateRoute
+  '/admin/user/create': typeof AdminUserCreateRoute
+  '/admin/ward/create': typeof AdminWardCreateRoute
+  '/__client/support/': typeof _clientSupportIndexRoute
+  '/admin/booking/': typeof AdminBookingIndexRoute
+  '/admin/chat/': typeof AdminChatIndexRoute
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
+  '/admin/permission/': typeof AdminPermissionIndexRoute
+  '/admin/price-reference/': typeof AdminPriceReferenceIndexRoute
+  '/admin/property-type/': typeof AdminPropertyTypeIndexRoute
+  '/admin/property/': typeof AdminPropertyIndexRoute
+  '/admin/province/': typeof AdminProvinceIndexRoute
+  '/admin/role/': typeof AdminRoleIndexRoute
+  '/admin/settings/': typeof AdminSettingsIndexRoute
+  '/admin/support/': typeof AdminSupportIndexRoute
+  '/admin/user/': typeof AdminUserIndexRoute
+  '/admin/ward/': typeof AdminWardIndexRoute
+  '/__client/support/detail/$id': typeof _clientSupportDetailIdRoute
+  '/admin/booking/update/$id': typeof AdminBookingUpdateIdRoute
+  '/admin/permission/update/$id': typeof AdminPermissionUpdateIdRoute
+  '/admin/price-reference/detail/$id': typeof AdminPriceReferenceDetailIdRoute
+  '/admin/property-type/update/$id': typeof AdminPropertyTypeUpdateIdRoute
+  '/admin/property/detail/$id': typeof AdminPropertyDetailIdRoute
+  '/admin/property/update/$id': typeof AdminPropertyUpdateIdRoute
+  '/admin/province/update/$id': typeof AdminProvinceUpdateIdRoute
+  '/admin/role/update/$id': typeof AdminRoleUpdateIdRoute
+  '/admin/support/process/$id': typeof AdminSupportProcessIdRoute
+  '/admin/user/detail/$id': typeof AdminUserDetailIdRoute
+  '/admin/user/update/$id': typeof AdminUserUpdateIdRoute
+  '/admin/ward/update/$id': typeof AdminWardUpdateIdRoute
+  '/__client/compare/$id1/to/$id2': typeof _clientCompareId1ToId2Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/test-datatable' | '/admin/dashboard'
+  fullPaths:
+    | '/admin'
+    | '/auth'
+    | '/booking'
+    | '/chat'
+    | '/properties'
+    | '/settings'
+    | '/wish-list'
+    | '/auth/forgot-password'
+    | '/auth/login'
+    | '/auth/otp-verification'
+    | '/auth/reset-password'
+    | '/auth/sign-up'
+    | '/auth/sign-up-addition'
+    | '/auth/verify-email'
+    | '/'
+    | '/detail/$id'
+    | '/support/history'
+    | '/admin/booking/create'
+    | '/admin/permission/create'
+    | '/admin/property-type/create'
+    | '/admin/property/create'
+    | '/admin/province/create'
+    | '/admin/role/create'
+    | '/admin/user/create'
+    | '/admin/ward/create'
+    | '/support'
+    | '/admin/booking'
+    | '/admin/chat'
+    | '/admin/dashboard'
+    | '/admin/permission'
+    | '/admin/price-reference'
+    | '/admin/property-type'
+    | '/admin/property'
+    | '/admin/province'
+    | '/admin/role'
+    | '/admin/settings'
+    | '/admin/support'
+    | '/admin/user'
+    | '/admin/ward'
+    | '/support/detail/$id'
+    | '/admin/booking/update/$id'
+    | '/admin/permission/update/$id'
+    | '/admin/price-reference/detail/$id'
+    | '/admin/property-type/update/$id'
+    | '/admin/property/detail/$id'
+    | '/admin/property/update/$id'
+    | '/admin/province/update/$id'
+    | '/admin/role/update/$id'
+    | '/admin/support/process/$id'
+    | '/admin/user/detail/$id'
+    | '/admin/user/update/$id'
+    | '/admin/ward/update/$id'
+    | '/compare/$id1/to/$id2'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/test-datatable' | '/admin/dashboard'
-  id: '__root__' | '/' | '/admin' | '/test-datatable' | '/admin/dashboard/'
+  to:
+    | '/admin'
+    | '/auth'
+    | '/booking'
+    | '/chat'
+    | '/properties'
+    | '/settings'
+    | '/wish-list'
+    | '/auth/forgot-password'
+    | '/auth/login'
+    | '/auth/otp-verification'
+    | '/auth/reset-password'
+    | '/auth/sign-up'
+    | '/auth/sign-up-addition'
+    | '/auth/verify-email'
+    | '/'
+    | '/detail/$id'
+    | '/support/history'
+    | '/admin/booking/create'
+    | '/admin/permission/create'
+    | '/admin/property-type/create'
+    | '/admin/property/create'
+    | '/admin/province/create'
+    | '/admin/role/create'
+    | '/admin/user/create'
+    | '/admin/ward/create'
+    | '/support'
+    | '/admin/booking'
+    | '/admin/chat'
+    | '/admin/dashboard'
+    | '/admin/permission'
+    | '/admin/price-reference'
+    | '/admin/property-type'
+    | '/admin/property'
+    | '/admin/province'
+    | '/admin/role'
+    | '/admin/settings'
+    | '/admin/support'
+    | '/admin/user'
+    | '/admin/ward'
+    | '/support/detail/$id'
+    | '/admin/booking/update/$id'
+    | '/admin/permission/update/$id'
+    | '/admin/price-reference/detail/$id'
+    | '/admin/property-type/update/$id'
+    | '/admin/property/detail/$id'
+    | '/admin/property/update/$id'
+    | '/admin/province/update/$id'
+    | '/admin/role/update/$id'
+    | '/admin/support/process/$id'
+    | '/admin/user/detail/$id'
+    | '/admin/user/update/$id'
+    | '/admin/ward/update/$id'
+    | '/compare/$id1/to/$id2'
+  id:
+    | '__root__'
+    | '/__client'
+    | '/admin'
+    | '/auth'
+    | '/__client/booking'
+    | '/__client/chat'
+    | '/__client/properties'
+    | '/__client/settings'
+    | '/__client/wish-list'
+    | '/auth/forgot-password'
+    | '/auth/login'
+    | '/auth/otp-verification'
+    | '/auth/reset-password'
+    | '/auth/sign-up'
+    | '/auth/sign-up-addition'
+    | '/auth/verify-email'
+    | '/__client/'
+    | '/__client/detail/$id'
+    | '/__client/support/history'
+    | '/admin/booking/create'
+    | '/admin/permission/create'
+    | '/admin/property-type/create'
+    | '/admin/property/create'
+    | '/admin/province/create'
+    | '/admin/role/create'
+    | '/admin/user/create'
+    | '/admin/ward/create'
+    | '/__client/support/'
+    | '/admin/booking/'
+    | '/admin/chat/'
+    | '/admin/dashboard/'
+    | '/admin/permission/'
+    | '/admin/price-reference/'
+    | '/admin/property-type/'
+    | '/admin/property/'
+    | '/admin/province/'
+    | '/admin/role/'
+    | '/admin/settings/'
+    | '/admin/support/'
+    | '/admin/user/'
+    | '/admin/ward/'
+    | '/__client/support/detail/$id'
+    | '/admin/booking/update/$id'
+    | '/admin/permission/update/$id'
+    | '/admin/price-reference/detail/$id'
+    | '/admin/property-type/update/$id'
+    | '/admin/property/detail/$id'
+    | '/admin/property/update/$id'
+    | '/admin/province/update/$id'
+    | '/admin/role/update/$id'
+    | '/admin/support/process/$id'
+    | '/admin/user/detail/$id'
+    | '/admin/user/update/$id'
+    | '/admin/ward/update/$id'
+    | '/__client/compare/$id1/to/$id2'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  _clientRoute: typeof _clientRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
-  TestDatatableRoute: typeof TestDatatableRoute
+  AuthRoute: typeof AuthRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/test-datatable': {
-      id: '/test-datatable'
-      path: '/test-datatable'
-      fullPath: '/test-datatable'
-      preLoaderRoute: typeof TestDatatableRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -84,12 +695,173 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/__client': {
+      id: '/__client'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof _clientRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/__client/': {
+      id: '/__client/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof _clientIndexRouteImport
+      parentRoute: typeof _clientRoute
+    }
+    '/auth/verify-email': {
+      id: '/auth/verify-email'
+      path: '/verify-email'
+      fullPath: '/auth/verify-email'
+      preLoaderRoute: typeof AuthVerifyEmailRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/sign-up-addition': {
+      id: '/auth/sign-up-addition'
+      path: '/sign-up-addition'
+      fullPath: '/auth/sign-up-addition'
+      preLoaderRoute: typeof AuthSignUpAdditionRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/sign-up': {
+      id: '/auth/sign-up'
+      path: '/sign-up'
+      fullPath: '/auth/sign-up'
+      preLoaderRoute: typeof AuthSignUpRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/reset-password': {
+      id: '/auth/reset-password'
+      path: '/reset-password'
+      fullPath: '/auth/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/otp-verification': {
+      id: '/auth/otp-verification'
+      path: '/otp-verification'
+      fullPath: '/auth/otp-verification'
+      preLoaderRoute: typeof AuthOtpVerificationRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/login': {
+      id: '/auth/login'
+      path: '/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/forgot-password': {
+      id: '/auth/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/auth/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/__client/wish-list': {
+      id: '/__client/wish-list'
+      path: '/wish-list'
+      fullPath: '/wish-list'
+      preLoaderRoute: typeof _clientWishListRouteImport
+      parentRoute: typeof _clientRoute
+    }
+    '/__client/settings': {
+      id: '/__client/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof _clientSettingsRouteImport
+      parentRoute: typeof _clientRoute
+    }
+    '/__client/properties': {
+      id: '/__client/properties'
+      path: '/properties'
+      fullPath: '/properties'
+      preLoaderRoute: typeof _clientPropertiesRouteImport
+      parentRoute: typeof _clientRoute
+    }
+    '/__client/chat': {
+      id: '/__client/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof _clientChatRouteImport
+      parentRoute: typeof _clientRoute
+    }
+    '/__client/booking': {
+      id: '/__client/booking'
+      path: '/booking'
+      fullPath: '/booking'
+      preLoaderRoute: typeof _clientBookingRouteImport
+      parentRoute: typeof _clientRoute
+    }
+    '/admin/ward/': {
+      id: '/admin/ward/'
+      path: '/ward'
+      fullPath: '/admin/ward'
+      preLoaderRoute: typeof AdminWardIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/user/': {
+      id: '/admin/user/'
+      path: '/user'
+      fullPath: '/admin/user'
+      preLoaderRoute: typeof AdminUserIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/support/': {
+      id: '/admin/support/'
+      path: '/support'
+      fullPath: '/admin/support'
+      preLoaderRoute: typeof AdminSupportIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings/': {
+      id: '/admin/settings/'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/role/': {
+      id: '/admin/role/'
+      path: '/role'
+      fullPath: '/admin/role'
+      preLoaderRoute: typeof AdminRoleIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/province/': {
+      id: '/admin/province/'
+      path: '/province'
+      fullPath: '/admin/province'
+      preLoaderRoute: typeof AdminProvinceIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/property/': {
+      id: '/admin/property/'
+      path: '/property'
+      fullPath: '/admin/property'
+      preLoaderRoute: typeof AdminPropertyIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/property-type/': {
+      id: '/admin/property-type/'
+      path: '/property-type'
+      fullPath: '/admin/property-type'
+      preLoaderRoute: typeof AdminPropertyTypeIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/price-reference/': {
+      id: '/admin/price-reference/'
+      path: '/price-reference'
+      fullPath: '/admin/price-reference'
+      preLoaderRoute: typeof AdminPriceReferenceIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/permission/': {
+      id: '/admin/permission/'
+      path: '/permission'
+      fullPath: '/admin/permission'
+      preLoaderRoute: typeof AdminPermissionIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/dashboard/': {
       id: '/admin/dashboard/'
@@ -98,23 +870,329 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/chat/': {
+      id: '/admin/chat/'
+      path: '/chat'
+      fullPath: '/admin/chat'
+      preLoaderRoute: typeof AdminChatIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/booking/': {
+      id: '/admin/booking/'
+      path: '/booking'
+      fullPath: '/admin/booking'
+      preLoaderRoute: typeof AdminBookingIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/__client/support/': {
+      id: '/__client/support/'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof _clientSupportIndexRouteImport
+      parentRoute: typeof _clientRoute
+    }
+    '/admin/ward/create': {
+      id: '/admin/ward/create'
+      path: '/ward/create'
+      fullPath: '/admin/ward/create'
+      preLoaderRoute: typeof AdminWardCreateRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/user/create': {
+      id: '/admin/user/create'
+      path: '/user/create'
+      fullPath: '/admin/user/create'
+      preLoaderRoute: typeof AdminUserCreateRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/role/create': {
+      id: '/admin/role/create'
+      path: '/role/create'
+      fullPath: '/admin/role/create'
+      preLoaderRoute: typeof AdminRoleCreateRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/province/create': {
+      id: '/admin/province/create'
+      path: '/province/create'
+      fullPath: '/admin/province/create'
+      preLoaderRoute: typeof AdminProvinceCreateRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/property/create': {
+      id: '/admin/property/create'
+      path: '/property/create'
+      fullPath: '/admin/property/create'
+      preLoaderRoute: typeof AdminPropertyCreateRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/property-type/create': {
+      id: '/admin/property-type/create'
+      path: '/property-type/create'
+      fullPath: '/admin/property-type/create'
+      preLoaderRoute: typeof AdminPropertyTypeCreateRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/permission/create': {
+      id: '/admin/permission/create'
+      path: '/permission/create'
+      fullPath: '/admin/permission/create'
+      preLoaderRoute: typeof AdminPermissionCreateRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/booking/create': {
+      id: '/admin/booking/create'
+      path: '/booking/create'
+      fullPath: '/admin/booking/create'
+      preLoaderRoute: typeof AdminBookingCreateRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/__client/support/history': {
+      id: '/__client/support/history'
+      path: '/support/history'
+      fullPath: '/support/history'
+      preLoaderRoute: typeof _clientSupportHistoryRouteImport
+      parentRoute: typeof _clientRoute
+    }
+    '/__client/detail/$id': {
+      id: '/__client/detail/$id'
+      path: '/detail/$id'
+      fullPath: '/detail/$id'
+      preLoaderRoute: typeof _clientDetailIdRouteImport
+      parentRoute: typeof _clientRoute
+    }
+    '/admin/ward/update/$id': {
+      id: '/admin/ward/update/$id'
+      path: '/ward/update/$id'
+      fullPath: '/admin/ward/update/$id'
+      preLoaderRoute: typeof AdminWardUpdateIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/user/update/$id': {
+      id: '/admin/user/update/$id'
+      path: '/user/update/$id'
+      fullPath: '/admin/user/update/$id'
+      preLoaderRoute: typeof AdminUserUpdateIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/user/detail/$id': {
+      id: '/admin/user/detail/$id'
+      path: '/user/detail/$id'
+      fullPath: '/admin/user/detail/$id'
+      preLoaderRoute: typeof AdminUserDetailIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/support/process/$id': {
+      id: '/admin/support/process/$id'
+      path: '/support/process/$id'
+      fullPath: '/admin/support/process/$id'
+      preLoaderRoute: typeof AdminSupportProcessIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/role/update/$id': {
+      id: '/admin/role/update/$id'
+      path: '/role/update/$id'
+      fullPath: '/admin/role/update/$id'
+      preLoaderRoute: typeof AdminRoleUpdateIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/province/update/$id': {
+      id: '/admin/province/update/$id'
+      path: '/province/update/$id'
+      fullPath: '/admin/province/update/$id'
+      preLoaderRoute: typeof AdminProvinceUpdateIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/property/update/$id': {
+      id: '/admin/property/update/$id'
+      path: '/property/update/$id'
+      fullPath: '/admin/property/update/$id'
+      preLoaderRoute: typeof AdminPropertyUpdateIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/property/detail/$id': {
+      id: '/admin/property/detail/$id'
+      path: '/property/detail/$id'
+      fullPath: '/admin/property/detail/$id'
+      preLoaderRoute: typeof AdminPropertyDetailIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/property-type/update/$id': {
+      id: '/admin/property-type/update/$id'
+      path: '/property-type/update/$id'
+      fullPath: '/admin/property-type/update/$id'
+      preLoaderRoute: typeof AdminPropertyTypeUpdateIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/price-reference/detail/$id': {
+      id: '/admin/price-reference/detail/$id'
+      path: '/price-reference/detail/$id'
+      fullPath: '/admin/price-reference/detail/$id'
+      preLoaderRoute: typeof AdminPriceReferenceDetailIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/permission/update/$id': {
+      id: '/admin/permission/update/$id'
+      path: '/permission/update/$id'
+      fullPath: '/admin/permission/update/$id'
+      preLoaderRoute: typeof AdminPermissionUpdateIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/booking/update/$id': {
+      id: '/admin/booking/update/$id'
+      path: '/booking/update/$id'
+      fullPath: '/admin/booking/update/$id'
+      preLoaderRoute: typeof AdminBookingUpdateIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/__client/support/detail/$id': {
+      id: '/__client/support/detail/$id'
+      path: '/support/detail/$id'
+      fullPath: '/support/detail/$id'
+      preLoaderRoute: typeof _clientSupportDetailIdRouteImport
+      parentRoute: typeof _clientRoute
+    }
+    '/__client/compare/$id1/to/$id2': {
+      id: '/__client/compare/$id1/to/$id2'
+      path: '/compare/$id1/to/$id2'
+      fullPath: '/compare/$id1/to/$id2'
+      preLoaderRoute: typeof _clientCompareId1ToId2RouteImport
+      parentRoute: typeof _clientRoute
+    }
   }
 }
 
+interface _clientRouteChildren {
+  _clientBookingRoute: typeof _clientBookingRoute
+  _clientChatRoute: typeof _clientChatRoute
+  _clientPropertiesRoute: typeof _clientPropertiesRoute
+  _clientSettingsRoute: typeof _clientSettingsRoute
+  _clientWishListRoute: typeof _clientWishListRoute
+  _clientIndexRoute: typeof _clientIndexRoute
+  _clientDetailIdRoute: typeof _clientDetailIdRoute
+  _clientSupportHistoryRoute: typeof _clientSupportHistoryRoute
+  _clientSupportIndexRoute: typeof _clientSupportIndexRoute
+  _clientSupportDetailIdRoute: typeof _clientSupportDetailIdRoute
+  _clientCompareId1ToId2Route: typeof _clientCompareId1ToId2Route
+}
+
+const _clientRouteChildren: _clientRouteChildren = {
+  _clientBookingRoute: _clientBookingRoute,
+  _clientChatRoute: _clientChatRoute,
+  _clientPropertiesRoute: _clientPropertiesRoute,
+  _clientSettingsRoute: _clientSettingsRoute,
+  _clientWishListRoute: _clientWishListRoute,
+  _clientIndexRoute: _clientIndexRoute,
+  _clientDetailIdRoute: _clientDetailIdRoute,
+  _clientSupportHistoryRoute: _clientSupportHistoryRoute,
+  _clientSupportIndexRoute: _clientSupportIndexRoute,
+  _clientSupportDetailIdRoute: _clientSupportDetailIdRoute,
+  _clientCompareId1ToId2Route: _clientCompareId1ToId2Route,
+}
+
+const _clientRouteWithChildren =
+  _clientRoute._addFileChildren(_clientRouteChildren)
+
 interface AdminRouteChildren {
+  AdminBookingCreateRoute: typeof AdminBookingCreateRoute
+  AdminPermissionCreateRoute: typeof AdminPermissionCreateRoute
+  AdminPropertyTypeCreateRoute: typeof AdminPropertyTypeCreateRoute
+  AdminPropertyCreateRoute: typeof AdminPropertyCreateRoute
+  AdminProvinceCreateRoute: typeof AdminProvinceCreateRoute
+  AdminRoleCreateRoute: typeof AdminRoleCreateRoute
+  AdminUserCreateRoute: typeof AdminUserCreateRoute
+  AdminWardCreateRoute: typeof AdminWardCreateRoute
+  AdminBookingIndexRoute: typeof AdminBookingIndexRoute
+  AdminChatIndexRoute: typeof AdminChatIndexRoute
   AdminDashboardIndexRoute: typeof AdminDashboardIndexRoute
+  AdminPermissionIndexRoute: typeof AdminPermissionIndexRoute
+  AdminPriceReferenceIndexRoute: typeof AdminPriceReferenceIndexRoute
+  AdminPropertyTypeIndexRoute: typeof AdminPropertyTypeIndexRoute
+  AdminPropertyIndexRoute: typeof AdminPropertyIndexRoute
+  AdminProvinceIndexRoute: typeof AdminProvinceIndexRoute
+  AdminRoleIndexRoute: typeof AdminRoleIndexRoute
+  AdminSettingsIndexRoute: typeof AdminSettingsIndexRoute
+  AdminSupportIndexRoute: typeof AdminSupportIndexRoute
+  AdminUserIndexRoute: typeof AdminUserIndexRoute
+  AdminWardIndexRoute: typeof AdminWardIndexRoute
+  AdminBookingUpdateIdRoute: typeof AdminBookingUpdateIdRoute
+  AdminPermissionUpdateIdRoute: typeof AdminPermissionUpdateIdRoute
+  AdminPriceReferenceDetailIdRoute: typeof AdminPriceReferenceDetailIdRoute
+  AdminPropertyTypeUpdateIdRoute: typeof AdminPropertyTypeUpdateIdRoute
+  AdminPropertyDetailIdRoute: typeof AdminPropertyDetailIdRoute
+  AdminPropertyUpdateIdRoute: typeof AdminPropertyUpdateIdRoute
+  AdminProvinceUpdateIdRoute: typeof AdminProvinceUpdateIdRoute
+  AdminRoleUpdateIdRoute: typeof AdminRoleUpdateIdRoute
+  AdminSupportProcessIdRoute: typeof AdminSupportProcessIdRoute
+  AdminUserDetailIdRoute: typeof AdminUserDetailIdRoute
+  AdminUserUpdateIdRoute: typeof AdminUserUpdateIdRoute
+  AdminWardUpdateIdRoute: typeof AdminWardUpdateIdRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminBookingCreateRoute: AdminBookingCreateRoute,
+  AdminPermissionCreateRoute: AdminPermissionCreateRoute,
+  AdminPropertyTypeCreateRoute: AdminPropertyTypeCreateRoute,
+  AdminPropertyCreateRoute: AdminPropertyCreateRoute,
+  AdminProvinceCreateRoute: AdminProvinceCreateRoute,
+  AdminRoleCreateRoute: AdminRoleCreateRoute,
+  AdminUserCreateRoute: AdminUserCreateRoute,
+  AdminWardCreateRoute: AdminWardCreateRoute,
+  AdminBookingIndexRoute: AdminBookingIndexRoute,
+  AdminChatIndexRoute: AdminChatIndexRoute,
   AdminDashboardIndexRoute: AdminDashboardIndexRoute,
+  AdminPermissionIndexRoute: AdminPermissionIndexRoute,
+  AdminPriceReferenceIndexRoute: AdminPriceReferenceIndexRoute,
+  AdminPropertyTypeIndexRoute: AdminPropertyTypeIndexRoute,
+  AdminPropertyIndexRoute: AdminPropertyIndexRoute,
+  AdminProvinceIndexRoute: AdminProvinceIndexRoute,
+  AdminRoleIndexRoute: AdminRoleIndexRoute,
+  AdminSettingsIndexRoute: AdminSettingsIndexRoute,
+  AdminSupportIndexRoute: AdminSupportIndexRoute,
+  AdminUserIndexRoute: AdminUserIndexRoute,
+  AdminWardIndexRoute: AdminWardIndexRoute,
+  AdminBookingUpdateIdRoute: AdminBookingUpdateIdRoute,
+  AdminPermissionUpdateIdRoute: AdminPermissionUpdateIdRoute,
+  AdminPriceReferenceDetailIdRoute: AdminPriceReferenceDetailIdRoute,
+  AdminPropertyTypeUpdateIdRoute: AdminPropertyTypeUpdateIdRoute,
+  AdminPropertyDetailIdRoute: AdminPropertyDetailIdRoute,
+  AdminPropertyUpdateIdRoute: AdminPropertyUpdateIdRoute,
+  AdminProvinceUpdateIdRoute: AdminProvinceUpdateIdRoute,
+  AdminRoleUpdateIdRoute: AdminRoleUpdateIdRoute,
+  AdminSupportProcessIdRoute: AdminSupportProcessIdRoute,
+  AdminUserDetailIdRoute: AdminUserDetailIdRoute,
+  AdminUserUpdateIdRoute: AdminUserUpdateIdRoute,
+  AdminWardUpdateIdRoute: AdminWardUpdateIdRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface AuthRouteChildren {
+  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthOtpVerificationRoute: typeof AuthOtpVerificationRoute
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
+  AuthSignUpRoute: typeof AuthSignUpRoute
+  AuthSignUpAdditionRoute: typeof AuthSignUpAdditionRoute
+  AuthVerifyEmailRoute: typeof AuthVerifyEmailRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
+  AuthLoginRoute: AuthLoginRoute,
+  AuthOtpVerificationRoute: AuthOtpVerificationRoute,
+  AuthResetPasswordRoute: AuthResetPasswordRoute,
+  AuthSignUpRoute: AuthSignUpRoute,
+  AuthSignUpAdditionRoute: AuthSignUpAdditionRoute,
+  AuthVerifyEmailRoute: AuthVerifyEmailRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  _clientRoute: _clientRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
-  TestDatatableRoute: TestDatatableRoute,
+  AuthRoute: AuthRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

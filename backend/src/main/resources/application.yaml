@@ -1,15 +1,5 @@
 spring:
   application:
     name: se121
-  datasource:
-    url: jdbc:mysql://localhost:3306/mydatabase
-    username: myuser
-    password: secret
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect
-
-  docker:
-    compose:
-      enabled: true
-      file: docker/compose.yaml
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev,imp}

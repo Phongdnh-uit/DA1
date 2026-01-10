@@ -1,0 +1,109 @@
+package com.phongdnh.se121.controllers.authentication;
+
+import com.phongdnh.se121.dtos.ApiResponse;
+import com.phongdnh.se121.dtos.authentication.BaseUserRequest;
+import com.phongdnh.se121.dtos.authentication.ChangePasswordRequest;
+import com.phongdnh.se121.dtos.authentication.LoginRequest;
+import com.phongdnh.se121.dtos.authentication.LoginResponse;
+import com.phongdnh.se121.dtos.authentication.RefreshTokenRequest;
+import com.phongdnh.se121.dtos.authentication.RegisterRequest;
+import com.phongdnh.se121.dtos.authentication.ResetPasswordRequest;
+import com.phongdnh.se121.dtos.authentication.SendOtpRequest;
+import com.phongdnh.se121.dtos.authentication.SendOtpResponse;
+import com.phongdnh.se121.dtos.authentication.UserResponse;
+import com.phongdnh.se121.dtos.authentication.VerifyEmailRequest;
+import com.phongdnh.se121.dtos.authentication.VerifyOtpRequest;
+import com.phongdnh.se121.dtos.authentication.VerifyOtpResponse;
+import com.phongdnh.se121.services.authentication.AuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@Tag(name = "Auth")
+@RequestMapping("/auth")
+@RequiredArgsConstructor
+@RestController
+public class AuthController {
+  private final AuthService authService;
+
+  @PostMapping("/login")
+  public ResponseEntity<ApiResponse<LoginResponse>> login(
+      @Valid @RequestBody LoginRequest request) {
+    return ResponseEntity.ok(ApiResponse.ok(authService.login(request)));
+  }
+
+  @PostMapping("/refresh")
+  public ResponseEntity<ApiResponse<LoginResponse>> refreshToken(
+      @Valid @RequestBody RefreshTokenRequest request) {
+    return ResponseEntity.ok(ApiResponse.ok(authService.refreshToken(request)));
+  }
+
+  @PostMapping("/logout")
+  public ResponseEntity<ApiResponse<LoginResponse>> logout(
+      @Valid @RequestBody RefreshTokenRequest request) {
+    authService.logout(request);
+    return ResponseEntity.ok(ApiResponse.ok(null));
+  }
+
+  @PostMapping("/send-otp")
+  public ResponseEntity<ApiResponse<SendOtpResponse>> sendOtp(
+      @Valid @RequestBody SendOtpRequest request) {
+    return ResponseEntity.ok(ApiResponse.ok(authService.sendOtp(request)));
+  }
+
+  @PostMapping("/verify-otp")
+  public ResponseEntity<ApiResponse<VerifyOtpResponse>> verifyOtp(
+      @Valid @RequestBody VerifyOtpRequest request) {
+    return ResponseEntity.ok(ApiResponse.ok(authService.verifyOtp(request)));
+  }
+
+  @PostMapping("/verify-email")
+  public ResponseEntity<ApiResponse<Void>> verifyEmail(
+      @Valid @RequestBody VerifyEmailRequest request) {
+    authService.verifyEmail(request);
+    return ResponseEntity.ok(ApiResponse.ok(null));
+  }
+
+  @PostMapping("/register")
+  public ResponseEntity<ApiResponse<UserResponse>> register(
+      @Valid @RequestBody RegisterRequest request) {
+    return ResponseEntity.ok(ApiResponse.ok(authService.register(request)));
+  }
+
+  @PostMapping("/change-password")
+  public ResponseEntity<ApiResponse<Void>> changePassword(
+      @Valid @RequestBody ChangePasswordRequest request) {
+    authService.changePassword(request);
+    return ResponseEntity.ok(ApiResponse.ok(null));
+  }
+
+  @PostMapping("/reset-password")
+  public ResponseEntity<ApiResponse<Void>> resetPassword(
+      @Valid @RequestBody ResetPasswordRequest request) {
+    authService.resetPassword(request);
+    return ResponseEntity.ok(ApiResponse.ok(null));
+  }
+
+  @GetMapping("/me")
+  public ResponseEntity<ApiResponse<UserResponse>> getCurrentUser() {
+    return ResponseEntity.ok(ApiResponse.ok(authService.getCurrentUser()));
+  }
+
+  @PostMapping("/me")
+  public ResponseEntity<ApiResponse<UserResponse>> updateCurrentUser(
+      @Valid @RequestBody BaseUserRequest request) {
+    return ResponseEntity.ok(ApiResponse.ok(authService.updateCurrentUser(request)));
+  }
+
+  @GetMapping("/me/permissions")
+  public ResponseEntity<ApiResponse<List<String>>> getCurrentUserPermissionCodes() {
+    return ResponseEntity.ok(ApiResponse.ok(authService.getCurrentPermissionCodes()));
+  }
+}

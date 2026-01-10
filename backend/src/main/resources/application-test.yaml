@@ -1,0 +1,74 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password: ""
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        
+  flyway:
+    enabled: false
+    
+  redis:
+    host: localhost
+    port: 6379
+    
+  mail:
+    host: localhost
+    sender-address: dangnguyenhuyphong@gmail.com
+
+  ai:
+    vectorstore:
+      enabled: false
+      milvus:
+        enabled: false
+    chat:
+      enabled: false
+    ollama:
+      enabled: false
+
+# Cấu hình Custom App
+jwt:
+  secret: "xin_chao_ban!_day_la_du_an_uit_land_cho_do_an_1_cua_minh!_xin_cam_on_ban_da_doc_du_an_nay"
+  refresh-token:
+    expiration: 172800
+  access-token:
+    expiration: 18000
+
+app:
+  bootstrap:
+    admin:
+      phone: "0123456789"
+      password: "password"
+      email: "test@gmail.com"
+
+clamav:
+  host: localhost
+  port: 3310
+
+imgproxy:
+  base-url: http://localhost:8081
+  key: 3b36d1b62634689b28636a633eeb42b39aae91d40fb3bf1e53dd4d48abbf2166
+  salt: f94a17684703c3a7f3aec1dad5ad1f37b8a5fa07bd19843704070b46eb10580a
+
+minio:
+  endpoint: http://localhost:9000
+  credentials:
+    username: minioadmin
+    password: minioadmin
+    webhook-token: se121_minio_webhook_token
+
+telegram:
+  bot:
+    token: 123456:test_bot_token
+    username: test_bot_username

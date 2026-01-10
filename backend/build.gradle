@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '4.0.0-M2'
+	id 'org.springframework.boot' version '3.5.6'
 	id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -15,39 +15,73 @@ java {
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
+	compileOnly { extendsFrom annotationProcessor } }
 
 repositories {
 	mavenCentral()
 }
 
+ext {
+	set('springAiVersion', "1.1.0-M1")
+}
+
 dependencies {
+    constraints {
+        implementation('io.grpc:grpc-core:1.68.0')
+        implementation('io.grpc:grpc-netty-shaded:1.68.0')
+        implementation('io.grpc:grpc-api:1.68.0')
+    }
+
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-flyway'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-authorization-server'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.ai:spring-ai-starter-vector-store-milvus'
+	implementation 'org.springframework.ai:spring-ai-advisors-vector-store'
+	implementation 'org.springframework.ai:spring-ai-rag'
 	implementation 'org.flywaydb:flyway-mysql'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     implementation 'org.mapstruct:mapstruct:1.6.3'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
-    implementation 'com.turkraft.springfilter:jpa:3.2.0'
+    implementation 'io.github.perplexhub:rsql-jpa-spring-boot-starter:6.0.32'
+    implementation("com.googlecode.libphonenumber:libphonenumber:9.0.15")
+    implementation 'com.cloudinary:cloudinary-http5:2.3.2'
+    implementation 'org.hibernate.orm:hibernate-spatial:7.1.9.Final'
+    implementation 'org.locationtech.jts:jts-core:1.20.0'
+    implementation 'io.minio:minio:8.6.0'
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'org.apache.tika:tika-core:3.2.3'
+    implementation 'xyz.capybara:clamav-client:2.1.2'
+    implementation 'com.h2database:h2'
+    implementation 'org.springframework.ai:spring-ai-starter-model-ollama'
+    // Low credit limit on free tier
+    // implementation 'org.springframework.ai:spring-ai-starter-model-google-genai:1.1.0-M1'
+    // implementation 'org.springframework.ai:spring-ai-starter-model-google-genai-embedding:1.1.0-M1'
+    implementation 'com.twilio.sdk:twilio:11.3.0'
+    implementation 'org.telegram:telegrambots-spring-boot-starter:6.9.7.1'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+	}
 }
 
 tasks.named('test') {

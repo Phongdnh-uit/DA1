@@ -1,0 +1,120 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:mysql://localhost:3306/uitland
+    username: myuser
+    password: secret
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.spatial.dialect.mysql.MySQLSpatialDialect
+        format_sql: true
+      # jakarta:
+      #   persistence:
+      #     schema-generation:
+      #       scripts:
+      #         action: create
+      #         create-target: target/shchema.sql
+      #       create-source: metadata
+
+  flyway:
+    enabled: true
+    clean-disabled: false
+
+  docker:
+    compose:
+      enabled: true
+      file: docker/dev/compose.yaml
+  redis:
+    host: localhost
+    port: 6379
+  ai:
+    chat:
+      client:
+        enabled: true
+    vectorstore:
+      milvus:
+        client:
+          host: localhost
+          port: 19530
+        database-name: default
+        collection-name: uitland_embeddings
+        embedding-dimension: 4096
+        metric-type: cosine
+        index-type: ivf-flat
+        initialize-schema: true
+    ollama:
+      init:
+        pull-model-strategy: always
+      base-url: http://localhost:11434
+      embedding:
+        model: qwen3-embedding:8b-q4_K_M
+      chat:
+        model: qwen3:4b-instruct-2507-q4_K_M
+  kafka:
+    bootstrap-servers: localhost:9092
+    listener:
+      ack-mode: manual
+    consumer:
+      auto-offset-reset: latest
+      enable-auto-commit: false
+      # properties:
+      # spring:
+      #   json:
+      #     trusted:
+      #       packages: "*"
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.value.default.type: java.util.HashMap
+        spring.json.use.type.headers: false
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  threads:
+    virtual:
+      enabled: true
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+jwt:
+  secret: xin_chao_ban!_day_la_du_an_uit_land_cho_do_an_1_cua_minh!_xin_cam_on_ban_da_doc_du_an_nay
+  refresh-token:
+    expiration: 172800
+  access-token:
+    expiration: 18000
+
+minio:
+  endpoint: http://localhost:9000
+  credentials:
+    username: minioadmin
+    password: minioadmin
+    webhook-token: webhook-token-uitland
+
+clamav:
+  host: localhost
+  port: 3310
+
+server:
+  address: 0.0.0.0
+
+imgproxy:
+  base-url: http://localhost:8081
+  key: 3b36d1b62634689b28636a633eeb42b39aae91d40fb3bf1e53dd4d48abbf2166
+  salt: f94a17684703c3a7f3aec1dad5ad1f37b8a5fa07bd19843704070b46eb10580a
+
+app:
+  cronjob-runner:
+    enabled: false

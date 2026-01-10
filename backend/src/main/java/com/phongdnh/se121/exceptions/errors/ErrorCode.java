@@ -12,12 +12,24 @@ public enum ErrorCode {
   FORBIDDEN(2004, HttpStatus.FORBIDDEN, "Forbidden"),
   TOKEN_EXPIRED(2005, HttpStatus.UNAUTHORIZED, "Token Expired"),
   TOKEN_INVALID(2006, HttpStatus.UNAUTHORIZED, "Token Invalid"),
+  INVALID_CREDENTIALS(2007, HttpStatus.UNAUTHORIZED, "Invalid Credentials"),
+  VERIFICATION_CODE_INVALID(2008, HttpStatus.BAD_REQUEST, "Verification Code Invalid"),
+  VERIFICATION_CODE_EXPIRED(2009, HttpStatus.BAD_REQUEST, "Verification Code Expired"),
+  UPLOAD_FAILED(2010, HttpStatus.BAD_REQUEST, "Upload Failed"),
+  FILE_PROCESSING_FAILED(2014, HttpStatus.BAD_REQUEST, "File Processing Failed"),
+  SIGNATURE_INVALID(2011, HttpStatus.BAD_REQUEST, "Signature Invalid"),
+  DOWNLOAD_FAILED(2013, HttpStatus.BAD_REQUEST, "Download Failed"),
+  OAUTH2_ERROR(2012, HttpStatus.UNAUTHORIZED, "OAuth2 Error"),
   INTERNAL_SERVER_ERROR(2099, HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error"),
   OTP_EXPIRED(2100, HttpStatus.BAD_REQUEST, "OTP Expired"),
   OTP_INVALID(2101, HttpStatus.BAD_REQUEST, "OTP Invalid"),
   ACCOUNT_LOCKED(2200, HttpStatus.LOCKED, "Account Locked"),
   ACCOUNT_DISABLED(2201, HttpStatus.FORBIDDEN, "Account Disabled"),
-  EMAIL_NOT_VERIFIED(2202, HttpStatus.PRECONDITION_REQUIRED, "Email Not Verified");
+  EMAIL_NOT_VERIFIED(2202, HttpStatus.PRECONDITION_REQUIRED, "Email Not Verified"),
+  OPERATION_NOT_ALLOWED(2300, HttpStatus.BAD_REQUEST, "Operation Not Allowed"),
+  INVALID_PHONE_NUMBER(2400, HttpStatus.BAD_REQUEST, "Invalid Phone Number"),
+  SMS_SENDING_FAILED(2401, HttpStatus.INTERNAL_SERVER_ERROR, "SMS Sending Failed"),
+  USER_INACTIVE(2500, HttpStatus.FORBIDDEN, "User Inactive");
 
   private final int code;
   private final HttpStatus httpCode;
