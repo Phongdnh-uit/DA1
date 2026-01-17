@@ -1,4 +1,6 @@
-# UIT Land - Nền tảng Bất động sản
+<img src="https://github.com/Phongdnh-uit/UITLAND/blob/main/docs/banner.png?raw=true" style="width: 100%;" />
+
+# UIT Land - Nền tảng hỗ trợ tư vấn mua bán bất động sản
 
 ## Mục lục
 
